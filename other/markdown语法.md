@@ -1,6 +1,7 @@
 # markdown语法
 {docsify-updated}
 
+1. 链接：`[链接名称](链接地址)`
 
 
 ### 数学公式

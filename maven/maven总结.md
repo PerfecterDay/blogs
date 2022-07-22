@@ -126,7 +126,7 @@ Maven不仅可以执行生命周期的阶段，进而执行绑定在这些阶段
 
 #### 聚合(多模块)
 当我们的两个Maven项目是相关的，共同作用以构成一个更大的项目，我们可以把他们称为更大项目的模块。如 regs-api/regs-serve/regs-ft。一个简单的需求就是：我们想要一次构建两个模块而不是分别进入到不同模块目录下执行 mvn 命令。Maven 聚合就是为这一需求服务的。    
-首先，需要创建另一个模块，并且 packaging 类型必须是 POM ，然后，在 pom 文件中配置 modules，每个 module 的值都是一个相对于当前 pom 的**目录**。聚合模块通常只包含一个 pom.xml 文件，没有源码资源等目录。
+首先，需要创建另一个模块，并且 packaging 类型必须是 POM ，然后，在 pom 文件中配置 modules，每个 module 的值都是一个相对于当前 pom 的**目录**，该目录下包含一个maven 项目（pom.xml）。聚合模块通常只包含一个 pom.xml 文件，没有源码资源等目录。
 
 #### 继承
 当多个模块之间有许多重复的配置时，可以将他们抽取出来作为一个父模块供这些模块继承共享。父模块的打包类型也必须是 pom，而且不需要源代码之类的目录。子模块继承时，使用 parent 元素指定父模块， parent下的 groupId、artifactId、version 制定了父模块的坐标， relativePath 指定父模块 pom 文件相对与本 pom 的路径，默认值是 ../pom.xml，即上层目录中的 pom.xml ，maven 会首先根据 relativePath 查找父 POM， 如果找不到，再从本地仓库查找 。

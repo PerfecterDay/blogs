@@ -1,8 +1,5 @@
-
 # Mac Homebrew 的使用
 {docsify-updated}
-
-
 
 ## 常用命令
 1. brew install [formula]:安装 formula
@@ -64,5 +61,17 @@ $ brew services cleanup
 Removing unused plist /Users/gabe/Library/LaunchAgents/homebrew.mxcl.mysql.plist
  ```
 
-> 最后一提，这玩意路径不一样，会直接复制到 LaunchAgents 目录，结果就是两个一样的启动项了，系统 log 里会很烦人的。。
-
+### Jenv 进行JDK多版本管理
+1. 安装Jenv ：`brew install jenv`
+2. 启用Jenv，需要执行一下命令： add the following to your ~/.zshrc:
+	```
+	export PATH="$HOME/.jenv/bin:$PATH"
+	eval "$(jenv init -)"
+	```
+3. 搜索安装需要的JDK
+   ```
+   brew install adoptopenjdk/openjdk/adoptopenjdk8 --cask
+   brew install adoptopenjdk/openjdk/adoptopenjdk11 --cask
+   ```
+4. jenv versions 显示可用的 JDK 版本，如果没有的话，需要使用 `jenv add [pathToJDK]` 添加安装的JDK
+5. `jenv local [javaversion]` 切换 JDK 版本

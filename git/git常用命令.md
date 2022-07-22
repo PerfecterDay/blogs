@@ -10,6 +10,19 @@
 6. 将生成的 SSH 公钥(id_rsa.pub)粘贴到GitHub上
 7. 测试能否连接：`ssh -T git@github.com`
 
+设置本地Git使用 SSH 时的连接到远程的端口等配置：
++ MAC:
+  1. 新建config文件配置远程连接端口： touch ~/.ssh/config
+  2. 添加如下内容 
+	```
+	Host gjywgitlab.gtja.net
+	Port 223
+	PreferredAuthentications publickey
+	IdentityFile ~/.ssh/id_rsa
+	```
++ Windows:
+1. 在用户的 .ssh 目录内建立 config 文件内容如上
+
 ### git 常用命令
 <center><img src="pics/git-frame.jpg" width="30%" /></center>
 
@@ -21,8 +34,8 @@
 6. `git ls-files --satge`:查看暂存区的文件
 7. `git diff` : 只显示尚未暂存的改动，而不是自上次提交以来所做的所有改动
 8. `git diff --staged `:比对已暂存文件与最后一次提交的文件差异
-9. `git rm filename` : 删除某个文件，提交后会同时删除版本库和工作区的文件
-10. `git rm --cached filename`:从暂存区和版本库中删除某个文件，提交后，版本库中会删除这个文件，但是工作区磁盘上会保留
+9. `git rm filename` : 删除某个文件，提交后会同时删除版本库/暂存区和工作区的文件
+10. `git rm --cached filename`:从暂存区和版本库中删除某个文件，提交后，暂存区/版本库中会删除这个文件，但是工作区磁盘上会保留
 11. `git checkout head filename`:从暂存区恢复工作区中的文件，通常是想放弃对工作区中的修改或者误删了工作区文件
 12. `git checkout <hash> <filename>`：恢复文件到某个提交状态
 13. `git reset [HEAD|<h></h>ash] filename`:从版本库中恢复某个文件，当你删除了工作区中的文件，又删除了暂存区中的文件，想恢复文件可以用这个命令
@@ -51,7 +64,7 @@
 6. `git brnch -d <BranchName>`:删除 BranchName 分支
 7. `git merge <BranchName>`: 将 BranchName 合并到当前分支
 8. `git merge --abort`: 中断合并
-9. `git rebase <targetBranch> <sourceBranch>`: Rebase 实际上就是取出 sourceBranch 的一系列的提交记录，“复制”它们，然后在targetBranch 的后边逐个的放下去，创造更线性的提交历史。sourceBranch 省略时，表示将当前分支 rebase到 targetBranch。
+9. `git rebase <targetBranch> <sourceBranch>`: 它的原理是首先找到这两个分支(即源分支 sourceBranch 、变基操作的目标基底分支 targetBranch) 的最近共同祖先 C2，然后对比当前分支相对于该祖先的历次提交，提取相应的修改并存为临时文件，然后将当前分支指向目标基底 C3, 最后以此将之前另存为临时文件的修改依序应用。
 
 ### git远程命令
 1. `git clone`: 从远程库克隆

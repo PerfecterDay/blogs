@@ -46,3 +46,10 @@
 
 2. 生成客户端和服务器端代码
 3. 服务实现
+
+
+```
+grpcurl --plaintext localhost:9090 list
+grpcurl --plaintext localhost:9090 list GreeterService
+grpcurl --plaintext -d '{"name": "aaa"}' localhost:9090 GreeterService.sayHello
+```

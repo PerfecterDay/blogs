@@ -33,6 +33,8 @@
         @Value( "${jdbc.url:defaultUrl}" )
         private String jdbcUrl;
         ```
+		`@Value` 加载配置时，有两种方式：如上所示的`${...}`，还可以使用SPEL（Spring Expression Language）`#{...}`
+
         XML 配置的情况下:
         ```
         <bean id="dataSource">
@@ -94,25 +96,26 @@
     ```
     注意，即使配置了加载某个 profile 文件，默认的 application.properties 还是会被加载，只不过 profile 配置文件中的配置有更高的优先级。
 5. 一个好的倡议
-    我们可以在 `src/main/resources/configuration` 目录下新建三个文件夹分别为 dev/stage/prod ,分别对应三种环境，三个文件中配置相同的配置文件。然后删除默认的 application.properties 配置文件，分别在三个文件夹下建立 app.properties 文件，并分别配置上 env=dev/stage/prod 配置项，然后代码中相同的配置文件只要动态加载 ${env} 即可。但是，在启动程序时要指定使用对应环境的 application.properties 配置文件（--spring.config.location=classpath:/configuration/stage/app.properties ）。
+    我们可以在 `src/main/resources/configuration` 目录下新建三个文件夹分别为 dev/stage/prod ,分别对应三种环境，三个文件中配置相同的配置文件。然后删除默认的 application.properties 配置文件，分别在三个文件夹下建立 app.properties 文件，并分别配置上 env=dev/stage/prod 配置项，然后代码中相同的配置文件只要动态加载 ${env} 即可。但是，在启动程序时要指定使用对应环境的 application.properties 配置文件（`--spring.config.location=classpath:/configuration/{stage)/app.properties` ）。
 
 ### 常用配置
 1. 配置端口： `server.port=9090` 
-2. 配置启动初始化 Servlet： `spring.mvc.servlet.load-on-startup=1`
-3. 日志设置：
+2. 配置应用名(服务注册时会被注册成服务名)： `spring.application.name=demo`
+3. 配置启动初始化 Servlet： `spring.mvc.servlet.load-on-startup=1`
+4. 日志设置：
    ```
     logging.path=/user/local/log
     logging.level.com.favorites=DEBUG
     logging.level.org.springframework.web=INFO
     logging.level.org.hibernate=ERROR
     ```
-4. 数据库配置：
+5. 数据库配置：
      ```
     spring.datasource.url=jdbc:mysql://localhost:3306/test
     spring.datasource.username=root
     spring.datasource.password=root
     spring.datasource.driver-class-name=com.mysql.jdbc.Driver
     ```
-5. 配置静态文件的URL映射：`spring.mvc.static-path-pattern=/resources/**`
-6. 配置静态文件的目录： `spring.resources.static-locations=classpath:/mystatic`
+6. 配置静态文件的URL映射：`spring.mvc.static-path-pattern=/resources/**`
+7. 配置静态文件的目录： `spring.resources.static-locations=classpath:/mystatic`
 

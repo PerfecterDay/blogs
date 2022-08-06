@@ -2,7 +2,7 @@
 {docsify-updated}
 
 
-`ApplicationContextInitializer` 是在springboot启动过程(refresh方法前)调用,主要是在 `ApplicationContextInitializer` 中 `initialize` 方法中拉起了 `ConfigurationClassPostProcessor` 这个类(我在springboot启动流程中有描述)，通过这个 processor 实现了 beandefinition 。言归正传， `ApplicationContextInitializer` 实现主要有3中方式：
+`ApplicationContextInitializer` 是在springboot启动过程(refresh方法前)调用,主要是在 `ApplicationContextInitializer` 中 `initialize` 方法中拉起了 `ConfigurationClassPostProcessor` 这个类(我在springboot启动流程中有描述)，通过这个 processor 实现了 beandefinition 。言归正传， `ApplicationContextInitializer` 实现主要有3种方式：
 
 ### 使用spring.factories方式
 首先我们自定义个类实现了 `ApplicationContextInitializer` ,然后在resource下面新建 `META-INF/spring.factories` 文件。然后在文件中加入：

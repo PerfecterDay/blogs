@@ -39,8 +39,8 @@ Collection的常用方法：
 	+ `void remove()`：删除集合中上一次 next 方法返回的元素
 	+ `void forEachRemaining(Consumer<? super E> action)`：Java 8 新增方法，可以使用 Lambda 表达式来遍历集合
 
-	当遍历集合元素时，需要注意：
-	`Collection` 集合里的元素不能被改变，增删都不行，但是可以设更新设置某个元素的值，只有通过 `Iterator` 的 `remove()` 方法删除集合元素才可以；假如此时修改了集合（遍历的时候或者另外一个线程改变了集合元素的个数），将会引发 `ConcurrentModificationException` 异常。但是，也不能有多个 `Iterator` 在遍历的时候，修改集合，否则也会引发 `ConcurrentModificationException` 异常，多个迭代器遍历时，只能有一个迭代器能修改集合。
+	<b>当遍历集合元素时，需要注意：
+	`Collection` 集合里的元素不能被改变，增删都不行，但是可以更新设置某个元素的值，只有通过 `Iterator` 的 `remove()` 方法删除集合元素才可以；假如此时修改了集合（遍历的时候或者另外一个线程改变了集合元素的个数），将会引发 `ConcurrentModificationException` 异常。但是，也不能有多个 `Iterator` 在遍历的时候，修改集合，否则也会引发 `ConcurrentModificationException` 异常，多个迭代器遍历时，只能有一个迭代器能修改集合。</b>
 
 1. 使用 Iterable 接口
 	使用 `Iterable` 的 `void forEach(Consumer<? super T> action)` 方法， `Iterable` 是 `Collection` 的父接口，因此可以直接调用此方法。

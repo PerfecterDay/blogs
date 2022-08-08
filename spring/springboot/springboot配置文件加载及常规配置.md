@@ -3,7 +3,7 @@
 
 
 ### 加载配置文件及使用
-1. 配置文件加载  
+1. 加载自定义路径下的配置文件  
     Spring/SPringboot 中可以使用 `@PropertySource`/`@PropertySources` 注解加载指定路径的配置文件：
     ```
     //动态加载文件，根据 envTarget 的值确定，默认为 persistence-mysql.properties 文件

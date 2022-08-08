@@ -8,7 +8,7 @@
 4. 启动 ssh-agent：eval `ssh-agent -s`
 5. 添加 key 到 ssh-agent: `ssh-add ~/.ssh/id_ed25519`
 6. 将生成的 SSH 公钥(id_rsa.pub)粘贴到GitHub上
-7. 测试能否连接：`ssh -T git@github.com`
+7. 测试能否连接：`ssh -T git@github.com` 或者测试通过 HTTPS 端口的 SSH 是否可行 `ssh -vT -p 443 git@ssh.github.com`
 
 设置本地Git使用 SSH 时的连接到远程的端口等配置：
 + MAC:

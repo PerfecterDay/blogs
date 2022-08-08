@@ -13,6 +13,7 @@ Maven 在编译主代码时会使用一套 classpath1 ，在编译和运行测�
 + provided : 对于编译和测试时有效，但是运行时无效（不会打包），即会加到 classpath1/classpath2 中
 + runtime : 对于测试和运行 classpath 有效，编译主代码时无效
 + system : 系统依赖范围，与 provided 依赖范围完全一致
++ import : 只有当依赖的pom是 pom 类型，才能在 `dependencyManagement` 部分引入该依赖，代表
 
 <center>
 <img src="pics/maven-scope.png" alt="" width=60%>

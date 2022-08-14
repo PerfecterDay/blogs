@@ -115,6 +115,7 @@
   * [Top性能监控](Top性能监控.md)
   * [Linux权限](/linux/linux权限.md)
   * [Linux环境变量总结](/linux/linux环境变量总结.md)
+  * [SSH简介](linux/ssh.md)
   * [软链接和硬链接](/linux/软链接和硬链接.md)
   * [vim手册](/linux/vim手册.md)
 * [Spring](#)

@@ -28,8 +28,7 @@ Java 8 中增加了 Stream API，简化了串行或并行的大批量操作。�
     ```
 
 2. 基于数组或Collection
-
-    第二种创建Stream的方法是基于一个数组或者Collection，这样该Stream输出的元素就是数组或者Collection持有的元素：
+	可以用 Collection 接口的 `stream` 方法将任何集合转换为一个流,或者调用 `Arrays.stream(arr)` 将数组转换为流
     ```
     Stream<String> stream1 = Arrays.stream(new String[] { "A", "B", "C" });
     Stream<String> stream2 = List.of("X", "Y", "Z").stream();

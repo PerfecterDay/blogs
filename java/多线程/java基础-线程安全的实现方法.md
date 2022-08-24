@@ -55,7 +55,7 @@
      
     如果一段代码中所需要的数据必须与其他代码共享，那就看看这些共享数据的代码是否能保证在同一个线程中执行。如果能保证，我们就可以把共享数据的可见范围限制在同一个线程之内，这样，无须同步也能保证线程之间不出现数据争用的问题。
 
-    Java中，可以通过`java.lang.ThreadLocal`类来实现线程本地存储的功能。每一个线程 Thread 对象中都有一个名为`threadLocals`的属性引用一个`ThreadLocalMap`对象，这个对象存储了一组以`ThreadLocal`为键，以本地线程变量(ThreadLocal 对象中存的值)为值的 K-V 值对，`ThreadLocal` 对象就是当前线程的`ThreadLocalMap`的访问入口，使用这个值就可以在线程K-V值对中找回对应的本地线程变量。
+    Java中，可以通过`java.lang.ThreadLocal`类来实现线程本地存储的功能。每一个线程 Thread 对象中都有一个名为`threadLocals`的属性引用一个`ThreadLocalMap`对象，**这个对象存储了一组以`ThreadLocal`为键，以本地线程变量(ThreadLocal 对象中存的值)为值的 K-V 值对，`ThreadLocal` 对象就是当前线程的`ThreadLocalMap`的访问入口，使用这个值就可以在线程K-V值对中找回对应的本地线程变量。**
 
 	不同的线程可以通过 `set(T value)` 放入不同的值到线程的 `ThreadLocalMap` 对象中，然后通过 `T get()` 方法获取当前线程的值，初始值为 null 。如果想要 ThreadLocal 在初始化后有初始化值，可以继承 ThreadLocal 类，并重写 `T initialValue()` 方法
 	```
@@ -116,3 +116,4 @@
         }
     }
 	```
+	`ThreadLocal` 的内存泄漏问题：由上可知，每个线程内部会保存以 ThreadLocal 对象为键的Map对象，那么即使在其它地方将 ThreadLocal 显示的设置为了 null，因为线程内部的 `ThreadLocalMap` 中还保留了对它的引用，所以 ThreadLocal 对象不会被回收，且 Thread 内部 `ThreadLocalMap` 中对应的键值对也不会被回收，这就有可能会引发内存泄漏。

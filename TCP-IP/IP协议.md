@@ -1,4 +1,3 @@
-
 # IP协议
 {docsify-updated}
 
@@ -19,6 +18,13 @@ IP是TCP/IP协议族中最为核心的协议。所有的TCP、UDP、ICMP及IGMP�
 <center><img src="pics/special-ip.png" alt="" width="60%"></center>
 
 表的头两项是特殊的源地址，中间项是特殊换回地址，最后四项是广播地址。
+
+有三类IP地址:
++ 单播地址(目的为单个主机)
++ 广播地址(目的端为给定网络上的所有主机)
++ 多播地址(目的端为同一组内的所有主机)
+
+广播和多播**仅应用于UDP**，它们对需将报文同时传往多个接收者的应用来说十分重要。TCP是一个面向连接的协议，它意味着分别运行于两主机(由IP地址确定)内的两进程(由端口号确定)间存在一条连接。
 
 ### IP首部
 <center><img src="pics/ip-header.png" alt="" width="40%" height=40%></center>

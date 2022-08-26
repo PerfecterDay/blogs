@@ -1,60 +1,6 @@
 # java基础-IO
 {docsify-updated}
 
-## 老的File类
-`File` 类看上去是指代文件，其实它既能代表一个特定文件，也能代表一个目录。
-
-### 常见方法
-+ `String[] list()`: 返回所有文件名的字符串数组
-+ `String[] list(FileNameFilter filter)`: 返回 `FileNameFilter` 过滤后的字符串数组
-+ `File[] listFiles()`: 返回所有的文件数组
-+ `File[] listFiles(FilenameFilter filter)`: 返回 `FilenameFilter` 过滤后的文件数组
-+ `String getAbsolutePath()` :获取绝对路径
-+ `String getName()` :获取名字
-+ `File getParent()` :获取父目录
-+ `long length()` :获取目录/文件大小
-+ `long lastModified()` :获取最后修改时间
-+ `boolean canExecute()` :是否可执行
-+ `boolean canRead()` :是否可读
-+ `boolean canWrite()` :是否可写
-+ `boolean createNewFile()` :创建新文件当 `File` 代表一个文件时
-+ `boolean mkdir()` :创建新目录当 `File` 代表一个目录时
-
-假如 `File` 指代的是一个目录，那么就可以使用 `list()` 方法获取目录下的文件列表，如果想获取所有文件列表，使用不带参数的 `list()` 的方法即可；如果想获得一个受限列表，那么就要使用“目录过滤器”了。 `FilenameFilter` 接口的 `boolean accept(File dir,String name)` 返回 `true` 的才会返回到数组中。 `listFiles` 同理。
-
-```
-public class FileList {
-    public static void main(String[] args) {****
-        File f = new File("/usr/local/etc");
-        File[] allFiles = f.listFiles();
-        File[] filterFiles = f.listFiles((dir,name)->{
-            return name.contains("a"); 
-        });
-        for (File allFile : allFiles) {
-            System.out.print(allFile.getName()+", ");
-        }
-        System.out.println();
-        for (File filterFile : filterFiles) {
-            System.out.print(filterFile.getName()+", ");
-        }
-        System.out.println();
-        String[] allNames = f.list();
-        String[] filterNames = f.list((dir,name)-> {
-                return name.contains(".");
-        });
-        for (String file : allNames) {
-            System.out.print(file+", ");
-        }
-        System.out.println();
-        for (String file : filterNames) {
-            System.out.print(file+", ");
-        }
-    }
-}
-```
-
-## 新的 Path 和 Files 类
-
 ## IO 流
 流按照不同的方式可以分为如下几类：
 + 输入流：从外设/网络等流入程序内存的流，只能从其中读数据，不能写
@@ -125,3 +71,94 @@ mode 参数指定 RandomAccessFile 的访问模式，该参数有如下四个值
    + `void seek(long pos)`: 将文件记录指针定位到指定的 pos 位置。
 
 RandomAccessFile 还包含类似于了 InputStream/OutputStream 中的三种 read()/write() 方法，用法是完全一样的，另外还包含了系列方便的 readXXX 和 writeXXX 方法。
+
+## 老的File类
+`File` 类看上去是指代文件，其实它既能代表一个特定文件，也能代表一个目录。
+
+### 常见方法
++ `String[] list()`: 返回所有文件名的字符串数组
++ `String[] list(FileNameFilter filter)`: 返回 `FileNameFilter` 过滤后的字符串数组
++ `File[] listFiles()`: 返回所有的文件数组
++ `File[] listFiles(FilenameFilter filter)`: 返回 `FilenameFilter` 过滤后的文件数组
++ `String getAbsolutePath()` :获取绝对路径
++ `String getName()` :获取名字
++ `File getParent()` :获取父目录
++ `long length()` :获取目录/文件大小
++ `long lastModified()` :获取最后修改时间
++ `boolean canExecute()` :是否可执行
++ `boolean canRead()` :是否可读
++ `boolean canWrite()` :是否可写
++ `boolean createNewFile()` :创建新文件当 `File` 代表一个文件时
++ `boolean mkdir()` :创建新目录当 `File` 代表一个目录时
+
+假如 `File` 指代的是一个目录，那么就可以使用 `list()` 方法获取目录下的文件列表，如果想获取所有文件列表，使用不带参数的 `list()` 的方法即可；如果想获得一个受限列表，那么就要使用“目录过滤器”了。 `FilenameFilter` 接口的 `boolean accept(File dir,String name)` 返回 `true` 的才会返回到数组中。 `listFiles` 同理。
+
+```
+public class FileList {
+    public static void main(String[] args) {****
+        File f = new File("/usr/local/etc");
+        File[] allFiles = f.listFiles();
+        File[] filterFiles = f.listFiles((dir,name)->{
+            return name.contains("a"); 
+        });
+        for (File allFile : allFiles) {
+            System.out.print(allFile.getName()+", ");
+        }
+        System.out.println();
+        for (File filterFile : filterFiles) {
+            System.out.print(filterFile.getName()+", ");
+        }
+        System.out.println();
+        String[] allNames = f.list();
+        String[] filterNames = f.list((dir,name)-> {
+                return name.contains(".");
+        });
+        for (String file : allNames) {
+            System.out.print(file+", ");
+        }
+        System.out.println();
+        for (String file : filterNames) {
+            System.out.print(file+", ");
+        }
+    }
+}
+```
+
+## 新的 Path 和 Files 类
+Path 和 Files 类封装了在用户机器上处理文件系统所需的所有功能。
+
+Path 表示的是一个目录名序列，其后还可以跟着一个文件名 。 路径中的第一个部件可以是根部件，例如`/`或 `C:\`，而允许访问的根部件取决于文件系统。 以根部件开始的路径是绝对路径;否则，就是相对路径。
+
+静态的 `Paths.get` 方法接受一个或多个字符串，并将它们用默认文件系统的路径分隔符(类 Unix 文件系统是 `/`, Windows 是`\`)连接起来 。 然后它解析连接起来的结果，如果其表示的不是给定文件系统中的合法路径，那么就抛出 InvalidPathException 异常 。 这个连接起来的结果就是一个 Path 对象。
+
+组合或解析路径是司空见惯的操作,调用 `p.resolve(q)` 将按照下列规则返回一个路径:
++ 如果q是绝对路径， 则结果就是q。
++ 否则，根据文件系统的规则，将“p 后面跟着 q”作为结果 。
+
+Files 类可以使得普通文件操作变得快捷，在创建文件或目录时，可以指定属性，例如文件的拥有者和权限。 但是，指定属性的细节取决于文件系统：
++ static Path createFile(Path path, FileAttribute<?> . . . attrs)
++ static Path createDirectory( Path path, Fil eAttri bute<?> ... attrs)
++ static Path createDirectories(Path path, FileAttribute<?> ... attrs) 还会创建路径中所有的中间目录 。
+
+在适合临时文件的位置，或者在给定的父目录中，创建一个临时文件或目录 。 返回所创建的文件或目录的路径:
++ static Path createTempFile(String prefix, String suffix,FileAttribute<?> ... attrs)
++ static Path createTempFile(Path parentDir, String prefix, Stringsuffix, FileAttribute<?> ... attrs)
++ static Path createTempDirectory(String prefix, FileAttribute<?>... attrs) 
++ + static Path createTempDirectory( Path parentDi r, String prefix ,FileAttribute<?> ... attrs)
+
+复制、移动和删除文件:
++ Files.copy(fromPath,toPath)
++ Files.move(fromPath,toPath)
+如果目标路径已经存在，那么复制或移动将失败。 如果想要覆盖已有的目标路径， 可以使用 REPLACE_EXISTING 选项 。如果想要复制所有的文件属性，可以使用 COPY_ ATTRIBUTES 选项：
+```
+Fi1es.copy(fromPath, toPath, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES);
+```
+
+还可以将一个输入流复制到 Path 中，这表示你想要将该输入流存储到硬盘上。 类似地，你可以将一个 Path 复制到输出流中:
++ Files.copy(inputSream,toPath)
++ Files.copy(fromPath,outputStream)
+
+删除文件：
++ Fi1es.de1ete(path) 如果要删除的文件不存在，这个方法就会抛出异常。 
+因此，可转而使用下面的方法:
++ boo1ean de1eted = Files.de1etelfExists(path) 该删除方法还可以用来移除空目录。

@@ -36,6 +36,7 @@ URL类提供了多个构造器用于创建URL对象，一旦构建一个URL对�
 
 ### 基于TCP的网络编程
 1. 使用ServerSocker创建TCP服务器端
+
 	Java使用 ServerSocket 来创建服务端用于监听客户端连接的套接字。有如下构造方法：
 	+ ServerSocket(int port)：使用指定端口创建一个 ServerSocket，端口应该在 0～65535之间。
 	+ ServerSocket(int port, int backlog):除了端口，增加一个指定连接队列长度的backlog参数
@@ -44,6 +45,7 @@ URL类提供了多个构造器用于创建URL对象，一旦构建一个URL对�
 	一旦构造了 ServerSocket 对象后，该对象会在指定端口监听连接请求，使用 `accept()` 方法接受来自客户端的请求，如果接收到了客户端请求，方法将会返回一个与客户端 Socket 连接的 Socket 对象；如果没有没有客户端请求，该方法将会阻塞线程。当 ServerSocket 对象使用完毕，应该使用 `close()` 方法关闭 ServerSocket 。
 
 2. 使用Socket进行通信
+
 	客户端通常可以使用 Socket 来连接指定服务器， Socket 通常有以下两个构造器：
 	+ Socket(InetAddress/String remoteAddress, int remotePort): 创建连接到指定的主机和端口的 Socket，默认使用本地主机的默认IP和随机分配的端口
 	+ Socket(InetAddress/String remoteAddress, int remotePort, InetAddress localAddr, int localPort):额外指定本地的IP和端口，适用于本地主机有多个IP的情况。

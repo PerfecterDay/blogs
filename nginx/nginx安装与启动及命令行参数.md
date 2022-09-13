@@ -1,11 +1,6 @@
-
 # Nginx安装与启动及命令行参数
 {docsify-updated}
 
-
-
-# Nginx安装与启动及命令行参数
----------
 ## Nginx安装
 下载[nginx官网](http://nginx.org)下载安装即可。
 

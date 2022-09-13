@@ -4,6 +4,12 @@
 
 Redis是一种基于键值对（key-value）的NoSQL数据库，与很多键值对数据库不同的是，Redis中的值可以是由string（字符串）、hash（哈希）、list（列表）、set（集合）、zset（有序集合）、Bitmaps（位图）、HyperLogLog、GEO（地理信息定位）等多种数据结构和算法组成，因此Redis可以满足很多的应用场景，而且因为Redis会将所有数据都存放在内存中，所以它的读写性能非常惊人。不仅如此，Redis还可以将内存的数据利用快照和日志的形式保存到硬盘上，这样在发生类似断电或者机器故障的时候，内存中的数据不会“丢失”。除了上述功能以外，Redis还提供了键过期、发布订阅、事务、流水线、Lua脚本等附加功能。总之，如果在合适的场景使用好Redis，它就会像一把瑞士军刀一样所向披靡。
 
+### Redis 安装
++ CentOS 安装实战
+	1. 官网下载 redis 源码包： https://redis.io/download/；
+	2. 拷贝到linux 服务器后，执行 make install，安装完成
+	3. 拷贝源码包中的 redis.conf 到 dev/redis 目录 
+
 ### Redis Server 启动与连接
 <center>
 <img src="pics/redis-exe.png" width="60%" alt="">

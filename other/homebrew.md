@@ -1,6 +1,20 @@
 # Mac Homebrew 的使用
 {docsify-updated}
 
+
+## 国内 homebrew 加速
+```
+cd "$(brew --repo)/Library/Taps/"
+mkdir homebrew && cd homebrew
+git clone https://mirrors.ustc.edu.cn/homebrew-core.git
+```
+
+```
+cd "$(brew --repo)/Library/Taps/"
+cd homebrew
+git clone https://mirrors.ustc.edu.cn/homebrew-cask.git
+```
+
 ## 常用命令
 1. brew install [formula]:安装 formula
 2. brew uninstall [formula]:卸载 formula

@@ -47,6 +47,7 @@ Linux系统在你开始bash会话时就设置了一些全局环境变量。系�
 + $HOME/.bashrc
 + $HOME/.bash_login 
 + $HOME/.profile
+
 /etc/profile文件是系统上默认的bash shell的主启动文件。系统上的每个用户登录时都会执行 这个启动文件。
 
 一、在/etc/profile文件中添加变量 对所有用户生效（永久的）

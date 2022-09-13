@@ -5,7 +5,7 @@
 1. 打开 git bash，非 windows 下不需要
 2. 查看是否已经有 SSH keys： `ls -la ~/.ssh`
 3. 生成 SSH keys: `ssh-keygen -t rsa -b 4096 -C "your_email@example.com"`
-4. 启动 ssh-agent：eval `ssh-agent -s`
+4. 启动 ssh-agent：<code>eval &#96;ssh-agent -s&#96;</code>
 5. 添加 key 到 ssh-agent: `ssh-add ~/.ssh/id_ed25519`
 6. 将生成的 SSH 公钥(id_rsa.pub)粘贴到GitHub上
 7. 测试能否连接：`ssh -T git@github.com` 或者测试通过 HTTPS 端口的 SSH 是否可行 `ssh -vT -p 443 git@ssh.github.com`

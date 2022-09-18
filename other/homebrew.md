@@ -16,10 +16,11 @@ git clone https://mirrors.ustc.edu.cn/homebrew-cask.git
 ```
 
 ## 常用命令
-1. brew install [formula]:安装 formula
-2. brew uninstall [formula]:卸载 formula
-3. brew list: 显示所有安装的 formula
-4. brew search (text|/text/)： 查找 formula
+1. `brew install [formula]`:安装 formula
+2. `brew uninstall [formula]`:卸载 formula
+3. `brew list`: 显示所有安装的 formula
+4. `brew search (text|/text/)`： 查找 formula
+5. `brew cleanup`: 清理缓存
 
 > 摘译自 [robots.thoughtbot.com](http://robots.thoughtbot.com/starting-and-stopping-background-services-with-homebrew)
 

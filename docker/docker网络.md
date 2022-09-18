@@ -1,8 +1,11 @@
 # docker 网络
 
-Docker 网络从覆盖范围可以分为单个 host 上的网络和跨宿主机的网络。Docker 安装时会自动在宿主机上创建三个网络，可以用 `docker network ls` 查看：
+Docker 网络从覆盖范围可以分为单个 host 上的网络和跨宿主机的网络。
 
-<center><img src="pics/docker-network.png" width="30%" style="inline"></center>
+## 单宿主机的网络
+Docker 安装时会自动在宿主机上创建三个网络，可以用 `docker network ls` 查看：
+
+<center><img src="pics/docker-network.jpg" width="60%" style="inline"></center>
 
 ### none 网络
 none 就是什么都没有的网络，挂在这个网络下的容器除了 lo 之外，没有其它任何网卡。容器创建时可以通过 `--network=none` 指定 none 网络。
@@ -37,7 +40,10 @@ Docker提供三种自定义网络的驱动：bridge、overlay 和 macvlan 。ove
 	Joined 适用于容器之间希望通过 loopback 高效快速地通信或者希望监控其它容器的网络流量时。
 
 ### 容器与外部通信
-<center><img src="pics/docker-communiation.png" width="30%" style="inline"></center>
+1. 容器访问网络
+<center><img src="pics/docker-communication.png" width="50%" style="inline"></center>
 
-端口映射：`-p <host_ip>:<host_port>:<container_port>`
+2. 外部访问容器内服务
+	端口映射：`-p <host_ip>:<host_port>:<container_port>`
+	每一个映射的端口，host 都会启动一个 docker-proxy 进程来访问容器的流量。
 

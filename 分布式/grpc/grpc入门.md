@@ -4,11 +4,8 @@
 <center><img src="pics/grpc.svg"></center>
 
 ### 一个最简单的gRPC实例
-
-1. 定义调用服务
-   
+1. 定义调用服务  
     搭建gRPC的第一步就是要定义gRPC调用服务的请求和响应类型，通常使用 protocol buffuers 的 .proto 文件来定义。
-
     首先，使用 `service`  关键字定义一个服务，这个服务类似于Java 中的接口，可以在里边定义一个或多个方法。
     ```
     service RouteGuide {
@@ -16,7 +13,6 @@
     }
     ```
     然后，可以在服务内部定义 rpc 方法以及请求和响应的类型。gRPC 支持4种 rpc 方法定义：
-
     + 简单方法定义
       ```
 	  rpc GetFeature(Point) returns (Feature) {}
@@ -47,9 +43,15 @@
 2. 生成客户端和服务器端代码
 3. 服务实现
 
-
 ```
 grpcurl --plaintext localhost:9090 list
 grpcurl --plaintext localhost:9090 list GreeterService
 grpcurl --plaintext -d '{"name": "aaa"}' localhost:9090 GreeterService.sayHello
 ```
+
+### 配置
+1. 服务端配置
+	参照 grpc-server-spring-boot-autoconfigure jar 包中的 `net.devh.boot.grpc.server.config.GrpcServerProperties` 类
+2. 客户端配置
+	参照 grpc-client-spring-boot-autoconfigure jar 包中的 `net.devh.boot.grpc.client.config.GrpcChannelsProperties` 类
+3. @GrpcClient("myService") 注解为每一个 RPC 服务调用者注册一个名字，可以在配置文件中为各个调用者定义不同的配置。GLOBAL代表全局配置。

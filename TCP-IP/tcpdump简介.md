@@ -21,7 +21,7 @@
 + brew install hcxtools
 + brew install wireshark
 
-1. export BSSID=ac:cb:51:af:98:19
+1. export BSSID=90:47:3c:31:80:39
 2. networksetup -listallhardwareports
 3. sudo airport -z
 4. sudo airport -c153

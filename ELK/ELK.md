@@ -1,7 +1,6 @@
 # ELK
 
-
-## ElasticSearch
+## ElasticSearch 安装启动
 下载解压后，直接运行 `./bin/elasticsearch` 即可运行。
 如果这时报错"max virtual memory areas vm.maxmapcount [65530] is too low"，要运行下面的命令。
 ```
@@ -44,9 +43,7 @@ Elasticsearch security features have been automatically configured!
 	不同的 Type 应该有相似的结构（schema），举例来说，id字段不能在这个组是字符串，在另一个组是数值。这是与关系型数据库的表的一个区别。性质完全不同的数据（比如products和logs）应该存成两个 Index，而不是一个 Index 里面的两个 Type（虽然可以做到）。
 
 
-1. curl -k -X  GET 'https://localhost:9200/_cat/indices?v' 查看当前节点的所有 Index。
-2. curl -k -X  GET 'https://localhost:9200/_search?pretty' 
-3. curl -k 'https://localhost:9200/_mapping?pretty=true'   列出每个 Index 所包含的 Type。
+
 
 
 elasticsearch -d -p pid
@@ -59,3 +56,23 @@ logstash -f config/logstash.conf
 
 ## Kibana
 home -> Manage index lifecycles -> Data Views -> create data view
+
+# docker 暗转 Filebeat
+1. `docker pull docker.elastic.co/beats/filebeat:8.4.1`
+2. 下载示例配置文件：`curl -L -O https://raw.githubusercontent.com/elastic/beats/8.4/deploy/docker/filebeat.docker.yml`
+3. 修改上述配置文件
+4. ```docker run -d \
+  --name=filebeat \
+  --user=root \
+  --volume="$(pwd)/filebeat.docker.yml:/usr/share/filebeat/filebeat.yml:ro" \
+  --volume="/var/lib/docker/containers:/var/lib/docker/containers:ro" \
+  --volume="/var/run/docker.sock:/var/run/docker.sock:ro" \
+  docker.elastic.co/beats/filebeat:8.4.1 filebeat -e --strict.perms=false \
+  -E output.elasticsearch.hosts=["elasticsearch:9200"]```
+5. 
+
+# Docker 启动es
+
+
+
+

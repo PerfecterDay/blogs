@@ -82,5 +82,6 @@ Docker 通过扩展现有镜像，创建新的镜像。特殊情况下，基于�
 4. 上传镜像 
     + 上传到 Registry ，默认dockerHub：`docker push user_name/<repository>:tag`
 5. 导入/导出镜像
-	+ `docker save [imgId] > imgfile`
-	+ `docker load < imgfile`
+   	+ `docker save [imgId] -o [imgfile]`
+   	+ `docker load -i [imgfile]`
+	这种导出的镜像是没有镜像名字的，需要手动修改导入的镜像名字：`docker tag [imgId] [<repository>:<tag>]`

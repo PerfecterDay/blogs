@@ -9,7 +9,7 @@
 		+ `-p 宿主机IP:宿主机端口：容器端口`：将容器端口映射到宿主机端口
 		+ `--restart=always`：自动重启容器
 		+ `--name=yourname`：指定容器名字
-		+ `-v 宿主机目录：容器目录：ro|rw`： 将宿主机的目录作为卷，挂载到容器对应目录
+		+ `-v 宿主机目录(文件)：容器目录（文件）：ro|rw`： 将宿主机的目录或文件作为卷，挂载到容器对应目录或文件
 		+ `-e, --env=[]`: 设置环境变量  
 	示例：`docker run -p 3316:3306 -e MYSQL_ROOT_PASSWORD=123456 -d --name=mysql-master  mysql`
 	1. 创建一个新的容器但不启动它： `docker create [options] image_name [command]` 示例：`docker create  --name myrunoob  nginx:latest`

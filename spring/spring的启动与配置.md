@@ -26,7 +26,7 @@ org.springframework.web.context.ContextLoaderListener
 <servlet>
     <servlet-name>dispatcher</servlet-name>
     <servlet-class>org.sringframework.web.servlet.DispatcherServlet</servlet-class>
-    <init-param>contextConfugLocation</init-param>
+    <init-param>contextConfigLocation</init-param>
     <param-value>WEB-INF/servletContext.xml</param-value>
 <servlet>
 <servlet-mapping>

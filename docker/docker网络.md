@@ -40,7 +40,7 @@ Docker提供三种自定义网络的驱动：bridge、overlay 和 macvlan 。ove
 	Joined 适用于容器之间希望通过 loopback 高效快速地通信或者希望监控其它容器的网络流量时。
 
 ### 容器与外部通信
-1. 容器访问网络
+1. 容器内访问外部网络
 <center><img src="pics/docker-communication.png" width="50%" style="inline"></center>
 
 2. 外部访问容器内服务

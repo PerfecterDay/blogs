@@ -1,6 +1,24 @@
 # Linux软件包管理
 {docsify-updated}
 
+### Linux系统组成与Linux发行版
+Linux系统组成：
+<center><img src="pics/linux-sys.jpg" width="30%" ></center>
+
+我们将上图中的完整的Linux系统包称为**发行版**，一些核心发行版如下：
+<center><img src="pics/main-linux-distro.jpg" width="60%" ></center>
+
+还有许多特定用途的 Linux 发行版，它们通常基于某个主流发行版，但仅包含主流发行版中一小部分用于某种特定用途的应用程序。除了提供特定软件外（比如仅为商业用户提供的办公应用），定制化发行版还尝试通过自动检测和自动配置常见硬件来帮助新手安装Linux。这使得Linux的安装过程轻松愉悦了许多。
+<center><img src="pics/popular-linux-distro.jpg" width="60%" ></center>
+
+要查看linux系统相关的信息，可以使用下述方法：
+1. `uname -a`
+2. `cat /etc/*-release`
+3. `cat /proc/version`
+4. `lsb_release -a`
+5. `hostnamectl`
+
+### 包管理
 各种主流Linux发行版都采用了某种形式的包管理系统PMS（Package Management Service）来控制软件和库的安装。PMS利用一个数据库来记录各种相关内容：
 + Linux系统上已安装了什么软件包；
 + 每个包安装了什么文件；

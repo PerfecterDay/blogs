@@ -6,18 +6,15 @@
 3. `docker run -d -e ES_JAVA_OPTS="-Xms1g -Xmx1g" --name es01 --net elastic -p 9200:9200 -p 9300:9300 -it docker.elastic.co/elasticsearch/elasticsearch:8.4.2`
 4. `docker cp es01:/usr/share/elasticsearch/config/certs/http_ca_es01.crt .`
 5. `curl --cacert http_ca.crt -u elastic https://localhost:9200` -〉测试
-
-添加节点：
-5. docker run -e ENROLLMENT_TOKEN="<token>" --name es02 --net elastic -it docker.elastic.co/elasticsearch/elasticsearch:8.4.2
+6. 添加节点：`docker run -e ENROLLMENT_TOKEN="<token>" --name es02 --net elastic -it docker.elastic.co/elasticsearch/elasticsearch:8.4.2`
 
 
 重置密码：
 `docker exec -it es01 /usr/share/elasticsearch/bin/elasticsearch-reset-password -u elastic`
 
-重新生成 enrollment token（加入集群时用）：
-`docker exec -it es01 /usr/share/elasticsearch/bin/elasticsearch-create-enrollment-token -s node`
-
-`docker exec -it es01 /usr/share/elasticsearch/bin/elasticsearch-create-enrollment-token -s kibana`
+重新生成 enrollment token（加入集群时用）：  
++ 别的node 加入集群：`docker exec -it es01 /usr/share/elasticsearch/bin/elasticsearch-create-enrollment-token -s node`
++ Kibana: `docker exec -it es01 /usr/share/elasticsearch/bin/elasticsearch-create-enrollment-token -s kibana`
 
 Turns out exit code 137 with docker containers is commonly due to memory allocation issues!
 

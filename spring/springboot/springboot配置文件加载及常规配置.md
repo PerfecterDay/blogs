@@ -1,6 +1,7 @@
 # Springboot 配置文件加载及常见配置
 {docsify-updated}
 
+> https://blog.csdn.net/u013217730/article/details/116716418
 
 ### 加载配置文件及使用
 1. 加载自定义路径下的配置文件  
@@ -100,22 +101,23 @@
 
 ### 常用配置
 1. 配置端口： `server.port=9090` 
-2. 配置应用名(服务注册时会被注册成服务名)： `spring.application.name=demo`
-3. 配置启动初始化 Servlet： `spring.mvc.servlet.load-on-startup=1`
-4. 日志设置：
+2. 配置请求路径： `server.servlet.context-path=/trade` 
+3. 配置应用名(服务注册时会被注册成服务名)： `spring.application.name=demo`
+4. 配置启动初始化 Servlet： `spring.mvc.servlet.load-on-startup=1`
+5. 日志设置：
    ```
     logging.path=/user/local/log
     logging.level.com.favorites=DEBUG
     logging.level.org.springframework.web=INFO
     logging.level.org.hibernate=ERROR
     ```
-5. 数据库配置：
+6. 数据库配置：
      ```
     spring.datasource.url=jdbc:mysql://localhost:3306/test
     spring.datasource.username=root
     spring.datasource.password=root
     spring.datasource.driver-class-name=com.mysql.jdbc.Driver
     ```
-6. 配置静态文件的URL映射：`spring.mvc.static-path-pattern=/resources/**`
-7. 配置静态文件的目录： `spring.resources.static-locations=classpath:/mystatic`
+7. 配置静态文件的URL映射：`spring.mvc.static-path-pattern=/resources/**`
+8. 配置静态文件的目录： `spring.resources.static-locations=classpath:/mystatic`
 

@@ -3,8 +3,6 @@
 {docsify-updated}
 
 
-
-
 ## 安装
 要使用 MyBatis， 只需将 mybatis-x.x.x.jar 文件置于 classpath 中即可。
 

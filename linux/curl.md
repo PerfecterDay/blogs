@@ -14,12 +14,34 @@
 	还可以读取本地文件的数据发送给服务器。
 	`curl -d '@data.txt' https://google.com/login`
 6. `--data-urlencode`：等同于`-d`，但是会自动进行URL编码。
-7. `-e` ：用来设置 HTTP 的标头Referer，表示请求的来源。
-8. `-F` ：用来向服务器上传二进制文件。
+7. `--data-raw`： 发送原始数据体
+	```
+	curl --location --request POST 'https://10.187.144.42:8000/trade/' \
+	--header 'App-Name: gtjagjapp' \
+	--header 'App-ID: 3E1EEECDB7A577CCA1A2E2C1885DBE7A' \
+	--header 'Content-Type: application/json' \
+	--data-raw '[
+		{
+			"code": "1231",
+			"params": {
+				"username":"700210",
+				"token":"ABCDEFGHIJKLMNOPQRST0123456789",
+				"account_type":"",
+				"market_code":"",
+				"currency_code":"HKD",
+				"balance_type":"HKD",
+				"language":"1"
+			},
+			"params_ext":{}
+		}
+	]'
+	```
+8. `-e` ：用来设置 HTTP 的标头Referer，表示请求的来源。
+9.  `-F` ：用来向服务器上传二进制文件。
 	`curl -F 'file=@photo.png' https://google.com/profile`
 	会给 HTTP 请求加上标头Content-Type: multipart/form-data，然后将文件photo.png作为file字段上传。
 9.  `-G` ：用来构造 URL 的get请求的查询字符串。
-10. `-H` ：添加 HTTP 请求的标头。
+10. `-H` ：添加 HTTP 请求的标头。  `curl -H "X-First-Name: Joe" https://example.com`
 11. `-i` ：打印出服务器回应的 HTTP 标头。
 12. `-I` ：向服务器发出 HEAD 请求，然会将服务器返回的 HTTP 标头打印出来。
 13. `-k` ：指定跳过 SSL 检测。

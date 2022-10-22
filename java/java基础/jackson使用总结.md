@@ -1,5 +1,22 @@
-# jackson 使用总结
+## jackson 使用总结
 {docsify-updated}
+
+https://www.baeldung.com/jackson-serialize-dates
+https://www.baeldung.com/jackson
+
+### ObjectMapper
+Jackson 最常用的 API 就是基于"对象绑定" 的 ObjectMapper：
+
+ObjectMapper可以从字符串，流或文件中解析JSON，并创建表示已解析的JSON的Java对象。 将JSON解析为Java对象也称为从JSON反序列化Java对象。
+ObjectMapper也可以从Java对象创建JSON。 从Java对象生成JSON也称为将Java对象序列化为JSON。
+Object映射器可以将JSON解析为自定义的类的对象，也可以解析置JSON树模型的对象。
+
+之所以称为ObjectMapper是因为它将JSON映射到Java对象（反序列化），或者将Java对象映射到JSON（序列化）。
+
+### ObjectMapper如何匹配JSON对象的字段和Java对象的属性
+默认情况下，Jackson通过将JSON字段的名称与Java对象中的getter和setter方法进行匹配，将JSON对象的字段映射到Java对象中的属性。 Jackson删除了getter和setter方法名称的“ get”和“ set”部分，并将其余名称的第一个字符转换为小写。
+
+
 
 ### 序列化相关的注解
 1. @JsonAnyGetter  

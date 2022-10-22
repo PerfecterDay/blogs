@@ -31,10 +31,11 @@
 4. 进入容器
 	12. `docker attach [containerid]`
 	13. `docker exec -it [containerid]` 退出按 Ctrl+p后再按 Ctrl+q
-	14. 容器与宿主机之间拷贝文件：`docker cp ~/Documents/gtja/com_gmas/com_gmas.tar.gz ubuntu:/home`,`docker cp ubuntu:/home/test.txt ~/Documents/gtja/com_gmas/`
+	14. 启动时进入：`docker run -it [imageid] [command]` -> `docker run -it nginx /bin/bash`
+	15. 容器与宿主机之间拷贝文件：`docker cp ~/Documents/gtja/com_gmas/com_gmas.tar.gz ubuntu:/home`,`docker cp ubuntu:/home/test.txt ~/Documents/gtja/com_gmas/`
 
 5. 查看容器运行日志
-	1. `docker logs -f`:持续输出docker 日志
+	16. `docker logs -f`:持续输出docker 日志
 
 ### 实现容器的底层技术
 cgroup 和 namespace 是最重要的两种技术——cgroup 实现资源限额，namespace 实现资源隔离。

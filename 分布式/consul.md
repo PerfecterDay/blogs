@@ -5,17 +5,10 @@ https://learn.hashicorp.com/tutorials/consul/docker-container-agents
 
 查询集群成员：docker exec -t dev-consul consul members
 
-docker run \
--d \
--p 8500:8500 \
--p 8600:8600/udp \
---name=badger \
-consul agent -server -ui -node=server-1 -bootstrap-expect=1 -client=0.0.0.0
+docker run -d -p 8500:8500 -p 8600:8600/udp --name=badger consul agent -server -ui -node=server-1 -bootstrap-expect=1 -client=0.0.0.0
 
 
-docker run \
---name=fox \
-consul agent -node=client-1 -join=172.17.0.3
+docker run --name=fox consul agent -node=client-1 -join=172.17.0.3
 
 docker exec badger consul members
 

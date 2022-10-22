@@ -1,9 +1,11 @@
-# Docker 镜像
+## Docker 镜像
 {docsify-updated}
 
 Docker 发明的初衷就是为了方便软件的部署，通常我们开发完一款服务，部署的时候需要在服务器上安装运行环境、依赖库、配置环境等等，这些工作在不同的操作系统或者不同的系统版本上都要求部署人员具有相关的知识。而且可能开发环境和部署环境的不同，导致服务在部署环境的行为会有差异。这些种种原因就驱使人们想研究出一种能屏蔽这些差异的工具，Docker 就是这样一款工具。
 
 Docker 容器底层使用的是 Host 主机的内核，自己**通过镜像为 kernel 提供 rootfs** ，rootfs 就是用户空间的文件系统。事实上，我们每次部署发布服务，就是为我们的服务配置提供一个运行时的环境，而这本质上与提供一个 rootfs 没有差别。所以 Docker 镜像是为服务提供/配置运行环境的。
+
+理论上， 一个容器镜像能运行在任何一个运行Docker的机器上。 但有一个小警告 一—一个关于运行在一台机器上的所有容器共享主机Linux内核的警告。 如果一个容器化的应用需要一个特定的内核版本， 那它可能不能在每台机器上都工作。 如果一台机器上运行了一个不匹配的Linux内核版本， 或者没有相同内核模块可用，那么此应用就不能在其上运行。虽然容器相比虚拟机轻量许多， 但也给运行于其中的应用带来了一些局限性。虚拟机没有这些局限性， 因为每个虚拟机都运行自己的内核。还不仅是内核的问题。 一个在特定硬件架构之上编译的容器化应用， 只能在有相同硬件架构的机器上运行。 不能将一个x86架构编译的应用容器化后， 又期望它能运行在A阳J架构的机器上。 你仍然需要一台虚拟机来做这件事情。
 
 ### 镜像的分层结构
 Docker 通过扩展现有镜像，创建新的镜像。特殊情况下，基于空白镜像 scratch 创建。
@@ -68,7 +70,7 @@ Docker 通过扩展现有镜像，创建新的镜像。特殊情况下，基于�
 1. 获取镜像 
    + 在 Registry 仓库中查找镜像: `docker search xxx`
    + 从 Registry 下载镜像： `docker pull [选项] [Docker Registry 地址[:端口号]/]repository[:tag]`
-   + 拉取指定平台的镜像： `docker pull envoyproxy/envoy:v1.23-latest --platform linux/x86_64`
+   + 拉取指定平台的镜像： `docker pull envoyproxy/envoy:v1.23-latest --platform linux/amd64`
    + 利用 Dockerfile 来制作镜像:  `docker build -t [<repository>:<tag>] 镜像构建上下文路径`
    + 利用指定的 Dockerfile 来制作镜像: `docker build -f path/to/dockerfile -t [<repository>:<tag>] 镜像构建上下文路径`
 2. 查看本地镜像 
@@ -78,10 +80,10 @@ Docker 通过扩展现有镜像，创建新的镜像。特殊情况下，基于�
     + 查看指定镜像的详细信息: `docker image inspect <image_name>`
 3. 删除镜像 
     + 删除镜像：`docker image rm [选项] <镜像1< [<镜像2< ...]`
-    + 删除虚悬镜像(dangling image): ``docker image prune`
+    + 删除虚悬镜像(dangling image): `docker image prune`
 4. 上传镜像 
     + 上传到 Registry ，默认dockerHub：`docker push user_name/<repository>:tag`
-5. 导入/导出镜像
-   	+ `docker save [imgId] -o [imgfile]`
-   	+ `docker load -i [imgfile]`
+5. 导入/导出镜像  
+   + `docker save [imgId] -o [imgfile]`
+   + `docker load -i [imgfile]`  
 	这种导出的镜像是没有镜像名字的，需要手动修改导入的镜像名字：`docker tag [imgId] [<repository>:<tag>]`

@@ -43,11 +43,11 @@ Mysql 的数据类型：
 ```
 creaet table [db-name].table-name(
     # 可以有多个如下的列定义
-    column-name datatype [default expr],
+    column_name data_type(length) [NOT NULL] [DEFAULT value] [AUTO_INCREMENT] 
     ...,
     ...,
     primary key(column-name...)
-)
+) ENGINE=innodb 
 ```
 2. 从其他表中创建表并导入数据：
 ```

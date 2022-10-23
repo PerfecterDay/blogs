@@ -13,12 +13,22 @@ powershell中运行以下命令：
     默认安装目录是 C:\Users\<user>\scoop. 全局安装的软件 (使用 --global 安装时) 安装到： C:\ProgramData\scoop
 2. 安装到自定义目录：
    ```
-    $env:SCOOP='D:\Applications\Scoop'
-    $env:SCOOP_GLOBAL='F:\GlobalScoopApps'
+    $env:SCOOP='D:\applications\scoop'
+    $env:SCOOP_GLOBAL='D:\applications\globalScoopApps'
     [Environment]::SetEnvironmentVariable('SCOOP', $env:SCOOP, 'User')
     [Environment]::SetEnvironmentVariable('SCOOP_GLOBAL', $env:SCOOP_GLOBAL, 'Machine')
     # run the installer
    ```
+
+### 安装配置 aria2
+```
+scoop install aria2
+
+scoop config aria2-enabled false
+scoop config aria2-warning-enabled false
+```
+PowerShell requires an execution policy in [Unrestricted, RemoteSigned, ByPass] to run Scoop. For example, to set the execution policy to 'RemoteSigned' please run :  
+`Set-ExecutionPolicy RemoteSigned -Scope CurrentUser`.
 
 ### 更换国内源
 1. 更换scoop自身源：`scoop config SCOOP_REPO http://mirror.repo`

@@ -12,6 +12,7 @@ powershell 中查看环境变量
  ```function 别名 { 需要替代的命令，可以包含空格 }```
  如：
  ```
+ 	Set-Alias docker podman
     function gst {git status}
     function grv {git remote -vv}
     function gbv {git branch -vv}

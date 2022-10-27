@@ -1,5 +1,77 @@
-# Spring MVC 请求参数校验及统一异常处理
+# Spring MVC 的注解、参数校验与异常处理
 {docsify-updated}
+
+- [Spring MVC 的注解、参数校验与异常处理](#spring-mvc-的注解参数校验与异常处理)
+	- [常用注解](#常用注解)
+		- [HTTP请求相关的注解](#http请求相关的注解)
+		- [HTTP 相应相关的注解](#http-相应相关的注解)
+		- [其他相关注解](#其他相关注解)
+	- [请求参数验证](#请求参数验证)
+		- [JSR-303](#jsr-303)
+		- [Spring 使用  validation 的步骤](#spring-使用--validation-的步骤)
+		- [常见的校验注解](#常见的校验注解)
+		- [自定义校验注解](#自定义校验注解)
+	- [统一异常处理](#统一异常处理)
+		- [使用 @ExceptionHandler 注解](#使用-exceptionhandler-注解)
+		- [实现 HandlerExceptionResolver 接口并注册到 bean 容器](#实现-handlerexceptionresolver-接口并注册到-bean-容器)
+		- [使用 @ControllerAdvice+ @ExceptionHandler 注解](#使用-controlleradvice-exceptionhandler-注解)
+
+
+
+## 常用注解
+### HTTP请求相关的注解
+1. `@RequestMapping`   
+
+	`@RequestMapping` 通常用在标注了 `@Controller` 的类或方法上，用来匹配处理的 URL ，该注解可以有以下属性:
+	1. `path`: 和 `name` 、 `value` 都是同样的，用来指定这个方法或类匹配处理哪个方法  
+	2. `method`: 匹配 HTTP 请求方法  
+	3. `params`: 可以根据指定的参数是否出现或者等于指定值来确定是否匹配这个URL
+	4. `headers`: 可以根据指定的HTTP 头是否出现或者等于指定值来确定是否匹配这个URL
+	5. `consumes`: 指定该方法可以处理的HTTP 的 media type
+	6. `produces`: 指定该方法生成的HTTP响应的 media type  
+	该注解如果用在类上，那么该类中的所有方法会“继承”它的属性，如果方法也加了该注解，那么两个注解的属性通常会叠加而不是覆盖（如果类上指定GET，方法指定POST则会覆盖）。
+	类似的 `@GetMapping` , `@PostMapping` , `@PutMapping` , `@DeleteMapping` 和 `@PatchMapping` 等同于 `@RequestMapping` 用于 method 指定的匹配的 HTTP method。
+
+2. `@RequestBody`  
+	将HTTP请求的请求体映射到一个对象。
+	```
+	@PostMapping("/save")
+	void saveVehicle(@RequestBody Vehicle vehicle) {
+		// ...
+	}
+	```
+3. `@PathVariable`  
+	将URL中的路径参数绑定到一个方法参数上。路径参数是 Spring 实现的，官方名字就叫做 URI template variable。
+	它有 name 和 required（true/false） 两个属性。
+	```
+	如果路径是 /1234
+	@RequestMapping("/{id}")
+	Vehicle getVehicle(@PathVariable("id") long id) {
+		// ... id=1234
+	}
+	```
+4. `@RequestParam`  
+	该注解可以用来绑定HTTP的请求参数。可以使用 defaultValue 参数指定默认值，这样请求参数自动变成可选的。
+	```
+	@RequestMapping("/buy")
+	Car buyCar(@RequestParam(defaultValue = "5") int seatCount) {
+		// ...
+	}
+	```
+	与这个注解类似的还有 `@CookieValue` 和 `@RequestHeader`，分别用来绑定 Cookie 和请求头中的参数。
+
+### HTTP 相应相关的注解
+1. `@ResponseBody`  
+该注解会将方法的响应值作为HTTP 响应体发送给客户端。可以用在类上，那么类中所有方法的返回值将直接作为响应体返回。
+2. `@ResponseStatus`  
+指定返回的HTTP code  
+`@ResponseStatus(value = HttpStatus.FORBIDDEN, reason="To show an example of a custom message")`
+
+### 其他相关注解
+1. `@Controller`:指定一个处理 HTTP 请求的类
+2. `@RestControlle`: 相当于 `@Controller` + `@ResponseBody`
+3. `CrossOrigin`: 允许跨域
+
 
 ## 请求参数验证
 
@@ -8,60 +80,60 @@ JSR-303是Java为Bean数据合法性校验提供的标准框架，它定义了�
 Hibernate Validation提供了这套标准的实现，在我们引入Spring boot starter validation的时候，默认会引入Hibernate Validation。
 
 ### Spring 使用  validation 的步骤
-1. 为业务对象bean 添加相应的验证注解
-```
-@Data
-public class User {
- // 名字不允许为空，并且名字的长度在2位到30位之间
- // 如果名字的长度校验不通过，那么提示错误信息
- @NotNull
- @Size(min=2, max=30,message = "请检查名字的长度是否有问题")
- private String name;
+1. 为业务对象bean 添加相应的验证注解  
+	```
+	@Data
+	public class User {
+	// 名字不允许为空，并且名字的长度在2位到30位之间
+	// 如果名字的长度校验不通过，那么提示错误信息
+	@NotNull
+	@Size(min=2, max=30,message = "请检查名字的长度是否有问题")
+	private String name;
 
- // 不允许为空，并且年龄的最小值为18
- @NotNull
- @Min(18)
- private Integer age;
-}
-```
-2. 控制器内对验证对象前加上 @Valid 注解，验证结果会返回到 BindingResult 对象中
-```
-// 1. 要校验的参数前，加上@Valid注解
- // 2. 紧随其后的，跟上一个BindingResult来存储校验信息
- @RequestMapping("/test1")
- public Object test1(@Valid User user,BindingResult bindingResult) {
- //如果检验出了问题，就返回错误信息
- // 这里我们返回的是全部的错误信息，实际中可根据bindingResult的方法根据需要返回自定义的信息。
- // 通常的解决方案为：JSR-303 + 全局ExceptionHandler
- if (bindingResult.hasErrors()){
-  return bindingResult.getAllErrors();
- }
- return "OK";
- } 
- ```
+	// 不允许为空，并且年龄的最小值为18
+	@NotNull
+	@Min(18)
+	private Integer age;
+	}
+	```
+2. 控制器内对验证对象前加上 @Valid 注解，验证结果会返回到 BindingResult 对象中  
+	```
+	// 1. 要校验的参数前，加上@Valid注解
+	// 2. 紧随其后的，跟上一个BindingResult来存储校验信息
+	@RequestMapping("/test1")
+	public Object test1(@Valid User user,BindingResult bindingResult) {
+	//如果检验出了问题，就返回错误信息
+	// 这里我们返回的是全部的错误信息，实际中可根据bindingResult的方法根据需要返回自定义的信息。
+	// 通常的解决方案为：JSR-303 + 全局ExceptionHandler
+	if (bindingResult.hasErrors()){
+	return bindingResult.getAllErrors();
+	}
+	return "OK";
+	} 
+	```
 
 ### 常见的校验注解
 JSR-303 提供的标准注解：
-+ @Null 被注释的元素必须为 null
-+ @NotNull 被注释的元素必须不为 null
-+ @AssertTrue 被注释的元素必须为 true
-+ @AssertFalse 被注释的元素必须为 false
-+ @Min(value) 被注释的元素必须是一个数字，其值必须大于等于指定的最小值
-+ @Max(value) 被注释的元素必须是一个数字，其值必须小于等于指定的最大值
-+ @DecimalMin(value) 被注释的元素必须是一个数字，其值必须大于等于指定的最小值
-+ @DecimalMax(value) 被注释的元素必须是一个数字，其值必须小于等于指定的最大值
-+ @Size(max=, min=) 被注释的元素的大小必须在指定的范围内
-+ @Digits (integer, fraction) 被注释的元素必须是一个数字，其值必须在可接受的范围内
-+ @Past 被注释的元素必须是一个过去的日期
-+ @Future 被注释的元素必须是一个将来的日期
-+ @Pattern(regex=,flag=) 被注释的元素必须符合指定的正则表达式
++ `@Null` 被注释的元素必须为 null
++ `@NotNull` 被注释的元素必须不为 null
++ `@AssertTrue` 被注释的元素必须为 true
++ `@AssertFalse` 被注释的元素必须为 false
++ `@Min(value)` 被注释的元素必须是一个数字，其值必须大于等于指定的最小值
++ `@Max(value)` 被注释的元素必须是一个数字，其值必须小于等于指定的最大值
++ `@DecimalMin(value)` 被注释的元素必须是一个数字，其值必须大于等于指定的最小值
++ `@DecimalMax(value)` 被注释的元素必须是一个数字，其值必须小于等于指定的最大值
++ `@Size(max=, min=)` 被注释的元素的大小必须在指定的范围内
++ `@Digits (integer, fraction)` 被注释的元素必须是一个数字，其值必须在可接受的范围内
++ `@Past` 被注释的元素必须是一个过去的日期
++ `@Future` 被注释的元素必须是一个将来的日期
++ `@Pattern(regex=,flag=)` 被注释的元素必须符合指定的正则表达式
 
 Hibernate Validator提供的校验注解：
-+ @NotBlank(message =) 验证字符串非null，且长度必须大于0
-+ @Email 被注释的元素必须是电子邮箱地址
-+ @Length(min=,max=) 被注释的字符串的大小必须在指定的范围内
-+ @NotEmpty 被注释的字符串的必须非空
-+ @Range(min=,max=,message=) 被注释的元素必须在合适的范围内
++ `@NotBlank(message =)` 验证字符串非null，且长度必须大于0
++ `@Email` 被注释的元素必须是电子邮箱地址
++ `@Length(min=,max=)` 被注释的字符串的大小必须在指定的范围内
++ `@NotEmpty` 被注释的字符串的必须非空
++ `@Range(min=,max=,message=)` 被注释的元素必须在合适的范围内
 
 ### 自定义校验注解
 有时候，第三方库中并没有我们想要的校验类型，好在系统提供了很好的扩展能力，我们可以自定义检验。  

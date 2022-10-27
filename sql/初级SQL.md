@@ -38,7 +38,7 @@ sql标准支持多种数据类型：
 Mysql 的数据类型：
 <center><img src="pics/mysql-types.jpg" width="60%"></center>
 
-### 创建数据库表
+### 创建数据库表-mysql
 1. 
 ```
 creaet table [db-name].table-name(

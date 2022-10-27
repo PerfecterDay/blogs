@@ -5,11 +5,10 @@
 Spring Framework 是另一个容器，它可以运行任何 Java SE和 Java EE  容器中，并作为应用程序的运行时环境。另外，如同计算机或者jvm的那个样例一样， Spring 必须被启动并且需要得到如何运行它所包含的应用程序的指令。
 配置和启动 Spring Framework 是两个不同的任务，并且相互独立，都可以通过多种方式实现。配置告诉 Spring 如何运行它所包含的应用程序时，启动进程将启动 Spring Framework并将配置指令传递给它。
 
-在 Java SE 中，只有一种方式启动 Spring Framework：通过应用程序的 main 方法以编程的方式启动。
-在 Java EE 应用程序中，有两种选择：
-
-1. 可以使用 XML 创建部署描述符启动 Spring
-2. 也可以在 `javax.servlet.ServletContainerInitializer` 中通过编程的方式启动。
++ **在 Java SE 中，只有一种方式启动 Spring Framework：通过应用程序的 main 方法以编程的方式启动。**
++ **在 Java EE 应用程序中，有两种选择：**
+  1. **可以使用 XML 创建部署描述符启动 Spring**
+  2. **也可以在 `javax.servlet.ServletContainerInitializer` 中通过编程的方式启动。**
 
 ### 部署描述符启动
 传统的 Spring Framework 应用程序总是使用 Java EE 的部署描述符启动。配置文件中至少包含一个 `DispatcherServlet` 的实例，然后以 `contextConfugLocation` 初始化参数的形式为它提供配置文件。也可以包含多个 `DispatcherServlet` 实例。另外，一般还会配置 `ContextLoaderListener` 实例加上 `contextConfigLocation`的上下文参数。参数为其典型的配置如下：

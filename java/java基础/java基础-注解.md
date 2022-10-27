@@ -9,17 +9,18 @@
 
 ## 自定义注解语法
 创建自定义注解和创建一个接口相似，但是注解的interface关键字需要以@符号开头。我们可以为注解声明方法。
-
-    @Documented
-    @Target(ElementType.METHOD)
-    @Inherited
-    @Retention(RetentionPolicy.RUNTIME)
-        public @interface MethodInfo{
-        String author() default 'Pankaj';
-        String date();
-        int revision() default 1;
-        String comments();
-    }
+```
+@Documented
+@Target(ElementType.METHOD)
+@Inherited
+@Retention(RetentionPolicy.RUNTIME)
+public @interface MethodInfo{
+	String author() default 'Pankaj';
+	String date();
+	int revision() default 1;
+	String comments();
+}
+```
 + 注解方法不能带有参数；
 + 注解方法返回值类型限定为： 基本类型 、String 、Enums 、Class 、Annotation 或者是这些类型的数组；
 + 注解方法可以有默认值；

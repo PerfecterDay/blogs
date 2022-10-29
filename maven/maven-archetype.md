@@ -1,38 +1,11 @@
-# maven plugin 开发和 archetype 
-{docsify-updated}
-
-### Maven 插件开发
-#### Maven 插件开发的一般步骤
-1. 创建一个 maven-plugin项目：使用 `maven archetype:generate` ，然后选择 maven-archetype-plugin 快速创建一个插件项目
-2. 为插件编写目标：每个插件必须包含一个或多个目标，Maven称之为 Mojo，继承自 AbstractMojo 类。
-3. 为目标提供配置点：在编写Mojo时，提供可配置的参数
-4. 编写代码实现目标行为：根据实际需求实现Mojo
-5. 错误处理及日志
-6. 测试插件：编写自动化的测试代码测试插件。
-
-Maven插件的 pom 有两个特殊的地方：
-  1. packaging 类型必须是 maven-plugin
-  2. 必须依赖一个 maven-plugin-api 的 artifact。
-创建好插件项目之后，我们要创建一个Mojo：继承 AbstractMojo 、实现 execute() 方法、提供 @goal 标注（不是注解）。
-
-```
-/**
-* @goal package
-*/
-public class CountMojo extends AbstractMojo{
-    public void execute() throws MojoExecutionException {
-
-    }
-}
-```
-
-#### 调试自己开发的 Maven 插件
-1. 将自己开发的插件 mvn install 到本地
-2. 在一个项目X中使用开发的插件，然后，在该项目路径下执行`mvnDebug com.ebay.raptor.build:assembler-maven-plugin:3.0.25-RELEASE:package`，注意插件的版本要一致，不然代码无法匹配，代码断点会失效；执行后会打开一个端口等待 debugger 连接 
-3. 在插件开发的IDEA项目中，新建一个 remote 的 debug/run configuration，port修改为上面的port，然后在项目代码中打上断点，然后debug执行即可
-
-
 ### Maven Archetype 开发
+{docsify-upddaated}
+
+- [Maven Archetype 开发](#maven-archetype-开发)
+	- [Archetype Catalog](#archetype-catalog)
+	- [生成本地仓库的 Archetype Catalog](#生成本地仓库的-archetype-catalog)
+	- [IDEA 添加/删除自定义的 archetype](#idea-添加删除自定义的-archetype)
+
 Archetype 可以理解成 Maven 项目的模板，当我们创建 Maven 项目时，如果重复的需要某种类似结构的项目，我们可以为这种项目创建一个 Archetype，后边再需要创建类似项目时，可以使用这个 Archetype 快速生成项目骨架。
 
 一个典型的 Maven Archetype 项目主要包括以下几个部分：

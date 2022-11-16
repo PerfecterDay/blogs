@@ -21,6 +21,7 @@ SQL标准包括 select、insert、update、delete以及all权限。
     on <数据库/表/视图>
     to <用户/角色列表>
 
+	grant create,select,insert,update on user.* to 'app'@'%';
     grant select on department to public,Amy,Simith;授予public,Amy,Simith 关于 department 的select 权限  
     grant all on *.* to admin; 授予admin所有权限  
     grant all on student.* to teacher;授予teacher所有student数据库相关的权限
@@ -34,4 +35,5 @@ SQL标准包括 select、insert、update、delete以及all权限。
     from <用户/角色列表>
 
     revoke select on department from Amy,Simith
+	revoke select,insert,update,create on user.user from 'app'@'%';
     ```

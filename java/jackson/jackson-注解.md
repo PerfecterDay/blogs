@@ -7,8 +7,9 @@
 	- [序列化注解](#序列化注解)
 		- [序列化时忽略某些属性](#序列化时忽略某些属性)
 		- [@JsonAnyGetter](#jsonanygetter)
-		- [@JsonGetter](#jsongetter)
-		- [指定序列化的字段顺序：`@JsonPropertyOrder({ "name", "id" })`](#指定序列化的字段顺序jsonpropertyorder-name-id-)
+		- [`@JsonGetter`](#jsongetter)
+		- [`@JsonPropertyOrder({ "name", "id" })`:指定序列化的字段顺序](#jsonpropertyorder-name-id-指定序列化的字段顺序)
+		- [`@JsonInclude(Include.NON_NULL)`: 去除掉null 的属性](#jsonincludeincludenon_null-去除掉null-的属性)
 
 
 ### 序列化注解
@@ -32,7 +33,8 @@
 	}
 	```
 	这样不管是序列化还是反序列化，intValue 的值都是不会额外设置的。由构造器设置值。
-2. 属性级别的注解：`JsonIgnore`
+2. 忽略所有未知属性，类级别注解：`@JsonIgnoreProperties(ignoreUnknown = true)`
+3. 属性级别的注解：`JsonIgnore`
 	```
 	public class MyDto {
 
@@ -85,7 +87,7 @@ public class ExtendableBean {
 }
 ```
 
-#### @JsonGetter
+#### `@JsonGetter`
 Jackson序列化时默认调用标准的 getter 方法获取对象值，如果我们想要使用特定方法作为Jackson获取对象值的方法，就可以用 `@JsonGetter` 标注该方法：
 ```
 public class MyBean {
@@ -99,4 +101,5 @@ public class MyBean {
 }
 ```
 
-#### 指定序列化的字段顺序：`@JsonPropertyOrder({ "name", "id" })`
+#### `@JsonPropertyOrder({ "name", "id" })`:指定序列化的字段顺序
+#### `@JsonInclude(Include.NON_NULL)`: 去除掉null 的属性

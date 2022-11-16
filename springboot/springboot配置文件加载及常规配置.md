@@ -120,4 +120,5 @@
     ```
 7. 配置静态文件的URL映射：`spring.mvc.static-path-pattern=/resources/**`
 8. 配置静态文件的目录： `spring.resources.static-locations=classpath:/mystatic`
+9. 关闭 banner :`spring.main.banner-mode=off`
 

@@ -47,6 +47,19 @@
 grpcurl --plaintext localhost:9090 list
 grpcurl --plaintext localhost:9090 list GreeterService
 grpcurl --plaintext -d '{"name": "aaa"}' localhost:9090 GreeterService.sayHello
+
+发送ByteString 格式数据时，需要Base64编码：
+grpcurl --plaintext -d '{"msgno":1001,"json":{"req":{ "req": [ { "code": "1645", "params": { "username": "700210", "custermer_code": "700210", "nulltoken": "", "tradetoken": "", "password": "G2222222", "language": "2" }, "params_ext": {} } ] }}}' 10.187.144.42:8101 grpc_client.Greeter.handle
+                                |
+                                |
+                                V
+grpcurl --plaintext -d '{"msgno":1001, "json": "eyAicmVxIjogWyB7ICJjb2RlIjogIjE2NDUiLCAicGFyYW1zIjogeyAidXNlcm5hbWUiOiAiNzAwMjEwIiwgImN1c3Rlcm1lcl9jb2RlIjogIjcwMDIxMCIsICJudWxsdG9rZW4iOiAiIiwgInRyYWRldG9rZW4iOiAiIiwgInBhc3N3b3JkIjogIkcyMjIyMjIyIiwgImxhbmd1YWdlIjogIjIiIH0sICJwYXJhbXNfZXh0Ijoge30gfSBdIH0="}' 10.187.144.42:8101 grpc_client.Greeter.handle
+
+grpcurl --plaintext -d '{"msgno":1001, "json": "eyAicmVxIjogWyB7ICJjb2RlIjogIjE2NDUiLCAicGFyYW1zIjogeyAidXNlcm5hbWUiOiAiNzAwMjEwIiwgImN1c3Rlcm1lcl9jb2RlIjogIjcwMDIxMCIsICJudWxsdG9rZW4iOiAiIiwgInRyYWRldG9rZW4iOiAiIiwgInBhc3N3b3JkIjogIkcyMjIyMjIyIiwgImxhbmd1YWdlIjogIjIiIH0sICJwYXJhbXNfZXh0Ijoge30gfSBdIH0="}' 127.0.0.1:8101 grpc_client.Greeter.handle
+
+grpcurl --plaintext -d '{"msgno":2, "json": ""}' 127.0.0.1:8101 grpc_client.Greeter.handle
+
+grpcurl --plaintext -d '' localhost:8101 grpc_client.Greeter.handle
 ```
 
 ### 配置
@@ -55,3 +68,24 @@ grpcurl --plaintext -d '{"name": "aaa"}' localhost:9090 GreeterService.sayHello
 2. 客户端配置
 	参照 grpc-client-spring-boot-autoconfigure jar 包中的 `net.devh.boot.grpc.client.config.GrpcChannelsProperties` 类
 3. @GrpcClient("myService") 注解为每一个 RPC 服务调用者注册一个名字，可以在配置文件中为各个调用者定义不同的配置。GLOBAL代表全局配置。
+
+
+
+consul health check 和 GRPC 服务注册端口区分开：
+```
+spring:
+  application:
+    name: trade-center-service
+  cloud:
+    consul:
+      host: consul
+      port: 8500
+      discovery:
+        service-name: ${spring.application.name}
+        register: true
+        port: ${grpc.server.port}
+        healthCheckUrl: "http://10.176.81.23:${server.port}"
+        health-check-critical-timeout: 3m
+        heartbeat:
+          enable: true
+```

@@ -21,7 +21,7 @@ Resilience4j提供了一个限流器，它将从epoch开始的所有纳秒划分
 
 ![avatar](https://github.com/lmhmhl/Resilience4j-Guides-Chinese/blob/main/images/44ca055-rate_limiter.png)
 
-> 
+
 
 ## 创建RateLimiterRegistry
 

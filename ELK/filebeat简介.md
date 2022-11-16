@@ -32,7 +32,7 @@ ES 连接配置：
 filebeat.inputs:
 - type: log
   paths:
-    - [表情]ar/log/*.log
+    - /var/log/*.log
 
 filebeat.autodiscover:
   enabled: false

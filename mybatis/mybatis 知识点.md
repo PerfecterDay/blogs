@@ -5,7 +5,7 @@
 
 
 
-### xml文件中的特殊字符
+### xml文件中的特殊字符
 当我们需要通过xml格式处理sql语句时，经常会用到< ，<=，>，>=等符号，但是很容易引起xml格式的错误，这样会导致后台将xml字符串转换为xml文档时报错，从而导致程序错误。
 
 这样的问题在 mybatis 中或者自定义的xml处理sql的程序中经常需要我们来处理。其实很简单，我们只需作如下替换即可避免上述的错误：
@@ -15,3 +15,17 @@
 | 替换符号 | \&lt; | \&lt;= | \&gt; | \&gt;= | \&amp; | \&apos;| \&quot;|
 
 或者我们也可以使用 \<![CDATA[   ]]> 将特殊字符包含起来。
+
+
+解决自增ID不是从1开始，而是随机数问题：
+@TableId(value = “id”, type = IdType.AUTO) 
+
+
+mybatis-plus 打印数据库语句：
+mybatis-plus:
+  mapper-locations: classpath*:mappers/**/*Mapper.xml
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl #开启sql日志
+
+Querywrapper 的 columns 参数是指定 select 的列
+

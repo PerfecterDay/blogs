@@ -42,14 +42,15 @@ docker run --net elastic -p 8080:8080 --name oap-ui -d -e SW_OAP_ADDRESS=http://
 
 ### Skywalking agent
 
-1. 7.x版本中代理支持 JDK 8 - 14， 6.x版本支持JDK 1.6 - JDK 12 NOTICE¹
+1. 7.x版本中代理支持 JDK 8-14， 6.x版本支持JDK 1.6- JDK12 
 2. 在SkyWalking发行包中找到agent文件夹
 3. 配置config/agent.config中的agent.service_name。可以是任意的英文字符串。
 4. 配置config/agent.config中的collector.backend_service。默认指向127.0.0.1:11800，表示仅作用于本地后端。可以修改配置为部署的skywalking OAP 集群地址
 5. JVM参数中添加-javaagent:/path/to/skywalking-package/agent/skywalking-agent.jar，并且确保这个参数在-jar参数之前。
-`java  -javaagent:/Users/coder_wang/Workspace/skywalking-agent/skywalking-agent.jar -jar demo.jar`
+	`java  -javaagent:/Users/coder_wang/Workspace/skywalking-agent/skywalking-agent.jar -jar demo.jar`
+6. 启动应用时设置 `SW_AGENT_NAME=trade-biz` 环境变量，这样在 skywalking 中就能对应显示你设置的应用名字 
 
-Java Agent 的配置默认在config/agent.config 中，常见的配置可参考[此处](https://skyapm.github.io/document-cn-translation-of-skywalking/zh/8.0.0/setup/service-agent/java-agent/#agent%E7%9A%84%E5%8F%AF%E9%85%8D%E7%BD%AE%E5%B1%9E%E6%80%A7%E5%88%97%E8%A1%A8)
+Java Agent 的默认配置在config/agent.config 中，常见的配置可参考[此处](https://skyapm.github.io/document-cn-translation-of-skywalking/zh/8.0.0/setup/service-agent/java-agent/#agent%E7%9A%84%E5%8F%AF%E9%85%8D%E7%BD%AE%E5%B1%9E%E6%80%A7%E5%88%97%E8%A1%A8)
 
 [日志集成](https://skywalking.apache.org/docs/skywalking-java/v8.12.0/en/setup/service-agent/java-agent/application-toolkit-logback-1.x/)：
 ```

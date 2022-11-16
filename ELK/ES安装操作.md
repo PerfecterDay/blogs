@@ -3,7 +3,11 @@
 ## Docker 安装
 1. `docker pull docker.elastic.co/elasticsearch/elasticsearch:8.4.2`
 2. `docker network create elastic`
-3. `docker run -d -e ES_JAVA_OPTS="-Xms1g -Xmx1g" --name es01 --net elastic -p 9200:9200 -p 9300:9300 -it docker.elastic.co/elasticsearch/elasticsearch:8.4.2`
+<<<<<<< Updated upstream
+3. `docker run -d -e ES_JAVA_OPTS="-Xms1g -Xmx4g" --name es01 --net elastic -p 9200:9200 -p 9300:9300 -it docker.elastic.co/elasticsearch/elasticsearch:8.4.2`
+=======
+3. `docker run -d -e ES_JAVA_OPTS="-Xms4g -Xmx4g" --name es01 --net elastic -p 9200:9200 -p 9300:9300 -it docker.elastic.co/elasticsearch/elasticsearch:8.4.2`
+>>>>>>> Stashed changes
 4. `docker cp es01:/usr/share/elasticsearch/config/certs/http_ca_es01.crt .`
 5. `curl --cacert http_ca.crt -u elastic https://localhost:9200` -〉测试
 6. 添加节点：`docker run -e ENROLLMENT_TOKEN="<token>" --name es02 --net elastic -it docker.elastic.co/elasticsearch/elasticsearch:8.4.2`
@@ -31,7 +35,9 @@ Turns out exit code 137 with docker containers is commonly due to memory allocat
 ## 生产环境推荐配置
 1. 修改mmap 限制 >= 262144
 	+ linux: `sysctl vm.max_map_count`可以查看mmap值，修改`sudo sysctl -w vm.max_map_count=262144`
-	+ macos: 启动docker 时，指定`-e MAX_MAP_COUNT=262144` 环境变量
+	+ macos: 
+    	+ podman : `podman machine ssh; sudo sysctl -w vm.max_map_count=262144`
+    	+ docker :  from the docker desktop GUI - `Preferences -> Resources -> Swap -> Apply and Restart`
 2. Elasticsearch 在容器中运行时的用户是 elasticsearch，uid:gid ——> 1000:0.当挂载卷到本机文件时，必须确保 elasticsearch 用户对本地文件有读写权限，推荐对本地文件夹授予 gid 0 读写权限：
 	mkdir esdatadir
 	chmod g+rwx esdatadir
@@ -42,6 +48,6 @@ Turns out exit code 137 with docker containers is commonly due to memory allocat
 4. 禁用 swapping ：`-e "bootstrap.memory_lock=true" --ulimit memlock=-1:-1`
 5. 设置随机端口：`--publish-all`
 6. 手动设置JVM：
-   docker run -e ES_JAVA_OPTS="-Xms1g -Xmx1g" -e ENROLLMENT_TOKEN="<token>" --name es02 -p 9201:9200 --net elastic -it docker.elastic.co/elasticsearch/elasticsearch:docker.elastic.co/elasticsearch/elasticsearch:8.4.2
+   docker run -e ES_JAVA_OPTS="-Xms4g -Xmx1g" -e ENROLLMENT_TOKEN="<token>" --name es02 -p 9201:9200 --net elastic -it docker.elastic.co/elasticsearch/elasticsearch:docker.elastic.co/elasticsearch/elasticsearch:8.4.2
 7. 总是使用volume映射 `/usr/share/elasticsearch/data` 到主机，防止数据丢失
 8. 挂载卷映射配置文件到本地：`-v full_path_to/custom_elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml`

@@ -3,11 +3,7 @@
 ## Docker 安装
 1. `docker pull docker.elastic.co/elasticsearch/elasticsearch:8.4.2`
 2. `docker network create elastic`
-<<<<<<< Updated upstream
-3. `docker run -d -e ES_JAVA_OPTS="-Xms1g -Xmx4g" --name es01 --net elastic -p 9200:9200 -p 9300:9300 -it docker.elastic.co/elasticsearch/elasticsearch:8.4.2`
-=======
 3. `docker run -d -e ES_JAVA_OPTS="-Xms4g -Xmx4g" --name es01 --net elastic -p 9200:9200 -p 9300:9300 -it docker.elastic.co/elasticsearch/elasticsearch:8.4.2`
->>>>>>> Stashed changes
 4. `docker cp es01:/usr/share/elasticsearch/config/certs/http_ca_es01.crt .`
 5. `curl --cacert http_ca.crt -u elastic https://localhost:9200` -〉测试
 6. 添加节点：`docker run -e ENROLLMENT_TOKEN="<token>" --name es02 --net elastic -it docker.elastic.co/elasticsearch/elasticsearch:8.4.2`

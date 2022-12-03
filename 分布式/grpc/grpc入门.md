@@ -58,6 +58,7 @@ grpcurl --plaintext -d '{"msgno":1001, "json": "eyAicmVxIjogWyB7ICJjb2RlIjogIjE2
 grpcurl --plaintext -d '{"msgno":1001, "json": "eyAicmVxIjogWyB7ICJjb2RlIjogIjE2NDUiLCAicGFyYW1zIjogeyAidXNlcm5hbWUiOiAiNzAwMjEwIiwgImN1c3Rlcm1lcl9jb2RlIjogIjcwMDIxMCIsICJudWxsdG9rZW4iOiAiIiwgInRyYWRldG9rZW4iOiAiIiwgInBhc3N3b3JkIjogIkcyMjIyMjIyIiwgImxhbmd1YWdlIjogIjIiIH0sICJwYXJhbXNfZXh0Ijoge30gfSBdIH0="}' 127.0.0.1:8101 grpc_client.Greeter.handle
 
 grpcurl --plaintext -d '{"msgno":2, "json": ""}' 127.0.0.1:8101 grpc_client.Greeter.handle
+grpcurl --plaintext -d '{ "msgno":1001, "json": { "req": "[ { "code": "1645", "params": { "username": "700210", "custermer_code": "700210", "nulltoken": "", "tradetoken": "", "password": "G2222222", "language": "2" }, "params_ext": {} } ]" } }' 10.187.144.42:8101 grpc_client.Greeter.handle
 
 grpcurl --plaintext -d '' localhost:8101 grpc_client.Greeter.handle
 ```

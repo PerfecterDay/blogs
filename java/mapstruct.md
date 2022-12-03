@@ -4,6 +4,8 @@
 https://www.baeldung.com/mapstruct
 https://www.baeldung.com/java-mapstruct-mapping-collections
 
+
+
 与 Lombok 配合出现：
 No property named "sms" exists in source parameter/No property named "sms" exists in result parameter
 需要先用Lombok处理后才能用mapstruct，加入下列配置：
@@ -37,6 +39,7 @@ No property named "sms" exists in source parameter/No property named "sms" exist
         </pluginManagement>
     </build>
 ```
+
 不同名字之间的map：
 ```
 @Mapper

@@ -7,6 +7,8 @@ https://book-consul-guide.vnzmi.com/04_run_agent.html
 
 docker run -d -p 8500:8500 -p 8600:8600/udp --name=badger consul agent -server -ui -node=10.176.81.23 -bootstrap-expect=1 -client=0.0.0.0
 
+
+
 docker run --name=fox consul agent -node=client-1 -join=172.17.0.3
 
 
@@ -32,6 +34,7 @@ ConsulDiscoveryClientConfiguration
 
 ConsulAutoServiceRegistrationListener
 只有web应用时才会注册服务
+
 
 ### HTTP API
 根据服务名查找服务信息： `curl http://localhost:8500/v1/catalog/service/{serviceName}`

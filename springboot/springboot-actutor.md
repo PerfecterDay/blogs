@@ -18,12 +18,14 @@ Springboot Actuator 可以暴露一些 http 端点让用户能查看 springboot 
 management:
   endpoints:
     web:
+	  base-path: /mgmt
       exposure:
         include: "*"
         exclude: "env"
 ```
 
-可以通过 url : http://localhost:8050/actuator/ 获取到所有可访问的端点，示例如下：
+可以通过 url : http://localhost:8050/user/mgmt/，(默认是http://localhost:8050/actuator/ 如果设置了 context-path，需要加上，如 http://localhost:8050/user/mgmt/) ，这个endpoint 可以通过 
+获取到所有可访问的端点，示例如下：
 ```
 {
 	"_links": {
@@ -114,3 +116,21 @@ management:
 	}
 }
 ```
+
+如果要开启 httptrace endpoint，需要注入一个 `HttpTraceRepository` 类型的 bean。具体原因如下 `@ConditionalOnBean({HttpTraceRepository.class})`：
+```
+@AutoConfiguration
+@ConditionalOnWebApplication
+@ConditionalOnProperty(
+    prefix = "management.trace.http",
+    name = {"enabled"},
+    matchIfMissing = true
+)
+@ConditionalOnBean({HttpTraceRepository.class})
+@EnableConfigurationProperties({HttpTraceProperties.class})
+public class HttpTraceAutoConfiguration {
+    public HttpTraceAutoConfiguration() {
+    }
+```
+
+Actuator 的配置在 `org.springframework.boot.actuate.autoconfigure...` 配置包下都能找到。 

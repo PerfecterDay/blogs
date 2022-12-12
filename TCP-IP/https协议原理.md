@@ -1,5 +1,13 @@
-# HTTPS及Java支持
+## HTTPS及Java支持
 {docsify-updated}
+> https://help.aliyun.com/document_detail/160093.html  
+> https://stackoverflow.com/questions/27388583/relationship-between-key-store-trust-store-and-certificate
+
+- [HTTPS及Java支持](#https及java支持)
+	- [HTTPS协议原理](#https协议原理)
+	- [双向认证](#双向认证)
+	- [nginx使用自签名证书配https](#nginx使用自签名证书配https)
+	- [java 对 Https 的支持](#java-对-https-的支持)
 
 ### HTTPS协议原理
 
@@ -19,9 +27,29 @@
 12. 综合起来看，数字证书的作用就是证明某人是真实的某人的作用：你想访问某个网站，但是你不能肯定这个网站就是真实的网站而不是钓鱼网站，那么如果有https，那么获取到证书后，证书中的内容就能证明该网站是不是真实的网站。并且，证书中包含了该网站的公钥。
 
 反过来说，我们访问一个网站的大致过程是这样的：
-1. 客户端访问某个网站，首先获取其证书，使用第三方机构的公钥（一般以CA证书的形式存在）对证书进行验证，通过证书验证该网站是不是真实的网站。
-2. 如果是真实的网站，就用证书中的公钥发起秘钥协商过程。
-3. 协商好加密秘钥后，使用该秘钥进行通信。
+<center><img src="pics/https-1.png" width="60%"></center>
+
+1. 客户端发起建立HTTPS连接请求，将SSL协议版本的信息发送给服务器端；
+2. 服务器端将本机的公钥证书（server.crt）发送给客户端；
+3. 客户端读取公钥证书（server.crt），使用第三方机构的公钥（一般以CA证书的形式存在）对证书进行验证，通过证书验证该网站是不是真实的网站。取出了服务端公钥；
+4. 客户端生成一个随机数（密钥R），用刚才得到的服务器公钥去加密这个随机数形成密文，发送给服务端；
+5. 服务端用自己的私钥（server.key）去解密这个密文，得到了密钥R
+6. 服务端和客户端在后续通讯过程中就使用这个密钥R进行通信了。
+
+### 双向认证
+<center><img src="pics/https-2.png" width="60%"></center>
+
+1. 客户端发起建立HTTPS连接请求，将SSL协议版本的信息发送给服务端；
+2. 服务器端将本机的公钥证书（server.crt）发送给客户端；
+3. 客户端读取公钥证书（server.crt），取出了服务端公钥；
+4. 客户端将客户端公钥证书（client.crt）发送给服务器端；
+5. 服务器端使用根证书（root.crt）解密客户端公钥证书，拿到客户端公钥；
+6. 客户端发送自己支持的加密方案给服务器端；
+7. 服务器端根据自己和客户端的能力，选择一个双方都能接受的加密方案，使用客户端的公钥加密后发送给客户端；
+8. 客户端使用自己的私钥解密加密方案，生成一个随机数R，使用服务器公钥加密后传给服务器端；
+9.  服务端用自己的私钥去解密这个密文，得到了密钥R
+10. 服务端和客户端在后续通讯过程中就使用这个密钥R进行通信了。
+
 
 ### nginx使用自签名证书配https
 我们使用xca工具来制作证书，先下载安装xca工具，地址是http://xca.hohnstaedt.de/。
@@ -67,9 +95,9 @@ nginx配置好后，将 ca_wang.crt 导入到 chrome 浏览器的信任根证书
 + `keytool -delete -cacerts -alias ca_wang`:删除指定别名的的 keystore 条目
 + `keytool -import -alias ca_wang -file C:\Users\BaIcy\Documents\xca\ca_wang.crt -keypass "" -keystore C:\Users\BaIcy\Documents\xca\ca_wang.jks -storepass test123`:将 crt 证书文件转换为 jks 的 keystore 文件
 
-Java 平台下，证书尝尝被存储为 keystore 文件中，上面的 cacerts 就是一个 keystore 文件， keystore 文件不仅可以存储数字证书，还可以存储秘钥，存储在 keystore 文件中的对象有三种： Certificate（证书）、PrivateKey（私钥） 和 SecretKey（对称加密秘钥）。
+Java 平台下，证书尝尝被存储为 keystore 文件中，上面的 cacerts 就是一个 keystore 文件， keystore 文件不仅可以存储数字证书，还可以存储秘钥，存储在 keystore 文件中的对象有三种： Certificate（证书）、PrivateKey（私钥）和 SecretKey（对称加密秘钥）。
 
-keystore 只是一种文件格式而已，实际上在 Java 的世界里 KeyStore 文件分为两种： keystore 和 truststore， keystore 保存私钥，用来解密或者签名； truststore 保存信任的证书列表，访问 https 时，对被访问者进行认证，确定它是可信任的。
+keystore 只是一种文件格式而已，实际上在 Java 的世界里 KeyStore 文件分为两种： keystore 和 truststore， keystore 保存公私钥，用来解密或者签名； truststore 保存信任的证书列表，访问 https 时，对被访问者进行认证，确定它是可信任的。
 
 Java 使用以下主要类和接口来支持安全传输：
 <center><img src="pics/jsse.jpg" width="40%"/></center>

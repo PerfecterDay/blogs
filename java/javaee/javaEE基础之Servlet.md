@@ -9,7 +9,7 @@ Java EE 容器会有一个或多个内建的 Servlet，用于处理 JSP、显示
 `javax.servlet.Servlet` 是个接口，只包含了初始化并销毁 Servlet 和处理请求的方法。不过，无论什么类型的请求，甚至是非HTTP请求（假设容器支持这样的请求），也将会调用 service 方法。目前 Java EE 7支持的唯一 Servlet 协议就是 HTTP。
 
 大多数情况下，Servlet都会继承自 `javax.servlet.http.HttpServlet` ，它提供了相应每种 HTTP 方法类型的方法空实现：
-<center><img src="pics/httpservlet方法.jpg" alt="" width="60%"></center>
+<center><img src="pics/httpservlet方法.png" alt="" width="60%"></center>
 
 `HttpServlet` 各个方法接收的是 `javax.servlet.http.HttpServletRequest` 和 `javax.servlet.http.HttpServletResponse` 参数，而不是 `javax.servlet.http.ServletRequest` 和 `javax.servlet.http.HttpServletResponse` ，这样就可以轻松访问 Servlet 服务所处理的请求中的 HTTP 特定的特性。
 

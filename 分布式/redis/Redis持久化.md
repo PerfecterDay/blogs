@@ -2,7 +2,7 @@
 {docsify-updated}
 
 Redis 支持两种持久化方式：
-+  RDB,Snapshoting (快照，默认方式)
++  RDB(Redis Database File),Snapshoting (快照，默认方式)
 +  Append-only file (AOF)
 
 ### RDB

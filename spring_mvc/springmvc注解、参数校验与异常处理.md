@@ -7,6 +7,7 @@
 		- [HTTP 相应相关的注解](#http-相应相关的注解)
 		- [其他相关注解](#其他相关注解)
 	- [请求参数验证](#请求参数验证)
+		- [Spring 参数校验的原理](#spring-参数校验的原理)
 		- [JSR-303](#jsr-303)
 		- [Spring 使用  validation 的步骤](#spring-使用--validation-的步骤)
 		- [常见的校验注解](#常见的校验注解)
@@ -74,6 +75,31 @@
 
 
 ## 请求参数验证
+
+### Spring 参数校验的原理
+RequestMappingHandlerAdapter.invokeHandlerMethod()->ServletInvocableHandlerMethod.invokeAndHandle()
+->InvocableHandlerMethod.invokeForRequest()->HandlerMethodArgumentResolverComposite.()
+->RequestResponseBodyMethodProcessor.resolveArgument() 
+核心代码：
+```
+parameter = parameter.nestedIfOptional();
+Object arg = readWithMessageConverters(webRequest, parameter, parameter.getNestedGenericParameterType());
+String name = Conventions.getVariableNameForParameter(parameter);
+
+if (binderFactory != null) {
+	WebDataBinder binder = binderFactory.createBinder(webRequest, arg, name);
+	if (arg != null) {
+		validateIfApplicable(binder, parameter);
+		if (binder.getBindingResult().hasErrors() && isBindExceptionRequired(binder, parameter)) {
+			throw new MethodArgumentNotValidException(parameter, binder.getBindingResult());
+		}
+	}
+	if (mavContainer != null) {
+		mavContainer.addAttribute(BindingResult.MODEL_KEY_PREFIX + name, binder.getBindingResult());
+	}
+}
+```
+
 
 ### JSR-303
 JSR-303是Java为Bean数据合法性校验提供的标准框架，它定义了一套可标注在成员变量，属性方法上的校验注解。

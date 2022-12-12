@@ -1,5 +1,18 @@
-# 安全相关
+## 安全相关
 {docsify-updated}
+
+- [安全相关](#安全相关)
+	- [安全管理器与访问权限](#安全管理器与访问权限)
+		- [安全策略文件](#安全策略文件)
+	- [JAAS(Java Authentication and Authorization)](#jaasjava-authentication-and-authorization)
+	- [java SPI(Servicec provider Interface)机制](#java-spiservicec-provider-interface机制)
+	- [安全加密算法](#安全加密算法)
+	- [SSL证书主流的格式](#ssl证书主流的格式)
+		- [SSL证书格式转换方法](#ssl证书格式转换方法)
+	- [keytool 工具](#keytool-工具)
+	- [Openssl 工具](#openssl-工具)
+	- [Https 双向认证](#https-双向认证)
+
 
 ### 安全管理器与访问权限
 一旦某个类被加载到虚拟机中，并由检验器检查过之后， Java 平台的第二种安全机制就会启动，这个机制就是**安全管理器**。安全管理器是一个负责控制具体操作是否允许执行的类。安全管理器负责检查的操作包括以下内容：
@@ -74,52 +87,267 @@ Java的安全基础架构主要有以下特点：
             }
 
 ### 安全加密算法
-1. 消息摘要
-   
-   消息摘要是数据块的指纹。可以基于任意长的数据块计算出一个定长的不可逆的数字序列，通常称为指纹。人们希望，任何两个不同的输入数据，计算得到的指纹也不一样。当然这是不可能的，因为输入的数据有无数种可能，而定长的指纹序列是可数的，与长度有关。但是，通过设计合适的算法，人们可以使得伪造一个具有相同指纹得数据块在计算复杂度上是不可能。
+常见的算法如下：
+1. 消息摘要  
+	消息摘要是数据块的指纹。可以基于任意长的数据块计算出一个定长的不可逆的数字序列，通常称为指纹。人们希望，任何两个不同的输入数据，计算得到的指纹也不一样。当然这是不可能的，因为输入的数据有无数种可能，而定长的指纹序列是可数的，与长度有关。但是，通过设计合适的算法，人们可以使得伪造一个具有相同指纹得数据块在计算复杂度上是不可能。
 
-   Java实现了MD5、SHA-1、SHA-256、SHA-384、SHA-512等摘要算法。 `MessageDigest` 类是创建封装了指纹算法得对象的工厂，它的静态方法 `getInstance(String algorithm)` 返回继承自 `MessageDigest` 的一个算法对象。 `MessageDigest`既是一个工厂，也是消息摘要算法的超类。
+	Java实现了MD5、SHA-1、SHA-256、SHA-384、SHA-512等摘要算法。 `MessageDigest` 类是创建封装了指纹算法得对象的工厂，它的静态方法 `getInstance(String algorithm)` 返回继承自 `MessageDigest` 的一个算法对象。 `MessageDigest`既是一个工厂，也是消息摘要算法的超类。
 
-   总结来说，消息摘要就是能提取出一个数据块的指纹，任何对数据块的篡改都能导致指纹的不匹配，所以消息摘要具有防篡改功能。
+	总结来说，消息摘要就是能提取出一个数据块的指纹，任何对数据块的篡改都能导致指纹的不匹配，所以消息摘要具有防篡改功能。
 
-2. 消息签名
-
+2. 消息签名  
 	假如要传送的消息被截获，并且攻击者篡改了内容后又重新生成了指纹（重放攻击），接收者是无法识别出这条消息被篡改了的。基于这点，发送者可以用自己的私钥对消息和指纹进行签名，然后将公钥告知接收方，接收方收到消息后，用公钥进行验签。如果验签成功，就能说明这条消息确实是由发送者发送的，因为没有人可以伪造发送方的私钥。但是，在这里有一个很重要的环节是你必须确保你得到的公钥确实是发送者自己的公钥。因为任何人都可以自己生成一对公私钥对。一个可用的方案是我们找一个权威机构来对公钥进行认证，对真实可信的公钥就用权威机构的私钥进行签名，并且权威机构将自己的公钥公布在网上。这样接收方在确认收到的公钥是否可信时，就能直接用权威机构的公钥去验签，验签成功的公钥就是可信的公钥。
+	常用的数字签名算法包括 DSA/RSA
 
-3. 对称加密
-   
-   上述摘要、签名算法只能确认消息来源的可靠性，具体的说，他们能保证消息是特定的发送者发出的而且没有被篡改。但是，消息的内容本身没有被加密（当然如果使用公钥加密传送内容也是可以的）。通常使用对称加密来加密传送的消息。
-   Java种的 `Cipher` 类是所有加密算法的超类，通过调用 `getInstance(String algorithm)` 或者 `getInstance(String algorithm,String provider)` 来获得一个加密算法对象。一个`Cipher`可以有多种使用方式，比如加密、解密等，Java中定义了4种模式：
-   1. Cipher.ENCRYPT_MODE
-   2. Cipher.DECRYPT_MODE
-   3. Cipher.WRAP_MODE
-   4. Cipher.UNWRAP_MODE
-   在使用 Cipher 之前必须调用它的 `init(...)` 方法初始化设置好密钥（Key类来表示）和模式或者其它参数，不同的加密算法要求初始化的参数不同。调用`update()`方法将要加密的数据传递给 Cipher，最后调用 `doFinal()`方法完成加密并返回加密后的字节数据。
+3. 对称加密  
+	上述摘要、签名算法只能确认消息来源的可靠性，具体的说，他们能保证消息是特定的发送者发出的而且没有被篡改。但是，消息的内容本身没有被加密（当然如果使用公钥加密传送内容也是可以的）。通常使用对称加密来加密传送的消息。
 
-   生成密钥：
-   1. 为加密算法获取 `KeyGenerator`，通过`KeyGenerator.getInstance("AES")`来获得。
-   2. 用随机源来初始化 `KeyGenerator`。
-   3. 调用 `KeyGenerator` 的 `generateKey()` 生成密钥
-   ```
-    Cipher cipher = Cipher.getInstance("AES");
+	算法名称是一个字符串，比如“ AES ”或者“ DES/CBC/PKCS5Padding ” 。DES ，即数据加密标准，是一个密钥长度为 56 位的古老的分组密码 。 DES 加密算法在现在看来已经是过时了，因为可以用穷举法将它破译（参见该网页中的例子： http://w2.eff.org/ Privacy/Crypto/Crypto_misc/DESCracker‘／） 。 更好的选择是采用它的后续版本，即高级加密标准AES。
+
+	Java种的 `Cipher` 类是所有加密算法的超类，通过调用 `getInstance(String algorithm)` 或者 `getInstance(String algorithm,String provider)` 来获得一个加密算法对象。一个`Cipher`可以有多种使用方式，比如加密、解密等，Java中定义了4种模式：
+		1. Cipher.ENCRYPT_MODE
+		2. Cipher.DECRYPT_MODE
+		3. Cipher.WRAP_MODE
+		4. Cipher.UNWRAP_MODE
+
+	在使用 Cipher 之前必须调用它的 `init(...)` 方法初始化设置好密钥（Key类来表示）和模式或者其它参数，不同的加密算法要求初始化的参数不同。调用`update()`方法将要加密的数据传递给 Cipher，最后调用 `doFinal()`方法完成加密并返回加密后的字节数据。
+
+	生成密钥：
+	1. 为加密算法获取 `KeyGenerator`，通过`KeyGenerator.getInstance("AES")`来获得。
+	2. 用随机源来初始化 `KeyGenerator`。
+	3. 调用 `KeyGenerator` 的 `generateKey()` 生成密钥
+	```
+	Cipher cipher = Cipher.getInstance("AES");
 	KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
 	SecureRandom random = new SecureRandom();
 	keyGenerator.init(random);
 	Key key = keyGenerator.generateKey();
 	cipher.init(Cipher.ENCRYPT_MODE,key);
-   ```
+	```
 
-4. 非对称加密
-   
-   非对称加密在需要一对公私钥对，所以在生成密钥时与对称加密算法有一点差别。
-   ```
-        Cipher rsaCipher = Cipher.getInstance("RSA");
-        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
-        SecureRandom secureRandom = new SecureRandom();
-        keyPairGenerator.initialize(2048,secureRandom);
-        KeyPair keyPair = keyPairGenerator.generateKeyPair();
-        Key publicKey = keyPair.getPublic();
-        Key privateKey = keyPair.getPrivate();
-        rsaCipher.init(Cipher.UNWRAP_MODE,publicKey);
-        byte[] wrapKey = rsaCipher.wrap(aeskey);
-    ```
+4. 非对称加密  
+	非对称加密在需要一对公私钥对，所以在生成密钥时与对称加密算法有一点差别。
+	```
+	     Cipher rsaCipher = Cipher.getInstance("RSA");
+	     KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
+	     SecureRandom secureRandom = new SecureRandom();
+	     keyPairGenerator.initialize(2048,secureRandom);
+	     KeyPair keyPair = keyPairGenerator.generateKeyPair();
+	     Key publicKey = keyPair.getPublic();
+	     Key privateKey = keyPair.getPrivate();
+	     rsaCipher.init(Cipher.UNWRAP_MODE,publicKey);
+	     byte[] wrapKey = rsaCipher.wrap(aeskey);
+	 ```
+
+
+### SSL证书主流的格式
+
+仅在X.509证书中就有几种编码格式和扩展名。你可能见过.pem、.crt、.p7b、.der、pfx等等的证书。如果我们问是否所有的扩展名都是一样的，答案是既是又不是。所有这些证书都是一样的，但有不同的编码标准。所有这些都取决于你的应用程序，或操作系统接受的编码类型。
+<center><img src="pics/x509.png" width="70%"></center>
+
+SSL证书格式主要有公钥证书格式标准X.509中定义的PEM和DER、公钥密码标准PKCS中定义的PKCS#7和PKCS#12、Java环境专用的JKS。
+
+PEM是基于Base64编码的证书格式，扩展名包括pem、crt和cer。Linux系统使用crt，Windows系统使用cer。PEM证书通常将根证书、中间证书和用户证书分开存放，主要用于Apache和Nginx。
+
+DER是基于二进制编码的证书格式，扩展名包括der、crt和cer。DER证书相当于PEM证书的二进制版本，主要用于Java平台。
+
+PKCS#7是基于Base64编码的证书格式，扩展名包括p7b和p7c。PKCS#7证书通常将根证书和中间证书合并存放，将用户证书单独存放。PKCS#7证书不包含私钥，主要用于Tomcat和Windows Server。
+
+PKCS#12是基于二进制编码的证书格式，扩展名包括pfx和p12。PKCS#12证书通常将根证书、中间证书、用户证书和私钥合并存放并设置密码，主要用于Windows Server。
+
+JKS是是基于二进制编码的证书格式，扩展名是jks。JKS证书通常将根证书、中间证书、用户证书和私钥合并存放并设置密码，主要用于Java Web Server。
+
+证书颁发机构CA签发的证书通常是PEM格式或PKCS#7格式，而PKCS#12格式和JKS格式的证书需要进行证书格式转换才能得到。我们可以通过OpenSSL、Keytool或在线证书转换工具等方式将PEM格式或PKCS#7格式的证书转换为我们需要的其他格式。
+
+#### SSL证书格式转换方法
+常见SSL证书主要的文件类型和协议有: PEM、DER、PFX、JKS、KDB、CER、KEY、CSR、CRT、CRL、OCSP、SCEP等。而最常见的SSL证书格式之间的转换有：
+
+1. 将JKS转换成PFX  
+	可以使用Keytool工具，将JKS格式转换为PFX格式。
+	```
+		keytool -importkeystore -srckeystore D:\server.jks -destkeystore D:\server.pfx -srcstoretype JKS -deststoretype PKCS12
+	```
+2. 将PFX转换为JKS  
+	可以使用Keytool工具，将PFX格式转换为JKS格式。
+	```
+	keytool -importkeystore -srckeystore D:\server.pfx -destkeystore D:\server.jks -srcstoretype PKCS12 -deststoretype JKS
+	```
+3. 将PEM/KEY/CRT转换为PFX  
+	使用OpenSSL工具，可以将密钥文件KEY和公钥文件CRT转化为PFX文件。
+	```
+	openssl pkcs12 -export -out server.pfx -inkey server.key -in server.crt
+	```
+4. 将PFX转换为PEM/KEY/CRT  
+	```
+	openssl pkcs12 -in server.pfx -nodes -out server.pem
+	openssl rsa -in server.pem -out server.key
+	```
+
+### keytool 工具
+1. 生成密钥对： `keytool -genkeypair -keystore alice.certs -alias alice`
+2. 将生成的密钥导出为一个证书： `keytool -exportcert -keystore alice.certs -alias alice -file alice.cer`
+3. 打印证书内容： `keytool -printcert -file alice.cer`
+4. `keytool -list -keystore jre/lib/security/cacerts`
+5. 导入证书到密钥库： `keytool -importcert -keystore bob.certs -alias alice -file alice.cer` 绝对不妥将你并不完全信任的证书导入到密钥库中 。 一旦证书添加到密钥库中，使用密钥库的任何程序都会认为这些证书可以用来对签名进行校验。
+
+### Openssl 工具
+Here we’ll implement all the steps of that protocol, using openssl terminal commands. In
+practice you’re more likely to use openssl in the form of an API in another language- but
+learning the terminal commands is still valuable as a transferable skill. Each command is
+displayed with some explanations of its flags below.
+
+If you want to follow along, you can make 3 folders, 1 for Alice, Bob and the CA respectively.
+You need to repeat steps 1 and 2 for Bob and CA so they can have their own pair of keys.
+And you need to generate a self-signed certificate for the CA (shown below).
+
+1. 为 Alice 生成一个私钥：
+	```
+	openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:2048 -pkeyopt rsa_keygen_pubexp:3 -out privkey-A.pem
+	```
+	+ genpkey ➝ generate a private key
+	+ -algorithm RSA ➝ use the RSA algorithm (can also take “EC” for elliptic-curve)
+	+ -pkeyopt opt:value ➝ set opt to value (see items below)
+	+ rsa_keygen_bits:2048 ➝ sets the size of the key to 2048 bits (the default is 1024)
+	+ rsa_keygen_pubexp:3 ➝ sets the public exponent e to 3 (default is 65, 537)
+	+ -out privkey-A.pem ➝ outputs to the file privkey-A.pem
+
+2. 基于生成的私钥，为 Alice 生成一个公钥：
+	```
+	openssl pkey -in privkey-A.pem -pubout -out pubkey-A.pem
+	```
+	+ pkey ➝ processes public or private keys
+	+ -in privkey-A.pem ➝ read the key from filename privkey-A.pem
+	+ -pubout ➝ output a public key (by default, a private key is output)
+
+3. 查看生成的密钥信息
+	```
+	openssl pkey -in privkey-A.pem -text -noout
+	openssl pkey -pubin -in pubkey-A.pem -text -noout
+	```
+	+ -noout ➝ suppresses the command from printing out the base64 encoding as well.
+
+4. Alice生成一个证书签名请求（CSR-certificate signing request）
+	```
+	openssl req -new -key privkey-A.pem -out A-req.csr
+	```
+	+ req ➝ creates and processes signing requests
+	+ -new ➝ generates a new certificate request, will prompt Alice for some information
+	+ -key privkey-A.pem ➝ signs the request with Alice’s private key
+	The command will prompt Alice with these questions:
+	+ Country code [C]: {Alice fills in her country code}
+	+ Province/STate name [ST]: {Alice fills in her province name fully}
+	+ City/Location [L]: {The city Alice’s business is registered in, for example}
+	+ Organization Name [O]: {Alice’s business name, for example}
+	+ Organizational Unit Name [OU]: (Optional) {What part of the company is she?}
+	+ Common Name [CN]: the hostname+domain, i.e. “www.alice.com”
+	+ A challenge password []: {this can be used as a secret nonce between Alice and CA}
+
+5. 为CA机构生成一个自签名的CA证书
+	```
+	openssl req -x509 -new -nodes -key rootkey.pem -sha256 -days 1024 -out root.crt
+	```
+
+6. 使用CA证书为 Alice签名 CSR
+	```
+	openssl x509 -req -in A-req.csr -CA root.crt -CAkey rootkey.pem -CAcreateserial -out A.crt -days 500 -sha256
+	```
+	+ x509 ➝ an x509 certificate utility (displays, converts, edits and signs x509 certificates)
+	+ -req ➝ a certificate request is taken as input (default is a certificate)
+	+ -CA root.crt ➝ specifies the CA certificate to be used as the issuer of Alice’s certificate
+	+ -CAkey rootkey.pem ➝ specifies the private key used in signing (rootkey.pem)
+	+ -CAcreateserial ➝ creates a serial number file which contains a counter for how many certificates were signed by this CA
+	+ -days 500 ➝ sets Alice’s certificate to expire in 500 days
+	+ -sha256 ➝ specifies the hashing algorithm to be used for the certificate’s signature
+
+7. 查看Alice签名后的证书
+	```
+	openssl x509 -in Alice.crt -text -noout
+	```
+
+8. Alice验证bob 的公钥
+	```
+	openssl verify -CAfile root.crt Bob.crt
+	```
+	+ verify ➝ a utility that verifies certificate chains
+	+ -CAfile root.crt ➝ specified the trusted certificate (root.crt)
+	+ Bob.crt ➝ the certificate to verify
+	+ If you get an OK, you know the certificate can be trusted
+
+9. Alice 提取出 Bob 的公钥
+	```
+	openssl x509 -pubkey -in Bob.crt -noout > pubkey-B.pem
+	```
+
+10. Alice 使用 Bob 的公钥加密文件
+	```
+	openssl pkeyutl -encrypt -in largefile.txt -pubin -inkey pubkey-B.pem -out ciphertext.bin
+	```
+	+ pkeyutl ➝ utility to perform public key operations
+	+ -encrypt ➝ encrypt the input data
+	+ error! (recall: RSA is not meant for encrypting arbitrary large files- Alice needs to use symmetric key encryption for that)
+
+11. ALice 生成一个对称密钥
+	```
+	openssl rand -base64 32 -out symkey.pem
+	```
+	+ rand ➝ generates pseudo-random bytes (seeded by default by $HOME/.rnd)
+	+ -base64 32 ➝ outputs 32 random bytes and encodes it in base64
+
+12. Alice 使用Bob的公钥加密生成的对称密钥
+	```
+	openssl pkeyutl -encrypt -in symkey.pem -pubin -inkey pubkey-B.pem -out symkey.enc
+	```
+
+14. Alice 使用私钥签名加密后的对称密钥,并且使用sha1 哈希签名后的文件
+	```
+	openssl dgst -sha1 -sign privkey-A.pem -out signature.bin symkey.pem
+	```
+	+ dgst -sha1 ➝ hash the input file using the sha1 algorithm
+	+ -sign privkey-A.pem ➝ sign the hash with the specified private key
+	+ symkey.pem ➝ the input file to be hashed
+
+15. Bob 使用他的私钥解密加密后的文件
+	```
+	openssl pkeyutl -decrypt -in symkey.enc -inkey privkey-B.pem -out symkey.pem
+	```
+	+ -decrypt ➝ decrypt the input file
+
+16. Bob重复上面的步骤获取Alice 的公钥
+
+17. Bob 验证这条消息是来自 Alice
+	```
+	openssl dgst -sha1 -verify pubkey-A.pem -signature signature.bin symkey.pem
+	```
+	+ -verify pubkey-A.pem ➝ verify the signature using the specified filename
+	+ -signature signature.bin ➝ specifies the signature to be verified
+	+ symkey.pem ➝ the file to be hashed
+
+	```
+	openssl enc -aes-256-cbc -pass file:symkey.pem -p -md sha256 -in largefile.txt -out ciphertext.bin
+	```
+	+ enc -aes-256-cbc ➝ encrypt a file using the aes-256-cbc symmetric key algorithm
+	+ -pass file:symkey.pem ➝ specified the file to get the symmetric key from
+	+ -p ➝ prints the key, salt, initialization vector to the screen
+	+ -md sha256 ➝ uses sha256 as part of the key derivation function (a function that derives one or more secondary secret keys from a primary secret key)
+
+18. Bob使用对称密钥解密加密的文件
+	```
+	openssl enc -aes-256-cbc -d -pass file:symkey.pem -p -md sha256 -in ciphertext.bin -out largefile.txt
+	```
+	+ -d ➝ decryption flag
+
+
+其它openssl 命令：
+```
+导出一个网站的公钥：
+openssl s_client -connect 10.18.172.216:44300 -showcerts < /dev/null | openssl x509 -outform pem > cms_cert.pem
+
+查看公钥的信息：
+openssl x509 -in cms_cert.pem -noout -text
+
+用CA证书验证某个证书的合法性：
+sudo openssl verify -CAfile ~/Desktop/ISRGRootX1.pem ~/Desktop/R3.cer
+```
+
+### Https 双向认证
+> https://help.aliyun.com/document_detail/160093.html

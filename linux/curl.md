@@ -55,3 +55,211 @@
 21. `-v` ：输出通信的整个过程，用于调试。
 22. `-x` ：指定 HTTP 请求的代理。
 23. `-X` ：指定 HTTP 请求的方法。
+24. `--cert`： 
+
+
+
+```
+curl -k --proxy 10.184.161.160:443 --cert /home/5.11/server.pem https://10.18.172.216:44300/APIServer/SendRequest -F
+'xml="
+<sp_Profile_CheckDuplicateTel_ForGTJAApp ID="" ProfileID="@NULL" ContactCountry="" ContactArea=""
+	ContactDetail="1122334455" />"' -F 'appID=YYgfdg4654HGF76547gfg65x2'
+
+<STPAPI_RESULT>
+	<ANSWER ID="" ReturnCode="0">
+		<RECORDS Total_Records="40">
+			<ROW AccountCode="009991" AccountName="GUOTAI JUNAN SECURITIES (HK) LTD.-  ERROR ACCOUNT." AECode=""
+				AccSettingType="Profile-MobTel (1)" ContactType="MobTel" DuplicateInfo="86-1122334455"
+				ProfileID="133996" ProfileName="GUOTAI JUNAN SECURITIES (HK) LTD." AccountCategory="House Institution"
+				MainAccountStatus="Active" Is2FAMobile="true" />
+			<ROW AccountCode="009992" AccountName="GUOTAI JUNAN SECURITIES (HK) - WAREHOUSE 0.25%" AECode=""
+				AccSettingType="Profile-MobTel (1)" ContactType="MobTel" DuplicateInfo="86-1122334455"
+				ProfileID="133996" ProfileName="GUOTAI JUNAN SECURITIES (HK) LTD." AccountCategory="House Institution"
+				MainAccountStatus="Active" Is2FAMobile="true" />
+			<ROW AccountCode="009993" AccountName="GUOTAI JUNAN SECURITIES (HK) - SPECIAL ERROR A/C" AECode=""
+				AccSettingType="Profile-MobTel (1)" ContactType="MobTel" DuplicateInfo="86-1122334455"
+				ProfileID="133996" ProfileName="GUOTAI JUNAN SECURITIES (HK) LTD." AccountCategory="House Institution"
+				MainAccountStatus="Closed" Is2FAMobile="true" />
+			<ROW AccountCode="018324" AccountName="GTJA - TESTING A/C" AECode="" AccSettingType="Profile-MobTel (1)"
+				ContactType="MobTel" DuplicateInfo="86-1122334455" ProfileID="133996"
+				ProfileName="GUOTAI JUNAN SECURITIES (HK) LTD." AccountCategory="House Institution"
+				MainAccountStatus="Active" Is2FAMobile="true" />
+			<ROW AccountCode="018324S" AccountName="GTJA - TESTING A/C" AECode="" AccSettingType="Profile-MobTel (1)"
+				ContactType="MobTel" DuplicateInfo="86-1122334455" ProfileID="133996"
+				ProfileName="GUOTAI JUNAN SECURITIES (HK) LTD." AccountCategory="House Institution"
+				MainAccountStatus="Active" Is2FAMobile="true" />
+			<ROW AccountCode="018334" AccountName="GUOTAI JUNAN SECURITIES (H.K.) LTD. - TESTING A/C," AECode=""
+				AccSettingType="Profile-MobTel (1)" ContactType="MobTel" DuplicateInfo="86-1122334455"
+				ProfileID="133996" ProfileName="GUOTAI JUNAN SECURITIES (HK) LTD." AccountCategory="House Institution"
+				MainAccountStatus="Active" Is2FAMobile="true" />
+			<ROW AccountCode="018334S" AccountName="GUOTAI JUNAN SECURITIES (H.K.) LTD. - TESTING A/C," AECode=""
+				AccSettingType="Profile-MobTel (1)" ContactType="MobTel" DuplicateInfo="86-1122334455"
+				ProfileID="133996" ProfileName="GUOTAI JUNAN SECURITIES (HK) LTD." AccountCategory="House Institution"
+				MainAccountStatus="Active" Is2FAMobile="true" />
+			<ROW AccountCode="018344" AccountName="GUOTAI JUNAN SECURITIES (HK) LTD. - TESTING A/C." AECode=""
+				AccSettingType="Profile-MobTel (1)" ContactType="MobTel" DuplicateInfo="86-1122334455"
+				ProfileID="133996" ProfileName="GUOTAI JUNAN SECURITIES (HK) LTD." AccountCategory="House Institution"
+				MainAccountStatus="Active" Is2FAMobile="true" />
+			<ROW AccountCode="031798" AccountName="GUOTAI JUNAN SECURITIES (HK) LTD - IBD DERIVATIVE" AECode=""
+				AccSettingType="Profile-MobTel (1)" ContactType="MobTel" DuplicateInfo="86-1122334455"
+				ProfileID="133996" ProfileName="GUOTAI JUNAN SECURITIES (HK) LTD." AccountCategory="House Institution"
+				MainAccountStatus="Active" Is2FAMobile="true" />
+			<ROW AccountCode="088706" AccountName="GUOTAI JUNAN SECURITIES (H.K.) LTD. - TESTING A/C." AECode=""
+				AccSettingType="Profile-MobTel (1)" ContactType="MobTel" DuplicateInfo="86-1122334455"
+				ProfileID="133996" ProfileName="GUOTAI JUNAN SECURITIES (HK) LTD." AccountCategory="House Institution"
+				MainAccountStatus="Active" Is2FAMobile="true" />
+			<ROW AccountCode="095308" AccountName="GUOTAI JUNAN SECURITIES (HONG KONG) LIMITED" AECode=""
+				AccSettingType="Profile-MobTel (1)" ContactType="MobTel" DuplicateInfo="86-1122334455"
+				ProfileID="133996" ProfileName="GUOTAI JUNAN SECURITIES (HK) LTD." AccountCategory="House Institution"
+				MainAccountStatus="Active" Is2FAMobile="true" />
+			<ROW AccountCode="096508" AccountName="GUOTAI JUNAN SECURITIES (HONG KONG) LIMITED - MARKET MAKING A/C"
+				AECode="" AccSettingType="Profile-MobTel (1)" ContactType="MobTel" DuplicateInfo="86-1122334455"
+				ProfileID="133996" ProfileName="GUOTAI JUNAN SECURITIES (HK) LTD." AccountCategory="House Institution"
+				MainAccountStatus="Closed" Is2FAMobile="true" />
+			<ROW AccountCode="096509" AccountName="GUOTAI JUNAN SECURITIES (HONG KONG) LIMITED - MARKET MAKING SBL A/C"
+				AECode="" AccSettingType="Profile-MobTel (1)" ContactType="MobTel" DuplicateInfo="86-1122334455"
+				ProfileID="133996" ProfileName="GUOTAI JUNAN SECURITIES (HK) LTD." AccountCategory="House Institution"
+				MainAccountStatus="Closed" Is2FAMobile="true" />
+			<ROW AccountCode="132977" AccountName="GUOTAI JUNAN SECURITIES (HK) LTD - DERIVATIVES" AECode=""
+				AccSettingType="Profile-MobTel (1)" ContactType="MobTel" DuplicateInfo="86-1122334455"
+				ProfileID="133996" ProfileName="GUOTAI JUNAN SECURITIES (HK) LTD." AccountCategory="House Institution"
+				MainAccountStatus="Active" Is2FAMobile="true" />
+			<ROW AccountCode="156009" AccountName="GUOTAI JUNAN SECURITIES (HONG KONG) LIMITED - ED DEPT DERIVATIVES"
+				AECode="" AccSettingType="Profile-MobTel (1)" ContactType="MobTel" DuplicateInfo="86-1122334455"
+				ProfileID="133996" ProfileName="GUOTAI JUNAN SECURITIES (HK) LTD." AccountCategory="House Institution"
+				MainAccountStatus="Active" Is2FAMobile="true" />
+			<ROW AccountCode="169553" AccountName="GUOTAI JUNAN SEC. (HK) LTD - IS DEPT MARKET MAKING" AECode=""
+				AccSettingType="Profile-MobTel (1)" ContactType="MobTel" DuplicateInfo="86-1122334455"
+				ProfileID="133996" ProfileName="GUOTAI JUNAN SECURITIES (HK) LTD." AccountCategory="House Institution"
+				MainAccountStatus="Active" Is2FAMobile="true" />
+			<ROW AccountCode="169778" AccountName="GUOTAI JUNAN SEC. (HK) LIMITED - GM DESK" AECode=""
+				AccSettingType="Profile-MobTel (1)" ContactType="MobTel" DuplicateInfo="86-1122334455"
+				ProfileID="133996" ProfileName="GUOTAI JUNAN SECURITIES (HK) LTD." AccountCategory="House Institution"
+				MainAccountStatus="Active" Is2FAMobile="true" />
+			<ROW AccountCode="199615" AccountName="GUOTAI JUNAN SECURITIES (H.K.) LTD.- TESTING A/C 1" AECode=""
+				AccSettingType="Profile-MobTel (1)" ContactType="MobTel" DuplicateInfo="86-1122334455"
+				ProfileID="133996" ProfileName="GUOTAI JUNAN SECURITIES (HK) LTD." AccountCategory="House Institution"
+				MainAccountStatus="Active" Is2FAMobile="true" />
+			<ROW AccountCode="199616" AccountName="GUOTAI JUNAN SECURITIES (H.K.) LTD.- TESTING A/C 2" AECode=""
+				AccSettingType="Profile-MobTel (1)" ContactType="MobTel" DuplicateInfo="86-1122334455"
+				ProfileID="133996" ProfileName="GUOTAI JUNAN SECURITIES (HK) LTD." AccountCategory="House Institution"
+				MainAccountStatus="Active" Is2FAMobile="true" />
+			<ROW AccountCode="199617" AccountName="GUOTAI JUNAN SECURITIES (HK) LTD. - TESTING A/C 3" AECode=""
+				AccSettingType="Profile-MobTel (1)" ContactType="MobTel" DuplicateInfo="86-1122334455"
+				ProfileID="133996" ProfileName="GUOTAI JUNAN SECURITIES (HK) LTD." AccountCategory="House Institution"
+				MainAccountStatus="Active" Is2FAMobile="true" />
+			<ROW AccountCode="200280" AccountName="GUOTAI JUNAN SECURITIES (HK) LTD. - WEALTH MANAGE" AECode=""
+				AccSettingType="Profile-MobTel (1)" ContactType="MobTel" DuplicateInfo="86-1122334455"
+				ProfileID="133996" ProfileName="GUOTAI JUNAN SECURITIES (HK) LTD." AccountCategory="House Institution"
+				MainAccountStatus="Active" Is2FAMobile="true" />
+			<ROW AccountCode="200738"
+				AccountName="GUOTAI JUNAN SECURITIES (HK) LTD. - WEALTH MANAGE - SUB A/C - GUOTAI JUNAN SEC. (HK) LTD. - WM PRODUCT"
+				AECode="" AccSettingType="Profile-MobTel (1)" ContactType="MobTel" DuplicateInfo="86-1122334455"
+				ProfileID="133996" ProfileName="GUOTAI JUNAN SECURITIES (HK) LTD." AccountCategory="House Institution"
+				MainAccountStatus="Active" Is2FAMobile="true" />
+			<ROW AccountCode="201165" AccountName="GUOTAI JUNAN SECURITIES (HK) LTD. - IPO STABILIZATION" AECode=""
+				AccSettingType="Profile-MobTel (1)" ContactType="MobTel" DuplicateInfo="86-1122334455"
+				ProfileID="133996" ProfileName="GUOTAI JUNAN SECURITIES (HK) LTD." AccountCategory="House Institution"
+				MainAccountStatus="Active" Is2FAMobile="true" />
+			<ROW AccountCode="201263"
+				AccountName="GUOTAI JUNAN SECURITIES (HK) LTD. - WEALTH MANAGEMENT - SUB A/C - GUOTAI JUNAN SECURITIES (HK) LTD. - WM PRODUCT COLLATERAL"
+				AECode="" AccSettingType="Profile-MobTel (1)" ContactType="MobTel" DuplicateInfo="86-1122334455"
+				ProfileID="133996" ProfileName="GUOTAI JUNAN SECURITIES (HK) LTD." AccountCategory="House Institution"
+				MainAccountStatus="Active" Is2FAMobile="true" />
+			<ROW AccountCode="201265"
+				AccountName="GUOTAI JUNAN SECURITIES (HK) LTD. - WEALTH MANAGEMENT - SUB A/C - GUOTAI JUNAN SECURITIES (HK) LTD. - WM PRODUCT STAMP DUTY"
+				AECode="" AccSettingType="Profile-MobTel (1)" ContactType="MobTel" DuplicateInfo="86-1122334455"
+				ProfileID="133996" ProfileName="GUOTAI JUNAN SECURITIES (HK) LTD." AccountCategory="House Institution"
+				MainAccountStatus="Active" Is2FAMobile="true" />
+			<ROW AccountCode="201266"
+				AccountName="GUOTAI JUNAN SECURITIES (HK) LTD. - WEALTH MANAGEMENT - SUB A/C - GUOTAI JUNAN SECURITIES (HK) LTD. - WM PRODUCT REPO"
+				AECode="" AccSettingType="Profile-MobTel (1)" ContactType="MobTel" DuplicateInfo="86-1122334455"
+				ProfileID="133996" ProfileName="GUOTAI JUNAN SECURITIES (HK) LTD." AccountCategory="House Institution"
+				MainAccountStatus="Active" Is2FAMobile="true" />
+			<ROW AccountCode="202381" AccountName="GUOTAI JUNAN SECURITIES (HK) LTD. - PCS BONDS" AECode=""
+				AccSettingType="Profile-MobTel (1)" ContactType="MobTel" DuplicateInfo="86-1122334455"
+				ProfileID="133996" ProfileName="GUOTAI JUNAN SECURITIES (HK) LTD." AccountCategory="House Institution"
+				MainAccountStatus="Active" Is2FAMobile="true" />
+			<ROW AccountCode="202997"
+				AccountName="GUOTAI JUNAN SECURITIES (HONG KONG) LTD. - WEALTH MANAGEMENT - SUB A/C - GUOTAI JUNAN SECURITIES (HK) LTD. - WM PRODUCT SBL"
+				AECode="" AccSettingType="Profile-MobTel (1)" ContactType="MobTel" DuplicateInfo="86-1122334455"
+				ProfileID="133996" ProfileName="GUOTAI JUNAN SECURITIES (HK) LTD." AccountCategory="House Institution"
+				MainAccountStatus="Active" Is2FAMobile="true" />
+			<ROW AccountCode="206269" AccountName="GUOTAI JUNAN SECURITIES(HK)LTD-IPO STABILIZATION A" AECode=""
+				AccSettingType="Profile-MobTel (1)" ContactType="MobTel" DuplicateInfo="86-1122334455"
+				ProfileID="133996" ProfileName="GUOTAI JUNAN SECURITIES (HK) LTD." AccountCategory="House Institution"
+				MainAccountStatus="Active" Is2FAMobile="true" />
+			<ROW AccountCode="206272" AccountName="GUOTAI JUNAN SECURITIES (HK) LTD- IBD BONDS" AECode=""
+				AccSettingType="Profile-MobTel (1)" ContactType="MobTel" DuplicateInfo="86-1122334455"
+				ProfileID="133996" ProfileName="GUOTAI JUNAN SECURITIES (HK) LTD." AccountCategory="House Institution"
+				MainAccountStatus="Active" Is2FAMobile="true" />
+			<ROW AccountCode="910002"
+				AccountName="GUOTAI JUNAN SECURITIES (HONG KONG) LTD. - WM FINANCIAL PRODUCTS TEAM" AECode=""
+				AccSettingType="Profile-MobTel (1)" ContactType="MobTel" DuplicateInfo="86-1122334455"
+				ProfileID="133996" ProfileName="GUOTAI JUNAN SECURITIES (HK) LTD." AccountCategory="House Institution"
+				MainAccountStatus="Active" Is2FAMobile="true" />
+			<ROW AccountCode="910009"
+				AccountName="GUOTAI JUNAN SECURITIES (HONG KONG) LTD. - WM FINANCIAL PRODUCTS TEAM - SUB A/C - GUOTAI JUNAN SEC (HK) LTD. – WM STOCKS MM"
+				AECode="" AccSettingType="Profile-MobTel (1)" ContactType="MobTel" DuplicateInfo="86-1122334455"
+				ProfileID="133996" ProfileName="GUOTAI JUNAN SECURITIES (HK) LTD." AccountCategory="House Institution"
+				MainAccountStatus="Active" Is2FAMobile="true" />
+			<ROW AccountCode="910010"
+				AccountName="GUOTAI JUNAN SECURITIES (HONG KONG) LTD. - WM FINANCIAL PRODUCTS TEAM - SUB A/C - GUOTAI JUNAN SEC (HK) LTD. – WM STOCKS NON-MM"
+				AECode="" AccSettingType="Profile-MobTel (1)" ContactType="MobTel" DuplicateInfo="86-1122334455"
+				ProfileID="133996" ProfileName="GUOTAI JUNAN SECURITIES (HK) LTD." AccountCategory="House Institution"
+				MainAccountStatus="Active" Is2FAMobile="true" />
+			<ROW AccountCode="910011"
+				AccountName="GUOTAI JUNAN SECURITIES (HONG KONG) LTD. - WM FINANCIAL PRODUCTS TEAM - SUB A/C - GUOTAI JUNAN SEC (HK) LTD. – WM GTJA WTS &amp; CBBC"
+				AECode="" AccSettingType="Profile-MobTel (1)" ContactType="MobTel" DuplicateInfo="86-1122334455"
+				ProfileID="133996" ProfileName="GUOTAI JUNAN SECURITIES (HK) LTD." AccountCategory="House Institution"
+				MainAccountStatus="Active" Is2FAMobile="true" />
+			<ROW AccountCode="910012"
+				AccountName="GUOTAI JUNAN SECURITIES (HONG KONG) LTD. - WM FINANCIAL PRODUCTS TEAM - SUB A/C - GUOTAI JUNAN SEC (HK) LTD. –WM NON-GTJA WTS &amp; CBBC"
+				AECode="" AccSettingType="Profile-MobTel (1)" ContactType="MobTel" DuplicateInfo="86-1122334455"
+				ProfileID="133996" ProfileName="GUOTAI JUNAN SECURITIES (HK) LTD." AccountCategory="House Institution"
+				MainAccountStatus="Active" Is2FAMobile="true" />
+			<ROW AccountCode="910013"
+				AccountName="GUOTAI JUNAN SECURITIES (HONG KONG) LTD. - WM FINANCIAL PRODUCTS TEAM - SUB A/C - SEC - WM MM"
+				AECode="" AccSettingType="Profile-MobTel (1)" ContactType="MobTel" DuplicateInfo="86-1122334455"
+				ProfileID="133996" ProfileName="GUOTAI JUNAN SECURITIES (HK) LTD." AccountCategory="House Institution"
+				MainAccountStatus="Active" Is2FAMobile="true" />
+			<ROW AccountCode="910015"
+				AccountName="GUOTAI JUNAN SECURITIES (HONG KONG) LTD. - WM FINANCIAL PRODUCTS TEAM - SUB A/C - SEC - WM SBL"
+				AECode="" AccSettingType="Profile-MobTel (1)" ContactType="MobTel" DuplicateInfo="86-1122334455"
+				ProfileID="133996" ProfileName="GUOTAI JUNAN SECURITIES (HK) LTD." AccountCategory="House Institution"
+				MainAccountStatus="Active" Is2FAMobile="true" />
+			<ROW AccountCode="910016"
+				AccountName="GUOTAI JUNAN SECURITIES (HONG KONG) LTD. - WM FINANCIAL PRODUCTS TEAM - SUB A/C - GUOTAI JUNAN SEC (HK) LTD. –WM SP (NON- NOTES)"
+				AECode="" AccSettingType="Profile-MobTel (1)" ContactType="MobTel" DuplicateInfo="86-1122334455"
+				ProfileID="133996" ProfileName="GUOTAI JUNAN SECURITIES (HK) LTD." AccountCategory="House Institution"
+				MainAccountStatus="Active" Is2FAMobile="true" />
+			<ROW AccountCode="910017"
+				AccountName="GUOTAI JUNAN SECURITIES (HONG KONG) LTD. - WM FINANCIAL PRODUCTS TEAM - SUB A/C - GUOTAI JUNAN SEC (HK) LTD. –WM SP (NOTES)"
+				AECode="" AccSettingType="Profile-MobTel (1)" ContactType="MobTel" DuplicateInfo="86-1122334455"
+				ProfileID="133996" ProfileName="GUOTAI JUNAN SECURITIES (HK) LTD." AccountCategory="House Institution"
+				MainAccountStatus="Active" Is2FAMobile="true" />
+			<ROW AccountCode="910018"
+				AccountName="GUOTAI JUNAN SECURITIES (HONG KONG) LTD. - WM FINANCIAL PRODUCTS TEAM - SUB A/C - SEC - WMFP TRADING"
+				AECode="" AccSettingType="Profile-MobTel (1)" ContactType="MobTel" DuplicateInfo="86-1122334455"
+				ProfileID="133996" ProfileName="GUOTAI JUNAN SECURITIES (HK) LTD." AccountCategory="House Institution"
+				MainAccountStatus="Active" Is2FAMobile="true" />
+		</RECORDS>
+	</ANSWER>
+</STPAPI_RESULT>
+
+
+curl -k --proxy 10.184.161.160:443 --cert /home/5.11/server.pem https://10.18.172.216:44300/APIServer/SendRequest -F
+'xml="
+<sp_AccountIDInfoDateAndEamil_ListSearch ID="" AccountCode="018324" />"' -F 'appID=YYgfdg4654HGF76547gfg65x2'
+
+
+<STPAPI_RESULT>
+	<ANSWER ID="" ReturnCode="0">
+		<RECORDS Total_Records="1">
+			<ROW AccountCode="018324" ProfileType="LicensedCorporate" DateOfBirth="" DateOfIncorporate="19930708"
+				IDNo="433562" Email="xxx@qq.com" />
+		</RECORDS>
+	</ANSWER>
+</STPAPI_RESULT>
+
+```

@@ -19,9 +19,7 @@ Resilience4j提供了一个限流器，它将从epoch开始的所有纳秒划分
 
 还有一个使用信号量的`SemaphoreBasedRateLimiter`和一个调度程序，它将在每个`RateLimiterConfig#limitRefreshPeriod`之后刷新活动权限数。
 
-![avatar](https://github.com/lmhmhl/Resilience4j-Guides-Chinese/blob/main/images/44ca055-rate_limiter.png)
-
-
+<img src="pics/rate_limiter.png" alt="">
 
 ## 创建RateLimiterRegistry
 

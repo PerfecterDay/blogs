@@ -11,3 +11,6 @@
 1. 查看当前节点的所有 Index: `curl -k -u elastic:+wh_NUsb-BSJQPFHDQ5= -X GET 'https://localhost:9200/_cat/indices?v' `
 2. curl -k -u elastic:+wh_NUsb-BSJQPFHDQ5= -X  GET 'https://localhost:9200/_search?pretty' 
 3. curl -k -u elastic:+wh_NUsb-BSJQPFHDQ5= 'https://localhost:9200/_mapping?pretty=true'   列出每个 Index 所包含的 Type。
+
+
+ElasticsearchAutoConfiguration

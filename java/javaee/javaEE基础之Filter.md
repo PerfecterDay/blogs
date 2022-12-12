@@ -8,11 +8,17 @@ Filter 主要用来在 Servlet 处理请求的前后完成某些操作。
 
 当请求进入到 Filter 时， 过滤器的 `diFilter()` 方法将会被调用，在该方法中提供了对 ServletRequest 、 ServletResponse 和 FilterChain 对象的访问。因此可以对请求和相应进行处理。
 
-<center><img src="pics/filterchain.jpg" alt="" width="60%"></center>
+<center><img src="pics/filterchain.png" alt="" width="60%"></center>
 
 过滤器炼的工作方式非常像栈。当请求进入时，首先进入第一个过滤器，该过滤器被添加到栈中。当过滤器调用 `FilterChain.diFilter()` 时，下一个过滤器将被添加到栈中，一直到请求进入Servlet中，它是最后一个被加入到栈的元素。
 
 当Servlet的 `service()` 方法返回时，Servlet出栈，然后控制权返回最后一个加入到栈的 Fliter 中，当它的 `diFilter()` 方法返回时，过滤器将从栈中移除，控制权返回到之前的过滤器中，一直到第一个过滤器。当第一个过滤器的 `diFilter()` 方法返回时，请求处理就完成了。
+
+过滤器的作用描述:
+
+1. 在HttpServletRequest 到达Servlet 之前，拦截客户的HttpServletRequest 。根据需要检查HttpServletRequest ，也可以修改HttpServletRequest 头和数据。
+2. 在HttpServletResponse 到达客户端之前，拦截HttpServletResponse 。根据需要检查HttpServletResponse ，可以修改HttpServletResponse 头和数据。
+
 ## 配置 Filter
 可以是用3种方式配置：
 1. 使用部署描述符

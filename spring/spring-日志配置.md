@@ -108,3 +108,64 @@ logback 的配置文件非常的灵活，不需要指定 DTD 或者 xml 文件�
 	`<encoder` 元素强制一个 class 属性去指定一个类的全限定名，用于实例化。如果 encoder 的 class 是 `PatternLayoutEncoder`，那么基于[默认类映射]()，class 属性可以被隐藏。
 
 	ch.qos.logback.core.ConsoleAppender: 就跟名字显示的一样，是将日志事件附加到控制台，跟进一步说就是通过 `System.out` 或者 `System.err` 来进行输出。默认通过前者
+
+### 多环境日志配置
+在不同的profile 或者配置文件中配置不同的日志配置文件：
+```
+logging.config=src/main/resources/logback-prod.xml
+logging.config=src/main/resources/logback-dev.xml
+logging.config=src/main/resources/logback-test.xml
+```
+
+### MDC(Mapped Diagnostic Context) 及 @Async 的跨线程配置
+MDC用于标记每个请求。它是通过将关于请求的上下文信息放入MDC来完成的，MDC数据结构上类似与Map 数据结构，可以put/get 存取数据。Logback 的 MDC 是与线程绑定的，本质上是 ThreadLocal 的对象。所以跨线程时MDC的数据无法同步。需要手动同步，在 @Async 的配置方案如下：
+```
+@Configuration
+@PropertySource(value = "classpath:/configuration/${env}/pool.yml", factory = YamlPropertySourceFactory.class)
+@ConfigurationProperties(prefix = "task.pool")
+@Data
+@EnableAsync
+public class AsyncThreadPoolConfig implements AsyncConfigurer {
+    private Integer coreSize;
+    private Integer maxSize;
+    private Integer queueSize;
+    private Integer keepAlive;
+
+    @Override
+    public Executor getAsyncExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setThreadNamePrefix("user-service-pool");
+        executor.setTaskDecorator(new MdcTaskDecorator());
+        executor.setCorePoolSize(coreSize);
+        executor.setMaxPoolSize(maxSize);
+        executor.setQueueCapacity(queueSize);
+        executor.setKeepAliveSeconds(keepAlive);
+        executor.initialize();
+        return executor;
+    }
+
+}
+
+public class MdcTaskDecorator implements TaskDecorator {
+    @Override
+    public Runnable decorate(Runnable runnable) {
+        // Right now: Web thread context !
+        // (Grab the current thread MDC data)
+        Map<String, String> contextMap = MDC.getCopyOfContextMap();
+        return () -> {
+            try {
+                // Right now: @Async thread context !
+                // (Restore the Web thread context's MDC data)
+                MDC.setContextMap(contextMap);
+                runnable.run();
+            } finally {
+                MDC.clear();
+            }
+        };
+    }
+}
+```
+
+如果是自己维护的线程池，可以再创建线程池时传入自定义的 ThreadFactory threadFactory 参数，在自定义 ThreadFactory 中创建线程时，传递 MDC 对象。
+
+

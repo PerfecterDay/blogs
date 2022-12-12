@@ -33,7 +33,7 @@
 	}
 	```
 	这样不管是序列化还是反序列化，intValue 的值都是不会额外设置的。由构造器设置值。
-2. 忽略所有未知属性，类级别注解：`@JsonIgnoreProperties(ignoreUnknown = true)`
+2. **忽略所有未知属性，类级别注解**：`@JsonIgnoreProperties(ignoreUnknown = true)`
 3. 属性级别的注解：`JsonIgnore`
 	```
 	public class MyDto {

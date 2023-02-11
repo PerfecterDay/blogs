@@ -1,6 +1,6 @@
 # Consul
 
-https://learn.hashicorp.com/tutorials/consul/docker-container-agents
+https://learn.hashicorp.com/tutorials/consul/docker-container-agents  
 https://book-consul-guide.vnzmi.com/04_run_agent.html
 
 查询集群成员：`docker exec badger consul members`
@@ -37,6 +37,7 @@ ConsulAutoServiceRegistrationListener
 
 
 ### HTTP API
+查找所有注册的服务信息： `curl http://localhost:8500/v1/catalog/services`
 根据服务名查找服务信息： `curl http://localhost:8500/v1/catalog/service/{serviceName}`
 
 `curl http://localhost:8500/v1/agent/checks`

@@ -199,7 +199,13 @@ Redis是一种基于键值对（key-value）的NoSQL数据库，与很多键值�
    }
    ```
 
-   下边是 Jedis 连接池的配置参数：
+
+### 设置过期时间
+1. `expire key 10000`: 设置 key 过期时间 1000s
+2. `ttl key`: 查看 key 剩余存活时间，单位s，-1 表示没有设置过期时间，-2表示key不存在
+3. `persist key`: 取消key 的过期时间设置
+   
+下边是 Jedis 连接池的配置参数：
    <center> <img src="pics/jedispool-config.png" width="60%"></center>
   
 

@@ -102,32 +102,75 @@ keystore 只是一种文件格式而已，实际上在 Java 的世界里 KeyStor
 Java 使用以下主要类和接口来支持安全传输：
 <center><img src="pics/jsse.jpg" width="40%"/></center>
 
-```
-SSLContext context = SSLContext.getInstance("TLS");
-context.init(null,null,null);
-URL url = new URL("https://localhost");
-HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
-/** 下边这句会抛出 PKIX path building failed: sun.security.provider.certpath.SunCertPathBuilderException: unable to find valid certification path to requested target 异常**/
-try{
-    httpsURLConnection.getInputStream();
-}catch(Exception e){
-    e.printStackTrace();
-}
-//
 
-String keyStoreFile = "C:\\Users\\BaIcy\\Documents\\xca\\ca_wang.jks";
-String password = "test123";
-KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
-ks.load(new FileInputStream(keyStoreFile),password.toCharArray());
+当遇到 https 证书验证失败时，你需要选择下面三种方法中的一个来解决：
++ Configure SSLContext with a TrustManager that accepts any certificate (see below).  
+	```
+		public class SSLTest {
+		
+		public static void main(String [] args) throws Exception {
+			// configure the SSLContext with a TrustManager
+			SSLContext ctx = SSLContext.getInstance("TLS");
+			ctx.init(new KeyManager[0], new TrustManager[] {new DefaultTrustManager()}, new SecureRandom());
+			SSLContext.setDefault(ctx);
 
-TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-tmf.init(ks);
-SSLContext sslContext = SSLContext.getInstance("TLS");
-sslContext.init(null,tmf.getTrustManagers(),null);
-httpsURLConnection.setSSLSocketFactory(sslContext.getSocketFactory());
+			URL url = new URL("https://mms.nw.ru");
+			HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
+			conn.setHostnameVerifier(new HostnameVerifier() {
+				@Override
+				public boolean verify(String arg0, SSLSession arg1) {
+					return true;
+				}
+			});
+			System.out.println(conn.getResponseCode());
+			conn.disconnect();
+		}
+		
+		private static class DefaultTrustManager implements X509TrustManager {
 
-InputStream ins = httpsURLConnection.getInputStream();
-while (ins.read() > 0){
+				@Override
+				public void checkClientTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {}
 
-}
-```
+				@Override
+				public void checkServerTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {}
+
+				@Override
+				public X509Certificate[] getAcceptedIssuers() {
+					return null;
+				}
+			}
+		}
+	```
+
++ Configure SSLContext with an appropriate trust store that includes your certificate.
+
+	```
+	SSLContext context = SSLContext.getInstance("TLS");
+	context.init(null,null,null);
+	URL url = new URL("https://localhost");
+	HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
+	/** 下边这句会抛出 PKIX path building failed: sun.security.provider.certpath.SunCertPathBuilderException: unable to find valid certification path to requested target 异常**/
+	try{
+		httpsURLConnection.getInputStream();
+	}catch(Exception e){
+		e.printStackTrace();
+	}
+
+	String keyStoreFile = "C:\\Users\\BaIcy\\Documents\\xca\\ca_wang.jks";
+	String password = "test123";
+	KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
+	ks.load(new FileInputStream(keyStoreFile),password.toCharArray());
+
+	TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+	tmf.init(ks);
+	SSLContext sslContext = SSLContext.getInstance("TLS");
+	sslContext.init(null,tmf.getTrustManagers(),null);
+	httpsURLConnection.setSSLSocketFactory(sslContext.getSocketFactory());
+
+	InputStream ins = httpsURLConnection.getInputStream();
+	while (ins.read() > 0){
+
+	}
+	```
+
++ Add the certificate for that site to the default Java trust store.

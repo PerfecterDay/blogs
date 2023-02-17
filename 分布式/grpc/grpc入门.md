@@ -90,3 +90,6 @@ spring:
         heartbeat:
           enable: true
 ```
+
+
+exception is java.lang.NoSuchMethodError

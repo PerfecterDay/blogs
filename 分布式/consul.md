@@ -36,12 +36,25 @@ ConsulAutoServiceRegistrationListener
 只有web应用时才会注册服务
 
 
-### HTTP API
+### [HTTP API](https://developer.hashicorp.com/consul/api-docs/catalog#list-nodes-for-service)
 查找所有注册的服务信息： `curl http://localhost:8500/v1/catalog/services`
+查找所有注册的服务信息： `curl http://localhost:8500/v1/catalog/datacenters`
 根据服务名查找服务信息： `curl http://localhost:8500/v1/catalog/service/{serviceName}`
 
 `curl http://localhost:8500/v1/agent/checks`
 查看处于 critical 状态的服务：`curl http://localhost:8500/v1/health/state/critical`
+
+```
+curl --header "X-Consul-Namespace: *" http://127.0.0.1:8500/v1/health/node/my-node
+
+curl http://127.0.0.1:8500/v1/health/service/my-service?ns=default
+
+
+curl http://127.0.0.1:8500/v1/agent/services
+
+```
+
+
 
 ### Consul API
 http://localhost:8100/actuator/health

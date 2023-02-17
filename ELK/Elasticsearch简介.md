@@ -92,4 +92,57 @@ curl -X POST -d '{
 
 
 
+curl -X POST -d '{
+    "appkey": "D133F72A44D7082C56B1DB3FE0332E33",
+    "username": "gta.gtauser2023",
+    "password": "gta231p0w1d"
+   }'  https://gtadata.iqdii.com/jybapp/login/serverlogin
+
+
+
+   curl -X POST -d '{
+	"username": "test1234",
+    "token": "297F5E0E2964B22BA5FE5011",
+    "ipaddress":"223.165.23.63"
+   }'  https://gtadata.iqdii.com/jybapp/login/getusersession
+
+
 ElasticsearchAutoConfiguration
+
+
+
+
+curl -u elastic:xz3H7rrPCCxrbsdt --location --request DELETE 'http://es-sg-vfp331pa70007h94i.elasticsearch.aliyuncs.com:9200/hk_jyb_market_code_table'
+curl -u elastic:xz3H7rrPCCxrbsdt --location --request DELETE 'http://es-sg-vfp331pa70007h94i.elasticsearch.aliyuncs.com:9200/hk_market_code_table'
+curl -u elastic:xz3H7rrPCCxrbsdt --location --request DELETE 'http://es-sg-vfp331pa70007h94i.elasticsearch.aliyuncs.com:9200/jyb_market_code_table'
+
+
+
+curl -u elastic:xz3H7rrPCCxrbsdt --location --request GET 'http://search-service-svc:8000/search/api/indexExists?indexName=hk_market_code_table'
+
+
+
+
+curl -u elastic:xz3H7rrPCCxrbsdt --location http://es-sg-vfp331pa70007h94i.elasticsearch.aliyuncs.com:9200/_cat/indices?v
+
+curl -u elastic:xz3H7rrPCCxrbsdt --location http://es-sg-vfp331pa70007h94i.elasticsearch.aliyuncs.com:9200/hk_jyb_market_code_table/_count
+curl -u elastic:xz3H7rrPCCxrbsdt --location http://es-sg-vfp331pa70007h94i.elasticsearch.aliyuncs.com:9200/hk_market_code_table/_count
+curl -u elastic:xz3H7rrPCCxrbsdt --location http://es-sg-vfp331pa70007h94i.elasticsearch.aliyuncs.com:9200/jyb_market_code_table/_count
+
+curl -u elastic:xz3H7rrPCCxrbsdt --location http://es-sg-vfp331pa70007h94i.elasticsearch.aliyuncs.com:9200/jyb_market_code_table/_search
+
+
+
+curl --location 'http://10.4.152.180:8000/user/token/tradeCheck' \
+--header 'App-Name: gtjagjapp' \
+--header 'App-ID: 3E1EEECDB7A577CCA1A2E2C1885DBE7A' \
+--header 'deviceId: 6cba7aed5c92c10d9239b6bba63b61174f4803508af51b99255459646333ad91' \
+--header 'short-token: S-a1f7a27c-706d-461c-90a0-7e497e8e5e16' \
+--header 'deviceType: 80' \
+--header 'platform: IOS' \
+--header 'osDevice: Iphone 14 plus' \
+--header 'gtja-international-app-token: 5ec3de13-d10a-42c4-9fbb-fc46da029514' \
+--header 'Content-Type: application/json' \
+--data '{
+    "accountCode":"197566"
+}'

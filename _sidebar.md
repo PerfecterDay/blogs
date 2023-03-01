@@ -181,6 +181,7 @@
   * [docker-compose](/docker/docker-compose.md)
   * [podman](/docker/podman.md)
   * [k8s-概念及架构](/docker/k8s-概念及架构.md)
+  * [k8s-deployment](/docker/k8s-deployment.md)
 * [分布式](#)
   * [分布式锁](/分布式/分布式锁.md)
   * [一致性哈希算法](/分布式/一致性哈希算法.md)

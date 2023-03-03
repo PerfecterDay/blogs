@@ -74,3 +74,35 @@ lines terminated by '\r\n'
 恢复二进制日志：
 `mysqlbinlog [options] bin_log_file | mysql -u root -p`
 --start-position 和 --stop-position 可以用来指定从二进制日志的某个偏移量进行恢复。
+
+
+#### [Mysql 数据恢复](https://www.stellarinfo.com/blog/repair-innodb-table-corruption-in-mysql/)
+主机的mysql数据文件：/Users/gtja/www/mysqldata/zentao:var/lib/mysql
+mysql日志： /var/log/mysql/error.log
+
+配置文件中(/etc/mysql/mariadb.conf.d/50-mysqld_safe.cnf)增加下述配置：
+```
+[mysqld]
+innodb_force_recovery=1
+```
+
+dump 数据：
+```
+mysqldump -u user -p database_name table_name > single_dbtable_dump.sql
+mysqldump -u root -p zentao zt_bug > zt_bug_dump.sql
+```
+
+删除老的数据：
+```
+mysql -u user -p –execute=”DROP TABLE database_name.table_name”
+mysql -u root -p –execute=”DROP TABLE zentao.zt_bug
+```
+
+还原旧的数据：
+```
+mysql -u user -p < single_dbtable_dump.sql
+mysql -u root -p < zt_bug_dump.sql
+```
+将配置还原：
+[mysqld]
+#innodb_force_recovery=1

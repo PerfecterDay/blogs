@@ -1,0 +1,6 @@
+* [Home](/)
+* [..](../_sidebar.md)
+* [homebrew](/other/homebrew.md)
+* [base64](/other/base64编码.md)
+* [markdown](markdown语法.md)
+* [vscode快捷键](/other/vscode%20快捷键.md)

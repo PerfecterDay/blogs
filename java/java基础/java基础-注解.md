@@ -10,6 +10,14 @@
 ## 自定义注解语法
 创建自定义注解和创建一个接口相似，但是注解的interface关键字需要以@符号开头。我们可以为注解声明方法。
 ```
+语法：
+modifiers @interface AnnotationName{
+	type elementName1(); 
+	type elementName2() default value; 
+	...
+}
+
+示例：
 @Documented
 @Target(ElementType.METHOD)
 @Inherited
@@ -22,12 +30,24 @@ public @interface MethodInfo{
 }
 ```
 + 注解方法不能带有参数；
-+ 注解方法返回值类型限定为： 基本类型 、String 、Enums 、Class 、Annotation 或者是这些类型的数组；
++ 注解方法返回值类型限定为： 基本类型 、String 、Enums 、Class 、Annotation 或者是这些类型的数组（多维数组-数组组成的数组不行）；
 + 注解方法可以有默认值；
 + 注解本身能够包含元注解，元注解被用来注解其它注解。
 
+### 注解使用
+```
+@AnnotationName(elementName1=value1,elementName2=value2)
+```
+
+注解可以用在：包、类、接口、方法、构造器、实例域、局部变量、参数变量、类型参数。  
+*对包/局部变量的注解只能在源码级别处理。编译后的class文件并不描述局部变量，因此所有的局部变量注解在编译完成后都会被遗弃掉。*
+
 ## Java注解解析
-使用反射技术来解析java类的注解。那么注解的RetentionPolicy应该设置为RUNTIME，否则java类的注解信息在执行过程中将不可用，那么我们也不能从中得到任何和注解有关的数据。
+
+使用反射技术来解析java类的注解:
+<center><img src="pics/annotation-process.jpg" width="50%"></center>
+
+使用反射处理注解的RetentionPolicy应该设置为RUNTIME，否则java类的注解信息在执行过程中将不可用，那么我们也不能从中得到任何和注解有关的数据。
 
     public class AnnotationParsing {
      
@@ -62,8 +82,42 @@ public @interface MethodInfo{
     }
 
 ## 编译时处理注解
-APT(Annotation Processing Tool)是一种处理注解的工具，它对源代码文件进行检测，并找出源文件所包含的注解信息，然后针对注解信息进行额外的处理。
-
+APT(Annotation Processing Tool)是一种处理注解的工具，它对源代码文件进行检测，并找出源文件所包含的注解信息，然后针对注解信息进行额外的处理。  
 Java 提供的 javac.exe 编译工具有一个 `-processor` 选项，该选项可以指定一个注解处理器，如果编译时，指定了注解处理器，那么这个注解处理器将会起作用。
+```
+javac -prcessor ProcessorName1,ProcessorName2,.... sourceFiles
+```  
+每个注解处理器都需要实现 `javax.annotation.processing` 包下的 `Processor` 接口。不过实现该接口必须实现它里边的所有方法，因此通常会采用继承 `AbstractProcessor` 的方式来实现注解处理器。  
+一个注解处理器可以处理一个或多个注解。
 
-每个注解处理器都需要实现 `javax.annotation.processing` 包下的 `Processor` 接口。不过实现该接口必须实现它里边的所有方法，因此通常会采用继承 `AbstractProcessor` 的方式来实现注解处理器。一个注解处理器可以处理一个或多个注解。
+## 字节码工程-ASM，修改编译后的字节码
+
+```java
+// 举例做了如下注解
+@LogEntry(logger="global")public int hashCode()
+// 那么,每次调用该方法都会打印一条信息
+/**
+1. 加载类文件的字节码
+2.定位所有方法
+3.对于每个方法,检查它是否有一个LogEntry注解
+4.如果有,再方法开始部分添加字码指令(用于打印日志的字节码指令)
+**/
+```
+
+## 加载时修改字节码
+
+将字节码工程延迟到载入时,即类加载器加载类的时候.  
+设备（ Instrumentation ）API提供了一个安装字节码转换器的挂钩,不过,必须在程序的main方法调用之前安装转换器
+1. 实现一个具有下面这个方法的类
+   ```java
+   public static void premain(String arg,Instrumentation  instr)
+   ```
+   当加载代理的时候,此方法会被调用, `instr` 可以用来安装各种挂钩
+2. 制作一个清单文件EntryLoggingAgent.mf来设置Premain-Class属性
+3. 将代理打包,并生成jar文件
+4. 为了运行一个具有改代理的Java程序,需要(在idea的破解文件看过)
+
+   ```shell
+   java -javaagent:EntryLoggingAgent.jar=set.Item -classpath .:asm/lib/\* set.SetTest
+   ```
+	<center><img src="pics/instruction.png" width="50%"></center> 

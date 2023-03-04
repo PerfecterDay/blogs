@@ -1,0 +1,5 @@
+* [Home](/)
+* [windows工具程序](#)
+  * [powershell与cmd](/windows/powershell与cmd.md)
+  * [scoop](/windows/scoop.md)
+  * [proxychains](/windows/proxychains.md)

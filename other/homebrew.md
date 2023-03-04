@@ -15,6 +15,11 @@ cd homebrew
 git clone https://mirrors.ustc.edu.cn/homebrew-cask.git
 ```
 
+```
+echo 'export HOMEBREW_BOTTLE_DOMAIN=https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles' >> ~/.bash_profile
+source ~/.bash_profile
+```
+
 ## 常用命令
 1. `brew install [formula]`:安装 formula
 2. `brew uninstall [formula]`:卸载 formula

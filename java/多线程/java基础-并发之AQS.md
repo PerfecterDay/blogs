@@ -30,6 +30,7 @@
 
 独占式同步状态获取流程如下：
 <center><img src="pics/AQS-Exclusive.png" height=40% width=40%></center>
+
 首先调用自定义同步器的 `tryAcquire(int arg)` 方法，该方法应该保证线程安全地获取同步状态，如果获取失败，则构造同步节点（独占式 `NODE.EXCLUSIVE` ,同一时刻只能有一个线程成功获取同步状态），并通过 `addWaiter(Node node)` 方法将该节点加入到同步队列的尾部，最后调用 `acquireQueued(final Node node, int arg)` 方法，使得该节点（线程）以“死循环”的方式获取同步状态。如果获取不到则阻塞节点中的线程，被阻塞线程的唤醒主要依靠前驱节点的出队或阻塞线程被中断来实现。
 ```
     public final void acquire(int arg) {

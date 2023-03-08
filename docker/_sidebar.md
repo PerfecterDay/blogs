@@ -8,3 +8,6 @@
 * [podman](/docker/podman.md)
 * [k8s-概念及架构](/docker/k8s-概念及架构.md)
 * [k8s-deployment](/docker/k8s-deployment.md)
+* [k8s-DaemonSet](/docker/k8s-DaemonSet.md)
+* [k8s-Job](/docker/k8s-Job.md)
+* [k8s-Sevice](/docker/k8s-Service.md)

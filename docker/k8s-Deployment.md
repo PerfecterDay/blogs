@@ -74,7 +74,7 @@ Kubernetes 支持两种方式创建资源：
 等待一段时间，Kubernetes 会检查到 k8s-node2 不可用，将 k8s-node2 上的 Pod 标记为 Unknown 状态，并在 k8s-node1 上新创建两个 Pod，维持总副本数为 3。
 当 k8s-node2 恢复后，Unknown 的 Pod 会被删除，不过已经运行的 Pod 不会重新调度回 k8s-node2。
 
-### 指定节点部署
+### 用 label 控制pod的位置——指定节点部署
 默认配置下，Scheduler 会将 Pod 调度到所有可用的 Node。不过有些情况我们希望将 Pod 部署到指定的 Node，比如将有大量磁盘 I/O 的 Pod 部署到配置了 SSD 的 Node；或者 Pod 需要 GPU，需要运行在配置了 GPU 的节点上。
 
 **Kubernetes 是通过 label 来实现这个功能的。**
@@ -82,9 +82,9 @@ Kubernetes 支持两种方式创建资源：
 label 是 key-value 对，各种资源都可以设置 label，灵活添加各种自定义属性。比如执行如下命令标注 k8s-node1 是配置了 SSD 的节点。  
 `kubectl label node k8s-node1 disktype=ssd`
 然后通过 `kubectl get node --show-labels` 查看节点的 label。  
-disktype=ssd 已经成功添加到 k8s-node1，除了 disktype，Node 还有几个 Kubernetes 自己维护的 label。
-有了 disktype 这个自定义 label，接下来就可以指定将 Pod 部署到 k8s-node1。
-
-在 Pod 模板的 spec 里通过 `nodeSelector` 指定将此 Pod 部署到具有 label `disktype=ssd` 的 Node 上。
-
+disktype=ssd 已经成功添加到 k8s-node1，除了 disktype，Node 还有几个 Kubernetes 自己维护的 label。  
+有了 disktype 这个自定义 label，接下来就可以指定将 Pod 部署到 k8s-node1。  
+在 Pod 模板的 spec 里通过 `nodeSelector` 指定将此 Pod 部署到具有 label `disktype=ssd` 的 Node 上。  
 删除lable : `kubectl label node k8s-node1 disktype-`
+
+

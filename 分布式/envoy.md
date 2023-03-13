@@ -46,8 +46,11 @@ logs 文件夹报 permission denied 错误 -> 必须进入容器内部后使用 
 (access_log)[https://www.envoyproxy.io/docs/envoy/latest/configuration/observability/access_log/usage#config-access-log]
 
 
-
+查看 envoy 的状态统计信息：
 https://www.envoyproxy.io/docs/envoy/latest/configuration/upstream/cluster_manager/cluster_stats.html
+
+https://www.envoyproxy.io/docs/envoy/latest/operations/stats_overview
+
 upstream_rq_pending_total
 
 cluster.user-cluster.bind_errors: 0

@@ -40,23 +40,23 @@
 9.  `-F` ：用来向服务器上传二进制文件。
 	`curl -F 'file=@photo.png' https://google.com/profile`
 	会给 HTTP 请求加上标头Content-Type: multipart/form-data，然后将文件photo.png作为file字段上传。
-9.  `-G` ：用来构造 URL 的get请求的查询字符串。
-10. `-H` ：添加 HTTP 请求的标头。  `curl -H "X-First-Name: Joe" https://example.com`
-11. `-i` ：打印出服务器回应的 HTTP 标头。
-12. `-I` ：向服务器发出 HEAD 请求，然会将服务器返回的 HTTP 标头打印出来。
-13. `-k` ：指定跳过 SSL 检测。
-14. `-L` ：让 HTTP 请求跟随服务器的重定向。curl 默认不跟随重定向。
-15. `--limit-rate` ：用来限制 HTTP 请求和回应的带宽，模拟慢网速的环境。
-16. `-o` ：将服务器的回应保存成文件，等同于 `wget` 命令.
-17. `-O` ：将服务器回应保存成文件，并将 URL 的最后部分当作文件名。
-18. `-s` ：将不输出错误和进度信息。
-19. `-S` ：指定只输出错误信息，通常与-s一起使用。
-20. `-u` ：用来设置服务器认证的用户名和密码。
-21. `-v` ：输出通信的整个过程，用于调试。
-22. `-x` ：指定 HTTP 请求的代理。
-23. `-X` ：指定 HTTP 请求的方法。
-24. `--cert`： 
-
+10. `-G` ：用来构造 URL 的get请求的查询字符串。
+11. `-H` ：添加 HTTP 请求的标头。  `curl -H "X-First-Name: Joe" https://example.com`
+12. `-i` ：打印出服务器回应的 HTTP 标头。
+13. `-I` ：向服务器发出 HEAD 请求，然会将服务器返回的 HTTP 标头打印出来。
+14. `-k` ：指定跳过 SSL 检测。
+15. `-L` ：让 HTTP 请求跟随服务器的重定向。curl 默认不跟随重定向。
+16. `--limit-rate` ：用来限制 HTTP 请求和回应的带宽，模拟慢网速的环境。
+17. `-o` ：将服务器的回应保存成文件，等同于 `wget` 命令.
+18. `-O` ：将服务器回应保存成文件，并将 URL 的最后部分当作文件名。
+19. `-s` ：将不输出错误和进度信息。
+20. `-S` ：指定只输出错误信息，通常与-s一起使用。
+21. `-u` ：用来设置服务器认证的用户名和密码。
+22. `-v` ：输出通信的整个过程，用于调试。
+23. `-x` ：指定 HTTP 请求的代理。
+24. `-X` ：指定 HTTP 请求的方法。
+25. `--cert`: 指定证书
+26. `--form`: 指定 form 参数， `--from 'UserID=67buu'`
 
 
 ```
@@ -262,4 +262,11 @@ curl -k --proxy 10.184.161.160:443 --cert /home/5.11/server.pem https://10.18.17
 	</ANSWER>
 </STPAPI_RESULT>
 
+
+
+curl -X POST https://smsc.xgate.com.hk/smshub/sendsms \
+--form 'id=dsfds' \
+--form 'scs=fdsdscas' \
+--form 'MessageReceiver=86-17674090666' \
+--form 'MessageBody=730245'
 ```

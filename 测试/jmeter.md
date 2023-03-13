@@ -1,0 +1,1 @@
+jmeter -n -t ./trade.jmx -l result.jtl3.10.1  -e -o ./report

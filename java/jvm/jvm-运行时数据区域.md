@@ -78,4 +78,6 @@ JDK 1.4 中引入了 NIO 类，引入了一种基于通道与缓冲区的 I/O �
 + `-XX:MaxDirectmemorySize` :设置直接内存容量，如果不指定，默认64M。
 
 
-
+```
+-XX:CICompilerCount=3 -XX:ConcGCThreads=1 -XX:G1ConcRefinementThreads=4 -XX:G1HeapRegionSize=1048576 -XX:GCDrainStackTargetSize=64 -XX:InitialHeapSize=130023424 -XX:MarkStackSize=4194304 -XX:MaxHeapSize=2051014656 -XX:MaxNewSize=1229979648 -XX:MinHeapDeltaBytes=1048576 -XX:NonNMethodCodeHeapSize=5830092 -XX:NonProfiledCodeHeapSize=122914074 -XX:ProfiledCodeHeapSize=122914074 -XX:ReservedCodeCacheSize=251658240 -XX:+SegmentedCodeCache -XX:+UseCompressedClassPointers -XX:+UseCompressedOops -XX:+UseG1GC
+```

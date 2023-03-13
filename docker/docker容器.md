@@ -37,6 +37,9 @@
 	1.  `docker attach [containerid]`：可通过 Ctrl+p 然后 Ctrl+q 组合键退出 attach 终端
 	2.  `docker exec -it [containerid]`：`-it` 以交互模式打开 pseudo-TTY，执行 bash，其结果就是打开了一个 bash 终端。
 	3.  启动时直接进入容器，适用于要保持容器后台运行的情况：`docker run -it [imageid] [command]` -> `docker run -it nginx /bin/bash`
+		```
+		docker run -dit --name user-center-com-gmas -v /Users/coder_wang/Workspace/uat-docker/user-com-gmas:/usr/local/gtja/com_gmas -p 8910:8910  golang:1.17.7-stretch
+		```
 
 	attach 与 exec 主要区别如下:
     	+ attach 直接进入容器 启动命令 的终端，不会启动新的进程。

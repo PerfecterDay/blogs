@@ -30,7 +30,7 @@ ConsulAutoRegistration
 
 ConsulDiscoveryClientConfiguration
             ConsulDiscoveryProperties
-
+HeartbeatProperties
 
 ConsulAutoServiceRegistrationListener
 只有web应用时才会注册服务
@@ -58,3 +58,6 @@ curl http://127.0.0.1:8500/v1/agent/services
 
 ### Consul API
 http://localhost:8100/actuator/health
+
+### 问题
+preferIpAddress ： 测试环境需要IP访问，主机名不通

@@ -120,6 +120,43 @@ curl -u elastic:xz3H7rrPCCxrbsdt --location --request DELETE 'http://es-sg-vfp33
 
 curl -u elastic:xz3H7rrPCCxrbsdt --location --request GET 'http://search-service-svc:8000/search/api/indexExists?indexName=hk_market_code_table'
 
+curl -u elastic:xz3H7rrPCCxrbsdt --request PUT 'http://es-sg-vfp331pa70007h94i.elasticsearch.aliyuncs.com:9200/info' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+  "settings": {
+    "number_of_replicas": 1,
+    "number_of_shards": 3
+  },
+  "mappings": {
+    "properties": {
+      "abst": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "id": {
+        "type": "long"
+      },
+      "pubDt": {
+        "type": "date",
+        "format": "yyyy-MM-dd HH:mm:ss||yyyy-MM-dd||epoch_millis"
+      },
+      "tit": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      }
+    }
+  }
+}'
 
 
 

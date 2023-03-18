@@ -75,7 +75,8 @@ baseName是资源文件的基本名，可以随意指定；language 和 country 
 1. 新建 test.properties 文件，内容为 `hello=你好，{0}`;
 2. 新建 test_en_US.properties文件，内容为 `hello=Welcome You,{0}`;
 3. 使用JDK工具 native2ascii : native2ascii test.properties test_zh_CN.properties， 将非西欧文字转换成 Unicode 编码文件
-4. 使用下边代码测试：
+4. `native2ascii -encoding UTF-8 test.properties test_2.properties`
+5. 使用下边代码测试：
  ```
 Locale locale = Locale.getDefault(Locale.Category.FORMAT);
 ResourceBundle bundle = ResourceBundle.getBundle("test",locale);

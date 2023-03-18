@@ -48,16 +48,18 @@ Redis是一种基于键值对（key-value）的NoSQL数据库，与很多键值�
    3. 设置config： `config set xxx xxx`
 2. 键通用命令
    1. 查看所有的键： `keys *`，会遍历所有的键，谨慎使用。
-   2. 清空所有键值对: `FLUSHALL` 
-   3. 键总数： `dbsize` ,不会遍历所有键，而是直接获取 Redis内置的键总数变量的值
-   4. 检查键是否存在： `exists key`， 存在返回1，否则返回0
-   5. 删除键： `del key1 key2 ...`, 返回成功删除键的个数
-   6. 键过期： `expire key seconds` ,超过过期时间后，键会自动删除
-   7. 键剩余过期时间： `ttl key`，返回大于等于0的整数，代表剩余过期时间；如果没有设置过期时间，返回-1；键不存在，返回-2
-   8. 查看键对应的值的数据类型： `type key`，键不存在返回 none
-   9. 键重命名： `rename key newkey`, 如果 newkey 已经存在，那么他的值将会被 key 的值覆盖
-   10. `renamenx key newkey`： 只有 newkey 不存在时才会重命名成功，由于重命名键期间会执行del命令删除旧的键，如果键对应的值比较大，会存在阻塞Redis的可能性，这点不要忽视。
-   11. 随机返回一个键： `randomkey`
+   2. 查看部分匹配键： `keys info:*`,查看 info: 开头前缀的键
+   3. `redis-cli -h IP -p PORT -a PASSWORD keys 'key*' | xargs redis-cli -h IP  -p PORT -a PASSWORD del`
+   4. 清空所有键值对: `FLUSHALL` 
+   5. 键总数： `dbsize` ,不会遍历所有键，而是直接获取 Redis内置的键总数变量的值
+   6. 检查键是否存在： `exists key`， 存在返回1，否则返回0
+   7. 删除键： `del key1 key2 ...`, 返回成功删除键的个数
+   8. 键过期： `expire key seconds` ,超过过期时间后，键会自动删除
+   9. 键剩余过期时间： `ttl key`，返回大于等于0的整数，代表剩余过期时间；如果没有设置过期时间，返回-1；键不存在，返回-2
+   10. 查看键对应的值的数据类型： `type key`，键不存在返回 none
+   11. 键重命名： `rename key newkey`, 如果 newkey 已经存在，那么他的值将会被 key 的值覆盖
+   12. `renamenx key newkey`： 只有 newkey 不存在时才会重命名成功，由于重命名键期间会执行del命令删除旧的键，如果键对应的值比较大，会存在阻塞Redis的可能性，这点不要忽视。
+   13. 随机返回一个键： `randomkey`
 
 
 ### 数据类型

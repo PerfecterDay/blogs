@@ -61,3 +61,15 @@ http://localhost:8100/actuator/health
 
 ### 问题
 preferIpAddress ： 测试环境需要IP访问，主机名不通
+
+重启consul 后，服务不能重新注册：
+https://github.com/spring-cloud/spring-cloud-consul/issues/197
+https://github.com/spring-cloud/spring-cloud-consul/pull/691
+https://github.com/spring-cloud/spring-cloud-consul/issues/727
+
+```
+Resolved.
+need to add the below 2 properties:
+spring.cloud.consul.discovery.heartbeat.enabled= true
+spring.cloud.consul.discovery.heartbeat.reregister-service-on-failure=true
+```

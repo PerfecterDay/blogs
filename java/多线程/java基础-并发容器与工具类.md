@@ -13,6 +13,7 @@
    + `ArrayBlockingQueue`: 构造时需要指定大小，并且可以提供参数来指定公平性，若设置为公平的，那么等待时间最长的线程会优先得到处理，这通常会降低性能。
    + `PriorityBlockingQueue`：优先级的阻塞队列。
    + `DelayQueue`：用来保存实现了`Delayed`接口的对象，`Delayed`接口有一个`public long getDelay(TimeUnit unit)`方法，只有这个方法返回负值时才能出队，没有元素能出队时，则阻塞消费线程。另外，元素还必须实现`public int compareTo(Delayed o)`接口用来排序元素。
+
 2. 高效的映射表、集合和队列  
    java.util.current 包中提供了一些高效的并发容器类，这些集合使用复杂的算法，通过允许访问数据结构的不同部分来使竞争极小化。
    + `ConcurrentHashMap`

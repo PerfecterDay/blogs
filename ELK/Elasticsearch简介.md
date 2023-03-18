@@ -4,8 +4,6 @@
 + 是自我包含的 。 一篇文档同时包含宇段（如 name ）和它们的取值（如 Elasticsearch Denver ）。
 
 
-
-
 ### 常用操作 Rest API
 0. 创建新索引：`curl -k -u elastic:+wh_NUsb-BSJQPFHDQ5= -X PUT 'localhost:9200/<new_index>'`
 1. 查看当前节点的所有 Index: `curl -k -u elastic:+wh_NUsb-BSJQPFHDQ5= -X GET 'https://localhost:9200/_cat/indices?v' `
@@ -85,10 +83,19 @@ curl -X POST -d '{
    
    
    curl -X POST -d '{
-    "token": "F80B45DA1629746725C2AF4C",
-    "username": "test1234",
+    "token": "15D44CC971ACB3E5C079DB88",
+    "username": "wq9pmpaUblrySna0bE96",
     "ipaddress":"223.165.23.63"
    }'  https://gtjuat-data.iqdii.com/jybapp/login/getusersession
+
+
+   curl -X POST -d '{
+    "token": "15D44CC971ACB3E5C079DB88",
+    "username": "wq9pmpaUblrySna0bE96",
+	 "packagecode":"30300",
+  "month":"1",
+   }'  https://gtjuat-data.iqdii.com/jybapp/service/applymarketpkg
+
 
 
 
@@ -112,15 +119,15 @@ ElasticsearchAutoConfiguration
 
 
 
-curl -u elastic:xz3H7rrPCCxrbsdt --location --request DELETE 'http://es-sg-vfp331pa70007h94i.elasticsearch.aliyuncs.com:9200/hk_jyb_market_code_table'
-curl -u elastic:xz3H7rrPCCxrbsdt --location --request DELETE 'http://es-sg-vfp331pa70007h94i.elasticsearch.aliyuncs.com:9200/hk_market_code_table'
-curl -u elastic:xz3H7rrPCCxrbsdt --location --request DELETE 'http://es-sg-vfp331pa70007h94i.elasticsearch.aliyuncs.com:9200/jyb_market_code_table'
+curl -u elastic:password --location --request DELETE 'http://es-sg-vfp331pa70007h94i.elasticsearch.aliyuncs.com:9200/hk_jyb_market_code_table'
+curl -u elastic:password --location --request DELETE 'http://es-sg-vfp331pa70007h94i.elasticsearch.aliyuncs.com:9200/hk_market_code_table'
+curl -u elastic:password --location --request DELETE 'http://es-sg-vfp331pa70007h94i.elasticsearch.aliyuncs.com:9200/jyb_market_code_table'
 
 
 
-curl -u elastic:xz3H7rrPCCxrbsdt --location --request GET 'http://search-service-svc:8000/search/api/indexExists?indexName=hk_market_code_table'
+curl -u elastic:password --location --request GET 'http://search-service-svc:8000/search/api/indexExists?indexName=hk_market_code_table'
 
-curl -u elastic:xz3H7rrPCCxrbsdt --request PUT 'http://es-sg-vfp331pa70007h94i.elasticsearch.aliyuncs.com:9200/info' \
+curl -u elastic:password --request PUT 'http://es-sg-vfp331pa70007h94i.elasticsearch.aliyuncs.com:9200/info' \
 --header 'Content-Type: application/json' \
 --data-raw '{
   "settings": {
@@ -160,13 +167,13 @@ curl -u elastic:xz3H7rrPCCxrbsdt --request PUT 'http://es-sg-vfp331pa70007h94i.e
 
 
 
-curl -u elastic:xz3H7rrPCCxrbsdt --location http://es-sg-vfp331pa70007h94i.elasticsearch.aliyuncs.com:9200/_cat/indices?v
+curl -u elastic:password --location http://es-sg-vfp331pa70007h94i.elasticsearch.aliyuncs.com:9200/_cat/indices?v
 
-curl -u elastic:xz3H7rrPCCxrbsdt --location http://es-sg-vfp331pa70007h94i.elasticsearch.aliyuncs.com:9200/hk_jyb_market_code_table/_count
-curl -u elastic:xz3H7rrPCCxrbsdt --location http://es-sg-vfp331pa70007h94i.elasticsearch.aliyuncs.com:9200/hk_market_code_table/_count
-curl -u elastic:xz3H7rrPCCxrbsdt --location http://es-sg-vfp331pa70007h94i.elasticsearch.aliyuncs.com:9200/jyb_market_code_table/_count
+curl -u elastic:password --location http://es-sg-vfp331pa70007h94i.elasticsearch.aliyuncs.com:9200/hk_jyb_market_code_table/_count
+curl -u elastic:password --location http://es-sg-vfp331pa70007h94i.elasticsearch.aliyuncs.com:9200/hk_market_code_table/_count
+curl -u elastic:password --location http://es-sg-vfp331pa70007h94i.elasticsearch.aliyuncs.com:9200/jyb_market_code_table/_count
 
-curl -u elastic:xz3H7rrPCCxrbsdt --location http://es-sg-vfp331pa70007h94i.elasticsearch.aliyuncs.com:9200/jyb_market_code_table/_search
+curl -u elastic:password --location http://es-sg-vfp331pa70007h94i.elasticsearch.aliyuncs.com:9200/jyb_market_code_table/_search
 
 
 
@@ -183,3 +190,26 @@ curl --location 'http://10.4.152.180:8000/user/token/tradeCheck' \
 --data '{
     "accountCode":"197566"
 }'
+
+### 数据导出备份
+```
+npm install elasticdump -g
+elasticdump
+
+
+elasticdump \
+--input=http://elastic:xz3H7rrPCCxrbsdt@es-sg-vfp331pa70007h94i.public.elasticsearch.aliyuncs.com:9200/hk_jyb_market_code_table \
+--output=hk_jyb_market_code_table_data.json \
+--type=data
+
+elasticdump \
+--input=http://elastic:xz3H7rrPCCxrbsdt@es-sg-vfp331pa70007h94i.public.elasticsearch.aliyuncs.com:9200/hk_jyb_market_code_table \
+--output=hk_jyb_market_code_table_analyzer.json \
+--type=analyzer
+
+
+elasticdump \
+--input=http://elastic:xz3H7rrPCCxrbsdt@es-sg-vfp331pa70007h94i.public.elasticsearch.aliyuncs.com:9200/hk_jyb_market_code_table \
+--output=hk_jyb_market_code_table_mapping.json \
+--type=mapping
+```

@@ -263,5 +263,26 @@ private boolean validAddress(Optional<Person> person)
   .flatMap(Address::getValidFrom)
   .filter(x -> x.before(now())).isPresent();
 }
+
+
+
+public String getCity(User user)  throws Exception{
+        if(user!=null){
+            if(user.getAddress()!=null){
+                Address address = user.getAddress();
+                if(address.getCity()!=null){
+                    return address.getCity();
+                }
+            }
+        }
+        throw new Excpetion("取值错误"); 
+    }
+
+public String getCity(User user) throws Exception{
+    return Optional.ofNullable(user)
+                   .map(u-> u.getAddress())
+                   .map(a->a.getCity())
+                   .orElseThrow(()->new Exception("取指错误"));
+}
 ```
 

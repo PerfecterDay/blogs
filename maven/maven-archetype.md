@@ -1,5 +1,5 @@
 ### Maven Archetype 开发
-{docsify-upddaated}
+{docsify-updated}
 
 - [Maven Archetype 开发](#maven-archetype-开发)
 	- [Archetype Catalog](#archetype-catalog)

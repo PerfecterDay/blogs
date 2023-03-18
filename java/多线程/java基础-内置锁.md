@@ -1,4 +1,4 @@
-# 锁
+# 内置锁
 https://zhuanlan.zhihu.com/p/101156763
 
 ### 自旋锁与自适应自旋
@@ -127,3 +127,14 @@ ObjectMonitor() {
 + 如果线程调用了wait()方法，则会进入_WaitSet队列。它会释放monitor锁，即将_owner赋值为null,_count自减1,进入_WaitSet队列阻塞等待。
 + 如果其他线程调用 notify() / notifyAll() ，会唤醒_WaitSet中的某个线程，该线程再次尝试获取monitor锁，成功即进入_Owner区域。
 + 同步方法执行完毕了，线程退出临界区，会将monitor的owner设为null，并释放监视锁。
+
+
+内部锁和条件存在一些局限。包括:
++ 不能中断一个正在试图获得锁的线程。
++ 试图获得锁时不能设定超时。
++ 每个锁仅有单一的条件，可能是不够的
+
+在代码中应该使用哪一种? Lock 和Condition 对象还是同步方法?下面是一些建议:
++ 最好既不使用Lock/Condition 也不使用synchronized 关键字。在许多情况下你可以使 用java.util.concurrent 包中的一种机制，它会为你处理所有的加锁。例如，在第14.6 节，你会看到如何使用阻塞队列来同步完成一个共同任务的线程。
++ 如果synchronized 关键宇适合你的程序，那么请尽量使用它，这样可以减少编写的代 码数量，减少出错的几率。程序清单14-9 给出了用同步方法实现的银行实例。
++ 如果特别需要Lock/Condition结构提供的独有特性时，才使用Lock/Condition。

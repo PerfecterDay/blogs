@@ -5,6 +5,7 @@
 1. 阻塞队列  
    阻塞队列本身是线程安全的，而且具有协调线程的作用。当试图从空队列中取出元素或者往满队列中添加元素时，将会阻塞线程。上述描述更精确的可以说是，当阻塞队列中没有可以出队的元素时或者不能添加元素时将阻塞线程，如果满足了出队或入队条件会自动唤醒线程。
    <center><img src="pics/blocking-queue.png" width="50%"></center>
+   <center><img src="pics/blocking-q.jpg" width="50%"></center>
    
    如果要将队列用作线程同步工具，就要使用`put`和`take`方法。
 
@@ -26,6 +27,8 @@
    使用 `Collections` 工具类的以 synchronized 开头的方法，能将普通集合包装成线程安全的集合。通常，不应该使用这种包装器包装的集合，而应该使用java.util.current 包中的集合。一个例外是，如果需要经常被修改的数组列表或集合（ArrayList/ArraySet），包装器集合比`CopyOnWriteArrayList`/`CopyOnWriteArraySet`更加高效。
 
 ## 并发工具类
+<center><img src="pics/synchronizer.png" alt=""></center>
+
 1. CountDownLatch  
 	假如有这样一个需求：我们需要解析一个Excel里多个sheet的数据，此时可以考虑使用多线程，每个线程解析一个sheet里的数据，等到所有的sheet都解析完之后，程序需要提示解析完成。在这个需求中，要实现主线程等待所有线程完成sheet的解析操作，最简单的做法是使用join()方法，在主线程中对所有的子线程调用其 join() 方法，表示主线程要等待所有的子线程完成才会继续执行。
 

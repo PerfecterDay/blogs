@@ -11,13 +11,26 @@
 2. `Callable` 接口与 `Runnable`接口相比，可以有返回值且可以抛出异常。
 
 ### 线程的一些属性
-线程的常见属性包括：线程所属的线程组、线程优先级、是否是Daemon线程等。
-可以调用 `Thread.setPriority()` 方法为线程设置优先级。
-Daemon线程是一种支持型线程，因为它主要被用作程序中后台调度以及支持性工作。这意味着，当一个Java虚拟机中不存在非Daemon线程的时候，Java虚拟机将会退出。可以通过调用Thread.setDaemon(true)将线程设置为Daemon线程，必须在启动（调用 start）线程之前调用。
-Daemon线程被用作完成支持性工作，但是在Java虚拟机退出时Daemon线程中的finally块并不一定会执行。
+线程的常见属性包括：**线程所属的线程组**、**线程优先级**、**是否是Daemon线程**等。  
+1. 优先级  
+	每个线程都有一个优先级，默认情况下，一个线程继承它的父线程的优先级。可以调用 `Thread.setPriority()` 方法为线程设置优先级。可以将优先级设置为 MIN_PRIORITY（1） 和 MAX_PRIORITY（10） 之间的
+	任何值。但是线程的优先级高度依赖于操作系统和JVM平台实现的，不要把程序的正确性依赖于优先级。  
+2. 守护线程  
+	Daemon线程是一种支持型线程，因为它主要被用作程序中**后台调度以及支持性工作**。这意味着，当一个Java虚拟机中**不存在非Daemon线程的时候，Java虚拟机将会退出**。可以通过调用`Thread.setDaemon(true)`将线程设置为Daemon线程，必须在**启动（调用 start）线程之前**调用。  
+	Daemon线程被用作完成支持性工作，但是在Java虚拟机退出时,Daemon线程中的finally块并不一定会执行。
+3. 未捕获异常处理器  
+	线程的run方法不能抛出任何被检测的异常，但是，不被检测的异常会导致线程终止。在这种情况下，线程就死亡了。
+	Java线程提供了为捕获异常的处理器，该处理器必须实现一个 `Thread.UncaughtExceptionHandler` 接口，该接口只有一个 `void uncaughtException(Thread t, Throwable e)` 接口，可以使用线程实例对象的`setUncaughtExceptionHandler` 方法为线程安装处理器，也可以调用 Thread 类的静态方法 `setDefaultUncaughtExceptionHandler` 为所有线程安装一个默认的未捕获异常处理器。  
+	如果没有调用上述方法为线程安装异常处理器，此时的处理器就是线程所属的 `ThreadGroup` 对象。
+
 
 ### 线程的状态
 <center><img src="pics/thread-state.jpg" width=60% heght=60% /></center>
+
+1. 阻塞  
+	当一个线程获取一个内部的对象锁（而不是java.util.concurrent库中的锁），而该锁被其他线程持有，则该线程进入阻塞状态。当其他线程释放锁，且调度器允许本线程获取锁时，该线程变为非阻塞状态。
+2. 等待  
+	当线程等待另一个线程通知调度器一个条件时，它自己进入等待状态（主动进入）。被阻塞状态与等待状态是有很大的不同的。
 
 <center><img src="pics/thread-state-transform.png" width=60% heght=60% /></center>
 

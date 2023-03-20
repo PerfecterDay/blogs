@@ -1,5 +1,22 @@
-# 线程池
+# 执行器、线程池与Fork-Join
 {docsify-updated}
+
+- [执行器、线程池与Fork-Join](#执行器线程池与fork-join)
+	- [线程池的好处](#线程池的好处)
+	- [线程池类图结构](#线程池类图结构)
+	- [内置线程池](#内置线程池)
+	- [自创建线程池](#自创建线程池)
+		- [向线程池提交任务](#向线程池提交任务)
+		- [线程池的关闭](#线程池的关闭)
+		- [线程池使用总结](#线程池使用总结)
+		- [定时任务/延时任务](#定时任务延时任务)
+	- [线程池的分析](#线程池的分析)
+		- [源码分析](#源码分析)
+	- [合理配置线程池](#合理配置线程池)
+	- [线程池的监控](#线程池的监控)
+		- [Fork-Join 框架](#fork-join-框架)
+			- [RecursiveAction](#recursiveaction)
+
 
 ## 线程池的好处
 
@@ -17,7 +34,7 @@
 `AbstractExecutorService` 是 `ExecutorService` 的继承类。
 
 ## 内置线程池
-JDK1.5 提供了一个 Executors 工厂来生产线程池，该工厂里包含如下几个静态工厂方法来创建线程池：
+JDK1.5 提供了一个 `Executors` 工厂来生产线程池，该工厂里包含如下几个静态工厂方法来创建线程池：
 1. `newCachedThreadPool()`: 创建一个具有缓存功能的线程池，系统根据需要创建线程，这些线程将会被缓存到线程池中
 2. `newFixedThreadPool(int nThreads)`: 创建一个可重用的、具有固定线程数的线程池
 3. `newSingleThreadExecutor()`: 创建一个只有单线程的线程池
@@ -98,6 +115,7 @@ keepAliveTime - 600000L(ms) -> 600s -> 10分钟
 我们也可以使用 `submit` 方法来提交任务，它会返回一个`future`,那么我们可以通过这个`future`来判断任务是否执行成功，通过`future`的`get`方法来获取返回值，`get`方法会阻塞住直到任务完成，而使用`get(long timeout, TimeUnit unit)`方法则会阻塞一段时间后立即返回，这时有可能任务没有执行完。
 
     <T> Future<T> submit(Callable<T> task);
+    <T> Future<T> submit(Runnable<T> task);
     <T> Future<T> submit(Runnable task, T result);//任务执行完后，返回 result 结果
 
 <center><img src="pics/how-to-use-executor.jpg" width=40% hright=40%></center>
@@ -109,6 +127,41 @@ keepAliveTime - 600000L(ms) -> 600s -> 10分钟
 2. shutdownNow的原理是遍历线程池中的工作线程，然后逐个调用线程的 `interrupt` 方法来中断线程，所以无法响应中断的任务可能永远无法终止。shutdownNow会首先将线程池的状态设置成STOP，然后尝试停止所有的正在执行或暂停任务的线程，并返回等待执行任务的列表。
 
 只要调用了这两个关闭方法的其中一个，`isShutdown`方法就会返回true。当所有的任务都已关闭后,才表示线程池关闭成功，这时调用`isTerminaed`方法会返回true。至于我们应该调用哪一种方法来关闭线程池，应该由提交到线程池的任务特性决定，通常调用shutdown来关闭线程池，如果任务不一定要执行完，则可以调用`shutdownNow`。
+
+### 线程池使用总结
+下面总结了在使用连接池时应该做的事 ：
+1 ） 调用 Executors 类中静态的方法 newCachedThreadPool 或 newFixedThreadPool 。
+2 ） 调用 submlt 提交 Runnable 或 Callable 对象
+3 ） 如果想要取消一个任务或提交 Callable 对象 ， 那就要保存好返回的 Future 对象
+4 ） 当不再提交任何任务时 ，调用 shutdown。
+
+
+### 定时任务/延时任务
+`ScheduIedExecutorService` 接口为预定执行（Scheduled Execution ）或重复执行任务而设计的方法 。 它是一种允许使用线程池机制的 java.util.Timer 的泛化 。 `Executors`类的 `newScheduledThreadPooI` 和 `newSingleThreadScheduledExecutor` 方法将返回实现了 `ScheduIedExecutorService` 接口的对象，可以预定 Runnable 或 Callable 在初始的延迟之后只运行一次,也可以预定一个 Runnable 对象周期性地运行 。具体API如下：
+```
+public interface ScheduledExecutorService extends ExecutorService 
+{
+	//预定在指定的时间之后执行任务
+    public ScheduledFuture<?> schedule(Runnable command,
+          long delay, TimeUnit unit);
+ 
+    public <V> ScheduledFuture<V> schedule(Callable<V> callable,
+          long delay, TimeUnit unit);
+ 
+ //预定在初始的延迟结束后 ，周期性地运行给定的任务 ，周期长度是 period
+    public ScheduledFuture<?> scheduleAtFixedRate(Runnable command,
+        long initialDelay,
+        long period,
+        TimeUnit unit);
+
+ // 预定在初始的延迟结束后周期性地给定的任务 ， 在一次调用完成和下一次调用开始之
+间有长度为 delay 的延迟
+    public ScheduledFuture<?> scheduleWithFixedDelay(Runnable command,
+            long initialDelay,
+          long delay,
+          TimeUnit unit);
+}
+```
 
 ## 线程池的分析
 当提交一个新任务到线程池时，线程池的处理流程如下：
@@ -187,3 +240,68 @@ keepAliveTime - 600000L(ms) -> 600s -> 10分钟
 
 通过扩展线程池进行监控。通过继承线程池并重写线程池的 `beforeExecute` ， `afterExecute` 和 `terminated` 方法，我们可以在任务执行前，执行后和线程池关闭前干一些事情。如监控任务的平均执行时间，最大执行时间和最小执行时间等。这几个方法在线程池里是空方法。如：  
 ```protected void beforeExecute(Thread t, Runnable r) { }```
+
+
+### Fork-Join 框架
+有些应用使用了大量线程 ， 但其中大多数都是空闲的 。 举例来说 ， 一个 web 服务器可能会为每个连接分别使用一个线程 。 另外一些应用可能对每个处理器内核分别使用一个线程 ，来完成计算密集型任务 ， 如图像或视频处理 Java SE7 中新引人了 fork-join 框架 ， 专门用来支持后一类应用 。 假设有一个处理任务 ， 它可以很自然地分解为子任务 ， 如下所示 ：
+```
+if (problemSize < threshold)
+	solve problem directly
+else
+	break problem into subproblems
+	recursively solve each subproblem
+	combine the results
+```
+图像处理就是这样一个例子。要增强一个图像，可以变换上半部分和下部部分。如果有足够多空闲的处理器，这些操作可以并行运行。（除了分解为两部分外，还需要做一些额外的工作，不过这属于技术细节，我们不做讨论》在这里，我们将讨论一个更简单的例子。假设想统计一个数组中有多少个元素满足某个特定的属性。可以将这个数组一分为二，分别对这两部分进行统计，再将结果相加。要采用框架可用的一种方式完成这种递归计算，需要提供一个扩展 `RecursiveTask<T>` 的类（如果计算会生成一个类型为T的结果）或者提供一个扩展 `RecursiveAction` 的类（如果不生成任何结果）。再覆盖 `compute` 方法来生成并调用子任务，然后合并其结果。
+
+####ForkJoinPool
+`ForkJoinPool` 是该框架的核心。它是 `ExecutorService` 的一个实现，管理工人线程，并为我们提供工具来获取线程池状态和性能的信息。  
+工作线程一次只能执行一个任务，但ForkJoinPool并不为每一个子任务创建一个单独的线程。相反，池中的每个线程都有自己的双端队列deque，用来存储任务。
+```
+ForkJoinPool commonPool = ForkJoinPool.commonPool();
+public static ForkJoinPool forkJoinPool = new ForkJoinPool(2);
+
+```
+
+#### RecursiveAction
+```
+public class CustomRecursiveAction extends RecursiveAction {
+
+    private String workload = "";
+    private static final int THRESHOLD = 4;
+
+    private static Logger logger = 
+      Logger.getAnonymousLogger();
+
+    public CustomRecursiveAction(String workload) {
+        this.workload = workload;
+    }
+
+    @Override
+    protected void compute() {
+        if (workload.length() < THRESHOLD) {
+            processing(workload);
+        } else {
+		   ForkJoinTask.invokeAll(createSubtasks());
+        }
+    }
+
+    private List<CustomRecursiveAction> createSubtasks() {
+        List<CustomRecursiveAction> subtasks = new ArrayList<>();
+
+        String partOne = workload.substring(0, workload.length() / 2);
+        String partTwo = workload.substring(workload.length() / 2, workload.length());
+
+        subtasks.add(new CustomRecursiveAction(partOne));
+        subtasks.add(new CustomRecursiveAction(partTwo));
+
+        return subtasks;
+    }
+
+    private void processing(String work) {
+        String result = work.toUpperCase();
+        logger.info("This result - (" + result + ") - was processed by " 
+          + Thread.currentThread().getName());
+    }
+}
+```

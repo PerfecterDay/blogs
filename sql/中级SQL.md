@@ -20,6 +20,23 @@ A和B的自然连接：**来自A表的元组和来自B表的元组在共同属�
 
 ### on 表达式
 自然连接默认连接的是两个关系中**相同属性上(表中列名相同的列)**值相同的元组。不同属性不会被考虑在内。SQL的 on 表达式可以指定任意的连接条件。on 只能出现在连接表达式的末尾。
+<select id="selectLoginGroupMsg" resultMap="grpMsgResultMap">
+	SELECT m.id, m.title,m.subtitle,m.category,m.subcategory,m.url,mc.name as subcategoryName,
+	m.priority,m.unix_create_time_stamp as unixCreateTimeStamp,
+	case
+		when ugm.state=1 then 1
+		else 0
+	end as readState
+	FROM
+	GROUP_MSG gp LEFT JOIN MESSAGE m ON gp.msg_id=m.id
+	LEFT JOIN USER_GROUP_MSG ugm ON (gp.msg_id = ugm.msg_id and ugm.uid = #{uid})
+	LEFT JOIN msg_category mc ON m.subcategory = mc.id
+	<where>
+		date(gp.CREATE_TIME) &gt;= date_sub(curdate(), interval 7 day)
+		AND gp.state = 1
+	</where>
+	ORDER BY m.PRIORITY DESC
+</select>
 
 ### 外连接
 

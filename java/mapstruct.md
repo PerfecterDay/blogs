@@ -1,9 +1,8 @@
 ## Mapstruct
 {docsify-updated}
 
-https://www.baeldung.com/mapstruct
+https://www.baeldung.com/mapstruct  
 https://www.baeldung.com/java-mapstruct-mapping-collections
-
 
 
 与 Lombok 配合出现：
@@ -69,4 +68,27 @@ EmployeeDTO employeeToEmployeeDTO(Employee entity);
   @Mapping(target="startDt", source="dto.employeeStartDt",
            dateFormat="dd-MM-yyyy HH:mm:ss")
 Employee employeeDTOtoEmployee(EmployeeDTO dto);
+```
+
+
+转换 List 集合类型时，必须声明元素类型的转换方法：
+```
+@Mapper
+public abstract class TradeNews2MessageMapper {
+
+    public abstract List<UserMessageVo> toUserMessageVoList(List<TradeNews> tradeNews);
+
+    @BeforeMapping
+    protected void beforeMapping(TradeNews tradeNews, @MappingTarget UserMessageVo messageVo) {
+        messageVo.setReadState(StrUtil.equals(tradeNews.getFstate(), "New") ? 0 : 1);
+    }
+
+    @Mapping(source = "ftitle", target = "title")
+    @Mapping(source = "fdate", target = "time")
+    @Mapping(source = "fstate", target = "readState")
+    @Mapping(source = "fno", target = "msgId")
+    protected abstract UserMessageVo toUserMessageVo(TradeNews tradeNews);
+
+}
+
 ```

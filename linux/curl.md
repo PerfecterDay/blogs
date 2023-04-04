@@ -265,8 +265,8 @@ curl -k --proxy 10.184.161.160:443 --cert /home/5.11/server.pem https://10.18.17
 
 
 curl -X POST https://smsc.xgate.com.hk/smshub/sendsms \
---form 'id=dsfds' \
---form 'scs=fdsdscas' \
+--form 'userId=guotaijas_api8' \
+--form 'userPassword=npxYE0l6m3p1' \
 --form 'MessageReceiver=86-17674090666' \
 --form 'MessageBody=730245'
 ```

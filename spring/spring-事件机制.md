@@ -9,16 +9,14 @@ Spring 的 ApplicationContext 能够发布事件并且允许注册相应的事�
 
 事件源、事件监听器注册表和事件广播器这3个角色有时可以由同一个对象承担，其实就是观察者模式中的 `Observable` ，监听器就类似于 `Observer` 。事件体系其实是观察者模式的一种具体实现方式。
 
-### spring 事件类
-![Spring 事件类](../pics/spring-event.png)
+### Java 观察者模式（事件机制）
+<center><img src="pics/java-event.png" width=45%></center>
+
+### spring 事件体系
+<center><img src="pics/spring-event.png" width=55%></center>
 
 可以根据需要扩展 `ApplicationEvent` 定义自己的事件。
 
-### spring 事件监听器接口
-![Spring 事件监听器](../pics/spring-listener.png)
-
-### spring 事件广播器
-![Spring 事件广播器](../pics/spring-multicaster.png)
 
 ### Spring事件体系的具体实现
 Spring 在 `ApplicationContext` 接口的抽象实现类 `AbstratApplicationContext`中完成事件体系的搭建。`AbstratApplicationContext`中拥有一个 `ApplicationEventMulticaster` 的成员，该成员提供了容器监听器的注册表。`AbstratApplicationContext`在 `refresh()` 这个容器启动方法中通过以下3个步骤搭建了事件的基础设施：
@@ -36,3 +34,7 @@ finishRefresh();
 
 最后，调用容器的事件发布接口 **`publishEvent()`** 向容器中所有的监听器发布事件。
 
+### 实现自己的业务事件发布与监听
+1. 定义业务事件，继承自 `ApplicationEvent` 
+2. 发布者（需要发布自定义业务事件的业务Bean）实现 `ApplicationEventPublisherAware`,`ApplicationContextAware` 接口，利用 `ApplicationContext` 对象就可以发布自定义的事件
+3. 实现 `ApplicationListener` 接口，实现监听自定义事件逻辑

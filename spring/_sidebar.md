@@ -1,6 +1,7 @@
 * [Home](/)
 * [..](../_sidebar.md)
 * [Spring](#)
+  * [Yaml简介](/spring/yaml简介.md)
   * [Spring的启动与配置](/spring/spring的启动与配置.md)
   * [Spring IOC](/spring/spring-ioc.md)
   * [Spring AOP](/spring/spring-AOP知识.md)

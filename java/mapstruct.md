@@ -71,6 +71,18 @@ Employee employeeDTOtoEmployee(EmployeeDTO dto);
 ```
 
 
+当某个字段需要特殊处理时：
+```
+// List<String> 转 String
+@Mapper
+public interface PublishVersionRequst2AppVersionEntityMapper {
+
+    @Mapping(target = "memo",expression = "java(cn.hutool.core.util.StrUtil.toString(request.getMemo()))")
+    AppVersionEntity map(PublishVersionRequest request);
+}
+```
+
+
 转换 List 集合类型时，必须声明元素类型的转换方法：
 ```
 @Mapper
@@ -90,5 +102,21 @@ public abstract class TradeNews2MessageMapper {
     protected abstract UserMessageVo toUserMessageVo(TradeNews tradeNews);
 
 }
+```
 
+当有多个转换方法可调用时，需要使用 `@Named` 区别各个方法，并在转 List 的方法上使用 `@IterableMapping` 注解指明要使用的方法：
+```
+    @Mapping(target = "memo", expression = "java(cn.hutool.json.JSONUtil.toList(version.getMemo(),String.class))")
+    @Named("toHistoryVersionResponse")
+    HistoryVersionResponse toHistoryVersionResponse(AppVersionEntity version);
+
+    @Mapping(target = "memo", expression = "java(cn.hutool.json.JSONUtil.toList(version.getMemoHk(),String.class))")
+    @Named("toHistoryVersionResponseHk")
+    HistoryVersionResponse toHistoryVersionResponseHk(AppVersionEntity version);
+
+    @IterableMapping(qualifiedByName = "toHistoryVersionResponse")
+    List<HistoryVersionResponse> toHistoryVersionResponseList(List<AppVersionEntity> versions);
+
+    @IterableMapping(qualifiedByName = "toHistoryVersionResponseHk")
+    List<HistoryVersionResponse> toHistoryVersionResponseListHk(List<AppVersionEntity> versions);
 ```

@@ -11,3 +11,4 @@
 * [k8s-DaemonSet](/docker/k8s-DaemonSet.md)
 * [k8s-Job](/docker/k8s-Job.md)
 * [k8s-Sevice](/docker/k8s-Service.md)
+* [k8s-Helm包管理器](/docker/k8s-Helm包管理器.md)

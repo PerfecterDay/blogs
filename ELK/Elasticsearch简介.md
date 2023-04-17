@@ -201,6 +201,7 @@ elasticdump \
 --input=http://elastic:xz3H7rrPCCxrbsdt@es-sg-vfp331pa70007h94i.public.elasticsearch.aliyuncs.com:9200/hk_jyb_market_code_table \
 --output=hk_jyb_market_code_table_data.json \
 --type=data
+--limit=500 //每次导出的数据限制
 
 elasticdump \
 --input=http://elastic:xz3H7rrPCCxrbsdt@es-sg-vfp331pa70007h94i.public.elasticsearch.aliyuncs.com:9200/hk_jyb_market_code_table \

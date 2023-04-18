@@ -10,7 +10,9 @@ http://www.example.com:80/path/to/myfile?key1=val1&key2=val2#somewhereInDocument
 端口: 80
 路径: /path/to/myfile
 查询参数: key1=val1&key2=val2
-片段标识(锚): #somewhereInDocument
+片段标识(锚): #somewhereInDocument,锚点代表资源内的一种“书签”，它给予浏览器显示位于该“加书签”点的内容的指示。例如，在 HTML 文档上，
+浏览器将滚动到定义锚点的那个点上；在视频或音频文档上，浏览器将转到锚点代表的那个时间。值得注意的是 # 号后面的部分，也称为片段标识符，
+永远不会与请求一起发送到服务器。
 ```
 
 常见的协议有：
@@ -24,8 +26,6 @@ http://www.example.com:80/path/to/myfile?key1=val1&key2=val2#somewhereInDocument
 + urn：	统一资源名称
 + view-source：	资源的源代码
 + ws/wss：	（加密的）WebSocket (en-US) 连接
-
-锚点代表资源内的一种“书签”，它给予浏览器显示位于该“加书签”点的内容的指示。例如，在 HTML 文档上，浏览器将滚动到定义锚点的那个点上；在视频或音频文档上，浏览器将转到锚点代表的那个时间。值得注意的是 # 号后面的部分，也称为片段标识符，**永远不会与请求一起发送到服务器**。
 
 
 ### Http 消息格式

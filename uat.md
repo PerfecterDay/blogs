@@ -21,6 +21,10 @@ gtja-international-app-token:login:token:55ed3436-5c03-40f9-b8f1-d45bdd04043e
 短token key：
 gtja-international-app-token:short-token:S-08ab2d20-7777-4015-b0e3-06175297dcbc
 gtja-international-app-token:short-token:S-0d464f90-8be0-4d5c-9794-fc865f4806ec
+
+JYB token:
+get jybToken::token
+
 ---------
 
 ## Mysql
@@ -44,3 +48,7 @@ alikafka-post-public-intl-sg-uq832vxmo01-3-vpc.alikafka.aliyuncs.com:9092
 
 curl -X POST localhost:10000/user/app/configuration
 curl -X POST localhost:8888/user/app/configuration
+
+## 远程登录
+1. VNC登录：重置密码
+2. Workbench登录：Sunthy80@

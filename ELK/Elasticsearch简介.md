@@ -77,16 +77,23 @@ curl http://10.187.144.42:8200/market/_search
 
 curl -X POST -d '{
     "appkey": "D133F72A44D7082C56B1DB3FE0332E33",
-    "username": "gta.gtauser2022",
-    "password": "gta221p128wd"
-   }'  https://gtjuat-data.iqdii.com/jybapp/login/serverlogin
+    "username": "gtj.gtjuser2023",
+    "password": "gtj231p0w1d"
+   }'  https://gtjdata.iqdii.com/jybapp/login/serverlogin
    
    
    curl -X POST -d '{
-    "token": "15D44CC971ACB3E5C079DB88",
+    "token": "9B1E73E0A8F8B16C0AE16CF5",
     "username": "wq9pmpaUblrySna0bE96",
     "ipaddress":"223.165.23.63"
-   }'  https://gtjuat-data.iqdii.com/jybapp/login/getusersession
+   }'  https://gtjdata.iqdii.com/jybapp/login/getusersession
+
+
+curl --location --request POST 'https://gtjdata-uat.iqdii.com/jybapp/service/GetUserPkg' \
+--data-raw '{
+  "token": "15D44CC971ACB3E5C079DB88",
+  "username": "000035"
+}'
 
 
    curl -X POST -d '{
@@ -94,7 +101,7 @@ curl -X POST -d '{
     "username": "wq9pmpaUblrySna0bE96",
 	 "packagecode":"30300",
   "month":"1",
-   }'  https://gtjuat-data.iqdii.com/jybapp/service/applymarketpkg
+   }'  https://gtjdata-uat.iqdii.com/jybapp/service/applymarketpkg
 
 
 

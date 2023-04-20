@@ -38,8 +38,8 @@ ConsulAutoServiceRegistrationListener
 
 ### [HTTP API](https://developer.hashicorp.com/consul/api-docs/catalog#list-nodes-for-service)
 查找所有注册的服务信息： `curl http://localhost:8500/v1/catalog/services`
-查找所有注册的服务信息： `curl http://localhost:8500/v1/catalog/datacenters`
-根据服务名查找服务信息： `curl http://localhost:8500/v1/catalog/service/{serviceName}`
+查找所有注册的数据中心信息： `curl http://localhost:8500/v1/catalog/datacenters`
+根据服务名查找某个具体服务信息： `curl http://localhost:8500/v1/catalog/service/{serviceName}`
 
 `curl http://localhost:8500/v1/agent/checks`
 查看处于 critical 状态的服务：`curl http://localhost:8500/v1/health/state/critical`
@@ -73,3 +73,38 @@ need to add the below 2 properties:
 spring.cloud.consul.discovery.heartbeat.enabled= true
 spring.cloud.consul.discovery.heartbeat.reregister-service-on-failure=true
 ```
+
+### Helm安装 consul 集群
+前提（安装Helm）:
+1. curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+2. chmod 700 get_helm.sh
+3. ./get_helm.sh
+
+添加 consul repo:
+1. helm repo add hashicorp https://helm.releases.hashicorp.com
+2. helm install consul hashicorp/consul --set global.name=consul-cluster --set server.storage=2Gi --namespace consul
+
+https://developer.hashicorp.com/consul/docs/k8s/installation/install
+
+`helm install consul hashicorp/consul --set global.name=consul --set server.storage=2Gi --create-namespace --namespace consul`
+`helm install consul-cluster hashicorp/consul --set global.name=consul --set server.storage=1Gi --set server.storageClass=alicloud-disk-available --namespace consul`
+
+helm install consul hashicorp/consul --set global.name=consul-cluster --set server.storage=2Gi --namespace consul
+
+
+存储声明 PVC ：
+  name: data-consul-consul-cluster-server-0
+  namespace: consul
+  resourceVersion: '34177039'
+  uid: 91fe6fc4-85c7-48b5-b3b1-8b1085294d43
+
+要与存储卷 PV ：
+	claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: data-consul-consul-cluster-server-0
+    namespace: consul
+    resourceVersion: '34168920'
+    uid: 91fe6fc4-85c7-48b5-b3b1-8b1085294d43
+
+保持一致

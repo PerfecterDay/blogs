@@ -52,3 +52,16 @@ curl -X POST localhost:8888/user/app/configuration
 ## 远程登录
 1. VNC登录：重置密码
 2. Workbench登录：Sunthy80@
+
+
+## 日志收集配置
+1. [通过日志服务采集Kubernetes容器日志](https://www.alibabacloud.com/help/zh/container-service-for-kubernetes/latest/collect-log-data-from-containers-by-using-log-service)
+	基本上就是部署应用的时候，添加日志配置即可
+2. [ARMS应用性能监控](https://www.alibabacloud.com/help/zh/container-service-for-kubernetes/latest/monitor-application-performance)
+	```
+		armsPilotAutoEnable: "on"
+		armsPilotCreateAppName: "user-center-service"
+		one-agent.jdk.version: "OpenJDK11"
+		armsSecAutoEnable: "on" 
+	```
+	

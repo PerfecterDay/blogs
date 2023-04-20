@@ -43,6 +43,6 @@ your-chart-name/
 6. 上传Chart到阿里云： `helm cm-push consul-1.1.1.tgz gtja`
 7. Helm可以通过多种途径查找和安装chart， 但最简单的是安装官方的bitnami charts: `helm install bitnami/mysql --generate-name`
    每当您执行 helm install 的时候，都会创建一个新的发布版本。 所以一个chart在同一个集群里面可以被安装多次，每一个都可以被独立的管理和升级。
-8. 查看发布的列表： `helm list`
+8. 查看发布的列表： `helm list`,`helm list -n namespace`
 9. 卸载版本： `helm uninstall mysql-1612624192`
 10. 帮助：`helm help` 或者在任意命令后添加 -h 选项：`helm get -h`

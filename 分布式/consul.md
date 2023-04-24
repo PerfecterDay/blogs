@@ -1,26 +1,86 @@
-# Consul
+## Consul
+{docsify-updated}
+> https://developer.hashicorp.com/consul
 
-https://learn.hashicorp.com/tutorials/consul/docker-container-agents  
-https://book-consul-guide.vnzmi.com/04_run_agent.html
+### consul 命令行-CLI
+```
+consul
+Usage: consul [--version] [--help] <command> [<args>]
 
-查询集群成员：`docker exec badger consul members`
+Available commands are:
+    acl            Interact with Consul's ACLs
+    agent          Runs a Consul agent
+    catalog        Interact with the catalog
+    connect        Interact with Consul Connect
+    debug          Records a debugging archive for operators
+    event          Fire a new event
+    exec           Executes a command on Consul nodes
+    force-leave    Forces a member of the cluster to enter the "left" state
+    info           Provides debugging information for operators.
+    intention      Interact with Connect service intentions
+    join           Tell Consul agent to join cluster
+    keygen         Generates a new encryption key
+    keyring        Manages gossip layer encryption keys
+    kv             Interact with the key-value store
+    leave          Gracefully leaves the Consul cluster and shuts down
+    lock           Execute a command holding a lock
+    login          Login to Consul using an auth method
+    logout         Destroy a Consul token created with login
+    maint          Controls node or service maintenance mode
+    members        Lists the members of a Consul cluster
+    monitor        Stream logs from a Consul agent
+    operator       Provides cluster-level tools for Consul operators
+    peering        Create and manage peering connections between Consul clusters
+    reload         Triggers the agent to reload configuration files
+    rtt            Estimates network round trip time between nodes
+    services       Interact with services
+    snapshot       Saves, restores and inspects snapshots of Consul server state
+    tls            Builtin helpers for creating CAs and certificates
+    troubleshoot   Provides tools to troubleshoot Consul's service mesh configuration
+    validate       Validate config files/directories
+	version        Prints the Consul version
+    watch          Watch for changes in Consul
+```
 
-docker run -d -p 8500:8500 -p 8600:8600/udp --name=badger consul agent -server -ui -node=10.176.81.23 -bootstrap-expect=1 -client=0.0.0.0
+### Consul API Overview 
+Consul HTTP API是一个RESTful接口，允许你在网络中利用Consul功能。本主题提供了关于不同工作流的基本API端点的指导。参考[HTTP API结构](/consul/api-docs/api-structure)文档，了解如何与Consul HTTP API进行交互和认证。
 
+#### 连接你的服务
+使用以下API端点来配置和连接你的服务。
+- [`/catalog`]（/consul/api-docs/catalog）：注册和取消注册节点、服务和健康检查。
+- [`/health`](/consul/api-docs/health)：在启用健康检查时查询节点的健康状况。
+- [`/query`](/consul/api-docs/query)：在Consul中创建和管理预备查询。预备查询允许你注册一个复杂的服务查询，然后再发送。
+- [`/coordinate`](/consul/api-docs/coordinate)：查询本地数据中心的节点以及本地数据中心和远程数据中心的Consul服务器的网络坐标。
 
+以下端点是针对服务网状的：
 
-docker run --name=fox consul agent -node=client-1 -join=172.17.0.3
+- [`/config`]（/consul/api-docs/config）：创建、更新、删除和查询在Consul注册的中央配置条目。配置项定义了服务网中资源的默认行为。
+- [`/agent/connect`]（/consul/api-docs/agent/connect）：与服务网中的本地代理进行交互。
+- [`/connect`](/consul/api-docs/connect)：管理服务网的相关操作，包括服务意向（[`/connect/intentions`](/consul/api-docs/connect/intentions)）和服务网证书授权（CA）（[`/connect/ca`](/consul/api-docs/connect/ca)）。
 
+#### 启用零信任的网络安全
+以下API端点可以让你控制对网络中服务的访问和对Consul API的访问。
+- [`/acl`]（/consul/api-docs/acl）：创建和管理令牌，以验证请求和授权访问网络中的资源。我们建议启用访问控制列表（ACL）以确保对Consul API、用户界面和CLI的访问。
+- [`/connect/intentions`]（/consul/api-docs/connect/intentions）：创建和管理服务意向。
 
-docker exec <container_id> consul snapshot save backup.snap
-docker cp <container_id>:backup.snap ./
+#### 观察你的网络
+使用以下API端点可以实现网络的可观察性。
+- [`/status`]（/consul/api-docs/status）：通过返回有关Consul服务器对等体的低级Raft信息来调试你的Consul数据中心。
+- [`/agent/metrics`](/consul/api-docs/agent#view-metrics)：检索最近完成的间隔的度量。关于指标的更多信息，请参考 [Telemetry](/consul/docs/agent/telemetry)。
 
-1. docker run -d --name=dev-consul -e CONSUL_BIND_INTERFACE=eth0 consul  （假设IP是172.17.0.2）
-2. docker run -d -e CONSUL_BIND_INTERFACE=eth0 consul agent -dev -join=172.17.0.2
-3. docker run -d -e CONSUL_BIND_INTERFACE=eth0 consul agent -dev -join=172.17.0.2
+#### 管理 Consul
+以下API端点可以帮助你管理Consul操作。
+- [`/operator`](/consul/api-docs/operator)：执行集群级任务，如与Raft子系统交互或获取许可信息。
+- [`/partition`](/consul/api-docs/admin-partitions)：在Consul中创建和管理管理区或管理员分区。管理分区是Consul命名空间的超集，用于隔离资源组以降低操作开销。
+- [`/namespace`](/consul/api-docs/namespaces)：在Consul中创建和管理命名空间。命名空间隔离了资源组，降低了操作的开销。
+- [`/snapshot`](/consul/api-docs/snapshot)：在灾难发生时保存和恢复Consul服务器状态。
+- [`/txn`](/consul/api-docs/txn)：在一个事务中应用多个操作，如更新目录和检索多个KV条目。
 
-添加 Agent：
-docker run -d --net=host -e 'CONSUL_LOCAL_CONFIG={"leave_on_terminate": true}' consul agent -bind=<external ip> -retry-join=<root agent ip>
+#### 动态地配置你的服务
+以下API端点使你能够动态配置你的服务。
+- [`/event`]（/consul/api-docs/event）：启动一个自定义事件，你可以用它来构建脚本和自动程序。
+- [`/kv`](/consul/api-docs/kv)：添加、删除和更新存储在Consul KV商店的元数据。
+- [`/session`](/consul/api-docs/session)：在Consul中创建和管理[session]（/consul/docs/dynamic-app-config/sessions）。你可以使用会话来建立分布式和细粒度的锁，以确保节点正确写入Consul KV存储。
 
 
 
@@ -46,18 +106,9 @@ ConsulAutoServiceRegistrationListener
 
 ```
 curl --header "X-Consul-Namespace: *" http://127.0.0.1:8500/v1/health/node/my-node
-
 curl http://127.0.0.1:8500/v1/health/service/my-service?ns=default
-
-
 curl http://127.0.0.1:8500/v1/agent/services
-
 ```
-
-
-
-### Consul API
-http://localhost:8100/actuator/health
 
 ### 问题
 preferIpAddress ： 测试环境需要IP访问，主机名不通
@@ -82,7 +133,7 @@ spring.cloud.consul.discovery.heartbeat.reregister-service-on-failure=true
 
 添加 consul repo:
 1. helm repo add hashicorp https://helm.releases.hashicorp.com
-2. helm install consul hashicorp/consul --set global.name=consul-cluster --set server.storage=2Gi --namespace consul
+2. helm install consul hashicorp/consul --set global.name=consul-cluster --set server.storage=2Gi --create-namespace --namespace consul
 
 https://developer.hashicorp.com/consul/docs/k8s/installation/install
 
@@ -99,12 +150,14 @@ helm install consul hashicorp/consul --set global.name=consul-cluster --set serv
   uid: 91fe6fc4-85c7-48b5-b3b1-8b1085294d43
 
 要与存储卷 PV ：
-	claimRef:
+  claimRef:
     apiVersion: v1
     kind: PersistentVolumeClaim
     name: data-consul-consul-cluster-server-0
     namespace: consul
-    resourceVersion: '34168920'
-    uid: 91fe6fc4-85c7-48b5-b3b1-8b1085294d43
+    resourceVersion: '6283149'
+    uid: e64352c1-47e3-462e-a5b7-724ac08d7862
 
+
+  
 保持一致

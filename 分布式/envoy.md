@@ -1,5 +1,7 @@
 ## Envoy
 {docsify-updated}
+> https://github.com/envoyproxy/envoy
+
 
 ### 配置输出日志
 envoy -c envoy-demo.yaml --log-path logs/custom.log
@@ -19,6 +21,14 @@ Envoy 使用单进程-多线程架构。一个 primary 线程处理各种轻量�
 ### 外部授权
 外部授权服务群集可以是静态配置的，也可以是通过 集群服务发现 配置的。如果在请求到达时外部服务不可用，则该请求是否被授权由 网络层过滤器 或 HTTP 过滤器 中的 failure_mode_allow 配置项的设置决定。如果将其设置为 true，则该请求将被放行（故障打开），否则将被拒绝。 默认设置为 false。
 
+
+### 路由匹配
+当 Envoy 匹配到一条路由时，它使用如下流程：
+1. HTTP 请求的 host 或 :authority 头部会和一个虚拟主机相匹配。
+2. 虚拟主机中的每一个路由条目都会按顺序地逐个被检查。 如果匹配到了，则使用此路由且不再做其它路由检查。
+3. 虚拟主机中的每一个虚拟集群都会独立地按顺序地被逐个检查。如果匹配到了，则使用此虚拟集群且不再做其它虚拟集群检查。
+
+`typed_per_filter_config` 字段可以用来提供过滤器的特定路由配置。键应该与过滤器的名称相匹配，比如 `envoy.filters.http.buffer` 是指HTTP缓冲区过滤器。这个字段的使用是针对过滤器的；关于是否使用以及如何使用，请看HTTP过滤器的文档。
 
 
 ```

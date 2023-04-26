@@ -20,4 +20,5 @@
   * [Protobuf集成](/分布式/grpc/protobuf.md)
 * [Nacos入门](/分布式/nacos.md)
 * [Consul](#)
-  * [Consul集群搭建](/分布式/consul.md)
+  * [Consul架构](/分布式/consul/consul-架构.md)
+  * [Consul集群搭建](/分布式/consul/consul.md)

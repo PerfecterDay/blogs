@@ -12,3 +12,4 @@
 * [k8s-Job](/docker/k8s-Job.md)
 * [k8s-Sevice](/docker/k8s-Service.md)
 * [k8s-Helm包管理器](/docker/k8s-Helm包管理器.md)
+* [k8s-kubectl命令](/docker/k8s-kubectl常用命令.md)

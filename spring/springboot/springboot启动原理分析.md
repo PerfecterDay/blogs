@@ -7,7 +7,7 @@ public static void main(String[] args) throws Exception {
 	SpringApplication.run(new Class<?>[0], args);
 }
 
-创建一个 SpringApplication 对象并调用它的 run 方法
+创建一个 SpringApplication 对象并调用它的 run 方法:
 public static ConfigurableApplicationContext run(Class<?>[] primarySources, String[] args) {
 	return new SpringApplication(primarySources).run(args);
 }
@@ -24,14 +24,14 @@ public SpringApplication(ResourceLoader resourceLoader, Class<?>... primarySourc
 	setListeners((Collection) getSpringFactoriesInstances(ApplicationListener.class));
 	this.mainApplicationClass = deduceMainApplicationClass();
 }
-在构造过程中多次用到了 getSpringFactoriesInstances 加载 BootstrapRegistryInitializer/ApplicationContextInitializer/ApplicationListener 等对象，这些对象往往实现了许多自动配置的功能
-此处涉及到Springboot 的 SPI 机制：SpringFactoriesLoader ：
+在构造过程中多次用到了 getSpringFactoriesInstances 加载 BootstrapRegistryInitializer/ApplicationContextInitializer/ApplicationListener 等对象，
+这些对象往往实现了许多自动配置的功能，此处涉及到Springboot 的 SPI 机制：SpringFactoriesLoader ：
 private <T> List<T> getSpringFactoriesInstances(Class<T> type, ArgumentResolver argumentResolver) {
 	return SpringFactoriesLoader.forDefaultResourceLocation(getClassLoader()).load(type, argumentResolver);
 }
 
 public static SpringFactoriesLoader forDefaultResourceLocation(@Nullable ClassLoader classLoader) {
-	return forResourceLocation(FACTORIES_RESOURCE_LOCATION, classLoader);  #*public static final String FACTORIES_RESOURCE_LOCATION = "META-INF/spring.factories";
+	return forResourceLocation(FACTORIES_RESOURCE_LOCATION, classLoader);  # public static final String   FACTORIES_RESOURCE_LOCATION = "META-INF/spring.factories";
 }
 
 概括起来说就是 SpringApplication 构造时，会通过 SPI 机制，加载一些类，并设置到自身的相应的属性中。实例化好之后，就会调用 SpringApplication 对象的 run 方法：

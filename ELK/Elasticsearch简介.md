@@ -91,7 +91,7 @@ curl -X POST -d '{
 
 curl --location --request POST 'https://gtjdata-uat.iqdii.com/jybapp/service/GetUserPkg' \
 --data-raw '{
-  "token": "E59DC3BE6AD1687982960FFD",
+  "token": "9B1E73E0A8F8B16C0AE16CF5",
   "username": "000035"
 }'
 

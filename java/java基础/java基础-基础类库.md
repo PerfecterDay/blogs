@@ -66,15 +66,17 @@ Java 程序的国际化主要通过如下三个类完成：
 + `java.util.ResourceBundle`:用于加载国家、语言资源包。
 + `java.util.Locale`:用于封装特定国家/区域、语言环境。
 + `java.text.MessageFormat`:用于格式化带占位符的字符串。
-为了实现国际化，必须先提供资源文件。资源文件的内容是很多的 key-value 对， key会在程序中被引用，对应的 value 是显示的字符串。
+
+为了实现国际化，必须先提供资源文件。资源文件的内容是很多的 key-value 对， key会在程序中被引用，对应的 value 是显示的字符串。  
 资源文件的命名是有规范的：
-+ baseName_language_country.propertites
-+ baseName_language.propertites
-+ baseName.propertites
++ `baseName_language_country.propertites` 
++ `baseName_language.propertites`  
++ `baseName.propertites`
+
 baseName是资源文件的基本名，可以随意指定；language 和 country 必须是 Java 支持的语言和国家，不能随意变化。
 1. 新建 test.properties 文件，内容为 `hello=你好，{0}`;
 2. 新建 test_en_US.properties文件，内容为 `hello=Welcome You,{0}`;
-3. 使用JDK工具 native2ascii : native2ascii test.properties test_zh_CN.properties， 将非西欧文字转换成 Unicode 编码文件
+3. 使用JDK工具 `native2ascii` : `native2ascii test.properties test_zh_CN.properties`， 将非西欧文字转换成 Unicode 编码文件
 4. `native2ascii -encoding UTF-8 test.properties test_2.properties`
 5. 使用下边代码测试：
  ```

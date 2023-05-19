@@ -77,10 +77,22 @@ lines terminated by '\r\n'
 
 
 #### [Mysql 数据恢复](https://www.stellarinfo.com/blog/repair-innodb-table-corruption-in-mysql/)
+
+zentao 启动脚本(/.docker_init.sh)：
+```
+if [ "`ls -A /var/lib/mysql/`" = "" ]; then
+  mysql_install_db --defaults-file=/etc/mysql/my.cnf
+  /etc/init.d/mysql restart
+  /usr/bin/mysqladmin -uroot password $MYSQL_ROOT_PASSWORD
+else
+  /etc/init.d/mysql restart -p 123456
+fi
+```
+
 主机的mysql数据文件：/Users/gtja/www/mysqldata/zentao:var/lib/mysql
 mysql日志： /var/log/mysql/error.log
 
-配置文件中(/etc/mysql/mariadb.conf.d/50-mysqld_safe.cnf)增加下述配置：
+配置文件中(/etc/mysql/mariadb.conf.d/50-server.cnf)增加下述配置：
 ```
 [mysqld]
 innodb_force_recovery=1

@@ -41,18 +41,19 @@
 13. `git reset [HEAD|<h></h>ash] filename`:从版本库中恢复某个文件，当你删除了工作区中的文件，又删除了暂存区中的文件，想恢复文件可以用这个命令
 14. `git commit`:将暂存区中的文件提交到版本库
 15. `git commit --amend`：将本次提交与前一次的提交合并为一次提交
-16. `git checkout branchname`:切换分支
-17. `git checkout -b branchname`:切换分支,如果分支名不存在则基于当前分支新建一个分支
-18. `git reset filename`:从版本库中还原某个文件到暂存区，当想撤销某次git add filename操作时使用，不加filename时，重置整个暂存区，工作区内容不受影响
-19. `git reset`:恢复暂存区文件为版本库状态,工作区文件不会改变
-20. `git reset --hard head~1`:用上一次提交的版本库状态恢复暂存区和工作区
-21. `git log`: 查看提交历史记录
-22. `git log filename`: 查看某个文件的历史提交记录
-23. `git show <commit_id>`: 查看某次提交的信息信息
-24. `git reflog`:查看引用历史记录
-25. `git reset ref`:将版本库恢复到某次提交状态，适用于往前reset后又想往后reset
-26. `git stash`:将当前工作区中的修改保存起来,并用版本库中的内容恢复暂存区和工作区，当开发到一半时，需要处理另一个bug时使用
-27. `git stash pop`:将保存的内容恢复到工作区
+16. `git commit --amend --reset-author`; 修改提交的作者为 git config的作者
+17. `git checkout branchname`:切换分支
+18. `git checkout -b branchname`:切换分支,如果分支名不存在则基于当前分支新建一个分支
+19. `git reset filename`:从版本库中还原某个文件到暂存区，当想撤销某次git add filename操作时使用，不加filename时，重置整个暂存区，工作区内容不受影响
+20. `git reset`:恢复暂存区文件为版本库状态,工作区文件不会改变
+21. `git reset --hard head~1`:用上一次提交的版本库状态恢复暂存区和工作区
+22. `git log`: 查看提交历史记录
+23. `git log filename`: 查看某个文件的历史提交记录
+24. `git show <commit_id>`: 查看某次提交的信息信息
+25. `git reflog`:查看引用历史记录
+26. `git reset ref`:将版本库恢复到某次提交状态，适用于往前reset后又想往后reset
+27. `git stash`:将当前工作区中的修改保存起来,并用版本库中的内容恢复暂存区和工作区，当开发到一半时，需要处理另一个bug时使用
+28. `git stash pop`:将保存的内容恢复到工作区
 
 ### git 分支
 0. `git checkout -b 本地分支名x origin/远程分支名x `: 在本地新建分支x，并自动切换到该本地分支x

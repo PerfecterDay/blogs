@@ -57,6 +57,7 @@
 24. `-X` ：指定 HTTP 请求的方法。
 25. `--cert`: 指定证书
 26. `--form`: 指定 form 参数， `--from 'UserID=67buu'`
+27. `--http1.1/--http2/--http3`: 指定使用的http 版本 
 
 
 ```
@@ -263,10 +264,54 @@ curl -k --proxy 10.184.161.160:443 --cert /home/5.11/server.pem https://10.18.17
 </STPAPI_RESULT>
 
 
-
+测试：
 curl -X POST https://smsc.xgate.com.hk/smshub/sendsms \
+--form 'MessageLanguage=UTF8' \
 --form 'userId=guotaijas_api8' \
 --form 'userPassword=npxYE0l6m3p1' \
 --form 'MessageReceiver=86-17674090666' \
 --form 'MessageBody=730245'
+
+生产：
+curl -X POST https://smsc.xgate.com.hk/smshub/sendsms \
+--form 'MessageLanguage=UTF8' \
+--form 'userId=guotaijas_api9' \
+--form 'userPassword=8UfQBMHS9A' \
+--form 'MessageReceiver=86-15121127343' \
+--form 'MessageBody=【国泰君安国际】尊敬的客户，您的君弘全球通一次性验证码为:123456(3分钟内有效)。如非本人操作，请忽略本短信。'
+
+<?xml version='1.0' encoding='UTF-8'?><!DOCTYPE XGATE_Response><ShortMessageResponse><Success>true</Success><ResponseCode>A000</ResponseCode><ResponseMessage>OK</ResponseMessage><MessageBatchID>309463164</MessageBatchID><SessionID>null</SessionID><NumberOfMessage>1</NumberOfMessage><NumberOfSuccess>1</NumberOfSuccess><NumberOfFailure> 0</NumberOfFailure><ReceiveTime>2023-05-17 22:36:42</ReceiveTime><ReceiverList><Receiver><MessageID>6</MessageID><MessageType>TEXT</MessageType><MessageLanguage>UTF8</MessageLanguage><MessageScheduleTime> 000000000000</MessageScheduleTime><TimeToLive>-1</TimeToLive><AreaCode>86</AreaCode><DestinationCountry>China</DestinationCountry><MobileNumber>15121127343</MobileNumber><OperatorID>CHINA-MOBILE</OperatorID><MessageBody>Not available</MessageBody><ACK>1</ACK><PartNo>1</PartNo><Status>Sent to SMS Centre</Status></Receiver></ReceiverList></ShortMessageResponse>
+
+------捷利
+UAT:
+curl -X POST -d '{
+    "appkey": "D133F72A44D7082C56B1DB3FE0332E33",
+    "username": "gtj.gtjuser2022",
+    "password": "gtj221p128wd"
+   }'  https://gtjdata-uat.iqdii.com/jybapp/login/serverlogin
+
+
+   curl -X POST -d '{
+    "token": "A56C697D8808861029BCC1AE",
+    "username": "700239",
+    "ipaddress":"223.165.23.63"
+   }'  https://gtjdata-uat.iqdii.com/jybapp/login/getusersession
+
+
+PRD:
+curl -X POST -d '{
+    "appkey": "D133F72A44D7082C56B1DB3FE0332E33",
+    "username": "gtj.gtjuser2023",
+    "password": "gtj231p0w1d"
+   }'  https://gtjdata.iqdii.com/jybapp/login/serverlogin
+
+   curl -X POST -d '{
+    "token": "9B1E73E0A8F8B16C0AE16CF5",
+    "username": "700239",
+    "ipaddress":"223.165.23.63"
+   }'  https://gtjdata.iqdii.com/jybapp/login/getusersession
+
+
+curl -X GET https://gtjdata.iqdii.com/jybapp/price/GetStockMarketInfo?session=
+   
 ```

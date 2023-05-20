@@ -1,9 +1,9 @@
 ## REDIS
-内：r-3ns5xcjxon2hpod3zp.redis.rds.aliyuncs.com:6379
+内：r-3nsu3uebubzx2j48lxpd.redis.rds.aliyuncs.com:6379
 r-3ns5xcjxon2hpod3zp
 iVWzhb80vUFyugxA
 
-redis-cli -h r-3ns5xcjxon2hpod3zppd.redis.rds.aliyuncs.com
+redis-cli -h r-3nsu3uebubzx2j48lxpd.redis.rds.aliyuncs.com
 auth r-3ns5xcjxon2hpod3zp iVWzhb80vUFyugxA
 
 session中获取长 token:

@@ -69,3 +69,14 @@ curl -X POST localhost:8888/user/app/configuration
 开启后业务日志中会自动生成调用链的TraceId。此设置在重启应用后生效。支持Log4j/Log4j2/Logback日志组件。业务应用需要在日志的Layout中通过声明%X{EagleEye-TraceID}来输出TraceId信息。参考文档注意：2.7.3.5及以后版本探针中默认打开。
 
 %X{EagleEye-TraceID}
+
+
+
+## 修改密码
+R123456(7)
+
+1973-06-10
+
+86-15100700219
+
+1000862Email@test.com

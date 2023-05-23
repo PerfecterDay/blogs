@@ -1,6 +1,6 @@
 # Mac Homebrew 的使用
 {docsify-updated}
-
+>https://www.xiebruce.top/983.html
 
 ## 国内 homebrew 加速
 ```

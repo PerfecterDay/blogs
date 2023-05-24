@@ -297,6 +297,11 @@ curl -X POST -d '{
     "ipaddress":"223.165.23.63"
    }'  https://gtjdata-uat.iqdii.com/jybapp/login/getusersession
 
+    curl -X POST -d '{
+    "token": "A56C697D8808861029BCC1AE",
+    "username": "700001"
+   }'  https://gtjdata-uat.iqdii.com/jybapp/service/GetUserPkg
+
 
 PRD:
 curl -X POST -d '{

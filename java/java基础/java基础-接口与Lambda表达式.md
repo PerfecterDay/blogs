@@ -42,8 +42,8 @@ Java 中的 Lambda 表达式形式: 参数，箭头（->）以及一个表达式
 8. 如果 Lambda 表达式的主体包含一条以上语句，则表达式必须包含在花括号{}中（形成代码块）。匿名函数的返回类型与代码块的返回类型一致，若没有返回则为空
 
 ### 函数式接口
-在 Java 中，Marker（标记）类型的接口是一种没有方法或属性声明的接口，简单地说，marker 接口是空接口。相似地，函数式接口是只包含一个抽象方法声明的接口，可以包含多个默认方法、类方法，但只能有一个抽象方法。  
-java.lang.Runnable 就是一种函数式接口，在 Runnable 接口中只声明了一个方法 void run()，相似地，ActionListener 接口也是一种函数式接口，我们使用匿名内部类来实例化函数式接口的对象，有了 Lambda 表达式，这一方式可以得到简化。
+在 Java 中，Marker（标记）类型的接口是一种没有方法或属性声明的接口，简单地说，marker 接口是空接口。相似地，函数式接口是只包含一个抽象方法声明的接口，可以包含多个默认方法、类方法，**但只能有一个抽象方法**。  
+`java.lang.Runnable` 就是一种函数式接口，在 Runnable 接口中只声明了一个方法 void run()，相似地，ActionListener 接口也是一种函数式接口，我们使用匿名内部类来实例化函数式接口的对象，有了 Lambda 表达式，这一方式可以得到简化。
 
 每个 Lambda 表达式都能隐式地赋值给函数式接口，例如，我们可以通过 Lambda 表达式创建 Runnable 接口的引用。
 ```
@@ -63,21 +63,21 @@ Consumer<Integer>  c = (int x) -> { System.out.println(x) };
 BiConsumer<Integer, String> b = (Integer x, String y) -> System.out.println(x + " : " + y);
 Predicate<String> p = (String s) -> { s == null };
 ```
-@FunctionalInterface 是 Java 8 新加入的一种注解，用于指明该接口类型声明是根据 Java 语言规范定义的函数式接口。Java 8 还声明了一些 Lambda 表达式可以使用的函数式接口，当你注释的接口不是有效的函数式接口时，可以使用 @FunctionalInterface 解决编译层面的错误。
+`@FunctionalInterface` 是 Java 8 新加入的一种注解，用于指明该接口类型声明是根据 Java 语言规范定义的函数式接口。Java 8 还声明了一些 Lambda 表达式可以使用的函数式接口，当你注释的接口不是有效的函数式接口时，可以使用 `@FunctionalInterface` 解决编译层面的错误。
 
 以下是一种自定义的函数式接口：
 ```
 @FunctionalInterface
 public interface WorkerInterface {
-   public void doSomeWork();
+	void doSomeWork();
 }
 ```
 根据定义，函数式接口只能有一个抽象方法，如果你尝试添加第二个抽象方法，将抛出编译时错误。例如：
 ```
 @FunctionalInterface
 public interface WorkerInterface {
-    public void doSomeWork();
-    public void doSomeMoreWork();
+	void doSomeWork();
+	void doSomeMoreWork();
 }
 ```
 错误：
@@ -91,7 +91,7 @@ Unexpected @FunctionalInterface annotation
  //定义一个函数式接口
 @FunctionalInterface
 public interface WorkerInterface {
-   public void doSomeWork();
+	void doSomeWork();
 }
 ```
 ```
@@ -120,7 +120,7 @@ Worker invoked using Lambda expression
 ```
 这上面的例子里，我们创建了自定义的函数式接口并与 Lambda 表达式一起使用。execute() 方法现在可以将 Lambda 表达式作为参数。
 ### Lambda 表达式与匿名类的区别
-使用匿名类与 Lambda 表达式的一大区别在于关键词的使用。对于匿名类，关键词 this 解读为匿名类，而对于 Lambda 表达式，关键词 this 解读为写就 Lambda 的外部类。
+使用匿名类与 Lambda 表达式的一大区别在于 this 关键词的使用。**对于匿名类，关键词 this 解读为匿名类对象，而对于 Lambda 表达式，关键词 this 解读为写就 Lambda 的外部类对象**。
 
 Lambda 表达式与匿名类的另一不同在于两者的编译方法。Java 编译器编译 Lambda 表达式并将他们转化为类里面的私有函数，它使用 Java 7 中新加的 invokedynamic 指令动态绑定该方法，关于 Java 如何将 Lambda 表达式编译为字节码，Tal Weiss 写了一篇很好的文章。
 
@@ -151,5 +151,4 @@ lambda表达式的代码可能会在repeatMessage调用返回很久以后才运�
 
 在我们的例子中，这个lambda表达式有1个自由变量text。表示lambda表达式的数据结构必须存储自由变量的值，在这里就是字符串"Hello"。我们说它被lambda表达式捕获（captured）。（例如，可以把一个lambda表达式转换为包含一个方法的对象，这样自由变量的值就会复制到这个对象的实例变量中。）
 
-lambda表达式可以捕获外围作用域中变量的值。在Java中，要确保所捕获的值是明确定义的，这里有一个重要的限制。在lambda表达式中，**只能引用值不会改变的变量**，lambda表达式中捕获的变量必须实际上是最终变量（effectively final）。实际上的最终变量是指，这个变量初始化之后就不会再为它赋新值。  
-在一个lambda表达式中使用this关键字时，是指创建这个lambda表达式的方法的this参数。
+lambda表达式可以捕获外围作用域中变量的值。在Java中，要确保所捕获的值是明确定义的，这里有一个重要的限制。在lambda表达式中，**只能引用值不会改变的变量**，lambda表达式中捕获的变量必须实际上是最终变量（effectively final）。实际上的最终变量是指，这个变量初始化之后就不会再为它赋新值。

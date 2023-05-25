@@ -264,6 +264,7 @@ curl -k --proxy 10.184.161.160:443 --cert /home/5.11/server.pem https://10.18.17
 </STPAPI_RESULT>
 
 
+-----------Xgate--------------
 测试：
 curl -X POST https://smsc.xgate.com.hk/smshub/sendsms \
 --form 'MessageLanguage=UTF8' \
@@ -282,7 +283,7 @@ curl -X POST https://smsc.xgate.com.hk/smshub/sendsms \
 
 <?xml version='1.0' encoding='UTF-8'?><!DOCTYPE XGATE_Response><ShortMessageResponse><Success>true</Success><ResponseCode>A000</ResponseCode><ResponseMessage>OK</ResponseMessage><MessageBatchID>309463164</MessageBatchID><SessionID>null</SessionID><NumberOfMessage>1</NumberOfMessage><NumberOfSuccess>1</NumberOfSuccess><NumberOfFailure> 0</NumberOfFailure><ReceiveTime>2023-05-17 22:36:42</ReceiveTime><ReceiverList><Receiver><MessageID>6</MessageID><MessageType>TEXT</MessageType><MessageLanguage>UTF8</MessageLanguage><MessageScheduleTime> 000000000000</MessageScheduleTime><TimeToLive>-1</TimeToLive><AreaCode>86</AreaCode><DestinationCountry>China</DestinationCountry><MobileNumber>15121127343</MobileNumber><OperatorID>CHINA-MOBILE</OperatorID><MessageBody>Not available</MessageBody><ACK>1</ACK><PartNo>1</PartNo><Status>Sent to SMS Centre</Status></Receiver></ReceiverList></ShortMessageResponse>
 
-------捷利
+------捷利---------
 UAT:
 curl -X POST -d '{
     "appkey": "D133F72A44D7082C56B1DB3FE0332E33",

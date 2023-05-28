@@ -1,4 +1,4 @@
-## Consul
+## Consul API 概览
 {docsify-updated}
 > https://developer.hashicorp.com/consul
 
@@ -42,7 +42,7 @@ Available commands are:
     watch          Watch for changes in Consul
 ```
 
-### Consul API Overview 
+### Consul HTTP API Overview 
 Consul HTTP API是一个RESTful接口，允许你在网络中利用Consul功能。本主题提供了关于不同工作流的基本API端点的指导。参考[HTTP API结构](/consul/api-docs/api-structure)文档，了解如何与Consul HTTP API进行交互和认证。
 
 #### 连接你的服务

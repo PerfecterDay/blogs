@@ -1,6 +1,7 @@
 ## Consul API 概览
 {docsify-updated}
 > https://developer.hashicorp.com/consul
+> https://kingfree.gitbook.io/consul/getting-started/agent
 
 ### consul 命令行-CLI
 ```
@@ -76,7 +77,7 @@ Consul HTTP API是一个RESTful接口，允许你在网络中利用Consul功能�
 - [`/snapshot`](https://developer.hashicorp.com/consul/api-docs/snapshot)：在灾难发生时保存和恢复Consul服务器状态。
 - [`/txn`](https://developer.hashicorp.com/consul/api-docs/txn)：在一个事务中应用多个操作，如更新目录和检索多个KV条目。
 
-#### 动态地配置你的服务
+#### 动态地配置
 以下API端点使你能够动态配置你的服务。
 - [`/event`]（https://developer.hashicorp.com/consul/api-docs/event）：启动一个自定义事件，你可以用它来构建脚本和自动程序。
 - [`/kv`](https://developer.hashicorp.com/consul/api-docs/kv)：添加、删除和更新存储在Consul KV商店的元数据。

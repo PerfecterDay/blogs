@@ -21,4 +21,7 @@
 * [Nacos入门](/分布式/nacos.md)
 * [Consul](#)
   * [Consul架构](/分布式/consul/consul-架构.md)
-  * [Consul集群搭建](/分布式/consul/consul.md)
+  * [Consul 一致性](/分布式/consul/consul-一致性.md)
+  * [Consul API概览](/分布式/consul/consul-API概览.md)
+  * [Agent API](/分布式/consul/agent.md)
+  * [Catalog API](/分布式/consul/catalog.md)

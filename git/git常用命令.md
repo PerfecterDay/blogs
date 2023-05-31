@@ -88,6 +88,8 @@
 18. `git push remote :remotebranch` :删除remote的remotebranch分支
 19. `git push remote --delete remotebranch` :删除remote的remotebranch分支
 20. `git push` : 如果当前分支只有一个追踪分支，那么主机名都可以省略
+21. `git ls-remote -h -- ssh://git@gjywgitlab.gtja.net:223/gtja-app-platform/user-center-g/user-center-service.git`
+
 
 #### 常见问题
 1. windows乱码：  

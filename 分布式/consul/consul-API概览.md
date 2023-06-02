@@ -141,7 +141,7 @@ https://developer.hashicorp.com/consul/docs/k8s/installation/install
 `helm install consul hashicorp/consul --set global.name=consul --set server.storage=2Gi --create-namespace --namespace consul`
 `helm install consul-cluster hashicorp/consul --set global.name=consul --set server.storage=1Gi --set server.storageClass=alicloud-disk-available --namespace consul`
 
-helm install consul hashicorp/consul --set global.name=consul --set server.storage=2Gi --namespace consul
+helm install consul hashicorp/consul --set global.name=consul-cluster --set server.storage=1Gi --namespace consul
 
 
 存储声明 PVC ：

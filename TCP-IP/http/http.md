@@ -44,7 +44,7 @@ http://www.example.com:80/path/to/myfile?key1=val1&key2=val2#somewhereInDocument
       	+ 星号形式（asterisk form），一个简单的星号（'*'），配合 OPTIONS 方法使用，代表整个服务器。OPTIONS * HTTP/1.1
 	3. HTTP 版本（HTTP version），定义了剩余消息的结构，作为对期望的响应版本的指示符。
 
-2. HTTP 响应
+2. HTTP 响应  
 	HTTP 响应的起始行被称作状态行（status line），包含以下信息：
 
 	1. 协议版本，通常为 HTTP/1.1。

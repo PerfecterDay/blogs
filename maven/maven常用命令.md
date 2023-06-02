@@ -15,6 +15,7 @@
 10. `mvn package -DskipTests`: 跳过测试运行
 11. `mvn package -Dmvn.test.skip=true`：跳过测试代码编译同时跳过测试运行
 12. `mvn test -Dtest=testClass1,testClass2|Random*Test`：运行指定的测试类（|代表或）
+13. `mvn -pl '!submodule1,!submodule2' install 或者 mvn -pl -submodule1,-submodule2 install` ：打包时跳过某些模块
 
 #### maven 常用配置
 最佳实践是将 maven 安装目录下的 `conf/settings.xml` 文件复制到用户目录下的 `.m2` 文件夹中，并修改其中的配置。
@@ -31,7 +32,6 @@
   ```
 
 #### maven 问题
-
 有时候使用 https 时会遇到如下错误：`sun.security.validator.ValidatorException: PKIX path building failed: sun.security.provider.certpath.SunCertPathBuilderException: unable to find valid certification path to requested target`
 
 解决方法：加上 `-Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true`

@@ -1,6 +1,6 @@
-## Jenkins 简介
+## Jenkins 语法
 {docsify-updated}
-> https://www.jenkins.io/zh/doc/book/pipeline/
+> https://www.jenkins.io/zh/doc/book/pipeline/syntax/
 
 Jenkins是一款开源 CI&CD 软件，用于自动化各种任务，包括构建、测试和部署软件。
 Jenkins 支持各种运行方式，可通过系统包、Docker 或者通过一个独立的 Java 程序。
@@ -9,7 +9,7 @@ Jenkins 支持各种运行方式，可通过系统包、Docker 或者通过一�
 `HOMEBREW_BOTTLE_DOMAIN= brew reinstall jenkins`
 
 ### Pipeline
-<center><img src="pics/realworld-pipeline-flow.png"></center>
+<center><img src="pics/realworld-pipeline-flow.png" width="60%"></center>
 
 声明式和脚本化的流水线语法
 Jenkinsfile 能使用两种语法进行编写 - 声明式和脚本化。
@@ -25,7 +25,8 @@ Jenkins一直允许以将自由式工作链接到一起的初级形式来执行�
 	流水线是用户定义的一个CD流水线模型 。流水线的代码定义了整个的构建过程, 他通常包括构建, 测试和交付应用程序的阶段 。  
 	另外 ， `pipeline` 块是 声明式流水线语法的关键部分.
 
-2. 节点
+2. 代理（agent）
+	agent 部分指定了整个流水线或特定的部分, 将会在Jenkins环境中执行的位置，这取决于 agent 区域的位置。该部分必须在 pipeline 块的顶层被定义, 但是 stage 级别的使用是可选的。
 	节点是一个机器 ，它是Jenkins环境的一部分 and is capable of执行流水线。  
 	另外, `node`块是 脚本化流水线语法的关键部分.
 
@@ -118,12 +119,14 @@ pipeline {
         }
     }
     post {
-        always {
+        success {
             archiveArtifacts artifacts: 'user-center-service/target/*.jar', fingerprint: true
         }
     }
 }
 ```
+
+通过 archiveArtifacts 步骤和文件匹配表达式可以很容易的完成构建结果记录和存储
 
 mvn not found/docker not found:
 需要添加

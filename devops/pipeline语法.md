@@ -62,77 +62,81 @@ agent 部分指定了整个流水线或特定的部分, 将会在Jenkins环境�
 
 
 
-
+### 实例
 ```
 pipeline {
     parameters {
-      choice choices: ['ssh://git@gjywgitlab.gtja.net:223/gtja-app-platform/user-center-g/user-center-service.git'], name: 'repo'
-      string defaultValue: 'develop', name: 'branch'
-      string defaultValue: '1.0.0', name: 'version'
-      choice choices: ['sit','uat', 'prod'], name: 'env'
+        string defaultValue:'ssh://git@gjywgitlab.gtja.net:223/wangzhongzhu026484/trade-center.git', name: 'repo'
+        string defaultValue: 'develop', name: 'branch'
+        string defaultValue: '1.0.0', name: 'version'
+        choice choices: ['sit','uat', 'prod'], name: 'env'
     }
     tools {
-      maven 'maven'
-      dockerTool 'docker'
+        maven 'maven'
+        dockerTool 'docker'
     }
     agent any
     stages {
         stage('CheckCode') {
             steps {
                 git(
-                    credentialsId: 'zhongzhuwang',
-                    url: "${params.repo}",
-                    branch: "${params.branch}",
-                    changelog: true,
-                    poll: true
+                        credentialsId: 'zhongzhuwang',
+                        url: "${params.repo}",
+                        branch: "${params.branch}",
+                        changelog: true,
+                        poll: true
                 )
             }
         }
         stage('Build') {
             steps {
-                sh 'mvn -B -DskipTests clean package'
+                sh "mvn -pl '!trade-center-biz' -B -DskipTests clean package"
+            }
+        }
+
+        stage('CopyFile'){
+            steps {
+                sh "export version=${params.version}"
+                sh '''
+                cd docker
+                rm -rf *.jar
+                cp ../trade-center-service/target/*.jar .
+                ls -lh
+                '''
             }
         }
         stage('Docker uat build'){
             when{
-              expression{
-                 params.env == 'uat'
-              }
-           }
-           steps{
-                 sh "export version=${params.version}"
-                 sh '''
+                expression{
+                    params.env == 'uat'
+                }
+            }
+            steps{
+                sh '''
                     cd docker
-                    rm -rf *.jar
-                    cp ../user-center-service/target/*.jar .
-                    ls -lh
-                    docker build -t gtja-registry-registry.cn-hongkong.cr.aliyuncs.com/gtja/user-center-service:$version .
-                    docker push gtja-registry-registry.cn-hongkong.cr.aliyuncs.com/gtja/user-center-service:$version
+                    docker build -t gtja-registry-registry.cn-hongkong.cr.aliyuncs.com/gtja/trade-gmt-ttl:$version .
+                    docker push gtja-registry-registry.cn-hongkong.cr.aliyuncs.com/gtja/trade-gmt-ttl:$version
                  '''
-           }
+            }
         }
         stage('Docker prod build'){
             when{
-              expression{
-                 params.env == 'prod'
-              }
-           }
-           steps{
-                 sh "export version=${params.version}"
-                 sh '''
+                expression{
+                    params.env == 'prod'
+                }
+            }
+            steps{
+                sh '''
                     cd docker
-                    rm -rf *.jar
-                    cp ../user-center-service/target/*.jar .
-                    ls -lh
-                    docker build -t gtjaprd-registry-registry.cn-hongkong.cr.aliyuncs.com/gtja-prof/user-center-service:$version .
-                    docker push gtjaprd-registry-registry.cn-hongkong.cr.aliyuncs.com/gtja-prof/user-center-service:$version
+                    docker build -t gtjaprd-registry-registry.cn-hongkong.cr.aliyuncs.com/gtja-prof/trade-gmt-ttl:$version .
+                    docker push gtjaprd-registry-registry.cn-hongkong.cr.aliyuncs.com/gtja-prof/trade-gmt-ttl:$version
                  '''
-           }
+            }
         }
     }
     post {
         success {
-            archiveArtifacts artifacts: 'user-center-service/target/*.jar', fingerprint: true
+            archiveArtifacts artifacts: 'trade-center-service/target/*.jar', fingerprint: true
         }
     }
 }

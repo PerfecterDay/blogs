@@ -1,16 +1,21 @@
 # Tcpdump
-+ -c [count]
-	抓去指定数量的包
-+ -i [interface]
-	指定要抓包的接口
-+ -I 
-	设置为监听模式，只支持IEEE 802.11 Wi-Fi 接口，并且只支持一些操作系统
-+ -w [file]
-	指定将抓包数据写入一个文件而不是打印出来
-+ -U
-	指定缓存，如果设置了-w，那么抓包数据会立即写入文件，没有指定-w，数据会被缓存然后输出
-+ -vvv
-	输出更多
++ `-c [count]`: 抓取指定数量的包
++ `-i [interface]`: 指定要抓包的接口,如果-i 后没有加接口，默认抓取所有接口的流量
++ `-L`: 设置为监听模式，只支持IEEE 802.11 Wi-Fi 接口，并且只支持一些操作系统
++ `-w [file]`: 指定将抓包数据写入一个文件而不是打印出来, `tcpdump port 80 -w capture_file`
++ `-U`: 指定缓存，如果设置了-w，那么抓包数据会立即写入文件，没有指定-w，数据会被缓存然后输出
++ `-X`: 以十六进制格式输出
++ `-S`: 抓取整个包
++ `-nn`: 不解析主机名或端口名
++ `-vvv`: 输出更多
++ `host [ip]`: 过滤指定IP的包
++ `src [ip]`: 根据源地址过滤
++ `dst [ip]`: 根据目的地址过滤
++ `port [port]`: 查看指定端口的流量
++ `src port [port]`: 查看指定源端口的流量, `tcpdump port 8050`
++ `dst port [port]`: 查看指定目的端口的流量， `tcpdump src port 8050`
++ `dst port [port]`: 查看指定目的端口的流量， `tcpdump dst port 8050`
++ `tcpdump [protocol]`: 查看指定协议的流量，`tcpdump icmp`
 
 
 ### Wifi Mac 帧

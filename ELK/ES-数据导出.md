@@ -25,7 +25,14 @@ elasticdump \
 --type=mapping
 ```
 
-
+### 数据迁移
+```
+elasticdump \
+--input=http://elastic:xz3H7rrPCCxrbsdt@es-sg-vfp331pa70007h94i.public.elasticsearch.aliyuncs.com:9200/jyb_market_code_table \
+--output=http://elastic:xz3H7rrPCCxrbsdt@es-sg-5r538yl4p0001cvbx.public.elasticsearch.aliyuncs.com:9200/jyb_market_code_table \
+--limit=1000 \
+--type=data
+```
 
 
 

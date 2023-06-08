@@ -72,6 +72,33 @@ URL类提供了多个构造器用于创建URL对象，一旦构建一个URL对�
 	```
 	Socket socket = new Socket(); 
 	socket.connect(new InetSocketAddress("testHost",8080),1000)
+	//使用socket 发送 HTTP demo
+	public static void main(String[] args) throws IOException {
+		//Socket s = SSLSocketFactory.getDefault().createSocket();
+        //s.connect(new InetSocketAddress("www.baidu.com", 443), 2000);
+
+        Socket s = new Socket();
+        s.connect(new InetSocketAddress("127.0.0.1", 8500), 2000);
+        PrintWriter wtr = new PrintWriter(s.getOutputStream());
+
+        //Prints the request string to the output stream
+        wtr.println("GET / HTTP/1.1");
+        wtr.println("Host: localhost");
+        wtr.println("");
+        wtr.flush();
+
+        BufferedReader bufRead = new BufferedReader(new InputStreamReader(s.getInputStream()));
+        String outStr;
+
+        //Prints each line of the response
+        while((outStr = bufRead.readLine()) != null){
+            System.out.println(outStr);
+        }
+
+        //Closes out buffer and writer
+        bufRead.close();
+        wtr.close();
+    }
 	```
 
 ### 基于UDP的网络编程

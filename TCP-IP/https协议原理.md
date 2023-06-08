@@ -8,6 +8,9 @@
 	- [双向认证](#双向认证)
 	- [nginx使用自签名证书配https](#nginx使用自签名证书配https)
 	- [java 对 Https 的支持](#java-对-https-的支持)
+		- [KeyManager](#keymanager)
+		- [TrustManager](#trustmanager)
+	- [问题总结](#问题总结)
 
 ### HTTPS协议原理
 
@@ -102,7 +105,20 @@ keystore 只是一种文件格式而已，实际上在 Java 的世界里 KeyStor
 Java 使用以下主要类和接口来支持安全传输：
 <center><img src="pics/jsse.jpg" width="40%"/></center>
 
+#### KeyManager
+KeyManager 的主要职责是选择最终将被发送到远程主机的认证凭证。为了向远程对等体认证自己（本地安全套接字对等体），你必须用一个或多个KeyManager对象初始化一个SSLContext对象。你必须为每个将被支持的不同认证机制传递一个KeyManager。如果在SSLContext的初始化中传递了null，那么将创建一个空的KeyManager。如果使用内部默认上下文（例如，由SSLSocketFactory.getDefault()或SSLServerSocketFactory.getDefault()创建的SSLContext），那么将会创建一个默认的KeyManager
 
+#### TrustManager
+TrustManager 的主要责任是确定所提交的认证凭证是否应该被信任。如果凭证不被信任，那么连接将被终止。为了验证安全套接字对等体的远程身份，你必须用一个或多个TrustManager对象初始化一个SSLContext对象。你必须为每个支持的认证机制传递一个TrustManager。如果在SSLContext的初始化中传递了null，那么将为你创建一个信任管理器。通常，一个信任管理器支持基于X.509公钥证书的认证（例如，X509TrustManager）。一些安全套接字的实现也可能支持基于共享秘钥、Kerberos或其他机制的认证。
+
+TrustManager对象可以由TrustManagerFactory创建，或者通过提供接口的具体实现来创建。
+
+TrustManager 和 KeyManager 之间的关系
++ TrustManager决定远程认证凭证（以及连接）是否应该被信任(通常是认证通信的对方)。
++ KeyManager决定向远程主机发送哪些认证凭证（通常是提供让对方认证的凭证）。
+
+
+### 问题总结
 当遇到 https 证书验证失败时，你需要选择下面三种方法中的一个来解决：
 + Configure SSLContext with a TrustManager that accepts any certificate (see below).  
 	```
@@ -174,3 +190,6 @@ Java 使用以下主要类和接口来支持安全传输：
 	```
 
 + Add the certificate for that site to the default Java trust store.
+
+
+`-Djavax.net.debug=all` 打开网络调试

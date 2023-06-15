@@ -4,7 +4,7 @@
 > https://www.baeldung.com/jackson-annotations
 
 - [Jackson注解](#jackson注解)
-	- [序列化注解](#序列化注解)
+	- [序列化注解(对象转Json)](#序列化注解对象转json)
 		- [序列化时忽略某些属性](#序列化时忽略某些属性)
 		- [@JsonAnyGetter](#jsonanygetter)
 		- [`@JsonGetter`](#jsongetter)
@@ -12,7 +12,7 @@
 		- [`@JsonInclude(Include.NON_NULL)`: 去除掉null 的属性](#jsonincludeincludenon_null-去除掉null-的属性)
 
 
-### 序列化注解
+### 序列化注解(对象转Json)
 
 #### 序列化时忽略某些属性
 如果我们在序列化时需要过滤掉某些属性，可以使用下面注解：

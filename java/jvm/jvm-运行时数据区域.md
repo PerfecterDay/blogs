@@ -45,7 +45,7 @@ Java 堆可以是固定大小的，也可以是可扩展的。当前主流虚拟
 + `-XX:+HeapDumpOnOutOfMemoryError` :异常时 Dump 出当前内存堆转储快照。
 + `jhat -port 7401 -J-Xmx4G dump.hprof`: 使用 jhat 分析 Dump 出来的转储快照。
 
-### 方法区
+### 方法区(元数据区)
 方法区与 Java 堆一样，是各个线程共享的内存区域，用于存储已被虚拟机加载的**类信息(方法代码)、常量、静态变量、 JIT 编译后代码等数据**。 JVM 规范对方法区的限制非常宽松，除了和 Java 堆一样不需要连续的物理内存外和可以选择固定大小或可扩展外，还可以不实现垃圾收集。此区域的的内存回收目标主要是针对常量池的回收和类的卸载。
 
 HotSpot 虚拟机中，之前将此区域实现为永久代，到了JDK8，已经移除了永久代的概念，采用**元数据区**来实现。
@@ -75,9 +75,23 @@ JDK 1.4 中引入了 NIO 类，引入了一种基于通道与缓冲区的 I/O �
 
 显然，直接内存不会受到 Java 堆大小的限制，但是，既然是内存，肯定还是会受到本机总内存大小及处理器寻址空间的限制。配置虚拟机参数时，不能忽略直接内存，此区域也可能会导致 OOM 异常。
 
-+ `-XX:MaxDirectmemorySize` :设置直接内存容量，如果不指定，默认64M。
-
-
 ```
--XX:CICompilerCount=3 -XX:ConcGCThreads=1 -XX:G1ConcRefinementThreads=4 -XX:G1HeapRegionSize=1048576 -XX:GCDrainStackTargetSize=64 -XX:InitialHeapSize=130023424 -XX:MarkStackSize=4194304 -XX:MaxHeapSize=2051014656 -XX:MaxNewSize=1229979648 -XX:MinHeapDeltaBytes=1048576 -XX:NonNMethodCodeHeapSize=5830092 -XX:NonProfiledCodeHeapSize=122914074 -XX:ProfiledCodeHeapSize=122914074 -XX:ReservedCodeCacheSize=251658240 -XX:+SegmentedCodeCache -XX:+UseCompressedClassPointers -XX:+UseCompressedOops -XX:+UseG1GC
+-XX:MaxDirectmemorySize :设置直接内存容量，如果不指定，默认64M。
+-XX:CICompilerCount=3 
+-XX:ConcGCThreads=1 
+-XX:G1ConcRefinementThreads=4 
+-XX:G1HeapRegionSize=1048576 
+-XX:GCDrainStackTargetSize=64 
+-XX:InitialHeapSize=130023424 
+-XX:MarkStackSize=4194304 
+-XX:MaxHeapSize=2051014656 
+-XX:MaxNewSize=1229979648 
+-XX:MinHeapDeltaBytes=1048576 
+-XX:NonNMethodCodeHeapSize=5830092 
+-XX:NonProfiledCodeHeapSize=122914074 
+-XX:ProfiledCodeHeapSize=122914074 
+-XX:ReservedCodeCacheSize=251658240 
+-XX:+SegmentedCodeCache 
+-XX:+UseCompressedClassPointers 
+-XX:+UseCompressedOops -XX:+UseG1GC
 ```

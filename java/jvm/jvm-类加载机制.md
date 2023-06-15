@@ -1,7 +1,7 @@
 # java基础-类加载机制
 {docsify-updated}
 
-对于任意一个类，都必须由加载它的类加载器和这个类本身一起共同确立其在Java虚拟机中的唯一性，每一个类加载器，都拥有一个独立的类名称空间。这句话可以表达得更通俗一些：比较两个类是否“相等”，只有在这两个类是由同一个类加载器加载的前提下才有意义，否则，即使这两个类来源于同一个Class文件，被同一个Java虚拟机加载，只要加载它们的类加载器不同，那这两个类就必定不相等。
+**对于任意一个类，都必须由加载它的类加载器和这个类本身一起共同确立其在Java虚拟机中的唯一性，每一个类加载器，都拥有一个独立的类名称空间。这句话可以表达得更通俗一些：比较两个类是否“相等”，只有在这两个类是由同一个类加载器加载的前提下才有意义，否则，即使这两个类来源于同一个Class文件，被同一个Java虚拟机加载，只要加载它们的类加载器不同，那这两个类就必定不相等。**
 
 这里所指的“相等”，包括代表类的Class对象的equals()方法、isAssignableFrom()方法、isInstance()方法的返回结果，也包括了使用instanceof关键字做对象所属关系判定等各种情况。
 
@@ -36,12 +36,12 @@ public class ClassLoaderTest {
 }
 ```
 
-### Java语言系统自带有三个类加载器
+### Java语言系统自带的三个类加载器
 <center><img src="pics/classloader.png" alt="" height=500px></center>
 
 + `Bootstrap ClassLoader` :引导类加载器，是虚拟机不可分割的一部分，通常由C/C++语言来实现。主要加载核心类库，`%JRE_HOME%\jre\lib`(1.8) 下的 `rt.jar` 、`resources.jar` 、`charsets.jar` 和其它类。另外需要注意的是可以通过启动 JVM 时指定`-Xbootclasspath` 和路径来改变 `Bootstrap ClassLoader` 的加载目录。比如 `java -Xbootclasspath/a:path`， `path` 被追加到 `Bootstrap ClassLoader` 默认的加载路径中。
-+ `Extention ClassLoader`: 扩展类加载器，加载目录 `%JRE_HOME%\jre\lib\ext`(1.8) 目录下的 jar 包和 class 文件。还可以加载 `-Djava.ext.dirs` 选项指定目录下的 jar 和类。
-+ `System ClassLoader`: 系统类加载器，加载当前应用的 `classpath` 的所有类。
++ `Extention ClassLoader(ExtClassLoader)`: 扩展类加载器，加载目录 `%JRE_HOME%\jre\lib\ext`(1.8) 目录下的 jar 包和 class 文件。还可以加载 `-Djava.ext.dirs` 选项指定目录下的 jar 和类。
++ `System ClassLoader(AppClassLoader)`: 系统类加载器，加载当前应用的 `classpath` 的所有类。
 
 **每个线程都有一个对类加载器的引用，称为上下文类加载器。主线程的上下文类加载器是系统类加载器。当创建新线程是，它的上下文类加载器会被设置为创建该线程的上下文类加载器。因此，如果不做任何特殊操作，那么所有的线程都会将它的上下文类加载器设置为系统类加载器。**
 

@@ -1,6 +1,10 @@
 # java基础-IO
 {docsify-updated}
 
+在 Java API 中 ，可以从其中读入一个字节序列的对象称做输入流，而可以向其中写人一个字节序列的对象称做输出流。这些字节序列的来源地和目的地可以是文件，而且通常都是文件，但是也可以是网络连接，甚至是内存块。 抽象类 `InputStream` 和 `OutputStream` 构成了输入/输出( I/O)类层次结构的基础 。
+
+因为面向字节的流不便于处理以 Unicode形式存储的信息(回忆一下， Unicode中每个 字符都使用了多个字节来表示)，所以从抽象类 `Reader` 和 `Writer` 中继承出来了一个专门用于处理 Unicode 字符的单独的类层次结构 。 这些类拥有的读人和写出操作都是基于两字节的 Char值的(即， Unicode码元)，而不是基于 byte值的。
+
 ## IO 流
 流按照不同的方式可以分为如下几类：
 + 输入流：从外设/网络等流入程序内存的流，只能从其中读数据，不能写
@@ -38,6 +42,55 @@ OutputStream/Writer 也提供如下三个写方法：
 + `void write(String str)`: 将字符串 str 中的字符写入输出流中
 + `void write(String str,int off, int len)`: 将字符串 str 中从 off 位置开始，长度为len的字符写入输出流中
 
+`read` 和 `write` 方法在执行时都将阻塞，直至字节确实被读入或写出 。 这就意味着如果流不能被立即访问(通常是因为 网络连接忙)，那么当前的线程将被阻塞 。 这使得在这两个方 法等待指定的流变为可用的这段时间里，其他的线程就有机会去执行有用的工作。
+
+当你完成对输入/输出流的读写时，应该通过调用 close 方法来关闭它，这个调用会释 放掉十分有限的操作系统资源 。 如果一个应用程序打开了过多的输入/输出流而没有关闭， 那么系统资源将被耗尽 。 关闭一个输出流的同时还会冲刷用于该输出流的缓冲区 : 所有被临 时置于缓冲区中，以便用更大的包的形式传递的字节在关闭输出流时都将被送出。 特别是， 如果不关闭文件，那么写出字节 的最后一个包可能将永远也得不到传递 。 当然，我们还可以 用 flush方法来人为地冲刷这些输出。
+
+#### 文本输出
+对于文本输出，可以使用 `PrintWriter` 。 这个类拥有以文本格式打印字符串和数字的方法，它还有一个将 `PrintWriter` 链接到 `FileWriter` 的便捷方法，下面的语句 : 
+```PrintWriter out = new PrintWriter(”employee.txt”，”UTF司8”);```
+等同于 :
+```
+PrintWriter out = new PrintWriter(
+new FileOutputStream (”employee.txt”),"UTF-8");
+```
+为了输出到打印写出器，需要使用与使用 `System.out` 时相同的 `print`、 `println` 和 `printf` 方法。 你可以用这些方法来打印数字(`int`、 `short`、 `long`、 `float` 、 `double`)、字符、 boolean值、字符串和对象。例如，考虑下面的代码:
+```
+String name = ”Harry Hacker”; 
+double salary = 75000;
+out.print (name) ;
+out.print(’ ’); 
+out.println(salary) ;
+```
+
+#### 读写二进制数据(Datalnput和DataOutput和)
+为了读回数据，可以使用在 DataInput 接口中定义的下列方法 :
++ readint 
++ readShort 
++ readlong 
++ readFloat 
++ readDouble 
++ readChar 
++ readBoolean 
++ readUTF
+
+DataOutput 接口定义了下面用于以二进制格式写数组、字符、boolean 值和字符串的方法:
++ writeChars
++ writeByte
++ writeInt
++ writeShort
++ writeLong
++ writeFloat
++ writeDouble
++ writeChar
++ writeBoolean
++ writeUTF
+
+`DataInputStream` 类实现了 `DataInput` 接口，为了从文件中读入二进制数据，可以将 `DataInputStream` 与某个字节源相组合，例如 `FileInputStream`:
+```DataInputStream in = new DataInputStream(new FileInputStream("employee.dat"));```
+与此类似，要想写出二进制数据，你可以使用实现了 `DataOutput` 接口的 `DataOutput­Stream` 类 :
+```DataOutputStrearn out =new DataOutputStream(new FileOutputStream("employee.dat"));```
+
 #### 标准输入输出
 Java的标准输入/输出分别通过 `System.in/System.out` 来代表，默认情况下分别代表键盘和显示器，当程序从 System.in 读数据时，实际上是从键盘读取输入；当程序通过 System.out 来输出数据时，数据会显示在屏幕上。
 System类还提供了三个重定向标准输入/输出的方法：
@@ -72,10 +125,12 @@ mode 参数指定 RandomAccessFile 的访问模式，该参数有如下四个值
 
 RandomAccessFile 还包含类似于了 InputStream/OutputStream 中的三种 read()/write() 方法，用法是完全一样的，另外还包含了系列方便的 readXXX 和 writeXXX 方法。
 
-## 老的File类
+
+## 操作文件
+
+### 老得File类及常见方法
 `File` 类看上去是指代文件，其实它既能代表一个特定文件，也能代表一个目录。
 
-### 常见方法
 + `String[] list()`: 返回所有文件名的字符串数组
 + `String[] list(FileNameFilter filter)`: 返回 `FileNameFilter` 过滤后的字符串数组
 + `File[] listFiles()`: 返回所有的文件数组
@@ -125,8 +180,9 @@ public class FileList {
 ```
 
 ## 新的 Path 和 Files 类
-Path 和 Files 类封装了在用户机器上处理文件系统所需的所有功能。
+`Path` 和 `Files` 类封装了在用户机器上处理文件系统所需的所有功能。
 
+#### Path
 Path 表示的是一个目录名序列，其后还可以跟着一个文件名 。 路径中的第一个部件可以是根部件，例如`/`或 `C:\`，而允许访问的根部件取决于文件系统。 以根部件开始的路径是绝对路径;否则，就是相对路径。
 
 静态的 `Paths.get` 方法接受一个或多个字符串，并将它们用默认文件系统的路径分隔符(类 Unix 文件系统是 `/`, Windows 是`\`)连接起来 。 然后它解析连接起来的结果，如果其表示的不是给定文件系统中的合法路径，那么就抛出 InvalidPathException 异常 。 这个连接起来的结果就是一个 Path 对象。
@@ -146,9 +202,19 @@ Files 类可以使得普通文件操作变得快捷，在创建文件或目录�
 + static Path createTempDirectory(String prefix, FileAttribute<?>... attrs) 
 + + static Path createTempDirectory( Path parentDi r, String prefix ,FileAttribute<?> ... attrs)
 
+#### Files
+创建新目录可以调用：
++ Files.createDirectory(path)
+其中，路径中除最后一个部件外，其他部分都必须是己存在的 。要创建路径中的中间目录，
+
+创建文件：
+Files.createFile(path)
+如果文件已经存在了，那么这个调用就会抛出异常。 检查文件是否存在和创建文件是**原子性**的，如果文件不存在，该文件就会被创建，并且其他程序在此过程中是无法执行文件创建操作的 。
+
 复制、移动和删除文件:
 + Files.copy(fromPath,toPath)
 + Files.move(fromPath,toPath)
+
 如果目标路径已经存在，那么复制或移动将失败。 如果想要覆盖已有的目标路径， 可以使用 REPLACE_EXISTING 选项 。如果想要复制所有的文件属性，可以使用 COPY_ ATTRIBUTES 选项：
 ```
 Fi1es.copy(fromPath, toPath, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES);
@@ -158,7 +224,33 @@ Fi1es.copy(fromPath, toPath, StandardCopyOption.REPLACE_EXISTING, StandardCopyOp
 + Files.copy(inputSream,toPath)
 + Files.copy(fromPath,outputStream)
 
-删除文件：
+删除文件： 
 + Fi1es.de1ete(path) 如果要删除的文件不存在，这个方法就会抛出异常。 
 因此，可转而使用下面的方法:
 + boo1ean de1eted = Files.de1etelfExists(path) 该删除方法还可以用来移除空目录。
+
+访问目录中的项:  
+静态的 `Files.list` 方法会返回一个可以读取目录中各个项的 Stream<Path>对象 。 目 录是被惰性读取的，这使得处理具有大量项的目录可以变得更高效 。因为读取目录涉及需要关闭的系统资源，所以应该使用 try 块:
+```
+try (Stream<Path> entries= Files.list(pathToDirectory)){
+	...
+}
+```
+
+#### 内存映射文件
+1. 首先，从文件中获得一个通道( channel)，通道是用于磁盘文件的一种抽象，它使我们可 以访问诸如内存映射、文件加锁机制以及文件间快速数据传递等操作系统特性。
+```FileChannel channel = FileChannel.open(path,options);```
+2. 然后，通过调用 `FileChannel` 类的 `map` 方法从这个通道中获得一个 `ByteBuffer`。 你可以指定想要映射的文件区域与映射模式，支持的模式有三种 :
+	+ `FileChannel.MapMode.READ_ONLY`: 所产生的缓冲区是只读的，任何对该缓冲区写入的尝试都会导致 `ReadOnlyBufferException` 异常。
+	+ `FileChannel.MapMode.READ_WRITE` :所产生的缓冲区是可写的，任何修改都会在某个时刻写回到文件中 。 注意，其他映射同一个文件的程序可能不能立即看到这些修改，多个程序同时进行文件映射的确切行为是依赖于操作系统的 。
+	+ `FileChannel.MapMode.PRIVATE` :所产生的缓冲区是可写的，但是任何修改对这个缓冲区来说都是私有的，不会传播到文件中 。
+3. 一旦有了缓冲区，就可以使用 `ByteBuffer` 类和 `Buffer` 超类的方法读写数据了。
+
+#### 文件加锁
+```
+FileChannel =FileChannel.open(path); 
+try(Filelock lock= channel .lock()){
+	....
+}
+
+```

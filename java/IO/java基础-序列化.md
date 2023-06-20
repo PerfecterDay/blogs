@@ -1,5 +1,14 @@
-# Java基础-序列化
+## Java基础-序列化
 {docsify-updated}
+
+- [Java基础-序列化](#java基础-序列化)
+	- [序列化方式](#序列化方式)
+	- [Serializable 接口](#serializable-接口)
+		- [引用成员的序列化](#引用成员的序列化)
+		- [自定义序列化](#自定义序列化)
+	- [版本](#版本)
+	- [Externalizable 接口](#externalizable-接口)
+	- [总结](#总结)
 
 
 ### 序列化方式

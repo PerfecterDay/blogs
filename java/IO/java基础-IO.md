@@ -1,6 +1,25 @@
 # java基础-IO
 {docsify-updated}
 
+- [java基础-IO](#java基础-io)
+	- [IO 流](#io-流)
+		- [输入输出流体系](#输入输出流体系)
+			- [InputStream 和 Reader](#inputstream-和-reader)
+			- [OutputStream 和 Writer](#outputstream-和-writer)
+			- [文本输出](#文本输出)
+			- [读写二进制数据(Datalnput和DataOutput和)](#读写二进制数据datalnput和dataoutput和)
+			- [标准输入输出](#标准输入输出)
+			- [JVM读取其它进程的数据](#jvm读取其它进程的数据)
+			- [RandomAccessFile](#randomaccessfile)
+	- [操作文件](#操作文件)
+		- [老得File类及常见方法](#老得file类及常见方法)
+		- [新的 Path 和 Files 类](#新的-path-和-files-类)
+			- [Path](#path)
+			- [Files](#files)
+			- [内存映射文件](#内存映射文件)
+			- [文件加锁](#文件加锁)
+
+
 在 Java API 中 ，可以从其中读入一个字节序列的对象称做输入流，而可以向其中写人一个字节序列的对象称做输出流。这些字节序列的来源地和目的地可以是文件，而且通常都是文件，但是也可以是网络连接，甚至是内存块。 抽象类 `InputStream` 和 `OutputStream` 构成了输入/输出( I/O)类层次结构的基础 。
 
 因为面向字节的流不便于处理以 Unicode形式存储的信息(回忆一下， Unicode中每个 字符都使用了多个字节来表示)，所以从抽象类 `Reader` 和 `Writer` 中继承出来了一个专门用于处理 Unicode 字符的单独的类层次结构 。 这些类拥有的读人和写出操作都是基于两字节的 Char值的(即， Unicode码元)，而不是基于 byte值的。
@@ -179,7 +198,7 @@ public class FileList {
 }
 ```
 
-## 新的 Path 和 Files 类
+### 新的 Path 和 Files 类
 `Path` 和 `Files` 类封装了在用户机器上处理文件系统所需的所有功能。
 
 #### Path

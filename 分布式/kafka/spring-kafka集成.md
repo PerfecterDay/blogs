@@ -9,6 +9,7 @@
 	- [消费者-消费消息](#消费者-消费消息)
 		- [消费特定partition的信息](#消费特定partition的信息)
 		- [添加消息过滤器](#添加消息过滤器)
+	- [Springboot 配置](#springboot-配置)
 
 
 ### 添加 maven 依赖
@@ -230,7 +231,15 @@ public void listenWithFilter(String message) {
 ```
 所有符合过滤器的信息都将被丢弃。
 
-
+### Springboot 配置
+配置类在 `KafkaProperties` 中：
+```
+spring:
+  kafka:
+    bootstrap-servers: "localhost:9092"
+    consumer:
+      group-id: "myGroup"
+```
 
 
 

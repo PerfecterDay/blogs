@@ -9,8 +9,10 @@
 一个 面向块 的 I/O 系统以块的形式处理数据。每一个操作都在一步中产生或者消费一个数据块。按块处理数据比按(流式的)字节处理数据要快得多。但是面向块的 I/O 缺少一些面向流的 I/O 所具有的优雅性和简单性。
 
 ## 通道
+实际上 ChanneI 可以分为两大类 ： 分别是用于网络读写的 `SelectableChannel` 和用于文件操作的 `FileChannel` 。
+
 Channel 是一个对象，可以通过它读取和写入数据。拿 NIO 与原来的 I/O 做个比较，通道就像是流。 所有数据都通过 Buffer 对象来处理。永远不会将字节直接写入通道中，相反，是将数据写入包含一个或者多个字节的缓冲区。同样，也不会直接从通道中读取字节，而是将数据从通道读入缓冲区，再从缓冲区获取这个字节。 
-通道与流的不同之处在于通道是双向的。而流只是在一个方向上移动(一个流必须是 InputStream 或者 OutputStream 的子类)， 而 通道可以用于读、写或者同时用于读写。 
+通道与流的不同之处在于通道是双向的。而流只是在一个方向上移动(一个流必须是 InputStream 或者 OutputStream 的子类)， 而通道可以用于读、写或者同时用于读写。 
 
 常见的Channel有： `FileChannel` 、 `SelectableChannel` 、 `ServerSocketChannel` 、 `SocketChannel` 、 `DatagramChannel` 、 `Pipe.SinkChannel` 、 `Pipe.SourceChannel` 。所有 Channel 都不应该使用构造器来直接创建，而是：
 1. 通过相应 Channel 的静态方法 `open` 打开

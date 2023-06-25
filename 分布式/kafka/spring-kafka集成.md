@@ -1,6 +1,7 @@
 ## Kafka 与 Spring/Spring-boot 的集成
 {docsify-updated}
-> https://www.baeldung.com/spring-kafka
+> https://www.baeldung.com/spring-kafka  
+> https://docs.spring.io/spring-boot/docs/current/reference/html/messaging.html#messaging.kafka
 
 - [Kafka 与 Spring/Spring-boot 的集成](#kafka-与-springspring-boot-的集成)
 	- [添加 maven 依赖](#添加-maven-依赖)
@@ -37,7 +38,7 @@ $ bin/kafka-topics.sh --create \
   --topic mytopic
 ```
 
-但随着Kafka中AdminClient的引入，我们现在可以以编程方式创建Topic，在应用上下文中定义了一个KafkaAdmin Bean，它可以自动向代理添加主题。要做到这一点，你可以为应用上下文的每个主题添加一个NewTopic @Bean。2.3版本引入了一个新的类TopicBuilder，使创建此类Bean更加方便。下面的例子展示了如何做到这一点：我们需要添加 KafkaAdmin Spring Bean，它将自动为所有 NewTopic 类型的 bean 添加 Topic:
+但随着Kafka中AdminClient的引入，我们现在可以以编程方式创建Topic，在应用上下文中定义了一个KafkaAdmin Bean，它可以自动向代理添加主题。要做到这一点，你可以为应用上下文的每个主题添加一个NewTopic @Bean。2.3版本引入了一个新的类`TopicBuilder`，使创建此类Bean更加方便。下面的例子展示了如何做到这一点：我们需要添加 KafkaAdmin Spring Bean，它将自动为所有 NewTopic 类型的 bean 添加 Topic:
 ```
 @Configuration
 public class KafkaTopicConfig {
@@ -51,11 +52,22 @@ public class KafkaTopicConfig {
         configs.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
         return new KafkaAdmin(configs);
     }
-    
+
+// 使用 Springboot 时，直接申明 topic 即可创建 topic
     @Bean
     public NewTopic topic1() {
          return new NewTopic("baeldung", 1, (short) 1);
     }
+
+// 直接使用 TopicBuilder 创建topic，不需要定义 `KafkaAdmin` bean
+	@Bean
+	public NewTopic topic2() {
+		return TopicBuilder.name("thing2")
+				.partitions(10)
+				.replicas(3)
+				.config(TopicConfig.COMPRESSION_TYPE_CONFIG, "zstd")
+				.build();
+	}
 }
 ```
 

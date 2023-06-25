@@ -4,6 +4,7 @@
 - [Mysql 常用函数](#mysql-常用函数)
 	- [字符串函数](#字符串函数)
 	- [日期和时间函数](#日期和时间函数)
+	- [数值处理函数](#数值处理函数)
 
 
 ### 字符串函数
@@ -46,3 +47,14 @@
 + `STR_TO_DATE(str,format)`: 这是DATE_FORMAT() 函数的倒转。它获取一个字符串 str 和一个格式字符串format。若格式字符串包含日期和时间部分，则 STR_TO_DATE()返回一个 DATETIME 值， 若该字符串只包含日期部分或时间部分，则返回一个 DATE 或TIME值。`ELECT STR_TO_DATE('04/31/2004', '%m/%d/%Y'); -> '2004-04-31'`
 + `TIME(expr)`: 提取一个时间或日期时间表达式的时间部分，并将其以字符串形式返回。
 + `UNIX_TIMESTAMP(), UNIX_TIMESTAMP(date)` :若无参数调用，则返回一个Unix timestamp ('1970-01-01 00:00:00' GMT 之后的秒数) 作为无符号整数。若用date 来调用UNIX_TIMESTAMP()，它会将参数值以'1970-01-01 00:00:00' GMT后的秒数的形式返回。date可以是一个DATE 字符串、一个 DATETIME字符串、一个 TIMESTAMP或一个当地时间的YYMMDD或YYYMMDD格式的数字。
+
+### 数值处理函数
++ `Abs()` : 返回绝对值
++ `Cos()` : 返回余弦值
++ `Exp()` : 返回指数
++ `Mod()` : 返回余数
++ `Pi()` : 返回圆周率
++ `Rand()` : 返回一个随机数
++ `Sin()` : 返回正弦值
++ `Sqrt()` : 返回平方根
++ `Tan()` : 返回正切值

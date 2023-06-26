@@ -1,5 +1,14 @@
-# List
+## List
 {docsify-updated}
+
+- [List](#list)
+	- [List 接口](#list-接口)
+	- [ListIterator 接口](#listiterator-接口)
+	- [ArrayList 和 Vector](#arraylist-和-vector)
+	- [LinkedList 实现类](#linkedlist-实现类)
+	- [Arrays.ArrayList](#arraysarraylist)
+	- [各种线性表的性能分析](#各种线性表的性能分析)
+
 
 `List` 集合代表一个元素位置有序、可重复的集合，集合中每个元素都有其对应的**顺序索引（位置）**。访问元素一般有两种方式：
 1. 使用迭代器顺序访问

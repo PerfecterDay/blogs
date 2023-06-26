@@ -1,5 +1,13 @@
-# Map
+## Map
 {docsify-updated}
+
+- [Map](#map)
+	- [Map接口](#map接口)
+	- [HashMap](#hashmap)
+	- [TreeMap](#treemap)
+	- [LinkedHashMap](#linkedhashmap)
+- [HashMap 和 Hashtable 的区别](#hashmap-和-hashtable-的区别)
+
 
 映射表数据结构能保存键值对信息，并且能快速地使用键查找到对应的值。Java类库为映射表提供了两个通用实现: `HashMap`和`TreeMap`。
 

@@ -1,5 +1,10 @@
-# 包和访问权限
+## 包和访问权限
 {docsify-updated}
+
+- [包和访问权限](#包和访问权限)
+	- [package、import和import static](#packageimport和import-static)
+	- [访问权限控制](#访问权限控制)
+
 
 ### package、import和import static
 为了避免众多开发者使用相同的类名而导致类的冲突，Java引入了包机制，允许在类前面加上前缀，提供多层命名空间，用于解决类的命名冲突、类文件管理等问题。

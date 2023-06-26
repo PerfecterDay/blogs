@@ -1,5 +1,11 @@
-# 流
+## 流
 {docsify-updated}
+
+- [流](#流)
+	- [Java 流概述](#java-流概述)
+	- [创建Stream](#创建stream)
+	- [Collectors API](#collectors-api)
+
 
 ### Java 流概述
 Java 8 中增加了 Stream API，简化了串行或并行的大批量操作。这个 API 提供了两个关键抽象：

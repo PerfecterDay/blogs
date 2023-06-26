@@ -1,5 +1,9 @@
-# Queue
+## Queue
 {docsify-updated}
+- [Queue](#queue)
+	- [PriorityQueue 实现类](#priorityqueue-实现类)
+	- [Deque 接口与 ArrayDeque 实现类](#deque-接口与-arraydeque-实现类)
+
 
 `Queue` 用于模拟队列这种数据结构，队列通常是先进先出（FIFO）的容器。队列的头部保存存放时间最长的元素，队尾保存存放时间最短的元素。通常人们可以快速地在队尾添加一个元素（入队），并且在对头移除一个元素（出队）。双端队列允许在队列两端同时添加或删除元素。但是队列通常不支持在中间添加或删除元素，也不允许随机访问。
 

@@ -16,7 +16,6 @@
 	- [判空示例](#判空示例)
 
 
-
 `Optional` 类的目的是提供一个类型级别的解决方案，用于表示可选的值，而不是 `null` 。  
 为了更深入地了解我们为什么要关心 `Optional` 类，请看一下[Oracle的官方文章](https://www.oracle.com/technical-resources/articles/java/java8-optional.html)。
 

@@ -1,5 +1,14 @@
-# Set
+## Set
 {docsify-updated}
+- [Set](#set)
+	- [HashSet 类](#hashset-类)
+		- [`equals()` 与 `hashCode()` 方法](#equals-与-hashcode-方法)
+	- [LinkedHashSet](#linkedhashset)
+	- [TreeSet](#treeset)
+		- [TreeSet 排序规则](#treeset-排序规则)
+	- [各个 Set 实现类的性能分析](#各个-set-实现类的性能分析)
+	- [BitSet](#bitset)
+
 
 Set 不允许包含“相同”的元素，如果试图把两个相同的元素加入到同一个 Set 集合，则添加操作失败， add() 方法返回 false，且新元素也不会被加入。    
 但是，不同的实现类对“相同元素”的定义略有不同。

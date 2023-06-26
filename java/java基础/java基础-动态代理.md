@@ -1,6 +1,12 @@
 # 动态代理
 {docsify-updated}
 
+- [动态代理](#动态代理)
+	- [Proxy](#proxy)
+	- [InvocationHandler接口](#invocationhandler接口)
+	- [动态代理原理](#动态代理原理)
+
+
 ## Proxy
     public class Proxy implements java.io.Serializable{
         public static Object newProxyInstance(ClassLoader loader,

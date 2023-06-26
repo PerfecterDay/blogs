@@ -1,6 +1,14 @@
 # 集合类概述
 {docsify-updated}
 
+- [集合类概述](#集合类概述)
+	- [概述](#概述)
+	- [Collection接口](#collection接口)
+		- [遍历操作 Collection 的三种方法](#遍历操作-collection-的三种方法)
+		- [集合与数组之间的转换](#集合与数组之间的转换)
+		- [算法](#算法)
+
+
 Java 集合大致可分为 Set 、List 、 Queue 和 Map 四种体系，其中
 + Set 代表 **无序的、不可重复的集合**；
 + List 代表合**位置有序、可重复的集**
@@ -31,8 +39,7 @@ Collection的常用方法：
 + `<T> T[] toArray(T[] a)`：把集合转换成一个**指定类型**数组，所有元素成为数组的元素。
 
 ### 遍历操作 Collection 的三种方法
-1. 使用 Iterator 迭代器遍历元素
-	
+1. 使用 `Iterator` 迭代器遍历元素  
 	`Iterator` 必须依附于某个 `Collection` 对象,`Iterator` 接口定义了如下4个方法：  
 	+ `boolean hasNext()`：如果被迭代的集合元素没有遍历完则返回 true
 	+ `E next()`：返回集合里的下一个元素
@@ -42,11 +49,11 @@ Collection的常用方法：
 	<b>当遍历集合元素时，需要注意：
 	`Collection` 集合里的元素不能被改变，增删都不行，但是可以更新设置某个元素的值，只有通过 `Iterator` 的 `remove()` 方法删除集合元素才可以；假如此时修改了集合（遍历的时候或者另外一个线程改变了集合元素的个数），将会引发 `ConcurrentModificationException` 异常。但是，也不能有多个 `Iterator` 在遍历的时候，修改集合，否则也会引发 `ConcurrentModificationException` 异常，多个迭代器遍历时，只能有一个迭代器能修改集合。</b>
 
-1. 使用 Iterable 接口
+1. 使用 `Iterable` 接口  
 	使用 `Iterable` 的 `void forEach(Consumer<? super T> action)` 方法， `Iterable` 是 `Collection` 的父接口，因此可以直接调用此方法。
 	同样，使用此方法遍历元素时，`Collection` 集合也不能增删，否则将会引发 `ConcurrentModificationException` 异常。
 
-3. 使用 foreach 循环遍历集合元素
+3. 使用 `foreach` 循环遍历集合元素
 	```
 	List list = new ArrayList():
 	list.add("adass"):
@@ -58,9 +65,9 @@ Collection的常用方法：
 
 ### 集合与数组之间的转换
 1. 数组转集合
-   使用 Arrays.asList(Object[])方法能将数组转换为 List，继而可以作为构造器参数用来构造各种集合（Map,Set,Queue等）。
+   使用 `Arrays.asList(Object[])`方法能将数组转换为 List，继而可以作为构造器参数用来构造各种集合（Map,Set,Queue等）。
 2. 集合转数组
-   使用Collection接口的toArray()方法转换为 Object[],或者提供指定类型数组参数来转换成指定类型的数组，如：
+   使用 `Collection` 接口的`toArray()`方法转换为 `Object[]`,或者提供指定类型数组参数来转换成指定类型的数组，如：
    `staff.toArray(new String[staff.size()])`
 
 

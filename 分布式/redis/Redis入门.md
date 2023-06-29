@@ -49,7 +49,7 @@ Redis是一种基于键值对（key-value）的NoSQL数据库，与很多键值�
 2. 键通用命令
    1. 查看所有的键： `keys *`，会遍历所有的键，谨慎使用。
    2. 查看部分匹配键： `keys info:*`,查看 info: 开头前缀的键
-   3. `redis-cli -h IP -p PORT -a PASSWORD keys 'key*' | xargs redis-cli -h IP  -p PORT -a PASSWORD del`
+   3. 删除指定键：`redis-cli -h IP -p PORT -a PASSWORD keys 'key*' | xargs redis-cli -h IP  -p PORT -a PASSWORD del`
    4. 清空所有键值对: `FLUSHALL` 
    5. 键总数： `dbsize` ,不会遍历所有键，而是直接获取 Redis内置的键总数变量的值
    6. 检查键是否存在： `exists key`， 存在返回1，否则返回0

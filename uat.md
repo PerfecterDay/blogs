@@ -9,7 +9,16 @@ auth r-3ns5xcjxon2hpod3zp iVWzhb80vUFyugxA
 redis-cli -h r-3ns5xcjxon2hpod3zppd.redis.rds.aliyuncs.com
 auth r-3ns5xcjxon2hpod3zp iVWzhb80vUFyugxA
 
+redis-cli -h r-3nsu3uebubzx2j48lxpd.redis.rds.aliyuncs.com -p 6379 -a qAHFtvXgb4176hQa --raw keys 'info:*' | cat
+redis-cli -h r-3nsu3uebubzx2j48lxpd.redis.rds.aliyuncs.com -p 6379 -a qAHFtvXgb4176hQa keys 'info:*' | cat
+
 redis-cli -h r-3ns5xcjxon2hpod3zppd.redis.rds.aliyuncs.com -p 6379 -a iVWzhb80vUFyugxA keys 'info:*' | xargs redis-cli -h r-3ns5xcjxon2hpod3zppd.redis.rds.aliyuncs.com -p 6379 -a iVWzhb80vUFyugxA del
+
+redis-cli -h r-3ns5xcjxon2hpod3zppd.redis.rds.aliyuncs.com -p 6379 -a iVWzhb80vUFyugxA del `redis-cli -h r-3ns5xcjxon2hpod3zppd.redis.rds.aliyuncs.com -p 6379 -a iVWzhb80vUFyugxA --raw keys 'info:*'`
+
+
+redis-cli -h r-3nsu3uebubzx2j48lxpd.redis.rds.aliyuncs.com -p 6379 -a qAHFtvXgb4176hQa keys 'info:*'
+
 
 session中获取长 token:
 get gtja-international-app-token:login:session:11804

@@ -1,6 +1,14 @@
 ### Redis 分布式集群
 {docsify-updated}
 
+- [Redis 分布式集群](#redis-分布式集群)
+	- [Redis 集群的数据分片](#redis-集群的数据分片)
+	- [Redis 集群的主从复制模型](#redis-集群的主从复制模型)
+	- [搭建集群](#搭建集群)
+		- [手动搭建](#手动搭建)
+		- [使用Redis自带脚本创建](#使用redis自带脚本创建)
+	- [Redis 一致性保证](#redis-一致性保证)
+
 
 Redis 支持一主多从的主从复制和集群分片的组合模式。
 
@@ -24,9 +32,11 @@ Redis 集群有16384个哈希槽,每个key通过CRC16校验后对16384取模来�
 
 #### 搭建集群
 
+##### 手动搭建
+
 1. 准备节点
 
-   Redis集群一般由多个节点组成，节点数量至少为6个才能保证组成完整高可用的集群。每个节点需要开启配置 cluster-enabled yes，让Redis运行在集群模式下。建议为集群内所有节点统一目录，一般划分三个目录：conf、data、log，分别存放配置、数据和日志相关文件。把6个节点配置统一放在conf目录下，命名规则为 redis-port.conf ,集群相关配置如下：
+   Redis集群一般由多个节点组成，节点数量至少为6个才能保证组成完整高可用的集群。每个节点需要开启配置 `cluster-enabled yes`，让Redis运行在集群模式下。建议为集群内所有节点统一目录，一般划分三个目录：conf、data、log，分别存放配置、数据和日志相关文件。把6个节点配置统一放在conf目录下，命名规则为 redis-port.conf ,集群相关配置如下：
 
    ```
    bind 127.0.0.1
@@ -126,6 +136,16 @@ Redis 集群有16384个哈希槽,每个key通过CRC16校验后对16384取模来�
    
    使用 `redis-cli -c` 参数连接到集群中任意一台机器上，然后使用 `get/set` 命令存取数据，这样会用 key 计算 hash 然后算出对应的槽，客户端也会自动重定向到槽所对应的节点上存取数据。
    `redis-cli -c --cluster call 127.0.0.1:6379 keys *` 查看集群中的所有key
+
+##### 使用Redis自带脚本创建
+下载官方安装包，解压后，执行 `make install` 安装 redis。
+然后到 utils/create-cluster 目录下执行 ：
+```
+1. create-cluster start
+2. create-cluster create
+3. create-cluster stop
+```
+**如果是用 yum/apt 安装的redis，又想用官方的 utils/create-cluster 创建集群，可以修改 utils/create-cluster 脚本，将所有的带路径的 redis-server/redis-cli 换成不带前缀的。**
 
 #### Redis 一致性保证
 Redis 并不能保证数据的强一致性. 这意味这在实际中集群在特定的条件下可能会丢失写操作.

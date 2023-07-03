@@ -25,18 +25,16 @@
 2. 启动：`sc start mysql`，停止：`sc stop mysql`
 2. 卸载服务:`sc delete MySQL`
 
-# linux 下安装 mysql
-    shell> groupadd mysql
-    shell> useradd -r -g mysql -s /bin/false mysql
-    shell> cd /usr/local
-    shell> tar zxvf /path/to/mysql-VERSION-OS.tar.gz
-    shell> ln -s full-path-to-mysql-VERSION-OS mysql
-    shell> cd mysql
-    shell> mkdir mysql-files
-    shell> chown mysql:mysql mysql-files
-    shell> chmod 750 mysql-files
-    shell> bin/mysqld --initialize --user=mysql
-    shell> bin/mysql_ssl_rsa_setup
-    shell> bin/mysqld_safe --user=mysql &
-    # Next command is optional
-    shell> cp support-files/mysql.server /etc/init.d/mysql.server
+### Linux Redhat 8  下安装 mysql
+Mysql官网下载以下RPM包：
+```
+mysql-community-client-8.0.33-1.el8.x86_64.rpm
+mysql-community-client-plugins-8.0.33-1.el8.x86_64.rpm
+mysql-community-common-8.0.33-1.el8.x86_64.rpm
+mysql-community-icu-data-files-8.0.33-1.el8.x86_64.rpm
+mysql-community-libs-8.0.33-1.el8.x86_64.rpm
+mysql-community-server-8.0.33-1.el8.x86_64.rpm
+```
+执行 `yum localinstall [rpm包]` 命令，提示缺少啥依赖包，就先装依赖。
+
+`systemctl start mysqld` 启动服务。

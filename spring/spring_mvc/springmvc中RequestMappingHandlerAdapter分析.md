@@ -25,7 +25,7 @@
 有几个重要的对象 `WebDataBinderFactory` , `ModelFactory` , `ModelAndViewContainer` ,`ServletInvocableHandlerMethod` 。
 
 
-
+```
 ServletInvocableHandlerMethod.invokeAndHandle -> InvocableHandlerMethod.invokeForRequest ->
     Object[] args = InvocableHandlerMethod.getMethodArgumentValues -> 				args[i] = HandlerMethodArgumentResolverComposite.resolveArgument(parameter, mavContainer, request, this.dataBinderFactory);
     ->ModelAttributeMethodProcessor.resolveArgument()
@@ -35,3 +35,4 @@ ServletInvocableHandlerMethod.invokeAndHandle -> InvocableHandlerMethod.invokeFo
                     return args;
 
     return doInvoke(args);        
+```

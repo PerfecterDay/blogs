@@ -47,6 +47,7 @@
     @Nullable
 	HandlerExecutionChain getHandler(HttpServletRequest request) throws Exception;
 返回一个 `HandlerExecutionChain` 对象，所以 `HandlerMapping` 主要作用就是找到一个合适的 `HandlerExecutionChain`.
+关注Spring内置的 `RequestMappingHandlerMapping`
 
 ## HandlerExecutionChain
 `HandlerExecutionChain` 主要包含以下几个成员：

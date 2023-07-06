@@ -2,6 +2,7 @@
 {docsify-updated}
 
 - [SpringMvc 的处理方法参数绑定与校验](#springmvc-的处理方法参数绑定与校验)
+	- [参数绑定- HandlerMethodArgumentResolver\\HttpMessageConverter](#参数绑定--handlermethodargumentresolverhttpmessageconverter)
 	- [数据绑定流程剖析](#数据绑定流程剖析)
 - [请求参数验证](#请求参数验证)
 	- [Spring 参数校验的原理](#spring-参数校验的原理)
@@ -13,25 +14,15 @@
 
 Spring 会根据请求方法签名的不同，将请求消息中的信息 以一定的方式转换并绑定到请求方法的入参中。当请求消息到达真正需要调用的方法时(如指定的业务方法)，Spring MVC 还有很多工作要做，包括数据转换、数据格式化及数据校验等。
 
+### 参数绑定- HandlerMethodArgumentResolver\HttpMessageConverter
+常见的参数解析器： `PathVariableMethodArgumentResolver` , `RequestResponseBodyMethodProcessor`, `RequestHeaderMethodArgumentResolver`
+会用到很多 `HttpMessageConverter`
 
-### 数据绑定流程剖析
-Spring MvC通过反射机制对目标处理方法的签名进行分析，将请求消息绑定到处理方法的入参中。数据鄉定的核心部件是DataBinder，其运行机制描述如下所示：
-<center><img src="pics/databind.jpg" width="40%"></center>
-
-Spring MVC 主框架将 ServletRequest 对象及处理方法的入参对象实例传递给 DataBinder, DataBinder 首先调用装配在SpringWeb 上下文中的 ConversionService 组件进行数据类型转换、数据格式化等工作，将 ServletRequest 中的消息填充到入参对象中， 然后调用 Validator 组件对己经鄉定了请求消息数据的入参对象进行数据合法性校验，最终生成数据绑定结果 BindingResult 对象。 BindingResult 包含了已完成数据绑定的入参 对象，还包含相应的校验错误对象。Spring MVC 抽取 BindingResult 中的入参对象及校验错误对象，将它们赋给处理方法的相应入参。
-
-
-https://www.baeldung.com/spring-data-redis-pub-sub
-
-https://github.com/Homebrew/discussions/discussions/2530
-https://www.baeldung.com/spring-retry
-
-## 请求参数验证
-
-### Spring 参数校验的原理
+```
 RequestMappingHandlerAdapter.invokeHandlerMethod()->ServletInvocableHandlerMethod.invokeAndHandle()
-->InvocableHandlerMethod.invokeForRequest()->HandlerMethodArgumentResolverComposite.()
-->RequestResponseBodyMethodProcessor.resolveArgument() 
+->InvocableHandlerMethod.invokeForRequest()->HandlerMethodArgumentResolverComposite.resolveArgument()
+->PathVariableMethodArgumentResolver.resolveArgument() 
+```
 核心代码：
 ```
 parameter = parameter.nestedIfOptional();
@@ -51,6 +42,23 @@ if (binderFactory != null) {
 	}
 }
 ```
+
+### 数据绑定流程剖析
+Spring MvC通过反射机制对目标处理方法的签名进行分析，将请求消息绑定到处理方法的入参中。数据鄉定的核心部件是DataBinder，其运行机制描述如下所示：
+<center><img src="pics/databind.jpg" width="40%"></center>
+
+Spring MVC 主框架将 ServletRequest 对象及处理方法的入参对象实例传递给 DataBinder, DataBinder 首先调用装配在SpringWeb 上下文中的 ConversionService 组件进行数据类型转换、数据格式化等工作，将 ServletRequest 中的消息填充到入参对象中， 然后调用 Validator 组件对己经鄉定了请求消息数据的入参对象进行数据合法性校验，最终生成数据绑定结果 BindingResult 对象。 BindingResult 包含了已完成数据绑定的入参 对象，还包含相应的校验错误对象。Spring MVC 抽取 BindingResult 中的入参对象及校验错误对象，将它们赋给处理方法的相应入参。
+
+
+https://www.baeldung.com/spring-data-redis-pub-sub
+
+https://github.com/Homebrew/discussions/discussions/2530
+https://www.baeldung.com/spring-retry
+
+## 请求参数验证
+
+### Spring 参数校验的原理
+
 
 
 ### JSR-303

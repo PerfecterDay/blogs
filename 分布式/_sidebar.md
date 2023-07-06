@@ -9,6 +9,8 @@
   * [Redis持久化](/分布式/redis/Redis持久化.md)
   * [Redis高可用](/分布式/redis/Redis高可用.md)
   * [Redis集群](/分布式/redis/Redis集群.md)
+  * [Redis Lua脚本](/分布式/redis/Redis-lua.md)
+  * [Redisson](/分布式/redis/redission.md)
 * [Zookeeper](/分布式/zookeeper.md)
 * [Kafka](#)
   * [Kafka-入门基本概念](/分布式/kafka/Kafka-入门基本概念.md)

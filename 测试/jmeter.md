@@ -12,12 +12,12 @@
 	prev.setDataEncoding("utf-8")
 	```
 2. 命令行脚本运行后，不停止运行bug -> https://github.com/apache/jmeter/issues/6008
-	手动在测试计划的 jmx 文件中，在 `ThreadGroup.main_controller`元素下添加 `<boolProp name="LoopController.continue_forever">false</boolProp>`
+	手动在测试计划的 jmx 文件中，在每个 `ThreadGroup.main_controller`（如果有多个线程组会有多个）元素下添加 `<boolProp name="LoopController.continue_forever">false</boolProp>`
 
 ### 命令行参数
 `jmeter -n -t [jmx file] -l [results file] -e -o [Path to web report folder]`
 
-jmeter -n -t ./trade.jmx -l result.jtl3.10.1  -e -o ./report
+jmeter -n -t ./trade2.jmx -l result.jtl3.10.1  -e -o ./trade
 
 `JVM_ARGS="-Xms1024m -Xmx1024m"` 设置JVM参数，会覆盖配置文件中的配置
 

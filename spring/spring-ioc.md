@@ -1,5 +1,17 @@
-# Spring IOC
+## Spring IOC
  {docsify-updated}
+> https://docs.spring.io/spring-framework/reference/core/beans.html
+
+- [Spring IOC](#spring-ioc)
+	- [第一阶段的扩展点 BeanFactoryPostProcessor](#第一阶段的扩展点-beanfactorypostprocessor)
+	- [第二阶段扩展 BeanPostProcessor](#第二阶段扩展-beanpostprocessor)
+		- [Bean的生命周期](#bean的生命周期)
+			- [BeanFactory中bean的生命周期](#beanfactory中bean的生命周期)
+			- [ApplicationContext中bean的生命周期](#applicationcontext中bean的生命周期)
+	- [Bean 的 scope](#bean-的-scope)
+	- [Bean 注入的方式](#bean-注入的方式)
+		- [Spring 循环依赖](#spring-循环依赖)
+	- [classpath和classpath\*的区别](#classpath和classpath的区别)
 
 Spring的IoC容器所起的作用就是它会以某种方式加载Configuration Metadata（通常也就是XML格式的配置信息），然后根据这些信息绑定整个系统的对象，最终组装成一个可用的基于轻量级容器的应用系统。
 Spring的IoC容器实现以上功能的过程，基本上可以按照类似的流程划分为两个阶段，即**容器启动阶段**和**Bean实例化阶段**。

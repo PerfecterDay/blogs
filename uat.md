@@ -1,12 +1,12 @@
 ## REDIS
-内：r-3nsu3uebubzx2j48lxpd.redis.rds.aliyuncs.com:6379
-r-3ns5xcjxon2hpod3zp
-iVWzhb80vUFyugxA
+删除资讯key-UAT：
+1. redis-cli -h r-3ns5xcjxon2hpod3zppd.redis.rds.aliyuncs.com -p 6379 -a iVWzhb80vUFyugxA keys 'info:*' | cat
+2. redis-cli -h r-3ns5xcjxon2hpod3zppd.redis.rds.aliyuncs.com -p 6379 -a iVWzhb80vUFyugxA del ....
 
-redis-cli -h r-3nsu3uebubzx2j48lxpd.redis.rds.aliyuncs.com
-auth r-3ns5xcjxon2hpod3zp iVWzhb80vUFyugxA
+删除资讯key-PROD：
+1. redis-cli -h r-3nsu3uebubzx2j48lxpd.redis.rds.aliyuncs.com -p 6379 -a qAHFtvXgb4176hQa keys 'info:*' | cat
+2. redis-cli -h r-3nsu3uebubzx2j48lxpd.redis.rds.aliyuncs.com -p 6379 -a qAHFtvXgb4176hQa del ....
 
-redis-cli -h r-3ns5xcjxon2hpod3zppd.redis.rds.aliyuncs.com -a r-3ns5xcjxon2hpod3zp iVWzhb80vUFyugxA
 
 redis-cli -h r-3ns5xcjxon2hpod3zppd.redis.rds.aliyuncs.com -a r-3ns5xcjxon2hpod3zp iVWzhb80vUFyugxA --ldb --eval "if (redis.call('hexists', KEYS[1], ARGV[3]) == 0) then return nil;end; local counter = redis.call('hincrby', KEYS[1], ARGV[3], -1); if (counter > 0) then redis.call('pexpire', KEYS[1], ARGV[2]); return 0; else redis.call('del', KEYS[1]); redis.call(ARGV[4], KEYS[2], ARGV[1]); return 1; end; return nil;" 2 30310700409S-8101ca80-9ecf-481c-8244-6217171d913d redisson_lock__channel:{30310700409S-8101ca80-9ecf-481c-8244-6217171d913d}  0 30000 f9548f24-fc64-4b28-901f-c20815e5fb42:276 PUBLISH
 

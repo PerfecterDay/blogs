@@ -35,17 +35,19 @@ lisi
 #### YAML 对象写法
 在 YAML 中，对象可能包含多个属性，每一个属性都是一对键值对。 YAML 为对象提供了 2 种写法：
 1. 普通写法，使用缩进表示对象与属性的层级关系。
+
 ```
 website: 
   name: bianchengbang
   url: www.biancheng.net
 ```
 
-2. 行内写法：`website: {name: bianchengbang,url: www.biancheng.net}`
+1. 行内写法：`website: {name: bianchengbang,url: www.biancheng.net}`
 
 #### YAML 数组写法
 YAML 使用“-”表示数组中的元素，同样有两种写法。
 1. 普通写法如下：
+
 ```
 pets:
   -dog

@@ -28,10 +28,29 @@ Spring的IoC容器在实现的时候，充分运用了这两个实现阶段的�
 ### 第一阶段的扩展点 BeanFactoryPostProcessor
 Spring提供了一种叫做 BeanFactoryPostProcessor 的容器扩展机制。该机制允许我们在容器实例化相应对象之前，对注册到容器的 BeanDefinition 所保存的信息做相应的修改。这就相当于在容器实现的第一阶段最后加入一道工序，让我们对最终的 BeanDefinition 做一些额外的操作，比如修改其中bean定义的某些属性，为bean定义增加其他信息等。
 
-`org.springframework.beans.factory.config.PropertyPlaceholderConfigurer` 和 `org.springframework.beans.factory.config.PropertyOverrideConfigurer` 是两个比较常用的 BeanFactoryPostProcessor。另外，为了处理配置文件中的数据类型与真正的业务对象所定义的数据类型转换， Spring还允许我们通过org.springframework.beans.factory.config.CustomEditorConfigurer 来注册自定义的 PropertyEditor 以补充容器中默认的 PropertyEditor 。
+`org.springframework.context.support.PropertySourcesPlaceholderConfigurer` 和 `org.springframework.beans.factory.config.PropertyOverrideConfigurer` 是两个比较常用的 `BeanFactoryPostProcessor` 。另外，为了处理配置文件中的数据类型与真正的业务对象所定义的数据类型转换， Spring还允许我们通过 `org.springframework.beans.factory.config.CustomEditorConfigurer` 来注册自定义的 `PropertyEditor` 以补充容器中默认的 `PropertyEditor` 。
 
 ### 第二阶段扩展 BeanPostProcessor
 在已经可以借助于 BeanFactoryPostProcessor 来干预 Spring 的第一个阶段启动之后，我们就可以开始探索下一个阶段，即bean实例化阶段的实现逻辑了。
+```
+package scripting;
+import org.springframework.beans.factory.config.BeanPostProcessor;
+public class InstantiationTracingBeanPostProcessor implements BeanPostProcessor {
+
+	// 在bean实例化之前，这里可以对 bean 进行处理
+	@Override
+	public Object postProcessBeforeInitialization(Object bean, String beanName) {
+		return bean; // we could potentially return any object reference here...
+	}
+
+	// bean 实例化之后
+	@Override
+	public Object postProcessAfterInitialization(Object bean, String beanName) {
+		System.out.println("Bean '" + beanName + "' created : " + bean.toString());
+		return bean;
+	}
+}
+```
 
 #### Bean的生命周期
 容器启动之后，并不会马上就实例化相应的bean定义。我们知道，容器现在仅仅拥有所有对象的 BeanDefinition 来保存实例化阶段将要用的必要信息。只有当请求方通过 BeanFactory 的 getBean() 方法来请求某个对象实例的时候，才有可能触发Bean实例化阶段的活动。 BeanFactory 的 getBean()法可以被客户端对象显式调用，也可以在容器内部隐式地被调用。隐式调用有如下两种情况:

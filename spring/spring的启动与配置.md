@@ -1,6 +1,18 @@
 # Spring 的启动与配置
 {docsify-updated}
 
+- [Spring 的启动与配置](#spring-的启动与配置)
+	- [Spring Framework 的启动](#spring-framework-的启动)
+		- [部署描述符启动](#部署描述符启动)
+		- [初始化器中使用编程的方式启动 Spring](#初始化器中使用编程的方式启动-spring)
+	- [Spring Framework 的配置方式](#spring-framework-的配置方式)
+		- [创建 XML 配置](#创建-xml-配置)
+		- [创建混合配置](#创建混合配置)
+			- [组件扫描的开启](#组件扫描的开启)
+			- [扫描注解配置](#扫描注解配置)
+		- [使用 @Configuration 配置](#使用-configuration-配置)
+
+
 ## Spring Framework 的启动
 Spring Framework 是另一个容器，它可以运行任何 Java SE和 Java EE  容器中，并作为应用程序的运行时环境。另外，如同计算机或者jvm的那个样例一样， Spring 必须被启动并且需要得到如何运行它所包含的应用程序的指令。
 配置和启动 Spring Framework 是两个不同的任务，并且相互独立，都可以通过多种方式实现。配置告诉 Spring 如何运行它所包含的应用程序时，启动进程将启动 Spring Framework并将配置指令传递给它。

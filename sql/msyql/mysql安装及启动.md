@@ -35,6 +35,19 @@ mysql-community-icu-data-files-8.0.33-1.el8.x86_64.rpm
 mysql-community-libs-8.0.33-1.el8.x86_64.rpm
 mysql-community-server-8.0.33-1.el8.x86_64.rpm
 ```
-执行 `yum localinstall [rpm包]` 命令，提示缺少啥依赖包，就先装依赖。
+执行 `yum localinstall [rpm包]` 命令，提示缺少啥依赖包，就先装依赖。一半顺序如下：
+```
+yum localinstall mysql-community-common-8.0.33-1.el8.x86_64.rpm -y
+yum localinstall mysql-community-client-plugins-8.0.33-1.el8.x86_64.rpm -y
+yum localinstall mysql-community-libs-8.0.33-1.el8.x86_64.rpm -y
+yum localinstall mysql-community-client-8.0.33-1.el8.x86_64.rpm -y
+yum localinstall mysql-community-icu-data-files-8.0.33-1.el8.x86_64.rpm -y
+yum localinstall mysql-community-server-8.0.33-1.el8.x86_64.rpm -y
+```
+
 
 `systemctl start mysqld` 启动服务。
+`cat /var/log/mysqld.log | grep temporary`: 查询首次安装的登录账号和密码
+`ALTER USER 'root'@'%' IDENTIFIED BY 'Jhqqt0711!';` //修改密码
+`update mysql.user set host='%' where user='root';` //修改允许登录的地址
+`CREATE USER 'app'@'%' IDENTIFIED BY 'Jhqqt0711!'` //创建一个app用户

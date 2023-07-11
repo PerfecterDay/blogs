@@ -4,6 +4,7 @@
   * [Yaml简介](/spring/yaml简介.md)
   * [Spring的启动与配置](/spring/spring的启动与配置.md)
   * [Spring IOC](/spring/spring-ioc.md)
+  * [Spring IOC 注解](/spring/spring-ioc注解.md)
   * [Spring AOP](/spring/spring-AOP知识.md)
   * [Spring 事件机制](/spring/spring-事件机制.md)
   * [Spring 日志配置](/spring/spring-日志配置.md)

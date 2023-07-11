@@ -30,15 +30,15 @@ get gtja-international-app-token:login:session:11804
 de4b240d-eac3-4063-b42d-f2bd82559a1b
 
 token-session:
-get gtja-international-app-token:login:token-session:1bfeba8f-9a7a-4e74-b27f-3a3986e0e8f5
+get gtja-international-app-token:login:token-session:3c45597c-67ec-4bab-9d43-ae7595560c55
 gtja-international-app-token:login:token-session:55ed3436-5c03-40f9-b8f1-d45bdd04043e
 
 长token key：
-gtja-international-app-token:login:token:86dadc83-260d-420e-8ccd-398b7e28048b
+gtja-international-app-token:login:token:3c45597c-67ec-4bab-9d43-ae7595560c55
 gtja-international-app-token:login:token:55ed3436-5c03-40f9-b8f1-d45bdd04043e
 
 短token key：
-gtja-international-app-token:short-token:S-08ab2d20-7777-4015-b0e3-06175297dcbc
+gtja-international-app-token:short-token:S-2df0a6a9-b8bd-40c7-8afa-4baa43fc9ced
 gtja-international-app-token:short-token:S-0d464f90-8be0-4d5c-9794-fc865f4806ec
 
 JYB token:
@@ -99,3 +99,8 @@ R123456(7)
 86-15100700219
 
 1000862Email@test.com
+
+### 离线缓存
+UAT:
+LXUATGMAA2  10.4.153.130	"root/b8VrNsphBfBrIcu4"
+LXUATGMAA3  10.4.153.131	"root/b8VrNsphBfBrIcu4"

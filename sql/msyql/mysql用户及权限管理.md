@@ -3,7 +3,7 @@
 
 ### 用户管理
 mysql 用户信息存储在 mysql.user 表中。
-1. 创建用户： `CREATE USER 'username'@'ip' IDENTIFIED WITH mysql_native_password BY 'passowrd' `;
+1. 创建用户： `CREATE USER 'username'@'ip' IDENTIFIED WITH mysql_native_password BY 'passowrd'`;
 2. 允许用户从任意IP登录：`update mysql.user set host='%' where user='root';`
 3. 修改用户密码： `ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '你的密码';` mysql 8  
 `update mysq.user set password=password('11111111') where xxx;` 8 以前的版本

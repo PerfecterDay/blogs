@@ -1,4 +1,13 @@
-# Feign
+# Resilience4j-feign
+{docsify-updated}
+
+- [Resilience4j-feign](#resilience4j-feign)
+	- [目前的特性](#目前的特性)
+	- [Decorating Feign Interfaces](#decorating-feign-interfaces)
+	- [装饰器的顺序](#装饰器的顺序)
+	- [服务降级](#服务降级)
+
+
 
 一个Java到HTTP客户机绑定器，灵感来自于Retrofit、JAXRS-2.0和WebSocket。[feign](https://github.com/OpenFeign/feign)  
 Resilience4j作为Feign的装饰器。类似 [HystrixFeign](https://github.com/OpenFeign/feign/tree/master/hystrix) ， resilience4j-feign 可以很容易地将“容错”模式纳入feign框架，例如断路器和限流器。

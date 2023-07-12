@@ -2,6 +2,15 @@
 {docsify-updated}
 > https://www.baeldung.com/spring-cloud-openfeign
 
+- [spring-cloud-openfeign](#spring-cloud-openfeign)
+	- [简介](#简介)
+	- [集成步骤](#集成步骤)
+	- [配置](#配置)
+		- [Java 代码配置](#java-代码配置)
+		- [配置文件配置](#配置文件配置)
+		- [Interceptors](#interceptors)
+
+
 ### 简介
 Spring Cloud OpenFeign 是一个用于Spring Boot应用程序的声明式REST客户端。Feign通过可插拔的注解支持，包括Feign注解和JAX-RS注解，使编写Web服务客户端更加容易。  
 此外，Spring Cloud还增加了对Spring MVC注解的支持，并支持使用与Spring Web相同的HttpMessageConverters。  

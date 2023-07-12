@@ -1,6 +1,28 @@
 # 初级 SQL
 {docsify-updated}
 
+- [初级 SQL](#初级-sql)
+	- [数据库表的新建修改与删除](#数据库表的新建修改与删除)
+		- [创建数据库表-mysql](#创建数据库表-mysql)
+		- [修改表结构](#修改表结构)
+		- [删除表：](#删除表)
+		- [清空表：](#清空表)
+	- [SLQ 查询](#slq-查询)
+		- [order by](#order-by)
+		- [limit](#limit)
+		- [distinct](#distinct)
+		- [集合运算](#集合运算)
+		- [空值](#空值)
+		- [通配符](#通配符)
+		- [聚集函数](#聚集函数)
+		- [having子句](#having子句)
+		- [对空值和布尔值的聚集](#对空值和布尔值的聚集)
+	- [SQL 删除](#sql-删除)
+	- [SQL 插入数据](#sql-插入数据)
+	- [SQL 更新](#sql-更新)
+		- [case...when 语句](#casewhen-语句)
+		- [Like](#like)
+
 
 ## 数据库表的新建修改与删除
 
@@ -58,21 +80,29 @@ creaet table [db-name].table-name as select col1,col2... from table2
 create table table_name like table_name2
 ```
 
-### 修改表：
+### 修改表结构
 
 1. 增加列
+
 ```
 alter table table-name add (
     # 可以有多个如下的列定义
     column-name datatype [default expr],
     ...
 )
+
+ALTER TABLE group_msg ADD effect_start_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP comment '开始生效时间' after state;
+ALTER TABLE group_msg ADD expire_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP comment '失效时间' after effect_start_time;
 ```
 实际上，如果表中已经有了数据，除非给新增字段指定默认值，否则新增字段不可以指定非空约束，因为新增字段肯定是空的。
 
 2. 修改列定义：
+
 ```
 alter table table-name modify column-name datatype [default expr] [first|after column-name2]
+
+ALTER TABLE group_msg MODIFY effect_start_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP comment '开始生效时间' after state;
+ALTER TABLE group_msg MODIFY expire_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP comment '失效时间' after effect_start_time;
 ```
 first或 after column 代表将目标列修改到指定位置（column-name2 之前或之后）。如果数据表里已经有数据，修改列很容易失败，因为很可能修改的列定义与原有的数据记录有冲突。如果修改数据列的默认值，则只会对新增的数据有影响，已有的数据不会有任何影响。
 

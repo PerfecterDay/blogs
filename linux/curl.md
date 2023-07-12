@@ -318,6 +318,13 @@ curl -X POST -d '{
    }'  https://gtjdata.iqdii.com/jybapp/login/getusersession
 
 
+   curl -X POST -d '{
+    "token": "9B1E73E0A8F8B16C0AE16CF5",
+    "username": "621001",
+    "ipaddress":"223.165.23.63"
+   }'  https://gtjdata.iqdii.com/jybapp/service/GetUserPkg
+
+
 curl -X GET https://gtjdata.iqdii.com/jybapp/price/GetStockMarketInfo?session=
    
 ```

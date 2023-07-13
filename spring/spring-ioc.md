@@ -20,18 +20,21 @@ Spring的IoC容器实现以上功能的过程，基本上可以按照类似的�
 Spring的IoC容器在实现的时候，充分运用了这两个实现阶段的不同特点，在每个阶段都加入了相应的容器扩展点，以便我们可以根据具体场景的需要加入自定义的扩展逻辑。
 
 1. 容器启动阶段  
-    容器启动伊始，首先会通过某种途径加载 Configuration MetaData 。除了代码方式比较直接，在大部分情况下，容器需要依赖某些工具类（ BeanDefinitionReader ）对加载的 Configuration MetaData 进行解析和分析，并将分析后的信息编组为相应的 BeanDefinition，最后把这些保存了bean定义必要信息的BeanDefinition，注册到相应的BeanDefinitionRegistry，这样容器启动工作就完成了。总地来说，该阶段所做的工作可以认为是准备性的，重点更加侧重于对象管理信息的收集。当然，一些验证性或者辅助性的工作也可以在这个阶段完成。
+    容器启动伊始，首先会通过某种途径加载 Configuration MetaData 。除了代码方式比较直接，在大部分情况下，容器需要依赖某些工具类（ `BeanDefinitionReader` ）对加载的 Configuration MetaData 进行解析和分析，并将分析后的信息编组为相应的 `BeanDefinition` ，最后把这些保存了bean定义必要信息的 `BeanDefinition` ，注册到相应的 `BeanDefinitionRegistry` ，这样容器启动工作就完成了。  
+	总地来说，该阶段所做的工作可以认为是准备性的，重点更加侧重于对象管理信息的收集。当然，一些验证性或者辅助性的工作也可以在这个阶段完成。
 
 2. Bean实例化阶段  
-    容器会首先检查所请求的对象之前是否已经存在。如果没有，则会根据注册的BeanDefinition所提供的信息实例化被请求对象，并为其注入依赖。如果该对象实现了某些回调接口，也会根据回调接口的要求来装配它。当该对象装配完毕之后，容器会立即将其返回请求方使用。如果说第一阶段只是根据图纸装配生产线的话，那么第二阶段就是使用装配好的生产线来生产具体的产品了。
+    容器会首先检查所请求的对象之前是否已经存在。如果没有，则会根据注册的 `BeanDefinition` 所提供的信息实例化被请求对象，并为其注入依赖。  
+	如果该对象实现了某些回调接口，也会根据回调接口的要求来装配它。当该对象装配完毕之后，容器会立即将其返回请求方使用。  
+	如果说第一阶段只是根据图纸装配生产线的话，那么第二阶段就是使用装配好的生产线来生产具体的产品了。
 
 ### 第一阶段的扩展点 BeanFactoryPostProcessor
-Spring提供了一种叫做 BeanFactoryPostProcessor 的容器扩展机制。该机制允许我们在容器实例化相应对象之前，对注册到容器的 BeanDefinition 所保存的信息做相应的修改。这就相当于在容器实现的第一阶段最后加入一道工序，让我们对最终的 BeanDefinition 做一些额外的操作，比如修改其中bean定义的某些属性，为bean定义增加其他信息等。
+Spring提供了一种叫做 `BeanFactoryPostProcessor` 的容器扩展机制。该机制允许我们在容器实例化相应对象之前，对注册到容器的 `BeanDefinition` 所保存的信息做相应的修改。这就相当于在容器实现的第一阶段最后加入一道工序，让我们对最终的 `BeanDefinition` 做一些额外的操作，比如修改其中bean定义的某些属性，为bean定义增加其他信息等。
 
 `org.springframework.context.support.PropertySourcesPlaceholderConfigurer` 和 `org.springframework.beans.factory.config.PropertyOverrideConfigurer` 是两个比较常用的 `BeanFactoryPostProcessor` 。另外，为了处理配置文件中的数据类型与真正的业务对象所定义的数据类型转换， Spring还允许我们通过 `org.springframework.beans.factory.config.CustomEditorConfigurer` 来注册自定义的 `PropertyEditor` 以补充容器中默认的 `PropertyEditor` 。
 
 ### 第二阶段扩展 BeanPostProcessor
-在已经可以借助于 BeanFactoryPostProcessor 来干预 Spring 的第一个阶段启动之后，我们就可以开始探索下一个阶段，即bean实例化阶段的实现逻辑了。
+在已经可以借助于 `BeanFactoryPostProcessor` 来干预 Spring 的第一个阶段启动之后，我们就可以开始探索下一个阶段，即bean实例化阶段的实现逻辑了。
 ```
 package scripting;
 import org.springframework.beans.factory.config.BeanPostProcessor;
@@ -52,6 +55,8 @@ public class InstantiationTracingBeanPostProcessor implements BeanPostProcessor 
 }
 ```
 
+Spring 的 `AutowiredAnnotationBeanPostProcessor` 就是实现 `BeanPostProcessor` 来实现 `@Autowired` 注解功能的。
+
 #### Bean的生命周期
 容器启动之后，并不会马上就实例化相应的bean定义。我们知道，容器现在仅仅拥有所有对象的 BeanDefinition 来保存实例化阶段将要用的必要信息。只有当请求方通过 BeanFactory 的 getBean() 方法来请求某个对象实例的时候，才有可能触发Bean实例化阶段的活动。 BeanFactory 的 getBean()法可以被客户端对象显式调用，也可以在容器内部隐式地被调用。隐式调用有如下两种情况:
 + 对于BeanFactory来说，对象实例化默认采用延迟初始化。通常情况下，当对象A被请求而需要第一次实例化的时候，如果它所依赖的对象B之前同样没有被实例化，那么容器会先实例化对象A所依赖的对象。这时容器内部就会首先实例化对象B，以及对象 A依赖的其他还没有实例化的对象。这种情况是容器内部调用getBean()，对于本次请求的请求方是隐式的。
@@ -62,7 +67,7 @@ public class InstantiationTracingBeanPostProcessor implements BeanPostProcessor 
 <center><img src="pics/beanfactory-bean-lifecycle.png" height=40% width=40%></center>
 
 BeanFactory 实例化一个 `bean` 的步骤：
-<center><img src="pics/spring-bean.jpg" height=40% width=40%></center>
+<center><img src="pics/spring-bean.jpg" width=80%></center>
 
 注意到：自定义的 `bean` 实例化时，会调用 `BeanPostProcessor`相关的方法，`BeanPostProcessor` 不一定是 `bean` 本身实现的接口，它是 Spring 容器提供的容器级别接口，所有实现 `BeanPostProcessor` 的类在注册到容器中后，都会在 `spring` 实例化某个`bean`的时候其作用。就是说，如果我们自定义了一个 `BeanPostProcessor` 的实现类并注册到容器中，则它会在`spring`实例化所有其它`bean`的时候起作用。
 

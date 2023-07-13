@@ -37,11 +37,11 @@ mysql-community-server-8.0.33-1.el8.x86_64.rpm
 ```
 执行 `yum localinstall [rpm包]` 命令，提示缺少啥依赖包，就先装依赖。一半顺序如下：
 ```
-yum localinstall mysql-community-common-8.0.33-1.el8.x86_64.rpm -y
-yum localinstall mysql-community-client-plugins-8.0.33-1.el8.x86_64.rpm -y
-yum localinstall mysql-community-libs-8.0.33-1.el8.x86_64.rpm -y
-yum localinstall mysql-community-client-8.0.33-1.el8.x86_64.rpm -y
-yum localinstall mysql-community-icu-data-files-8.0.33-1.el8.x86_64.rpm -y
+yum localinstall mysql-community-common-8.0.33-1.el8.x86_64.rpm -y &&\
+yum localinstall mysql-community-client-plugins-8.0.33-1.el8.x86_64.rpm -y &&\
+yum localinstall mysql-community-libs-8.0.33-1.el8.x86_64.rpm -y &&\
+yum localinstall mysql-community-client-8.0.33-1.el8.x86_64.rpm -y &&\
+yum localinstall mysql-community-icu-data-files-8.0.33-1.el8.x86_64.rpm -y &&\
 yum localinstall mysql-community-server-8.0.33-1.el8.x86_64.rpm -y
 ```
 

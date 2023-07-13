@@ -3,6 +3,10 @@
 > https://docs.spring.io/spring-framework/reference/core/beans.html
 
 - [Spring IOC 注解](#spring-ioc-注解)
+	- [声明 bean 相关的注解](#声明-bean-相关的注解)
+		- [`@Component, @Repository, @Service, @Controller, @Configuration`](#component-repository-service-controller-configuration)
+		- [`@ComponentScan`](#componentscan)
+		- [`@Bean`](#bean)
 	- [依赖注入的注解](#依赖注入的注解)
 		- [`@Inject(JSR 330)/@Autowired`](#injectjsr-330autowired)
 		- [`@Primary`](#primary)
@@ -10,15 +14,42 @@
 		- [`@Resource(JSR-250)`](#resourcejsr-250)
 		- [`@Value`](#value)
 		- [`@PostConstruct` 和 `@PreDestroy`](#postconstruct-和-predestroy)
-	- [声明 bean 相关的注解](#声明-bean-相关的注解)
-		- [`@ComponentScan`](#componentscan)
-		- [`@Component, @Repository, @Service, @Controller, @Configuration`](#component-repository-service-controller-configuration)
-		- [`@Bean`](#bean)
 
 
 大致上有两类注解：
 1. 一种是声明 bean 的注解，这种注解是用来配置 bean 的元数据，用于在容器中定义一个 bean
 2. 另一种是在定义 bean 的依赖关系时（注入 bean）用到的注解，用于在一个 bean 中注入另一个 bean
+
+### 声明 bean 相关的注解
+
+#### `@Component, @Repository, @Service, @Controller, @Configuration`
+这些注解都可以在 spring 容器中声明一个 bean ，前提是开启了 `@ComponentScan` 并且注解所在的包在注解扫描的包路径下。
+
+以上的每个注解都可以使用name 属性为 bean 命名。  
+如果您不想依赖默认的 Bean 命名策略，您可以提供自定义的 Bean 命名策略。首先，实现 `BeanNameGenerator` 接口，并确保包含默认的无参数构造函数。然后，在配置扫描器时提供完全合格的类名，如下面的注解和 Bean 定义示例所示。
+
+#### `@ComponentScan`
+只在类上加上上述注解并不能让Spring注册对应类型的Bean，只有开启了Spring 的扫描功能，Spring 才会扫描这些注解并且生成 bean 。  
+为了自动检测这些类并注册相应的Bean，您需要在 `@Configuration` 类中添加 `@ComponentScan` ，其中 `basePackages` 属性是所有要扫描的类的包。(可以指定一个以逗号、分号或空格分隔的列表，其中包括每个要扫描的包）。
+
+默认情况下，使用 `@Component、@Repository、@Service、@Controller、@Configuration` 或本身使用 `@Component` 注解的类都会被扫描到。然而，您可以通过应用自定义过滤器来修改和扩展该行为。添加它们作为`@ComponentScan` 注解的 `includeFilters` 或 `excludeFilters` 属性（或作为XML配置中<context:include-filter />或<context:exclude-filter />元素的<context:component-scan>子元素）。每个过滤元素都需要 `type` 和 `expression` 属性。
+```
+@Configuration
+@ComponentScan(basePackages = "org.example",
+		includeFilters = @Filter(type = FilterType.REGEX, pattern = ".*Stub.*Repository"),
+		excludeFilters = @Filter(Repository.class))
+public class AppConfig {
+	// ...
+}
+```
+
+#### `@Bean`
+
+
+
+
+
+
 
 ### 依赖注入的注解
 
@@ -78,34 +109,3 @@
 `CommonAnnotationBeanPostProcessor` 不仅可以识别 `@Resource` 注解，还可以识别JSR-250生命周期注解：`jakarta.annotation.PostConstruct` 和 `jakarta.annotation.PreDestroy` 。在Spring 2.5中引入，对这些注解的支持为初始化回调和销毁回调中描述的生命周期回调机制提供了一个替代方案。只要在Spring应用上下文中注册了CommonAnnotationBeanPostProcessor，携带这些注解之一的方法就会在生命周期中与相应的Spring生命周期接口方法或明确声明的回调方法在同一时间被调用。
 
 是 Spring `InitializingBean` 和 `DisposableBean` 接口的替代解决方案，也是JSR标准注解。
-
-### 声明 bean 相关的注解
-
-#### `@ComponentScan`
-为了自动检测这些类并注册相应的Bean，您需要在 `@Configuration` 类中添加 `@ComponentScan` ，其中 `basePackages` 属性是所有要扫描的类的包。(可以指定一个以逗号、分号或空格分隔的列表，其中包括每个要扫描的包）。
-
-默认情况下，使用 `@Component、@Repository、@Service、@Controller、@Configuration` 或本身使用 `@Component` 注解的类都会被扫描到。然而，您可以通过应用自定义过滤器来修改和扩展该行为。添加它们作为`@ComponentScan` 注解的 `includeFilters` 或 `excludeFilters` 属性（或作为XML配置中<context:include-filter />或<context:exclude-filter />元素的<context:component-scan>子元素）。每个过滤元素都需要 `type` 和 `expression` 属性。
-```
-@Configuration
-@ComponentScan(basePackages = "org.example",
-		includeFilters = @Filter(type = FilterType.REGEX, pattern = ".*Stub.*Repository"),
-		excludeFilters = @Filter(Repository.class))
-public class AppConfig {
-	// ...
-}
-```
-
-#### `@Component, @Repository, @Service, @Controller, @Configuration`
-这些注解都可以在 spring 容器中声明一个 bean ，前提是开启了 `@ComponentScan` 并且注解所在的包在注解扫描的包路径下。
-
-以上的每个注解都可以使用name 属性为 bean 命名。  
-如果您不想依赖默认的 Bean 命名策略，您可以提供自定义的 Bean 命名策略。首先，实现 `BeanNameGenerator` 接口，并确保包含默认的无参数构造函数。然后，在配置扫描器时提供完全合格的类名，如下面的注解和 Bean 定义示例所示。
-
-
-
-#### `@Bean`
-
-
-
-
-

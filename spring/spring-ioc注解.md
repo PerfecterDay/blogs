@@ -28,7 +28,7 @@
 #### `@Component, @Repository, @Service, @Controller, @Configuration, @Named(JSR)`
 这些注解都可以在 spring 容器中声明一个 bean ，前提是开启了 `@ComponentScan` 并且注解所在的包在注解扫描的包路径下。
 
-以上的每个注解都可以使用name 属性为 bean 命名。  
+以上的每个注解除了 `@Named` 都可以使用name 属性为 bean 命名，`@Named` 注解使用 value 属性为 bean 命名。
 如果您不想依赖默认的 Bean 命名策略，您可以提供自定义的 Bean 命名策略。首先，实现 `BeanNameGenerator` 接口，并确保包含默认的无参数构造函数。然后，在配置扫描器时提供完全合格的类名，如下面的注解和 Bean 定义示例所示。
 
 #### `@ComponentScan`

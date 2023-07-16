@@ -1,6 +1,5 @@
 ## Spring Resource
 
-
 Spring包含几种内置的资源实现：
 
 + UrlResource

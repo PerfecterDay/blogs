@@ -102,26 +102,24 @@ Java的安全基础架构主要有以下特点：
 3. 对称加密  
 	上述摘要、签名算法只能确认消息来源的可靠性，具体的说，他们能保证消息是特定的发送者发出的而且没有被篡改。但是，消息的内容本身没有被加密（当然如果使用公钥加密传送内容也是可以的）。通常使用对称加密来加密传送的消息。
 
-	算法名称是一个字符串，比如“ AES ”或者“ DES/CBC/PKCS5Padding ” 。DES ，即数据加密标准，是一个密钥长度为 56 位的古老的分组密码 。 DES 加密算法在现在看来已经是过时了，因为可以用穷举法将它破译（参见该网页中的例子： http://w2.eff.org/ Privacy/Crypto/Crypto_misc/DESCracker‘／） 。 更好的选择是采用它的后续版本，即高级加密标准AES。
+	算法名称是一个字符串，比如“ AES ”或者“ DES/CBC/PKCS5Padding ” 。DES ，即数据加密标准，是一个密钥长度为 56 位的古老的分组密码 。 DES 加密算法在现在看来已经是过时了，因为可以用穷举法将它破译（[参见该网页中的例子](http://w2.eff.org/Privacy/Crypto/Crypto_misc/DESCracker) ） 。 更好的选择是采用它的后续版本，即高级加密标准AES。
 
-	Java种的 `Cipher` 类是所有加密算法的超类，通过调用 `getInstance(String algorithm)` 或者 `getInstance(String algorithm,String provider)` 来获得一个加密算法对象。一个`Cipher`可以有多种使用方式，比如加密、解密等，Java中定义了4种模式：
-		1. Cipher.ENCRYPT_MODE
-		2. Cipher.DECRYPT_MODE
-		3. Cipher.WRAP_MODE
-		4. Cipher.UNWRAP_MODE
+	Java种的 `Cipher` 类是所有加密算法的超类，通过调用 `getInstance(String algorithm)` 或者 `getInstance(String algorithm,String provider)` 来获得一个加密算法对象。一个`Cipher`可以有多种使用方式，比如加密、解密等，Java中定义了4种模式：  
+	1. Cipher.ENCRYPT_MODE
+	2. Cipher.DECRYPT_MODE
+	3. Cipher.WRAP_MODE
+	4. Cipher.UNWRAP_MODE
 
 	在使用 Cipher 之前必须调用它的 `init(...)` 方法初始化设置好密钥（Key类来表示）和模式或者其它参数，不同的加密算法要求初始化的参数不同。调用`update()`方法将要加密的数据传递给 Cipher，最后调用 `doFinal()`方法完成加密并返回加密后的字节数据。
 
 	生成密钥：
+
 	1. 为加密算法获取 `KeyGenerator`，通过`KeyGenerator.getInstance("AES")`来获得。
 	2. 用随机源来初始化 `KeyGenerator`。
 	3. 调用 `KeyGenerator` 的 `generateKey()` 生成密钥
 	```
 	Cipher cipher = Cipher.getInstance("AES");
-	KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
-	SecureRandom random = new SecureRandom();
-	keyGenerator.init(random);
-	Key key = keyGenerator.generateKey();
+	Key key = new SecretKeySpec("test".getBytes(StandardCharsets.UTF_8), "AES");
 	cipher.init(Cipher.ENCRYPT_MODE,key);
 	```
 

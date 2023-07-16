@@ -53,8 +53,12 @@ public class AppConfig {
 
 #### `@Scope`
 用来声明 bean 的作用范围， @Scope 注解仅能用在具体的 bean 类（对于有注解的组件）或工厂方法（对于 @Bean 方法）上。
+<center><img src="pics/bean-scope.png" width="60%" ></center>
+
 
 ### 依赖注入的注解
+
+<center><img src="pics/spring-ioc.png" width="60%" ></center>
 
 #### `@Inject (JSR 330)/@Autowired`
 默认是根据bean类型注入的，并且默认依赖是必须的，如果找不到依赖可用，Spring会报错。如果依赖是非必需的，可以指定 `@Autowired(required = false)`，或者将依赖类型声明为 `Optional`，或者加上 `@Nullable` 注解。
@@ -113,11 +117,13 @@ public class AppConfig {
 
 ### 属性资源文件相关
 
+两个重要的类： `PropertyPlaceholderConfigurer(标记为淘汰了)` 和 `PropertySourcesPlaceholderConfigurer` 。
+
 #### `@PropertySource`
 `@PropertySource` 注解为在Spring的 `Environment` 中添加 `PropertySource` 提供了一个方便的声明机制。
 
-在 @PropertySource 资源位置中出现的任何 `${...}` 占位符都将根据已在环境中注册的属性源集合进行解析。
-给定一个名为 app.properties 的文件，其中包含键值对 testbean.name=myTestBean，下面的 @Configuration 类使用 @PropertySource 的方式使调用 testBean.getName() 返回 myTestBean：
+在 `@PropertySource` 资源位置中出现的任何 `${...}` 占位符都将根据已在环境中注册的属性源集合进行解析。
+给定一个名为 app.properties 的文件，其中包含键值对 testbean.name=myTestBean，下面的 `@Configuration` 类使用 `@PropertySource` 的方式使调用 testBean.getName() 返回 myTestBean：
 ```
 @Configuration
 @PropertySource("classpath:/com/myco/app.properties")
@@ -136,5 +142,5 @@ public class AppConfig {
 }
 ```
 
-
 #### `@Value`
+使用 `@Value(${property.val:defaultVal})` 的形式注入属性值。 `${property.val:defaultVal}` 这种形式的属性引用不仅可以用在Java代码的Bean中注入属性，同样可以在属性文件中引用另一处属性值。

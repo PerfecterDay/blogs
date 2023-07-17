@@ -299,8 +299,8 @@ curl -X POST -d '{
    }'  https://gtjdata-uat.iqdii.com/jybapp/login/getusersession
 
     curl -X POST -d '{
-    "token": "A56C697D8808861029BCC1AE",
-    "username": "700001"
+    "token": "3153B693F85E11232D5F9B82",
+    "username": "000328"
    }'  https://gtjdata-uat.iqdii.com/jybapp/service/GetUserPkg
 
 
@@ -320,7 +320,7 @@ curl -X POST -d '{
 
    curl -X POST -d '{
     "token": "9B1E73E0A8F8B16C0AE16CF5",
-    "username": "621001",
+    "username": "621002",
     "ipaddress":"223.165.23.63"
    }'  https://gtjdata.iqdii.com/jybapp/service/GetUserPkg
 

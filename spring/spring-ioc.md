@@ -8,7 +8,7 @@
 		- [Bean的生命周期](#bean的生命周期)
 			- [BeanFactory中bean的生命周期](#beanfactory中bean的生命周期)
 			- [ApplicationContext中bean的生命周期](#applicationcontext中bean的生命周期)
-			- [bean 创建的策略模式 `InstantiationStrategy`](#bean-创建的策略模式-instantiationstrategy)
+			- [bean 创建的策略模式 InstantiationStrategy](#bean-创建的策略模式-instantiationstrategy)
 			- [bean创建的一些主要方法过程](#bean创建的一些主要方法过程)
 	- [Bean 的 scope](#bean-的-scope)
 	- [Bean 注入的方式](#bean-注入的方式)
@@ -122,7 +122,7 @@ ApplicationContext 和 BeanFactory 的一个重大区别在于：前者会利用
     }
 ```
 
-##### bean 创建的策略模式 `InstantiationStrategy`
+##### bean 创建的策略模式 InstantiationStrategy
 ```
 AbstractAutowireCapableBeanFactory的方法中使用策略床架bean：
 protected BeanWrapper instantiateBean(String beanName, RootBeanDefinition mbd) {

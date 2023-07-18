@@ -8,26 +8,30 @@
 ## invokeHandlerMethod 方法
 此方法是整个类的核心方法，大部分处理流程在这个方法中完成。
 
-    WebDataBinderFactory binderFactory = getDataBinderFactory(handlerMethod);
-    ModelFactory modelFactory = getModelFactory(handlerMethod, binderFactory);
-    ServletInvocableHandlerMethod invocableMethod = createInvocableHandlerMethod(handlerMethod);
-    if (this.argumentResolvers != null) {
-        invocableMethod.setHandlerMethodArgumentResolvers(this.argumentResolvers);
-    }
-    if (this.returnValueHandlers != null) {
-        invocableMethod.setHandlerMethodReturnValueHandlers(this.returnValueHandlers);
-    }
-    invocableMethod.setDataBinderFactory(binderFactory);
-    invocableMethod.setParameterNameDiscoverer(this.parameterNameDiscoverer);
-    ModelAndViewContainer mavContainer = new ModelAndViewContainer();
-    ......
-    invocableMethod.invokeAndHandle(webRequest, mavContainer);
+```
+WebDataBinderFactory binderFactory = getDataBinderFactory(handlerMethod);
+ModelFactory modelFactory = getModelFactory(handlerMethod, binderFactory);
+ServletInvocableHandlerMethod invocableMethod = createInvocableHandlerMethod(handlerMethod);
+if (this.argumentResolvers != null) {
+	invocableMethod.setHandlerMethodArgumentResolvers(this.argumentResolvers);
+}
+if (this.returnValueHandlers != null) {
+	invocableMethod.setHandlerMethodReturnValueHandlers(this.returnValueHandlers);
+}
+invocableMethod.setDataBinderFactory(binderFactory);
+invocableMethod.setParameterNameDiscoverer(this.parameterNameDiscoverer);
+ModelAndViewContainer mavContainer = new ModelAndViewContainer();
+......
+invocableMethod.invokeAndHandle(webRequest, mavContainer);
+```
+
 有几个重要的对象 `WebDataBinderFactory` , `ModelFactory` , `ModelAndViewContainer` ,`ServletInvocableHandlerMethod` 。
 
 
 ```
 ServletInvocableHandlerMethod.invokeAndHandle -> InvocableHandlerMethod.invokeForRequest ->
-    Object[] args = InvocableHandlerMethod.getMethodArgumentValues -> 				args[i] = HandlerMethodArgumentResolverComposite.resolveArgument(parameter, mavContainer, request, this.dataBinderFactory);
+    Object[] args = InvocableHandlerMethod.getMethodArgumentValues -> 	
+	args[i] = HandlerMethodArgumentResolverComposite.resolveArgument(parameter, mavContainer, request, this.dataBinderFactory);
     ->ModelAttributeMethodProcessor.resolveArgument()
         			WebDataBinder binder = binderFactory.createBinder(webRequest, attribute, name);
                     bindRequestParameters(binder, webRequest);

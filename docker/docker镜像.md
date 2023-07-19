@@ -37,6 +37,7 @@ Docker 通过扩展现有镜像，创建新的镜像。特殊情况下，基于�
 
 ### 镜像的构建
 1. docker commit  
+	`docker commit [OPTIONS] CONTAINER [REPOSITORY[:TAG]]`
 	使用docker commit 创建镜像一般包含三个步骤：
 	1. 运行容器
 	2. 修改容器

@@ -2,7 +2,7 @@
 {docsify-updated}
 
 - [SpringMvc 的处理方法参数绑定与校验](#springmvc-的处理方法参数绑定与校验)
-	- [参数绑定- HandlerMethodArgumentResolver\\HttpMessageConverter](#参数绑定--handlermethodargumentresolverhttpmessageconverter)
+	- [参数绑定- HandlerMethodArgumentResolver 及 HttpMessageConverter](#参数绑定--handlermethodargumentresolver-及-httpmessageconverter)
 	- [数据绑定流程剖析](#数据绑定流程剖析)
 - [请求参数验证](#请求参数验证)
 	- [Spring 参数校验的原理](#spring-参数校验的原理)
@@ -14,7 +14,7 @@
 
 Spring 会根据请求方法签名的不同，将请求消息中的信息 以一定的方式转换并绑定到请求方法的入参中。当请求消息到达真正需要调用的方法时(如指定的业务方法)，Spring MVC 还有很多工作要做，包括数据转换、数据格式化及数据校验等。
 
-### 参数绑定- HandlerMethodArgumentResolver\HttpMessageConverter
+### 参数绑定- HandlerMethodArgumentResolver 及 HttpMessageConverter
 常见的参数解析器： `PathVariableMethodArgumentResolver` , `RequestResponseBodyMethodProcessor`, `RequestHeaderMethodArgumentResolver`
 会用到很多 `HttpMessageConverter`
 
@@ -42,6 +42,10 @@ if (binderFactory != null) {
 	}
 }
 ```
+
+HandlerMethodArgumentResolver（RequestResponseBodyMethodProcessor） -> HttpMessageConverter（MappingJackson2HttpMessageConverter）
+-> WebDataBinder
+
 
 ### 数据绑定流程剖析
 Spring MvC通过反射机制对目标处理方法的签名进行分析，将请求消息绑定到处理方法的入参中。数据鄉定的核心部件是DataBinder，其运行机制描述如下所示：

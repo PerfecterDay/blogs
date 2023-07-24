@@ -10,6 +10,7 @@
 	- [Spring 使用  validation 的步骤](#spring-使用--validation-的步骤)
 	- [常见的校验注解](#常见的校验注解)
 	- [自定义校验注解](#自定义校验注解)
+	- [@InitBinder](#initbinder)
 
 
 Spring 会根据请求方法签名的不同，将请求消息中的信息 以一定的方式转换并绑定到请求方法的入参中。当请求消息到达真正需要调用的方法时(如指定的业务方法)，Spring MVC 还有很多工作要做，包括数据转换、数据格式化及数据校验等。
@@ -23,29 +24,38 @@ RequestMappingHandlerAdapter.invokeHandlerMethod()->ServletInvocableHandlerMetho
 ->InvocableHandlerMethod.invokeForRequest()->HandlerMethodArgumentResolverComposite.resolveArgument()
 ->PathVariableMethodArgumentResolver.resolveArgument() 
 ```
-核心代码：
-```
-parameter = parameter.nestedIfOptional();
-Object arg = readWithMessageConverters(webRequest, parameter, parameter.getNestedGenericParameterType());
-String name = Conventions.getVariableNameForParameter(parameter);
 
-if (binderFactory != null) {
-	WebDataBinder binder = binderFactory.createBinder(webRequest, arg, name);
-	if (arg != null) {
-		validateIfApplicable(binder, parameter);
-		if (binder.getBindingResult().hasErrors() && isBindExceptionRequired(binder, parameter)) {
-			throw new MethodArgumentNotValidException(parameter, binder.getBindingResult());
+`HandlerMethodArgumentResolver` 的调用过程:
+```
+HandlerMethodArgumentResolver（RequestResponseBodyMethodProcessor） -> HttpMessageConverter（MappingJackson2HttpMessageConverter）
+-> WebDataBinder 
+```
+
+`RequestResponseBodyMethodProcessor` 的核心代码：
+```
+// RequestResponseBodyMethodProcessor 的 resolveArgument 方法
+@Override
+public Object resolveArgument(MethodParameter parameter, @Nullable ModelAndViewContainer mavContainer,
+		NativeWebRequest webRequest, @Nullable WebDataBinderFactory binderFactory) throws Exception {
+	parameter = parameter.nestedIfOptional();
+	Object arg = readWithMessageConverters(webRequest, parameter, parameter.getNestedGenericParameterType()); //调用 HttpMessageConverter 方法
+	String name = Conventions.getVariableNameForParameter(parameter);
+
+	if (binderFactory != null) {
+		WebDataBinder binder = binderFactory.createBinder(webRequest, arg, name);
+		if (arg != null) {
+			validateIfApplicable(binder, parameter);
+			if (binder.getBindingResult().hasErrors() && isBindExceptionRequired(binder, parameter)) {
+				throw new MethodArgumentNotValidException(parameter, binder.getBindingResult());
+			}
+		}
+		if (mavContainer != null) {
+			mavContainer.addAttribute(BindingResult.MODEL_KEY_PREFIX + name, binder.getBindingResult());
 		}
 	}
-	if (mavContainer != null) {
-		mavContainer.addAttribute(BindingResult.MODEL_KEY_PREFIX + name, binder.getBindingResult());
-	}
+	return adaptArgumentIfNecessary(arg, parameter);
 }
 ```
-
-HandlerMethodArgumentResolver（RequestResponseBodyMethodProcessor） -> HttpMessageConverter（MappingJackson2HttpMessageConverter）
--> WebDataBinder
-
 
 ### 数据绑定流程剖析
 Spring MvC通过反射机制对目标处理方法的签名进行分析，将请求消息绑定到处理方法的入参中。数据鄉定的核心部件是DataBinder，其运行机制描述如下所示：
@@ -148,6 +158,7 @@ public @interface IsMobile {
 ```
 
 2、编写具体的实现类
+
 我们知道注解只是一个标记，真正的逻辑还要在特定的类中实现，上一步的注解指定了实现校验功能的类为 `IsMobileValidator` 。
 ```
 // 自定义注解一定要实现ConstraintValidator接口奥，里面的两个参数
@@ -185,5 +196,27 @@ public class IsMobileValidator implements ConstraintValidator<IsMobile, String> 
    }
   }
  }
+}
+```
+
+### @InitBinder
+`@Controller` 或 `@ControllerAdvice` 类可以使用 `@InitBinder` 方法来初始化 `WebDataBinder` 实例，而 `WebDataBinder` 实例反过来也可以使用 `@InitBinder` 方法来初始化 `WebDataBinder` 实例：
+
++ 将请求参数（即表单或查询数据）绑定到模型对象。
++ 将基于字符串的请求值（如请求参数、路径变量、标题、cookie 等）转换为控制器方法参数的目标类型。
++ 在呈现 HTML 表单时，将模型对象值格式化为字符串值。
+
+`@InitBinder` 方法可以注册特定于控制器的 `java.beans.PropertyEditor` 或 Spring `Converter` 和 `Formatter` 组件。此外，您还可以使用 MVC 配置在全局共享的 `FormattingConversionService` 中注册转换器和格式器类型。
+```
+@Controller
+public class FormController {
+
+	@InitBinder
+	public void initBinder(WebDataBinder binder) {
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		dateFormat.setLenient(false);
+		binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, false));
+		binder.setAllowedFields("oldEmailAddress", "newEmailAddress");
+	}
 }
 ```

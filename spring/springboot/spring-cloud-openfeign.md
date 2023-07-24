@@ -1,6 +1,7 @@
 ## spring-cloud-openfeign
 {docsify-updated}
 > https://www.baeldung.com/spring-cloud-openfeign
+> https://docs.spring.io/spring-cloud-openfeign/docs/current/reference/html/
 
 - [spring-cloud-openfeign](#spring-cloud-openfeign)
 	- [简介](#简介)
@@ -24,7 +25,7 @@ Spring Cloud OpenFeign 是一个用于Spring Boot应用程序的声明式REST客
 		<artifactId>spring-cloud-starter-openfeign</artifactId>
 	</dependency>
 	````
-2. 接下来，我们需要将@EnableFeignClients添加到我们的主类中。有了这个注解，我们就可以对那些声明自己是Feign客户的接口进行组件扫描。
+2. 接下来，我们需要将 `@EnableFeignClients` 添加到我们的主类中。有了这个注解，我们就可以对那些声明自己是Feign客户的接口进行组件扫描。
 	```
 	@SpringBootApplication
 	@EnableFeignClients
@@ -35,7 +36,7 @@ Spring Cloud OpenFeign 是一个用于Spring Boot应用程序的声明式REST客
 		}
 	}
 	```
-3. 然后我们使用@FeignClient注解来声明一个Feign客户端。
+3. 然后我们使用 `@FeignClient` 注解来声明一个Feign客户端。
 	```
 	@FeignClient(value = "jplaceholder", url = "https://jsonplaceholder.typicode.com/")
 	public interface JSONPlaceHolderClient {
@@ -47,7 +48,7 @@ Spring Cloud OpenFeign 是一个用于Spring Boot应用程序的声明式REST客
 		Post getPostById(@PathVariable("postId") Long postId);
 	}
 	```
-	在@FeignClient注解中传递的value参数是一个强制性的、任意的客户端名称，而通过url参数，我们指定了API的基本URL。
+	在 `@FeignClient` 注解中传递的value参数是一个强制性的、任意的客户端名称，而通过url参数，我们指定了API的基本URL。
 4. 可以在其他Bean 中注入声明的 Feign 客户端了。
 
 ### 配置

@@ -8,8 +8,8 @@
 - [概念术语](#概念术语)
 	- [连接点(join point)](#连接点join-point)
 	- [切点(point cut)](#切点point-cut)
-	- [关于`join point` 和 `point cut` 的区别](#关于join-point-和-point-cut-的区别)
-	- [增强（ Advice )](#增强-advice-)
+	- [关于 join point 和 point cut 的区别](#关于-join-point-和-point-cut-的区别)
+	- [增强-Advice](#增强-advice)
 	- [切面 (aspect)](#切面-aspect)
 	- [织入(Weaving)](#织入weaving)
 - [Spring AOP 的织入](#spring-aop-的织入)
@@ -60,33 +60,34 @@ ClassFilter 和 MethodMatcher 分别用于匹配将被织入横切逻辑的对�
 3. `AnnotationMatchingPointcut`
 4. `ComposablePointcut`
 
-### 关于`join point` 和 `point cut` 的区别
+### 关于 join point 和 point cut 的区别
 在 Spring AOP 中, 所有的方法执行都是 `join point`. 而 `point cut` 是一个描述信息, 它修饰的是 `join point`, 通过 `point cut`, 我们就可以确定哪些 `join point` 可以被织入 Advice. 因此 `join point` 相当于数据库中的记录， 而 `point cut` 相当于带有查询条件查询出来的记录。
 `advice` 是在 `join point `上执行的, 而 `point cut` 规定了哪些 `join point` 可以执行那些 `advice`.
 
-### 增强（ Advice )
+### 增强-Advice
 按照`Advice`实例能否在目标对象类的所有实例间共享这一标准，可以将`Advice`分为 `per-class` 和 `per-instance `类型：
-+ per-class类型的 Advice，可以在所有目标类对象之间共享，不会保存任何目标对象的状态或者添加新特性。
++ per-class 类型的 Advice，可以在所有目标类对象之间共享，不会保存任何目标对象的状态或者添加新特性。
 
-  1. Before Advice: 在连接点指定位置之前执行的增强类型。
+  1. `Before Advice`: 在连接点指定位置之前执行的增强类型。
 
-  2. After Advice: 在连接点指定位置之后执行的增强类型，该类型还有三种子类型：
+  2. `After Advice`: 在连接点指定位置之后执行的增强类型，该类型还有三种子类型：
      1. After returning advice: 只有切点处执行流程正常完成后，才会执行
      2. After throwing advice: 只有切点处执行流程抛出异常的情况下，才会执行
      3. After advice: 不管切点是正常执行还是异常了都会执行，相当于 finally 块一样。
      
-  3. Around Advice（Interceptor）: 可以在切点之前和之后都指定相应的逻辑，甚至于中断或者忽略切点原来的程序流程的执行。Spring中没有直接定义对应的 Around Advice 的实现接口，而是直接采用 AOP Alliance的标准接口 `org.aopalliance.intercept.MethodInterceptor` , 这个接口只有一个 `invoke` 方法：
+  3. `Around Advice（Interceptor）`: 可以在切点之前和之后都指定相应的逻辑，甚至于中断或者忽略切点原来的程序流程的执行。Spring中没有直接定义对应的 Around Advice 的实现接口，而是直接采用 AOP Alliance的标准接口 `org.aopalliance.intercept.MethodInterceptor` , 这个接口只有一个 `invoke` 方法：
 
     ```java
     public interface MethodInterceptor extends Interceptor{
     	Object invoke(MethodInvocation invocation) throws Throwable;
     }
     ```
-<center><img src="/pics/Advice.png" width=50% alt=""></center>
+<center><img src="/pics/Advice.png" width=60% alt=""></center>
 
-+ per-instance类型的 Advice，Advice对象不会在目标类对象的实例之间共享。不同的目标对象创建不同的`Advice`实例。在 Spring AOP 中， `Introduction` 是唯一一种per-instance类型的 Advice 。
++ `per-instance` 类型的 Advice，Advice对象不会在目标类对象的实例之间共享。不同的目标对象创建不同的`Advice`实例。在 Spring AOP 中， `Introduction` 是唯一一种 `per-instance` 类型的 Advice 。  
+
   `Introduction`: 可以在不改动目标类定义的情况下，为原有的对象添加新的特性或者行为。在Spring中，为目标对象添加新的属性和行为必须声明相应的接口以及相应的实现。这样，再通过特定的拦截器将新的接口定义及实现类中的逻辑附加到目标对象上，目标对象就拥有了新的状态和行为。Spring中这个拦截器就是 ` IntroductionInterceptor` 接口来实现。
-  <center><img src="/pics/aop-introduction.png" width=50% alt=""></center>
+  <center><img src="/pics/aop-introduction.png" width=60% alt=""></center>
 
 ### 切面 (aspect)
 `aspect` 由 `pointcut` 和 `advice` 组成, 它既包含了横切逻辑(增强)的定义, 也包括了切点的定义. Spring AOP就是负责实施切面的框架, 它将切面所定义的横切逻辑织入到切面所指定的连接点中.
@@ -97,9 +98,10 @@ AOP的工作重心在于如何将增强织入目标对象的连接点上, 这里
 
 Spring 中使用 `org.springframework.aop.Advisor` 接口表示切面。可以划分为 `PointcutAdvisor `和 `IntroductionAdvisor` 两个分支。
 1. PointcutAdvisor
-    ![Spring 中 Advisor 类图](../pics/Advisor.png)
-2. IntroductionAdvisor
-    IntroductionAdvisor 的类层次比较简单，只有一个 DefaultIntroductionAdvisor 的默认实现。
+	<center><img src="/pics/Advisor.png" width=60% alt=""></center>
+2. `IntroductionAdvisor`  
+
+    `IntroductionAdvisor` 的类层次比较简单，只有一个 `DefaultIntroductionAdvisor` 的默认实现。
 
 ### 织入(Weaving)
 将 aspect 和其他对象连接起来, 并创建 adviced object 的过程.
@@ -115,10 +117,11 @@ Spring 采用动态代理织入, 而AspectJ采用编译器织入和类装载期�
 <center><img src="pics/spring-aop.png" alt="" height=60% width=60%></center>
 
 ## Spring AOP 的织入
-AspectJ使用 ajc 编译器作为它的织入器，Jboss AOP 自定义的ClassLoader作为织入器， Spring AOP 中使用 ProxyFactory 作为织入器。使用 ProxyFactory 很简单，只需要以下3步：
+AspectJ使用 ajc 编译器作为它的织入器，Jboss AOP 自定义的ClassLoader作为织入器， Spring AOP 中使用 `ProxyFactory` 作为织入器。使用 `ProxyFactory` 很简单，只需要以下3步：
 1. 第一就是告诉它你要织入的目标对象：可以在构造函数中直接传入，也可以用setter方法设置
-2. 第二就是告诉它要应用到目标对象的Aspect(Advisor)或者直接告诉它Advice：addAdvisor()/addAdvice()
-3. 最后直接调用 ProxyFactory 的 getProxy() 方法就可以获得增强的代理对象
+2. 第二就是告诉它要应用到目标对象的 `Aspect(Advisor)` 或者直接告诉它 `Advice` ：addAdvisor()/addAdvice()
+3. 最后直接调用 `ProxyFactory` 的 `getProxy()` 方法就可以获得增强的代理对象
+
 ```
 ProxyFactory proxyFactory = new ProxyFactory(targetObj);
 //或者 proxyFactory.setTarget(targetObj);
@@ -131,7 +134,7 @@ Object proxy = proxyFactory.getProxy();
 2. 如果 ProxyFactory 的 proxyTargetClass 属性为 true
 3. 如果 ProxyFactory 的 optimize 属性为 true
 
-上述方式主要是对于编程式AOP的支持。另外，为了支持容器，Spring提供了 ProxyFactoryBean 来支持配置式的AOP。
+上述方式主要是对于编程式AOP的支持。另外，为了支持容器，Spring提供了 `ProxyFactoryBean` 来支持配置式的AOP。
 
 ### Spring AOP 的自动织入
 Spring 提供了自动代理机制，让容器自动生成代理，把开发人员从繁琐的配置工作中解放出来。在内部，Spring 使用 BeanPostProcessor 自动完成这项工作。只要提供一个 BeanPostProcessor，这个 BeanPostProcessor 在对象实例化时，为符合条件的 bean 生成代理对象并返回，而不是返回实例化的目标 bean 本身，可以用下述伪代码表示大致过程：
@@ -146,35 +149,38 @@ for(bean in beanfactory){
     }
 }
 ```
-![Spring 中 ProxyCreator 类图](../pics/ProxyCreator.png)
+<center><img src="pics/ProxyCreator.png" alt="" height=60% width=60%></center>
 
 ## @AspectJ 支持
-@AspectJ 是一种使用 Java 注解来实现 AOP 的编码风格.
-@AspectJ 风格的 AOP 是 AspectJ Project 在 AspectJ 5 中引入的, 并且 Spring 也支持@AspectJ 的 AOP 风格.
+`@AspectJ` 是一种使用 Java 注解来实现 AOP 的编码风格.
+`@AspectJ` 风格的 AOP 是 AspectJ Project 在 AspectJ 5 中引入的, 并且 Spring 也支持 `@AspectJ` 的 AOP 风格.
 
 ### 使能 @AspectJ 支持
-`@AspectJ` 可以以 XML 的方式或以注解的方式来使能, 并且不论以哪种方式使能@ASpectJ, 我们都必须保证 aspectjweaver.jar 在 classpath 中.
+`@AspectJ` 可以以 XML 的方式或以注解的方式来使能, 并且不论以哪种方式使能 `@ASpectJ`, 我们都必须保证 aspectjweaver.jar 在 classpath 中.
 
-使用 Java Configuration 方式使能@AspectJ
+1. 使用 Java Configuration 方式使能@AspectJ
+```
+@Configuration
+@EnableAspectJAutoProxy
+public class AppConfig {
+}
+```
 
-    @Configuration
-    @EnableAspectJAutoProxy
-    public class AppConfig {
-    }
-
-使用 XML 方式使能@AspectJ
-
-    <aop:aspectj-autoproxy/>
+2. 使用 XML 方式使能@AspectJ
+```
+<aop:aspectj-autoproxy/>
+```
 
 ### 定义aspect(切面)
 当使用注解 `@Aspect` 标注一个 Bean 后, 那么 Spring 框架会自动收集这些 Bean, 并添加到 Spring AOP 中, 例如:
-
-    @Component
-    @Aspect
-    public class MyTest {
-    }
-注意, 仅仅使用@Aspect 注解, 并不能将一个 Java 对象转换为 Bean, 因此我们还需要使用类似 @Component 之类的注解.
-注意, 如果一个类被@Aspect标注, 则这个类就不能是其他 aspect 的 **advised object** 了, 因为使用 @Aspect 后, 这个类就会被排除在 auto-proxying 机制之外.
+```
+@Component
+@Aspect
+public class MyTest {
+}
+```
+注意, 仅仅使用 `@Aspect` 注解, 并不能将一个 Java 对象转换为 Bean, 因此我们还需要使用类似 `@Component` 之类的注解.
+注意, 如果一个类被 `@Aspect` 标注, 则这个类就不能是其他 aspect 的 **advised object** 了, 因为使用 `@Aspect` 后, 这个类就会被排除在 `auto-proxying` 机制之外.
 
 
 ### 声明 pointcut
@@ -217,30 +223,31 @@ AspectJ5的切点表达式由标志符(designator)和操作参数组成. 如 "ex
 
     匹配参数满足要求的的方法.
     例如:
+	```
+	@Pointcut("within(com.xys.demo2.*)")
+	public void pointcut2() {
+	}
 
-        @Pointcut("within(com.xys.demo2.*)")
-        public void pointcut2() {
-        }
-    
-        @Before(value = "pointcut2()  &&  args(name)")
-        public void doSomething(String name) {
-            logger.info("---page: {}---", name);
-        }
-    
-        @Service
-        public class NormalService {
-            private Logger logger = LoggerFactory.getLogger(getClass());
-    
-            public void someMethod() {
-                logger.info("---NormalService: someMethod invoked---");
-            }
+	@Before(value = "pointcut2()  &&  args(name)")
+	public void doSomething(String name) {
+		logger.info("---page: {}---", name);
+	}
 
+	@Service
+	public class NormalService {
+		private Logger logger = LoggerFactory.getLogger(getClass());
 
-            public String test(String name) {
-                logger.info("---NormalService: test invoked---");
-                return "服务一切正常";
-            }
-        }
+		public void someMethod() {
+			logger.info("---NormalService: someMethod invoked---");
+		}
+
+		public String test(String name) {
+			logger.info("---NormalService: test invoked---");
+			return "服务一切正常";
+		}
+	}
+	```
+
     当 NormalService.test 执行时, 则 advice doSomething 就会执行, test 方法的参数 name 就会传递到 doSomething 中.
 
 常用例子:

@@ -58,6 +58,8 @@
 25. `--cert`: 指定证书
 26. `--form`: 指定 form 参数， `--from 'UserID=67buu'`
 27. `--http1.1/--http2/--http3`: 指定使用的http 版本 
+28. `curl --compressed -vv 'https://www.baidu.com' -w '%{size_download}'` : 显示压缩数据及数据大小
+29. `-w` : 按指定格式显示本次传输的信息，用字符串表示
 
 
 ```

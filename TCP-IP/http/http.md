@@ -35,21 +35,23 @@ http://www.example.com:80/path/to/myfile?key1=val1&key2=val2#somewhereInDocument
 	1.  一个 HTTP 方法，一个动词（像 GET、PUT 或者 POST）或者一个名词（像 HEAD 或者 OPTIONS），描述要执行的动作。例如，GET 表示要获取资源，POST 表示向服务器推送数据（创建或修改资源，或者产生要返回的临时文件）。
 	2. 请求目标（request target），通常是一个 URL，或者是协议、端口和域名的绝对路径，通常以请求的环境为特征。请求的格式因不同的 HTTP 方法而异。它可以是：
       	+ 一个绝对路径，末尾跟上一个 '?' 和查询字符串。这是最常见的形式，称为原始形式（origin form），被 GET、POST、HEAD 和 OPTIONS 方法所使用。
-      		POST / HTTP/1.1
+      		```
+			POST / HTTP/1.1
       		GET /background.png HTTP/1.0
       		HEAD /test.html?query=alibaba HTTP/1.1
       		OPTIONS /anypage.html HTTP/1.0
-      	+ 一个完整的 URL，被称为绝对形式（absolute form），主要在使用 GET 方法连接到代理时使用。GET http://developer.mozilla.org/en-US/docs/Web/HTTP/Messages HTTP/1.1
-      	+ 由域名和可选端口（以 ':' 为前缀）组成的 URL 的 authority 部分，称为 authority form。仅在使用 CONNECT 建立 HTTP 隧道时才使用。CONNECT developer.mozilla.org:80 HTTP/1.1
-      	+ 星号形式（asterisk form），一个简单的星号（'*'），配合 OPTIONS 方法使用，代表整个服务器。OPTIONS * HTTP/1.1
+			```
+      	+ 一个完整的 URL，被称为绝对形式（absolute form），主要在使用 GET 方法连接到代理时使用。`GET http://developer.mozilla.org/en-US/docs/Web/HTTP/Messages HTTP/1.1`
+      	+ 由域名和可选端口（以 ':' 为前缀）组成的 URL 的 authority 部分，称为 authority form。仅在使用 CONNECT 建立 HTTP 隧道时才使用。`CONNECT developer.mozilla.org:80 HTTP/1.1`
+      	+ 星号形式（asterisk form），一个简单的星号（'*'），配合 OPTIONS 方法使用，代表整个服务器。`OPTIONS * HTTP/1.1`
 	3. HTTP 版本（HTTP version），定义了剩余消息的结构，作为对期望的响应版本的指示符。
 
-2. HTTP 响应  
-	HTTP 响应的起始行被称作状态行（status line），包含以下信息：
+2. HTTP 响应
 
+	HTTP 响应的起始行被称作状态行（status line），包含以下信息：
 	1. 协议版本，通常为 HTTP/1.1。
 	2. 状态码（status code），表明请求是成功或失败。常见的状态码是 200、404 或 302。
-	3. 状态文本（status text）。一个简短的，纯粹的信息，通过状态码的文本描述，帮助人们理解该 HTTP 消息。 
+	3. 状态文本（status text）。一个简短的，纯粹的信息，通过状态码的文本描述，帮助人们理解该 HTTP 消息。
 
 	一个典型的状态行看起来像这样：`HTTP/1.1 404 Not Found`。
 
@@ -91,7 +93,7 @@ http://www.example.com:80/path/to/myfile?key1=val1&key2=val2#somewhereInDocument
 
 除非你有紧急而迫切的需求，**不要使用这一过时的技术**；而是升级到 HTTP/2。在 HTTP/2 里，做域名分片就没必要了：HTTP/2 的连接可以很好的处理并发的无优先级的请求。域名分片甚至会影响性能。大多数 HTTP/2 的实现还会使用一种称作[连接聚合](https://daniel.haxx.se/blog/2016/08/18/http2-connection-coalescing/)的技术去尝试合并被分片的域名。
 
-## Content-type
+### Content-type
 raw->json
 	Content-Type: application/json
 	Req-body
@@ -124,3 +126,7 @@ x-www-form-urlencoded
 	Content-Type: application/x-www-form-urlencoded
 	Req-body
 	a: "1"
+
+### 数据压缩
+为了选择要采用的压缩算法，浏览器和服务器之间会使用主动协商机制。浏览器发送 `Accept-Encoding` 标头，其中包含有它所支持的压缩算法，以及各自的优先级，服务器则从中选择一种，使用该算法对响应的消息主体进行压缩，并且发送 `Content-Encoding` 标头来告知浏览器它选择了哪一种算法。由于该内容协商过程是基于编码类型来选择资源的展现形式的，在响应时，服务器至少发送一个包含 `Accept-Encoding` 的 `Vary` 标头；这样的话，缓存服务器就可以对资源的不同展现形式进行缓存。
+<center><img src="pics/httpcompression.png" width="50%"></center>

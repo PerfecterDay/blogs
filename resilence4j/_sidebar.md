@@ -8,4 +8,5 @@
 * [重试-Retry](/resilence4j/重试-Retry.md)
 * [限时器-TimeLimiter](/resilence4j/限时器-TimeLimiter.md)
 * [缓存-Cache](/resilence4j/缓存-Cache.md)
+* [与Springboot的集成](/resilence4j/springboot集成.md)
 * [Feign集成](/resilence4j/Feign集成.md)

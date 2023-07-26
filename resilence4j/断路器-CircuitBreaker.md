@@ -189,13 +189,13 @@ io.vavr.collection.Map<String, String> circuitBreakerTags = io.vavr.collection.H
 CircuitBreakerRegistry circuitBreakerRegistry = CircuitBreakerRegistry.custom()
             .withCircuitBreakerConfig(CircuitBreakerConfig.ofDefaults()) .addRegistryEventConsumer(new RegistryEventConsumer() {
                 @Override
-                public void onEntryAddedEvent(EntryAddedEvent                                               entryAddedEvent) {// implementation
+                public void onEntryAddedEvent(EntryAddedEvent entryAddedEvent) {// implementation
                 }
                 @Override
-                public void onEntryRemovedEvent(EntryRemovedEvent                                       entryRemoveEvent) {// implementation
+                public void onEntryRemovedEvent(EntryRemovedEvent entryRemoveEvent) {// implementation
                 }
                 @Override
-                public void onEntryReplacedEvent(EntryReplacedEvent                                     entryReplacedEvent) { // implementation}
+                public void onEntryReplacedEvent(EntryReplacedEvent entryReplacedEvent) { // implementation}
             })
 .withTags(circuitBreakerTags)
 .build();

@@ -1,6 +1,9 @@
-## Future/FutureTask 与 CompleteFuture
+## Future/FutureTask 与 CompletableFuture
 {docsify-updated}
 
+- [Future/FutureTask 与 CompletableFuture](#futurefuturetask-与-completablefuture)
+	- [Future](#future)
+	- [CompletableFuture](#completablefuture)
 
 
 >https://juejin.cn/post/6844904036299194382  

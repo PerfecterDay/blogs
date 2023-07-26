@@ -9,3 +9,4 @@
 * [MapperProxy](/mybatis/mybatis%20原理分析%20——%20MapperProxy.md)
 * [SqlSession查询分析](/mybatis/mybatis%20原理分析——SqlSession查询分析.md)
 * [Configuration中MapperRegistry初始化](/mybatis/mybatis%20原理分析%20——%20Configuration中MapperRegistry初始化.md)
+* [Mybatis-plus](/mybatis/mybatisplus.md)

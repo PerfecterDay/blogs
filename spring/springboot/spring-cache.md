@@ -162,23 +162,23 @@ public RedisCacheConfiguration cacheConfiguration() {
 
 ```
 @Bean
-    public RedisCacheManagerBuilderCustomizer redisCacheManagerBuilderCustomizer() {
-        RedisSerializationContext.SerializationPair jsoSerilizer = RedisSerializationContext
-                .SerializationPair
-                .fromSerializer(new GenericJackson2JsonRedisSerializer());
+public RedisCacheManagerBuilderCustomizer redisCacheManagerBuilderCustomizer() {
+	RedisSerializationContext.SerializationPair jsoSerilizer = RedisSerializationContext
+			.SerializationPair
+			.fromSerializer(new GenericJackson2JsonRedisSerializer());
 
-        return (builder) -> builder
-                .withCacheConfiguration("sms",
-                        RedisCacheConfiguration.defaultCacheConfig()
-                                .entryTtl(Duration.ofMinutes(10))
-                                .serializeKeysWith(jsoSerilizer)
-                                .serializeValuesWith(jsoSerilizer))
-                .withCacheConfiguration("customerCache",
-                        RedisCacheConfiguration.defaultCacheConfig()
-                                .entryTtl(Duration.ofMinutes(5))
-                                .serializeKeysWith(jsoSerilizer)
-                                .serializeValuesWith(jsoSerilizer));
-    }
+	return (builder) -> builder
+			.withCacheConfiguration("sms",
+					RedisCacheConfiguration.defaultCacheConfig()
+							.entryTtl(Duration.ofMinutes(10))
+							.serializeKeysWith(jsoSerilizer)
+							.serializeValuesWith(jsoSerilizer))
+			.withCacheConfiguration("customerCache",
+					RedisCacheConfiguration.defaultCacheConfig()
+							.entryTtl(Duration.ofMinutes(5))
+							.serializeKeysWith(jsoSerilizer)
+							.serializeValuesWith(jsoSerilizer));
+}
 ```
 
 

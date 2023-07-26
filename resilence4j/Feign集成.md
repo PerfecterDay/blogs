@@ -1,13 +1,12 @@
 # Resilience4j-feign
 {docsify-updated}
+> https://resilience4j.readme.io/docs/feign
 
 - [Resilience4j-feign](#resilience4j-feign)
 	- [目前的特性](#目前的特性)
 	- [Decorating Feign Interfaces](#decorating-feign-interfaces)
 	- [装饰器的顺序](#装饰器的顺序)
 	- [服务降级](#服务降级)
-
-
 
 一个Java到HTTP客户机绑定器，灵感来自于Retrofit、JAXRS-2.0和WebSocket。[feign](https://github.com/OpenFeign/feign)  
 Resilience4j作为Feign的装饰器。类似 [HystrixFeign](https://github.com/OpenFeign/feign/tree/master/hystrix) ， resilience4j-feign 可以很容易地将“容错”模式纳入feign框架，例如断路器和限流器。
@@ -19,7 +18,6 @@ Resilience4j作为Feign的装饰器。类似 [HystrixFeign](https://github.com/O
 - 服务降级
 
 ## Decorating Feign Interfaces
-
  `Resilience4jFeign.builder` 是创建feign容错实例的主要的类，
 它扩展了 `Feign.builder` 并且可以使用添加自定义的`InvocationHandlerFactory`进行配置。Resilience4jFeign 使用了自己的`InvocationHandlerFactory` 作为装饰器。装饰器可以使用`FeignDecorators` 进行构建。 多个装饰器可以进行组合。
 下面的例子说明了怎样使用限流器和断路器装饰feign接口：
@@ -48,7 +46,6 @@ MyService myService = Resilience4jFeign.builder(decorators).target(MyService.cla
 
 
 ##  装饰器的顺序
-
 装饰器的使用顺序和声明它们的顺序相对应。当构建`FeignDecorators`时，必须对此保持警惕，因为顺序会影响结果行为。
 
 ```java
@@ -66,7 +63,6 @@ FeignDecorators decoratorsB = FeignDecorators.builder()
 对于decoratorsA，限流器将在断路器之前被调用。这意味着即使断路器断开，限流器仍然会限制调用速率。decoratorsB应用相反的顺序。这意味着一旦断路器断开，速率限制器将不再起作用。
 
 ## 服务降级
-
 可以定义在引发异常时调用的方法叫做服务降级方法。异常可能发生在HTTP请求失败时，但也可能发生在`FeignDecorators`之一激活时，例如，断路器。
 
 ```java

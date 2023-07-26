@@ -1,6 +1,18 @@
 # 断路器-CircuitBreaker
 {docsify-updated}
 
+- [断路器-CircuitBreaker](#断路器-circuitbreaker)
+	- [介绍](#介绍)
+	- [基于访问数量的滑动窗口](#基于访问数量的滑动窗口)
+	- [基于时间的滑动窗口](#基于时间的滑动窗口)
+	- [失败率和慢调用率阈值](#失败率和慢调用率阈值)
+	- [创建一个CircuitBreakerRegistry](#创建一个circuitbreakerregistry)
+	- [创建和配置CircuitBreaker](#创建和配置circuitbreaker)
+	- [装饰和执行函数接口](#装饰和执行函数接口)
+	- [处理RegistryEvent事件](#处理registryevent事件)
+	- [处理CircuitBreakerEvent事件](#处理circuitbreakerevent事件)
+	- [重写RegistryStore](#重写registrystore)
+
 
 ## 介绍
 

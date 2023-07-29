@@ -24,4 +24,4 @@
 * [ELK](/ELK/_sidebar.md)
 * [测试](/测试/_sidebar.md)
 * [JS](/js/_sidebar.md)
-* [other](/other/_sidebar.md)
+* [开发工具与其他](/other/_sidebar.md)

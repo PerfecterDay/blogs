@@ -4,7 +4,7 @@
 ### 线程的三种创建方式
 1. 继承自 `Thread` 类，重写 `run()`方法，并调用 `start()` 方法启动线程
 2. 实现 `Runnable` 接口，并在实例化 `Thread` 对象时，将接口实现对象作为构造参数传递进去
-3. 创建 `Callable` 接口的实现类，实现 `call()` 方法，使用 `FutureTask` 对象来包装  `Callable` 对象，构造 `Thread` 时，将 `FutureTask`对象作为参数传递进去
+3. 创建 `Callable` 接口的实现类，实现 `call()` 方法，使用 `FutureTask` 对象来包装  `Callable` 对象，构造 `Thread` 时，将 `FutureTask`对象作为参数传递进去。`FutureTask` 实现了 `Runnable` 接口。
 
 三种方式的对比：
 1. 继承 `Thread` 类后无法继承其它类，实现 `Runnable` 或 `Callable` 还可以继承其它类

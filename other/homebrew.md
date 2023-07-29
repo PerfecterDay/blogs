@@ -2,6 +2,13 @@
 {docsify-updated}
 >https://www.xiebruce.top/983.html
 
+- [Mac Homebrew 的使用](#mac-homebrew-的使用)
+	- [国内 homebrew 加速](#国内-homebrew-加速)
+	- [常用命令](#常用命令)
+	- [brew services](#brew-services)
+		- [Jenv 进行JDK多版本管理](#jenv-进行jdk多版本管理)
+
+
 ## 国内 homebrew 加速
 ```
 cd "$(brew --repo)/Library/Taps/"

@@ -2,50 +2,12 @@
 {docisify-updated}
 
 - [Springboot 自动配置原理](#springboot-自动配置原理)
+	- [自动配置原理](#自动配置原理)
 	- [@Configuration 注解](#configuration-注解)
 	- [@Conditional 注解](#conditional-注解)
 	- [@EnableAutoConfiguration/@SpringBootApplication](#enableautoconfigurationspringbootapplication)
-	- [Springboot 自动配置的本质](#springboot-自动配置的本质)
 
-### @Configuration 注解
-使用 @Configuration 注解的类，可以在其内定义用 @Bean 注解的方法，方法的返回对象将注入到 Spring bean 容器中 。
-
-
-### @Conditional 注解
-@Conditional 是最基础的注解，许多其他注解都是扩展自该注解。
-
-```
-@Target({ElementType.TYPE, ElementType.METHOD})
-@Retention(RetentionPolicy.RUNTIME)
-@Documented
-public @interface Conditional {
-    Class<? extends Condition>[] value();
-}
-```
-该注解的值是一个继承自 Condition 接口的类， Condition 接口只有一个返回 boolean 的 matches 方法：
-```
-@FunctionalInterface
-public interface Condition {
-    boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata);
-}
-```
-所以该注解可以和@Conmponent/@Service/@Repository/@Configuration等一起标注在一个类上，当Condition中的接口返回 true 时，这些注解才会生效。另外，该注解也可以和 @Bean 注解一起使用，以控制一个 bean 只在条件满足的时候才会被注入。
-
-基于 @Conditional 注解， springboot 实现了很多扩展的注解，这些注解通常配合 `@Configuration` 注解一起使用以控制某个配置类是否生效，来达到自动配置的效果：
-1. `@ConditionalOnClass/@ConditionalOnMissingClass` : 当classpath中存在/不存在某个类时，配置生效
-2. `@ConditionalOnMissingBean/@ConditionalOnBean` ：当spring上下文/beanfactory 中缺失/存在某个类型bean 时，配置生效
-3. `@ConditionalOnNotWebApplication/@ConditionalOnWebApplication`: 只有时Web 类型应用时配置生效
-4. `@ConditionalOnProperty("my.property")`：只有配置文件 my.property 存在时，配置生效
-5. `@ConditionalOnResource("classpath:my.properties")`：只有配置文件 my.property 存在时，配置生效
-6. `@ConditionalOnJava(JavaVersion.EIGHT)`：只有Java 版本时才生效
-7. `@ConditionalOnCloudPlatform(CloudPlatform.Heroku)`：只有在指定的云平台下才生效
-8. `@ConditionalOnExpression("someSpELExpression)`：只有在SPEL表达式为true 的情况下生效
-9. `@ConditionalOnJndi("java:comp/env/ejb/myEJB")`：只有在指定jndi存在的情况下才生效
-
-### @EnableAutoConfiguration/@SpringBootApplication 
-Springboot 使用 @EnableAutoConfiguration 注解来启用自动注解功能，通常我们使用 @SpringBootApplication 在启动 springboot 的 main 方法所在类上标注。
-
-### Springboot 自动配置的本质
+### 自动配置原理
 Springboot（通常是各种starter） 实际上就是为我们写好了很多 @Configuration 注解的配置类，这些类中大量使用了基于 @Conditional 注解的配置，以在满足一些条件时自动为我们注入一些 Bean 。那么还有一个问题，我们知道，要使 @Configuration 注解的配置类生效，主要有三种方式：
 1. 它处于自动扫描的包下，会被自动扫描
 2. 被其他配置类用 @Import 引用
@@ -56,5 +18,50 @@ Springboot（通常是各种starter） 实际上就是为我们写好了很多 @
    ```
 这些方式都必须要求使用者（写代码）手写相关的代码才能完成。Springboot 使用了另一种方式来保证了这些预定义的配置类被加载。
 
-Springboot 在加载时会扫描所有 jar 下 META-INF/spring.factories 文件，然后在这个文件中写上所有需要加载的配置类。
-如果我们自己也想编写一个自动配置的 starter， 那么也可以写好配置类后，然后将配置类写入打包 jar 的META-INF/spring.factories 文件中，这样只要别人使用了我们的jar，我们的自动配置类就能生效。
+Spring Boot 会检查发布的 jar 中是否存在 `META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports` 文件(Springboot 中的`AutoConfigurationMetadata`类实现)。该文件应列出配置类，每行一个类名，如下例所示：
+```
+com.mycorp.libx.autoconfigure.LibXAutoConfiguration
+com.mycorp.libx.autoconfigure.LibXWebAutoConfiguration
+```
+这些类中往往使用了 `@Conditional` 等注解实现了自定义的自动配置。
+
+自动配置必须通过在导入文件中命名的方式加载。确保它们被定义在特定的包空间中，并且永远不会成为组件扫描的目标。此外，自动配置类不应允许组件扫描查找其他组件,应使用特定的 `@Import` 注解来代替。
+
+### @Configuration 注解
+使用 @Configuration 注解的类，可以在其内定义用 @Bean 注解的方法，方法的返回对象将注入到 Spring bean 容器中 。
+
+### @Conditional 注解
+`@Conditional` 是最基础的注解，许多其他注解都是扩展自该注解。
+
+```
+@Target({ElementType.TYPE, ElementType.METHOD})
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+public @interface Conditional {
+    Class<? extends Condition>[] value();
+}
+```
+该注解的值是一个继承自 `Condition` 接口的类， `Condition` 接口只有一个返回 `boolean` 的 `matches` 方法：
+```
+@FunctionalInterface
+public interface Condition {
+    boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata);
+}
+```
+所以该注解可以和`@Conmponent/@Service/@Repository/@Configuration`等一起标注在一个类上，当Condition中的接口返回 true 时，这些注解才会生效。另外，该注解也可以和 `@Bean` 注解一起使用，以控制一个 bean 只在条件满足的时候才会被注入。
+
+基于 `@Conditional` 注解， springboot 实现了很多扩展的注解，这些注解通常配合 `@Configuration` 注解一起使用以控制某个配置类是否生效，来达到自动配置的效果：
+1. `@ConditionalOnClass/@ConditionalOnMissingClass` : 当classpath中存在/不存在某个类时，配置生效
+2. `@ConditionalOnMissingBean/@ConditionalOnBean` ：当spring上下文/beanfactory 中缺失/存在某个类型bean 时，配置生效
+3. `@ConditionalOnNotWebApplication/@ConditionalOnWebApplication`: 只有时Web 类型应用时配置生效
+4. `@ConditionalOnProperty("my.property")`：只有配置文件 my.property 存在时，配置生效
+5. `@ConditionalOnResource("classpath:my.properties")`：只有配置文件 my.property 存在时，配置生效
+6. `@ConditionalOnJava(JavaVersion.EIGHT)`：只有Java 版本时才生效
+7. `@ConditionalOnCloudPlatform(CloudPlatform.Heroku)`：只有在指定的云平台下才生效
+8. `@ConditionalOnExpression("someSpELExpression)`：只有在SPEL表达式为true 的情况下生效
+9. `@ConditionalOnJndi("java:comp/env/ejb/myEJB")`：只有在指定jndi存在的情况下才生效
+
+更多 `@Conditional` 注解，可参考[官方文档](https://docs.spring.io/spring-boot/docs/current/reference/html/features.html#features.developing-auto-configuration.condition-annotations)
+
+### @EnableAutoConfiguration/@SpringBootApplication 
+Springboot 使用 @EnableAutoConfiguration 注解来启用自动注解功能，通常我们使用 @SpringBootApplication 在启动 springboot 的 main 方法所在类上标注。

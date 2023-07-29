@@ -4,3 +4,7 @@
 * [base64](/other/base64编码.md)
 * [markdown](markdown语法.md)
 * [vscode快捷键](/other/vscode%20快捷键.md)
+* [powershell与cmd](/other/powershell与cmd.md)
+* [scoop](/other/scoop.md)
+* [proxychains](/other/proxychains.md)
+* [coredns](/other/coredns.md)

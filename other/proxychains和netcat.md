@@ -1,5 +1,13 @@
 # ProxyChains 和 netcat
 {docsify-updated}
+> https://mp.weixin.qq.com/s/n7ZeWXIpchZ0_QGLZdrfpg
+
+- [ProxyChains 和 netcat](#proxychains-和-netcat)
+	- [ProxyChains](#proxychains)
+		- [proxychain 安装](#proxychain-安装)
+		- [使用配置](#使用配置)
+	- [netcat](#netcat)
+
 
 
 ## ProxyChains

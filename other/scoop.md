@@ -1,5 +1,11 @@
-# Scoop 
+## Scoop 
 {docsify-updated}
+
+- [Scoop](#scoop)
+	- [Scoop 安装](#scoop-安装)
+	- [安装配置 aria2](#安装配置-aria2)
+	- [更换国内源](#更换国内源)
+	- [常用命令](#常用命令)
 
 
 ### Scoop 安装

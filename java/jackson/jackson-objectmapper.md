@@ -68,7 +68,8 @@ Map<String, Object> map
 #### configure 方法
 通过 ObjectMapper 的 `configure` 方法能自定义Jackson的许多行为。这个方法是针对 ObjectMapper 对象的，后边会介绍许多注解，这些注解定义的一些行为是指针对特定POJO。类似于全局配置和局部配置的意思。
 
-1. 反序列化时忽略不存在的属性 (DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+1. 反序列化时忽略不存在的属性 (`DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES`)
+
 	如果Json 字符串中存在一个或多个类中没有定义的属性（setter），那么反序列化时通常会导致 `UnrecognizedPropertyException` 异常。
 	```
 	String jsonString 
@@ -81,9 +82,9 @@ Map<String, Object> map
 	JsonNode jsonNodeYear = jsonNodeRoot.get("year");
 	String year = jsonNodeYear.asText();
 	```
-2. 是否允许 null 的反序列化(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES)
+2. 是否允许 null 的反序列化(`DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES`)
 	`objectMapper.configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, false);`
-3. 是否允许枚举到数字的转换(DeserializationFeature.FAIL_ON_NUMBERS_FOR_ENUMS)
+3. 是否允许枚举到数字的转换(`DeserializationFeature.FAIL_ON_NUMBERS_FOR_ENUMS`)
 	`objectMapper.configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, false);`
 
 还有许多其他的配置可以参考[官网](https://github.com/FasterXML/jackson-databind/wiki/Serialization-Features)

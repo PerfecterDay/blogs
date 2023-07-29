@@ -1,16 +1,13 @@
 ## Future/FutureTask 与 CompletableFuture
 {docsify-updated}
 
+>https://juejin.cn/post/6844904036299194382  
+>https://juejin.cn/post/6844904033673560077  
+>https://java.jverson.com/
+
 - [Future/FutureTask 与 CompletableFuture](#futurefuturetask-与-completablefuture)
 	- [Future](#future)
 	- [CompletableFuture](#completablefuture)
-
-
->https://juejin.cn/post/6844904036299194382  
->https://juejin.cn/post/6844904033673560077
-
->https://java.jverson.com/
-
 
 ### Future
 Future是为了配合Callable/Runnable而产生的，既然有返回值，那么返回什么？什么时候返回？这些问题其实都可以算在Future机制里。  

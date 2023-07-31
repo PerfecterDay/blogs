@@ -1,11 +1,16 @@
-# Springboot 配置文件加载及常见配置
+## Springboot 配置文件加载及常见配置
 {docsify-updated}
+
+- [Springboot 配置文件加载及常见配置](#springboot-配置文件加载及常见配置)
+	- [加载配置文件及使用](#加载配置文件及使用)
+	- [常用配置](#常用配置)
+
 
 > https://blog.csdn.net/u013217730/article/details/116716418
 
 ### 加载配置文件及使用
 1. 加载自定义路径下的配置文件  
-    Spring/SPringboot 中可以使用 `@PropertySource`/`@PropertySources` 注解加载指定路径的配置文件：
+    Spring/Springboot 中可以使用 `@PropertySource`/`@PropertySources` 注解加载指定路径的配置文件：
     ```
     //动态加载文件，根据 envTarget 的值确定，默认为 persistence-mysql.properties 文件
     @PropertySource({ 
@@ -158,3 +163,29 @@ spring:
 + `maximumPoolSize` : 此属性控制了允许池子达到的最大尺寸，包括空闲和使用中的连接。基本上这个值会决定到数据库后端的实际连接的最大数量。这方面的合理值最好由你的执行环境决定。当数据库池达到这个大小，并且没有空闲连接可用时，对getConnection()的调用将在超时前阻塞多达`connectionTimeout`毫秒。请阅读关于池的大小。默认值：10
 
 自动配置的相关类 `DataSourceAutoConfiguration` 、 `DataSourceConfiguration` 。
+
+### 配置加密-Vault
+
+安装 vault :
+```
+brew tap hashicorp/tap
+brew install hashicorp/tap/vault
+```
+
+启动服务端： `vault server -dev`
+Unseal Key: CHisuzHJWLryN/oflCPJPjRTglWj7xUm22NW24xo8oA=
+Root Token: hvs.qbUz87luxIjXMeMl83OEwt3c
+
+
+设置环境变量： 
+```
+export VAULT_ADDR='http://127.0.0.1:8200'
+export VAULT_TOKEN="hvs.qbUz87luxIjXMeMl83OEwt3c"
+```
+
+
+`vault status` : 查看服务状态
+`vault kv put -mount=secret hello foo=hello bar=world`: 保存一个密钥到 secret/data/hello，key是foo/bar，value是hello/world
+`vault kv get -mount=secret hello`: 读取一个 key 的值
+`vault kv delete -mount=secret hello` : 删除一个 key
+`vault kv undelete -mount=secret -versions=2 hello` : 恢复一个已经删除的key,如果没有永久删除

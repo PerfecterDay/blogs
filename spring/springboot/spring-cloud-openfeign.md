@@ -9,7 +9,7 @@
 	- [配置](#配置)
 		- [Java 代码配置](#java-代码配置)
 		- [配置文件配置](#配置文件配置)
-		- [](#)
+		- [熔断降级](#熔断降级)
 		- [Interceptors](#interceptors)
 
 
@@ -72,6 +72,11 @@ Spring Cloud使用 `FeignClientsConfiguration` 类为每个命名的客户端按
 @FeignClient(value = "jplaceholder",
   url = "https://jsonplaceholder.typicode.com/",
   configuration = ClientConfiguration.class)
+public interface TestClient {
+	@RequestMapping(method = RequestMethod.GET, value = "/posts")
+	List<Post> getPosts();
+}
+
 
 public class ClientConfiguration {
     @Bean
@@ -120,12 +125,42 @@ spring:
                             - com.example.BarCapability
                         queryMapEncoder: com.example.SimpleQueryMapEncoder
                         micrometer.enabled: false
+			compression:
+			  	request:
+					enabled: true //开启请求GZIP压缩
+				response:
+					enabled: true //开启响应GZIP压缩
 ```
 可以创建以 default 为客户端名称的配置来配置所有的 `@FeignClient` 对象，我们也可以为一个声明的特定 feign 客户端(上面的client1)名称创建配置。
 
 **如果我们同时拥有 java 配置和配置文件配置，配置文件的属性将覆盖 java 配置的值。如果我们想要java配置覆盖配置文件的配置，可以设置`spring.cloud.openfeign.client.default-to-properties=false`**
 
-#### 
+#### 熔断降级
+```
+@FeignClient(name = "test", url = "http://localhost:${server.port}/", fallback = Fallback.class)
+protected interface TestClient {
+
+	@RequestMapping(method = RequestMethod.GET, value = "/hello")
+	Hello getHello();
+
+	@RequestMapping(method = RequestMethod.GET, value = "/hellonotfound")
+	String getException();
+
+}
+
+@Component
+static class Fallback implements TestClient {
+	@Override
+	public Hello getHello() {
+		throw new NoFallbackAvailableException("Boom!", new RuntimeException());
+	}
+
+	@Override
+	public String getException() {
+		return "Fixed response";
+	}
+}
+```
 
 #### Interceptors
 如果我们需要在请求之前对request 进行特定的操作，可以使用 RequestInterceptor。

@@ -1,5 +1,10 @@
-# docker 容器
+## docker 容器
 {docsify-updated}
+
+- [docker 容器](#docker-容器)
+	- [容器操作的命令](#容器操作的命令)
+	- [实现容器的底层技术](#实现容器的底层技术)
+
 
 ### 容器操作的命令
 
@@ -64,20 +69,20 @@ cgroup 和 namespace 是最重要的两种技术——cgroup 实现资源限额�
    目录中包含所有与 cpu 相关的 cgroup 配置，文件 cpu.shares 保存的就是 --cpu-shares 的配置，值为 512。
    同样的，/sys/fs/cgroup/memory/docker 和 /sys/fs/cgroup/blkio/docker 中保存的是内存以及 Block IO 的 cgroup 配置。
 
-2. namespace : 提供环境隔离功能。
+2. namespace : 提供环境隔离功能。  
     在每个容器中，我们都可以看到文件系统，网卡等资源，这些资源看上去是容器自己的。拿网卡来说，每个容器都会认为自己有一块独立的网卡，即使 host 上只有一块物理网卡。这种方式非常好，它使得容器更像一个独立的计算机。
     Linux 实现这种方式的技术是 namespace。namespace 管理着 host 中全局唯一的资源，并可以让每个容器都觉得只有自己在使用它。换句话说，namespace 实现了容器间资源的隔离。
 	Linux 使用了六种 namespace，分别对应六种资源： `Mount` 、 `UTS` 、 `IPC` 、 `PID` 、`Network` 和 `User`，下面我们分别讨论。
 
-	1. Mount namespace
+	1. Mount namespace  
 		Mount namespace 让容器看上去拥有整个文件系统。容器有自己的 / 目录，可以执行 mount 和 umount 命令。当然我们知道这些操作只在当前容器中生效，不会影响到 host 和其他容器。
-	2. UTS namespace
+	2. UTS namespace  
 		简单的说，UTS namespace 让容器有自己的 hostname。 默认情况下，容器的 hostname 是它的短ID，可以通过 -h 或 --hostname 参数设置。
-	3. IPC namespace
+	3. IPC namespace  
 		IPC namespace 让容器拥有自己的共享内存和信号量（semaphore）来实现进程间通信，而不会与 host 和其他容器的 IPC 混在一起。
-	4. PID namespace
+	4. PID namespace  
 		我们前面提到过，容器在 host 中以进程的形式运行。例如当前 host 中运行了两个容器：
-	5. Network namespace
+	5. Network namespace  
 		Network namespace 让容器拥有自己独立的网卡、IP、路由等资源。我们会在后面网络章节详细讨论。
-	6. User namespace
+	6. User namespace  
 		User namespace 让容器能够管理自己的用户，host 不能看到容器中创建的用户。

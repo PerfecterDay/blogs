@@ -5,7 +5,9 @@
 - [Springboot 集成](#springboot-集成)
 	- [添加依赖](#添加依赖)
 	- [基于Yaml的配置](#基于yaml的配置)
+	- [Java 代码配置](#java-代码配置)
 	- [注解](#注解)
+	- [切面的顺序](#切面的顺序)
 
 
 ### 添加依赖
@@ -50,6 +52,8 @@ resilience4j.circuitbreaker:
             
 resilience4j.retry:
     instances:
+		default:
+			retry-exception-predicate=com.alibaba.demo.config.TrueExpPredict //默认对exception不retry，必需配置这个才会生效
         backendA:
             maxAttempts: 3
             waitDuration: 10s
@@ -108,11 +112,32 @@ resilience4j.timelimiter:
             cancelRunningFuture: false
 ```
 
+### Java 代码配置
+```
+@Bean
+public CircuitBreakerConfigCustomizer testCustomizer() {
+    return CircuitBreakerConfigCustomizer
+        .of("backendA", builder -> builder.slidingWindowSize(100));
+}
+```
+
+Resilience4j有自己的customizer类型，可以按上述代码示使用：
+
+| Resilienc4j类型    | 自定义类                           |
+| :----------------- | :--------------------------------- |
+| Circuit breaker    | CircuitBreakerConfigCustomizer     |
+| Retry              | RetryConfigCustomizer              |
+| Rate limiter       | RateLimiterConfigCustomizer        |
+| Bulkhead           | BulkheadConfigCustomizer           |
+| ThreadPoolBulkhead | ThreadPoolBulkheadConfigCustomizer |
+| Time Limiter       | TimeLimiterConfigCustomizer        |
+
+
 ### 注解
 ```
 @CircuitBreaker(name = BACKEND, fallbackMethod = "fallback")
 @RateLimiter(name = BACKEND)
-@Bulkhead(name = BACKEND, fallbackMethod = "fallback")
+@Bulkhead(name = BACKEND, type = Bulkhead.Type.THREADPOOL, fallbackMethod = "fallback")
 @Retry(name = BACKEND)
 @TimeLimiter(name = BACKEND)
 public Mono<String> method(String param1) {
@@ -120,10 +145,12 @@ public Mono<String> method(String param1) {
 }
 
 private Mono<String> fallback(String param1, CallNotPermittedException e) {
+	System.out.println("熔断降级");
     return Mono.just("Handled the exception when the CircuitBreaker is open");
 }
 
 private Mono<String> fallback(String param1, BulkheadFullException e) {
+	System.out.println("隔离降级");
     return Mono.just("Handled the exception when the Bulkhead is full");
 }
 
@@ -131,7 +158,42 @@ private Mono<String> fallback(String param1, NumberFormatException e) {
     return Mono.just("Handled the NumberFormatException");
 }
 
+public String fallback(RequestNotPermitted throwable) {
+	System.out.println("限流降级");
+	return "限流";
+}
+
 private Mono<String> fallback(String param1, Exception e) {
     return Mono.just("Handled any other exception");
 }
+```
+
+>注意：降级方法（fallbackMethod）应置于相同的类中，并且必须具有相同的方法签名，只可以多一个额外的异常类型的参数。
+
+
+### 切面的顺序
+Resilience4j的切面执行顺序：
+
+```
+Retry ( CircuitBreaker ( RateLimiter ( TimeLimiter ( Bulkhead ( Function ) ) ) ) )
+```
+
+所以`Retry` 是最后执行.
+如果需要不同的顺序，则必须使用Java代码配置而不是Spring注解，或者使用以下属性显式设置方面顺序：
+
+```text
+- resilience4j.retry.retryAspectOrder
+- resilience4j.circuitbreaker.circuitBreakerAspectOrder
+- resilience4j.ratelimiter.rateLimiterAspectOrder
+- resilience4j.timelimiter.timeLimiterAspectOrder
+```
+
+例如要使断路器在重试完成其工作后启动，必须将`RetryAspectOrder`属性设置为比`circuitBreakerAspectOrder`值更大的值（更高的值=更高的优先级）。
+
+```yaml
+resilience4j:
+  circuitbreaker:
+    circuitBreakerAspectOrder: 1
+  retry:
+    retryAspectOrder: 2
 ```

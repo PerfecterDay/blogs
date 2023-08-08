@@ -3,7 +3,8 @@
 
 > [docs](https://docs.spring.io/spring-boot/docs/current/reference/html/actuator.html)
 
-Springboot Actuator 可以暴露一些 http 端点让用户能查看 springboot 应用的运行信息。默认的访问 url 是 /actuator/{endpoint} 。从 springboot 2.x 版本开始，默认只暴露 /health 端点。
+Springboot Actuator 可以暴露一些 http 端点让用户能查看 springboot 应用的运行信息。默认的访问 url 是 `/actuator/{endpoint}` 。
+默认情况下，除 `shutdown` 端点外的所有端点都已启用。要配置端点的启用，请使用其 `management.endpoint.<id>.enabled` 属性。
 
 添加下面的依赖就能开启 Springboot Actuator：
 ```
@@ -13,7 +14,7 @@ Springboot Actuator 可以暴露一些 http 端点让用户能查看 springboot 
 </dependency>
 ```
 
-如果需要开启其它端点，需要增加下面配置：
+一个端点如果想要通过Http或者Jmx 访问，必需 `enable` 它且 `expose` 出来。从 springboot 2.x 版本开始，默认只暴露 /health 端点。如果需要开启其它端点，需要增加下面配置：
 ```
 management:
   endpoints:
@@ -22,10 +23,12 @@ management:
       exposure:
         include: "*"
         exclude: "env"
+	jmx:
+      exposure:
+        include: "health,info"
 ```
 
-可以通过 url : http://localhost:8050/user/mgmt/，(默认是http://localhost:8050/actuator/ 如果设置了 context-path，需要加上，如 http://localhost:8050/user/mgmt/) ，这个endpoint 可以通过 
-获取到所有可访问的端点，示例如下：
+可以通过 url : http://localhost:8050/user/mgmt/，(默认是http://localhost:8050/actuator/ 如果设置了 `context-path`，需要加上，如 http://localhost:8050/user/mgmt/) ，这个endpoint 可以获取到所有可访问的端点，示例如下：
 ```
 {
 	"_links": {

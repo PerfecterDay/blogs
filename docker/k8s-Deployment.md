@@ -26,18 +26,24 @@ Kubernetes 支持两种方式创建资源：
 	apiVersion: apps/v1
 	kind: Deployment
 	metadata:
-	  name: pc-deployment
-	  namespace: dev
+	name: nginx-deployment
+	labels:
+		app: nginx
 	spec:
-	  replicas: 3
-	  template:
-	  	metadata:
-	  	labels:
-	  		app: nginx-pod
-	  	spec:
-	  	containers:
-	  	- name: nginx
-	  	  image: nginx:1.17.1
+	replicas: 3
+	selector:
+		matchLabels:
+		app: nginx
+	template:
+		metadata:
+		labels:
+			app: nginx
+		spec:
+		containers:
+		- name: nginx
+			image: nginx:1.14.2
+			ports:
+			- containerPort: 80
 	```
 
 + apiVersion: 是当前配置格式的版本。

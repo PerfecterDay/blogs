@@ -29,7 +29,10 @@ kube-dns 是一个 DNS 服务器。每当有新的 Service 被创建，kube-dns 
 	Service 通过 Cluster 内部的 IP 对外提供服务，只有 Cluster 内的节点和 Pod 可访问，这是默认的 Service 类型，前面实验中的 Service 都是 ClusterIP。
 
 2. NodePort   
-	Service 通过 Cluster 节点的静态端口对外提供服务。Cluster 外部可以通过 <NodeIP>:<NodePort> 访问 Service。
+	Service 通过 Cluster 节点的静态端口对外提供服务。Cluster 外部可以通过 `<NodeIP>:<NodePort>` 访问 Service。
 
 3. LoadBalancer   
 	Service 利用 cloud provider 特有的 load balancer 对外提供服务，cloud provider 负责将 load balancer 的流量导向 Service。目前支持的 cloud provider 有 GCP、AWS、Azur 等。
+
+4. ExternalName  
+	将服务映射到 externalName 字段的内容（例如，映射到主机名 api.foo.bar.example）。 该映射将集群的 DNS 服务器配置为返回具有该外部主机名值的 CNAME 记录。 无需创建任何类型代理

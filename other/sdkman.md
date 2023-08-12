@@ -14,5 +14,5 @@
 `sdk upgrade java`
 `sdk current java`
 `sdk current`
-`sdk sdk use scala`
+`sdk use scala`
 `sdk uninstall scala 3.2.2`

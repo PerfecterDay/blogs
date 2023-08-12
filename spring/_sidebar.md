@@ -15,3 +15,4 @@
 * [Spring MVC](/spring/spring_mvc/_sidebar.md)
 * [Springboot](/spring/springboot/_sidebar.md)
 * [Spring Security](/spring/spring_security/_sidebar.md)
+* [COLA代码架构规范](/spring/cola架构规范.md)

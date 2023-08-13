@@ -132,7 +132,7 @@ public void sendMessage(String message) {
 
 ### 消费者-消费消息
 为了消费消息，我们需要配置一个 `ConsumerFactory` 和一个 `KafkaListenerContainerFactory` 。一旦这些 bean 在Spring bean 工厂中可用，就可以使用 `@KafkaListener` 注解来配置基于POJO的消费者。  
-配置类中需要有`@EnableKafka`注解，以便在spring管理的Bean上实现对`@KafkaListener`注解的检测:
+如果是用的Spring，需要手动在配置类中需要有`@EnableKafka`注解，以便在spring管理的Bean上实现对`@KafkaListener`注解的检测:
 ```
 @EnableKafka
 @Configuration

@@ -1,6 +1,12 @@
 # JavaEE基础之Web程序基本结构
 {docsify-updated}
 
+- [JavaEE基础之Web程序基本结构](#javaee基础之web程序基本结构)
+	- [目录结构和War文件](#目录结构和war文件)
+	- [部署描述符](#部署描述符)
+	- [类加载器架构](#类加载器架构)
+
+
 ## 目录结构和War文件
 所有的 Java EE 服务器都支持War应用程序归档，大部分服务器还支持未归档的应用程序目录。如下图所示：
 <center><img src="pics/java-web程序目录结构.png" alt="Java Web应用目录结构" width=20% height=20%></center>

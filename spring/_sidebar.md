@@ -3,7 +3,7 @@
 * [Spring](#)
   * [Spring 官方文档](https://docs.spring.io/spring-framework/reference/)
   * [Yaml简介](/spring/yaml简介.md)
-  * [Spring的启动与配置](/spring/spring的启动与配置.md)
+  * [Spring的启动与配置](/spring/spring_mvc/spring的启动.md)
   * [Spring IOC](/spring/spring-ioc.md)
   * [Spring IOC 注解](/spring/spring-ioc注解.md)
   * [Spring 数据绑定、类型转换与校验](/spring/springs-数据绑定-类型转换与校验.md)

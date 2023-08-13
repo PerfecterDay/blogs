@@ -1,6 +1,14 @@
 ## YAML 简介
 {docsify-updated}
 
+- [YAML 简介](#yaml-简介)
+	- [YAML 语法](#yaml-语法)
+		- [YAML 字面量写法](#yaml-字面量写法)
+		- [YAML 对象写法](#yaml-对象写法)
+		- [YAML 数组写法](#yaml-数组写法)
+	- [多文档 YAML](#多文档-yaml)
+
+
 YAML 全称 YAML Ain't Markup Language， 它是一种以数据为中心的标记语言，比 XML 和 JSON 更适合作为配置文件。
 
 想要使用 YAML 作为属性配置文件（以 .yml 或 .yaml 结尾），需要将 `SnakeYAML` 库添加到 classpath 下，Spring Boot 中的spring-boot-starter-web 或 spring-boot-starter 都对 SnakeYAML 库做了集成， 只要项目中引用了这两个 Starter 中的任何一个，Spring Boot 会自动添加 SnakeYAML 库到 classpath 下。
@@ -58,6 +66,7 @@ pets:
 
 ### 多文档 YAML
 一个 YAML 文件可以由一个或多个文档组成，文档之间使用“---”作为分隔符，且个文档相互独立，互不干扰。如果 YAML 文件只包含一个文档，则“---”分隔符可以省略。
+
 ```
 ---
 website:

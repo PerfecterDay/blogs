@@ -3,8 +3,9 @@
 
 - [Spring 的启动与配置](#spring-的启动与配置)
 	- [Spring Framework 的启动](#spring-framework-的启动)
-		- [部署描述符启动](#部署描述符启动)
-		- [初始化器中使用编程的方式启动 Spring](#初始化器中使用编程的方式启动-spring)
+		- [JavaEE 环境下的启动](#javaee-环境下的启动)
+			- [部署描述符启动](#部署描述符启动)
+			- [初始化器中使用编程的方式启动 Spring](#初始化器中使用编程的方式启动-spring)
 	- [Spring Framework 的配置方式](#spring-framework-的配置方式)
 		- [创建 XML 配置](#创建-xml-配置)
 		- [创建混合配置](#创建混合配置)
@@ -22,7 +23,9 @@ Spring Framework 是另一个容器，它可以运行任何 Java SE和 Java EE  
   1. **可以使用 XML 创建部署描述符启动 Spring**
   2. **也可以在 `javax.servlet.ServletContainerInitializer` 中通过编程的方式启动。**
 
-### 部署描述符启动
+### JavaEE 环境下的启动
+
+#### 部署描述符启动
 传统的 Spring Framework 应用程序总是使用 Java EE 的部署描述符启动。配置文件中至少包含一个 `DispatcherServlet` 的实例，然后以 `contextConfugLocation` 初始化参数的形式为它提供配置文件。也可以包含多个 `DispatcherServlet` 实例。另外，一般还会配置 `ContextLoaderListener` 实例加上 `contextConfigLocation`的上下文参数。参数为其典型的配置如下：
 ```
 <context-param>
@@ -49,7 +52,7 @@ org.springframework.web.context.ContextLoaderListener
 
 注意： `contextConfigLocation` 上下文初始化参数不同于 `DispatcherServlet` 的 `contextConfigLocation` Servlet初始化参数。它们不冲突；前者作用于整个 Servlet 上下文，而后者只作用于它所指定的 Servlet 。 监听器创建的根应用上下文将被自动设置为所有通过 `DispatcherServlet` 创建的应用上下文的父亲上下文。
 
-### 初始化器中使用编程的方式启动 Spring
+#### 初始化器中使用编程的方式启动 Spring
 `ServletContextListener` 可以以编程的方式配置应用程序的中 Servlet、 Listener 和 Filter 。使用该接口的缺点是：监听器的 `contextInitialized` 方法可能在其它监听器之后调用。 Java EE 6 中添加了一个新的接口 `ServletContainerInitializer` 。 实现了 `ServletContainerInitializer` 接口的类将在程序启动时，并在所有监听器启动之前调用它的 `onStartup` 方法。这是应用程序生命周期中最早可以使用的时间点。但是，不要再部署描述符中配置 `ServletContainerInitializer` ，相反，需要使用 Java 的服务提供接口（SPI：Service Provider Interface）声明实现了 `ServletContainerInitializer` 的一个或多个类，在文件 `/META-INF/services/javax.servlet.ServletContainerInitializer` 中列出它们，每行一个类。
 
 这种方式不利的一面在于文件不能直接存在于应用程序的 WAR 文件或解压后的目录中——不能将文件放在 Web 应用程序的 `/META-INF/services` 目录中。它必须在 JAR 文件的 `/META-INF/services` 目录中，并且需要将该JAR文件包含在应用程序WAR的 `WEB-INF/lib` 目录中。     

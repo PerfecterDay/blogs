@@ -12,3 +12,4 @@
 
 <center><img src="pics/cola-ac.png" width="60%"></center>
 
+mvn archetype:generate -DgroupId='com.panda.baicy' -DartifactId='demo-web' -Dversion='1.0.0-SNAPSHOT' -Dpackage='com.panda.baicy' -DarchetypeArtifactId='cola-framework-archetype-web' -DarchetypeGroupId='com.alibaba.cola' -DarchetypeVersion='4.3.2'

@@ -1,5 +1,12 @@
-# Kafka线上环境部署管理及监控
+## Kafka线上环境部署管理及监控
 {docsify-updated}
+
+- [Kafka线上环境部署管理及监控](#kafka线上环境部署管理及监控)
+	- [Kafka 参数配置](#kafka-参数配置)
+	- [Zookeeper 配置文件](#zookeeper-配置文件)
+	- [Kafka的启动与管理](#kafka的启动与管理)
+	- [Kafka 集群监控](#kafka-集群监控)
+
 
 ### Kafka 参数配置
 1. broker 端参数  
@@ -12,7 +19,7 @@
    + `log.retention.bytes` : 控制了每个消息日志保存多大数据，超过改参数的分区日志，会被自动清除。
    + `min.insync.replicas`: 与发布端（prducer)的 acks 参数配合使用。它指定了 broker 端必须在指定数量的副本中持久化成功后，才响应发布端消息发送成功。
    + `num.network.threads` : 指定 broker 端实际处理网络请求的线程数。
-   + `num.io.threads` ：指定 brker 端用于处理消息的 IO 线程数
+   + `num.io.threads` ：指定 broker 端用于处理消息的 IO 线程数
 2. topic 级别参数  
    + `delet.retention.ms` : 为每个 topic 设置自己的日志过期时间，覆盖 broker 端的全局设置。
    + `retention.bytes` : 类似 `log.retention.bytes` 。

@@ -1,5 +1,14 @@
-# Kafka-producer 开发 
+## Kafka-producer 开发 
 {docsify-updated}
+- [Kafka-producer 开发](#kafka-producer-开发)
+	- [Java版 producer 工作流程](#java版-producer-工作流程)
+			- [producer 的主要参数](#producer-的主要参数)
+			- [ProducerRecord](#producerrecord)
+		- [RecordMetadata](#recordmetadata)
+			- [消息分区机制](#消息分区机制)
+	- [消息序列化](#消息序列化)
+	- [Producer 拦截器](#producer-拦截器)
+
 
 ### Java版 producer 工作流程
 如下图所示：
@@ -27,7 +36,7 @@ for (int i = 0; i < 10; i++) {
 
 ##### producer 的主要参数
 1. `acks`  
-   这个参数制定了kafka服务端在给 producer 发送相应前， lead broker 端必须要确保已经写入该消息的副本的数量。当前有3个值：0、1和 all。
+   这个参数制定了kafka服务端在给 producer 发送响应前， lead broker 端必须要确保已经写入该消息的副本的数量。当前有3个值：0、1和 all。
    + `acks=0`：表示 producer 完全不理睬 leader broker 端的处理结果。吞吐量最高，但是消息可能会写入失败。
    + `acks=all` 或者 -1: leader broker 不仅会将消息写入本地日志，同时还会等待 ISR 中的所有其他副本都成功写入它们各自的本地日志后才返回相应结果给 producer 端。这样可以保证当 ISR 中至少有一个副本是存活状态时，消息是不会丢失的。但是吞吐量也是最低的。
    + `acks=1`：是0和all的折中方案，也是默认值。leader broker 收到消息后将消息写入本地日志，然后就发送相应结果给 producer ，无需等待 ISR 中其它副本写入该消息。
@@ -40,7 +49,7 @@ for (int i = 0; i < 10; i++) {
 4. `retries`
    当消息发送失败时，该参数能指定重试的次数。值得注意的是重试可能造成消息重复发送和消息的乱序。
 5. `batch.size`
-   前面提到过， producer 会把发往同一分区的多条消息封装进一个 batch 中。当 batch 满了的时候， producer 会放 batch 中的所有消息。不过， producer 并不总是等待 batch 满了才发送消息。 batch.size 默认 16KB。
+   前面提到过， producer 会把发往同一分区的多条消息封装进一个 batch 中。当 batch 满了的时候， producer 会发送 batch 中的所有消息。不过， producer 并不总是等待 batch 满了才发送消息。 batch.size 默认 16KB。
 6. `linger.ms`
    该参数控制的是消息发送的延时，默认值是0，表示消息需要被立即发送，无需关心batch 是否已被填满。
 7. `request.timeout.ms`

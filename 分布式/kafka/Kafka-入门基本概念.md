@@ -1,5 +1,12 @@
-# Kafka入门
+## Kafka入门
 {docsify-updated}
+
+- [Kafka入门](#kafka入门)
+	- [消息系统的模型](#消息系统的模型)
+	- [Kafka 概要设计](#kafka-概要设计)
+	- [Kafka基本概念与术语](#kafka基本概念与术语)
+	- [Kafka使用场景](#kafka使用场景)
+
 
 ### 消息系统的模型
 最常见的两种消息泛型：
@@ -24,10 +31,10 @@
 	Linux 提供的 `sendfile` 系统调用实现了这种零拷贝技术，Kafka的消息消费机制就是使用的该调用，严格来说是通过 Java 的 `FileChannel.transferTo` 方法实现的。
 
 	总结起来，Kafka依靠以下4点达到高吞吐量、低延时的设计目标：
-      	1. 大量使用系统页缓存，内存操作速度高且命中率高
-      	2. Kafka不直接参与IO操作
-      	3. 采用追加写入的方式避免了磁盘随机读写，大幅提高磁盘写入速度
-      	4. 采用零拷贝技术使得网络IO速度大幅提升
+   1. 大量使用系统页缓存，内存操作速度高且命中率高
+   2. Kafka不直接参与IO操作
+   3. 采用追加写入的方式避免了磁盘随机读写，大幅提高磁盘写入速度
+   4. 采用零拷贝技术使得网络IO速度大幅提升
 
 
 2. 消息持久化  
@@ -52,14 +59,14 @@
    topic下的partition中每个消息都有一个序号，该序号称为 offset。另外，消费端在消费消息时也有一个 offset 的概念，指向了当前消费到第几个消息了，通常该位移会随着消费进度不断往前移动。
 
 4. replica  
-   replica 就是 Kafka的容错备份机制，简单来说就是备份多份日志，备份的基本单位是 partition，也就是说会针对**整个partition进行备份而不是一条消息**，这些备份在 Kafka 中被称为副本（replica），他们存在的唯一目的就是为了防止数据丢失。副本分为两类：**领导者副本（leader replica）和追随者副本（follower replica)**。follower replica 是不能提供服务给客户端的，也就是说客户端的读取和写入请求不会route 到follower replica。它只会被动地从 leader replica 中获取数据，一旦 leader replica 所在的 broker 宕机， Kafka 会从剩余的 replica 中选举出新的 leader 继续提供服务。
+   replica 就是 Kafka的容错备份机制，简单来说就是备份多份日志，备份的**基本单位是partition** ，也就是说会针对**整个partition进行备份而不是一条消息**，这些备份在 Kafka 中被称为副本（replica），他们存在的唯一目的就是为了防止数据丢失。副本分为两类：**领导者副本（leader replica）和追随者副本（follower replica）**。follower replica 是不能提供服务给客户端的，也就是说客户端的读取和写入请求不会route 到follower replica。它只会被动地从 leader replica 中获取数据，一旦 leader replica 所在的 broker 宕机， Kafka 会从剩余的 replica 中选举出新的 leader 继续提供服务。
 
 5. leader 和 follower  
    Kafka保证同一个 partition 的多个 replica 一定不会分配到同一个 broker 上。
     <center><img src="pics/leader-follower.png" alt="" width="40%"></center>
 
 6. ISR  
-   ISR 的全称是 **in-ync replica，就是与 leader replica保持同步的 replica 的集合，包括 leader replica**。Kafka 为 partition 动态维护一个 replica 集合。集合中所有 replica 保存的消息都与 leader replica 保持同步状态，只有这个集合中的 replica 才能被选举为 leader，也只有该集合中的所有 replica 都接收到了同一条消息， Kafka 才会将该消息置为已提交状态，即认为该消息发送成功。不过这点可以通过配置修改。
+   ISR 的全称是 **in-sync replica，就是与 leader replica保持同步的 replica 的集合，包括 leader replica**。Kafka 为 partition 动态维护一个 replica 集合。集合中所有 replica 保存的消息都与 leader replica 保持同步状态，**只有这个集合中的 replica 才能被选举为 leader，也只有该集合中的所有 replica 都接收到了同一条消息， Kafka 才会将该消息置为已提交状态，即认为该消息发送成功**。不过这点可以通过配置修改。
    
 ### Kafka使用场景
 1. 消息传输

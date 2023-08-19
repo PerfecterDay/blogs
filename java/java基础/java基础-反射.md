@@ -46,10 +46,10 @@ Class没有公共构造方法。Class对象是在加载类时由Java虚拟机以
 
 2. 获取所有访问级别的构造方法
    + `getDeclaredConstructors()`: 可以获取到所有的构造方法(包括：私有、受保护、默认、公有)组成的数组：`Constructor[]`。
-   + `getDeclaredConstructor(Class<?>... parameterTypes)`: 可以获取到参数类型为 `parameterTypes` 指定的所有构造方法(包括：私有、受保护、默认、公有)的 `Constructor` 实例对象。
+   + `getDeclaredConstructor(Class<?>... parameterTypes)`: 可以获取到参数类型为 `parameterTypes` 指定的所有构造方法(包括：私有、受保护、默认、公有)的 `Constructor` 实例对象。注意 `parameterTypes` 是可变参数，可以不传，当不传时获取的时默认构造方法。
 
 3. 调用构造方法
-通过上述方法获取 `Constructor`对象后，可以 调用 `Constructor` 对象的 `newInstance(Object... initargs)` 方法来创建类的新实例，并用指定的初始化参数初始化该实例。
+通过上述方法获取 `Constructor`对象后，可以 调用 `Constructor` 对象的 `newInstance(Object... initargs)` 方法来创建类的新实例，并用指定的初始化参数（可以不传）初始化该实例。
 
 
 ### 获取成员变量并使用

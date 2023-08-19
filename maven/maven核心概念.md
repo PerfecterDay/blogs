@@ -8,9 +8,11 @@
 		- [依赖调解](#依赖调解)
 		- [可选依赖](#可选依赖)
 		- [排除依赖](#排除依赖)
-	- [仓库](#仓库)
-		- [从仓库解析依赖的机制](#从仓库解析依赖的机制)
+	- [仓库与镜像](#仓库与镜像)
+		- [部署jar包到私服仓库](#部署jar包到私服仓库)
 		- [镜像](#镜像)
+		- [从仓库解析依赖的机制](#从仓库解析依赖的机制)
+		- [镜像](#镜像-1)
 	- [聚合与继承](#聚合与继承)
 		- [聚合(多模块)](#聚合多模块)
 		- [继承](#继承)
@@ -81,12 +83,76 @@ A->B/B->X(optional)/B->Y(optional): A不会依赖 X和Y。
 ```
 exclusion 中只需要指出 groupId 和 artifactId 。
 
-### 仓库
+### 仓库与镜像
 <center>
 <img src="pics/maven-repo.png" alt="" width=40%>
 </center>
 
-在 settings 文件中，使用 repository 元素配置远程仓库，id为 central 是中央仓库；如果仓库需要认证，使用 server 元素配置认证信息，repository 与 server 之间通过id关联，即 server 配置的是 id 相同的 repository 的认证信息。
+在 pom 文件中，使用 `repositories > repository` 元素配置远程仓库，id为 `central` 是中央仓库；如果仓库需要认证，使用 `server` 元素配置认证信息， `repository` 与 `server` 之间通过id关联，即 `server` 配置的是 id 相同的 `repository` 的认证信息。另外认证信息不能配置在 pom 文件中，必须在 settings 文件中配置。
+
+每个maven项目都会继承一个maven自带的 super pom，在super pom 中会配置了默认的中央仓库：
+```
+<repositories>
+	<repository>
+		<id>central</id>
+		<name>Maven Repository Switchboard</name>
+		<url>http://repol.maven.org/maven2</url>
+		<layout>default</layout>
+		<snapshots>
+			<enabled>false</enabled>
+		</snapshots>
+	</repository>
+</repositories>
+```
+如果项目需要其他的私有仓库配置，只需要在pom中添加类似的 `repositories > repository` 即可。
+
+#### 部署jar包到私服仓库 
+```
+项目POM:
+<distributionManagement>
+	<repository>
+		<id>nexus</id>
+		<name>Releases</name>
+		<url>http://localhost:8081/repository/local-maven-repo/</url>
+	</repository>
+	<snapshotRepository>
+		<id>nexus</id>
+		<name>Snapshot</name>
+		<url>http://localhost:8081/repository/local-maven-repo/</url>
+	</snapshotRepository>
+</distributionManagement>
+
+settings.xml:
+<servers>
+	<server>
+		<id>nexus</id>
+		<username>admin</username>
+      	<password>admin</password>
+	  </server>
+</servers>
+```
+往远程仓库部署构件的时候，往往需要认证。就需要在 settings. xml 中创建一个 `server` 元素，其 id 与仓库的 id 匹配，并配置正确的认证信息。不论从远程仓库下载构件，还是部署构件至远程仓库，当需要认证的时候，配置的方式是一样的。
+
+配置正确后，运行 `mvn clean deploy` 即可部署到仓库。
+
+#### 镜像
+如果仓库 X 可以提供仓库 Y 存储的所有内容，那么就可以认为 X 是 Y 的一个镜像。换句话说，任何一个可以从仓库 Y 获得的构件，都能够从它的镜像中获取。举个例子， http://maven.oschina.net/content/groups/public/ 是中央仓库 http://repo1.maven.org/maven2/ 在中国的镜像，由于地理位置的因素，该镜像往往能够提供比中央仓库更快的服务。因此，可以配置 Maven 使用该镜像来替代中央仓库。编辑 settings.xml:
+```
+<mirror>
+	<id>nexus-osc</id>
+	<mirrorOf>central</mirrorOf>
+	<name>Nexus osc</name>
+	<url>http://maven.oschina.net/content/groups/public/</url>
+</mirror>
+```
+
+为了满足一些复杂的需求， Maven 还支持更高级的镜像配置：
++ `<mirrorOf>*</mirrorOf>`：匹配所有远程仓库。
++ `<mirrorOf>external.*</mirrorOf>`：匹配所有远程仓库，使用 localhost 的除外，使用 file://协议的除外。也就是说，匹配所有不在本机上的远程仓库。
++ `<mirrorOf>repo1,rep02</mirrorOf>`：匹配仓库 repo1 和 repo2 ，使用逗号分隔多个远程仓库。
++ `<mirrorOf>*,!repo1</mirrorOf>`：匹配所有远程仓库，但 repo1 除外，使用感叹号将仓库从匹配中排除。
+
+需要注意的是，由于镜像仓库完全屏蔽了被镜像仓库，当镜像仓库不稳定或者停止服务的时候， Maven 仍将无法访问被镜像仓库，因而将无法下载构件。
 
 #### 从仓库解析依赖的机制
 1. 当依赖范围是 system 的时候， Maven 直接从本地文件系统解析构件

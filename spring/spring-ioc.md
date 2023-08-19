@@ -8,7 +8,7 @@
 		- [Bean的生命周期](#bean的生命周期)
 			- [BeanFactory中bean的生命周期](#beanfactory中bean的生命周期)
 			- [ApplicationContext中bean的生命周期](#applicationcontext中bean的生命周期)
-			- [bean 创建的策略模式 InstantiationStrategy](#bean-创建的策略模式-instantiationstrategy)
+			- [bean 实例化的策略模式 InstantiationStrategy](#bean-实例化的策略模式-instantiationstrategy)
 			- [bean创建的一些主要方法过程](#bean创建的一些主要方法过程)
 	- [Bean 的 scope](#bean-的-scope)
 	- [Bean 注入的方式](#bean-注入的方式)
@@ -122,20 +122,60 @@ ApplicationContext 和 BeanFactory 的一个重大区别在于：前者会利用
     }
 ```
 
-##### bean 创建的策略模式 InstantiationStrategy
+##### bean 实例化的策略模式 InstantiationStrategy
 ```
-AbstractAutowireCapableBeanFactory的方法中使用策略床架bean：
+AbstractAutowireCapableBeanFactory 的方法中使用策略框架bean：
 protected BeanWrapper instantiateBean(String beanName, RootBeanDefinition mbd) {
-		try {
-			Object beanInstance = getInstantiationStrategy().instantiate(mbd, beanName, this);
-			BeanWrapper bw = new BeanWrapperImpl(beanInstance);
-			initBeanWrapper(bw);
-			return bw;
-		}
-		catch (Throwable ex) {
-			throw new BeanCreationException(mbd.getResourceDescription(), beanName, ex.getMessage(), ex);
-		}
+	try {
+		Object beanInstance = getInstantiationStrategy().instantiate(mbd, beanName, this);
+		BeanWrapper bw = new BeanWrapperImpl(beanInstance);
+		initBeanWrapper(bw);
+		return bw;
 	}
+	catch (Throwable ex) {
+		throw new BeanCreationException(mbd.getResourceDescription(), beanName, ex.getMessage(), ex);
+	}
+}
+```
+Spring 提供了两种策略实现: `SimpleInstantiationStrategy` 和 `CglibSubclassingInstantiationStrategy`。`CglibSubclassingInstantiationStrategy`继承自 `SimpleInstantiationStrategy`。
+查看 `SimpleInstantiationStrategy` 的源码：
+```
+@Override
+public Object instantiate(RootBeanDefinition bd, @Nullable String beanName, BeanFactory owner,
+		final Constructor<?> ctor, Object... args) {
+
+	if (!bd.hasMethodOverrides()) {
+		if (System.getSecurityManager() != null) {
+			// use own privileged to change accessibility (when security is on)
+			AccessController.doPrivileged((PrivilegedAction<Object>) () -> {
+				ReflectionUtils.makeAccessible(ctor);
+				return null;
+			});
+		}
+		return BeanUtils.instantiateClass(ctor, args);
+	}
+	else {
+		return instantiateWithMethodInjection(bd, beanName, owner, ctor, args);
+	}
+}
+```
+可以发现，如果 RootBeanDefinition 中有方法需要重写就会使用 `instantiateWithMethodInjection` 方法实例化，否则就直接调用 `BeanUtils.instantiateClass` 方法实例化。  
+`CglibSubclassingInstantiationStrategy` 通过重写 `instantiateWithMethodInjection` 方法实现自定义 Cglib 实例化。
+
+从 `AbstractAutowireCapableBeanFactory` 的构造函数中可以看出，默认情况下，只要不是 graalvm 的本地映像， BeanFactory 使用的策略是 `CglibSubclassingInstantiationStrategy`。
+```
+public AbstractAutowireCapableBeanFactory() {
+	super();
+	ignoreDependencyInterface(BeanNameAware.class);
+	ignoreDependencyInterface(BeanFactoryAware.class);
+	ignoreDependencyInterface(BeanClassLoaderAware.class);
+	if (NativeDetector.inNativeImage()) {
+		this.instantiationStrategy = new SimpleInstantiationStrategy();
+	}
+	else {
+		this.instantiationStrategy = new CglibSubclassingInstantiationStrategy();
+	}
+}
 ```
 
 ##### bean创建的一些主要方法过程

@@ -19,7 +19,6 @@
 `Optional` 类的目的是提供一个类型级别的解决方案，用于表示可选的值，而不是 `null` 。  
 为了更深入地了解我们为什么要关心 `Optional` 类，请看一下[Oracle的官方文章](https://www.oracle.com/technical-resources/articles/java/java8-optional.html)。
 
-
 ### Optional 创建
 
 1. 要创建一个空的Optional对象，我们只需要使用其 `empty()` 静态方法。
@@ -30,7 +29,7 @@ public void whenCreatesEmptyOptional_thenCorrect() {
     assertFalse(empty.isPresent());
 }
 ```
-注意，我们使用isPresent()方法来检查 Optional对象中是否有一个值。只有当我们用一个非空值创建Optional时，才会有一个值存在。
+注意，我们使用 `isPresent()` 方法来检查 `Optional` 对象中是否有一个值。只有当我们用一个非 null 值创建 `Optional` 时，才会有一个值存在。
 
 2. 也可以用静态方法of()创建一个Optional对象。
 ```
@@ -41,7 +40,7 @@ public void givenNonNull_whenCreatesNonNullable_thenCorrect() {
     assertTrue(opt.isPresent());
 }
 ```
-然而，传递给of()方法的参数**不能是空的**。否则，我们会得到一个 `NullPointerException` 。
+然而，传递给of()方法的参数**不能是null**。否则，我们会得到一个 `NullPointerException` 。
 
 3. 但是，如果我们期望允许从一些空值创建，我们可以使用 `ofNullable()` 方法。
 ```
@@ -52,16 +51,16 @@ public void givenNonNull_whenCreatesNullable_thenCorrect() {
     assertTrue(opt.isPresent());
 }
 ```
-通过这样做，如果我们传入一个空引用，它不会抛出一个异常，而是返回一个空的Optional对象。
+通过这样做，如果我们传入一个空引用，它不会抛出一个异常，而是返回一个 `Optional.EMPTY` 对象。
 
 
 ### 检查值是否存在：`isPresent()` 和 `isEmpty()`
 当我们有一个从方法返回或由我们创建的Optional对象时，我们可以用isPresent()方法检查其中是否有一个值。如果包裹的值不是 null ，该方法返回true。
-另外，从Java 11开始，我们可以用 `isEmpty()` 方法做相反的事情。如果 Optional 是 empty 对象时返回 true。
+另外，从Java 11开始，我们可以用 `isEmpty()` 方法做相同的事情。如果 `Optional` 是 `EMPTY` 对象时返回 true。
 
 
 ### `ifPresent()`
-ifPresent()方法使我们能够在发现包裹的值为非空时对其运行一些代码。在Optional之前，我们会这样做。
+`ifPresent()` 方法使我们能够在发现包裹的值为非空时对其运行一些代码。在 `Optional` 之前，我们会这样做。
 ```
 if(name != null) {
     System.out.println(name.length());
@@ -118,10 +117,10 @@ public void whenOrElseGetAndOrElseDiffer_thenCorrect() {
 }
 ```
 
-请注意，当使用orElseGet()检索被包装的值时，如果包含的值已经存在，getMyDefault()方法不会被调用。
-然而，当使用orElse()时，无论包裹的值是否存在，默认对象都被创建。所以在这种情况下，我们只是创建了一个多余的对象，而这个对象永远不会被使用。
+请注意，当使用orElseGet()检索被包装的值时，如果包含的值已经存在，`getMyDefault()` 方法不会被调用。
+然而，当使用`orElse()`时，无论包裹的值是否存在，默认对象都被创建。所以在这种情况下，我们只是创建了一个多余的对象，而这个对象永远不会被使用。
 
-在这个简单的例子中，创建一个默认对象并没有什么大的代价，因为JVM知道如何处理这种情况。然而，当像getMyDefault()这样的方法需要调用网络服务或甚至查询数据库时，成本就变得非常明显了。
+在这个简单的例子中，创建一个默认对象并没有什么大的代价，因为JVM知道如何处理这种情况。然而，当像`getMyDefault()`这样的方法需要调用网络服务或甚至查询数据库时，成本就变得非常明显了。
 
 
 ### 检索封装值的最终方法是 `get()` 方法。
@@ -213,9 +212,9 @@ public void givenOptional_whenFlatMapWorks_thenCorrect2() {
 ```
 在这里，我们试图检索Person对象的name属性来执行断言。
 
-注意我们是如何在第三条语句中用map()方法实现这一目标的，然后注意我们之后是如何用flatMap()方法做同样的事情的。
+注意我们是如何在第三条语句中用`map()`方法实现这一目标的，然后注意我们之后是如何用`flatMap()`方法做同样的事情的。
 
-Person::getName方法的引用类似于我们在上一节中为清理密码而进行的String::trim调用。
+`Person::getName`方法的引用类似于我们在上一节中为清理密码而进行的`String::trim`调用。
 
 唯一的区别是，getName()返回一个Optional，而不是像trim()操作那样返回一个String。这一点，再加上地图转换将结果包裹在一个Optional对象中的事实，导致了一个嵌套的Optional。
 
@@ -229,42 +228,8 @@ Person::getName方法的引用类似于我们在上一节中为清理密码而�
 在[Using Optional With Jackson](https://www.baeldung.com/jackson-optional)中，我们解释了当Optional字段被序列化时会发生什么，以及一些变通方法以达到预期效果。
 
 
-
 ### 判空示例
 ```
-private boolean validAddress(NullPerson person) 
-{
-  if (person != null) 
-  {
-    if (person.getAddress() != null) 
-    {
-     final Instant validFrom = person.getAddress().getValidFrom();
-     return validFrom != null && validFrom.isBefore(now());
-    }
-    else
-      return false;
-   } 
-   else
-     return false;
-}
-
-private boolean validAddress(Optional<Person> personOptional) 
-{
-  return personOptional.isPresent() 
-  && person.getAddress().isPresent() 
-  && person.getAddress().getValidFrom().isPresent() 
-  && person.getAddress().getValidFrom().isBefore(now());
-}
-
-private boolean validAddress(Optional<Person> person) 
-{
-  return person.flatMap(Person::getAddress)
-  .flatMap(Address::getValidFrom)
-  .filter(x -> x.before(now())).isPresent();
-}
-
-
-
 public String getCity(User user)  throws Exception{
         if(user!=null){
             if(user.getAddress()!=null){
@@ -281,7 +246,7 @@ public String getCity(User user) throws Exception{
     return Optional.ofNullable(user)
                    .map(u-> u.getAddress())
                    .map(a->a.getCity())
-                   .orElseThrow(()->new Exception("取指错误"));
+                   .orElseThrow(()->new Exception("取值错误"));
 }
 ```
 

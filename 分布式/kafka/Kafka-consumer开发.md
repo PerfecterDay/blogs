@@ -2,7 +2,7 @@
 {docsify-updated}
 
 - [Kafka-consumer 开发](#kafka-consumer-开发)
-	- [消费者组](#消费者组)
+	- [消费者组与独立消费者](#消费者组与独立消费者)
 	- [构建 consumer](#构建-consumer)
 	- [Consumer 的主要参数](#consumer-的主要参数)
 	- [位移（offset）](#位移offset)
@@ -10,12 +10,12 @@
 	- [消息交付语义（重点关注exactly once）](#消息交付语义重点关注exactly-once)
 
 
-### 消费者组
-消费者使用一个消费组名(group.id)来标记自己， topic 的每条消息都会被发送到每个订阅它的消费者组的一个消费者实例上：
+### 消费者组与独立消费者
+消费者组使用一个消费组名(group.id)来标记自己， topic 的每条消息都会被发送到每个订阅它的消费者组的一个消费者实例上：
 1. 一个 group.id 唯一标识一个 consumer group 。一个 consumer group 可能有若干个 consumer 实例
 2. 对于同一个 group 而言， topic 的每条消息只能被发送到 group 内的一个实例上
 3. topic 消息可以被发送到多个 group 中。
-4. 对某个 group 而言，订阅 topic 的每个分区只能分配给该 group 下的一个 consumer 实例（当然该分区还可以被分配给其他订阅该 topic 的消费者组） 。
+4. 对某个 group 而言，订阅 topic 的每个分区只能分配给该 group 下的一个 consumer 实例（当然该分区还可以被分配给其他订阅该 topic 的消费者组）。
 
 所以 Kafka 使用下面的两种方式来支持的基于队列和基于发布/订阅的两种消息模型：
 1. 所有的 consumer 实例都划分到同一个 group -> 实现基于队列的模型，每条消息只会被一个 consumer 实例消费
@@ -23,6 +23,7 @@
 
  Kafka 目前只提供单个分区内的消息顺序，而不会维护全局的消息顺序，因此如果用户要实现 topic 全局的消息读取顺序，就只能通过让每个 consumer group 下只包含一个consumer 实例的方式来间接实现(或者也可以基于业务逻辑自己控制实现)。
 
+独立消费者只有一个消费者实例单独执行消费操作。
 
 ### 构建 consumer
 构造一个 consumer 需要以下6个步骤：

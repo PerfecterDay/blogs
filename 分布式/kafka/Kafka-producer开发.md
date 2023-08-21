@@ -1,11 +1,14 @@
 ## Kafka-producer 开发 
 {docsify-updated}
+>https://www.instaclustr.com/blog/a-visual-understanding-to-ensuring-your-kafka-data-is-literally-in-order/
+
 - [Kafka-producer 开发](#kafka-producer-开发)
 	- [Java版 producer 工作流程](#java版-producer-工作流程)
 			- [producer 的主要参数](#producer-的主要参数)
 			- [ProducerRecord](#producerrecord)
 		- [RecordMetadata](#recordmetadata)
 			- [消息分区机制](#消息分区机制)
+		- [保证顺序](#保证顺序)
 	- [消息序列化](#消息序列化)
 	- [Producer 拦截器](#producer-拦截器)
 
@@ -82,6 +85,9 @@ Kafka 的消息发送过程中，很重要的一步就是要确定将消息发�
 如果用户需要自定义分区机制，就需要完成两件事：
 1. 在 producer 程序中创建一个类，实现 `org.apache.kafka.clients.producer.Partitioner` 接口，主要分区逻辑在 `partition()`方法中实现。
 2. 在用于构造 `KafkaProducer`的 Properties 对象中设置 `parttioner.class`参数。
+
+#### 保证顺序
+[消息顺序](https://stackoverflow.com/questions/29511521/is-key-required-as-part-of-sending-messages-to-kafka)
 
 ### 消息序列化
 序列化器负责在 producer 发送前将消息转换成字节数组；解序列化器则用于在 consumer 接收到的字节数组转换成相应的对象。Kafka 默认提供了十几种序列化器，常用的如下：

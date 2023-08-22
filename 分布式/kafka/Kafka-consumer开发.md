@@ -5,9 +5,9 @@
 	- [消费者组与独立消费者](#消费者组与独立消费者)
 	- [构建 consumer](#构建-consumer)
 	- [Consumer 的主要参数](#consumer-的主要参数)
-	- [位移（offset）](#位移offset)
-	- [重平衡（ rebalance )](#重平衡-rebalance-)
-	- [消息交付语义（重点关注exactly once）](#消息交付语义重点关注exactly-once)
+	- [位移](#位移)
+	- [重平衡](#重平衡)
+	- [消息交付语义](#消息交付语义)
 
 
 ### 消费者组与独立消费者
@@ -85,7 +85,7 @@ class Consumer implements Runnable{
 9.  `connections.max.idle.ms`
    Kafka 会定期地关闭空闲 socket 连接，这个参数指定空闲时间。如果超过空闲时间，那么 socket 连接会被关闭，下次要处理请求时，需要重新创建连接 broker 的 socket 连接。
 
-### 位移（offset）
+### 位移
 Offset 记录了 consumer 实例消费的消息的位置，Kafka 让 consumer 端保存 offset 。consumer 客户端需要定期地向 Kafka 集群汇报自己消费数据的进度，这一过程被称为**位移提交**。Kafka 内部有一个专门用来记录 consumer 端位移信息的 topic —— __consumer_offsets 。consumer 端需要为每个它要读取的分区保存消费进度，即分区中当前最新消费消息的位置 。该位置就被称为位移（ offset ） 。 consumer 需要定期地向 Kafka 提交自己的位置信息，实际上，这里的位移值通常是下一条待消费的消息的位置。假设 consumer 己经读取了某个分区中的第N条消息，那么它应该提交位移值为 N，因为位移是从 0 开始的，位移为 N 的消息是第 N+l 条消息 。 这样下次 consumer 重启时会从第 N+l 条消息开始消费。总而言之， offset 就是 consumer 端维护的位置信息 。
 
 offset 对于 consumer 非常重要，因为它是实现消息交付语义保证（ message delivery semantic ）的基石 。 常见的 3 种消息交付语义保证如下。
@@ -101,7 +101,7 @@ consumer 提交位移的主要机制是通过向所属的 coordinator 发送位�
 
 设置使用手动提交位移非常简单，仅仅需要在构建 KafkaConsumer 时设置 enable.auto.comrnit=false ，然后调用 comrnitSync 或commitAsync 方法即可。
 
-### 重平衡（ rebalance )
+### 重平衡
 consumer group 的 rebalance 本质上是一组协议，它规定了一个 consumer group 是如何达成一致来分配订阅 topic 的所有分区的 。 topic 的每个分区只会分配给组内的一个 consumer 实例。
 
 Kafka内置的一个全新的组协调协议（ group coordination protocol)负责重平衡 。对于每个组而言， Kafka 的某个broker 会被选举为组协调者（ group coordinator) o coordinator 负责对组的状态进行管理，它的主要职责就是当新成员到达时促成组内所有成员达成新的分区分配方案，即 coordinator 负责对组执行 rebalance 操作。
@@ -120,7 +120,7 @@ range 策略主要是基于范围的思想。它将单个 topic 的所有分区�
 
 另外 Kafka 支持自定义的分配策略，用户可以创建自己的 consumer 分配器（ assignor ） 。
 
-### 消息交付语义（重点关注exactly once）
+### 消息交付语义
 前面提到了3种消息交付语义：
 + 最多一次（ at most once ）处理语义：消息可能丢失，但不会被重复处理 。
 + 最少一次（ at least once ）处理语义：消息不会丢失，但可能被处理多次。

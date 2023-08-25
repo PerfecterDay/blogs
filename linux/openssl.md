@@ -2,18 +2,36 @@
 {docsify-updated}
 
 - [OpenSSL](#openssl)
-	- [生成公私钥对](#生成公私钥对)
-	- [Creating Certiﬁcate Signing Requests](#creating-certiﬁcate-signing-requests)
-	- [生成自签名证书](#生成自签名证书)
-		- [制作多域名的自签名证书](#制作多域名的自签名证书)
-		- [查看自签名证书](#查看自签名证书)
+	- [命令](#命令)
+	- [证书制作](#证书制作)
+		- [生成公私钥对](#生成公私钥对)
+		- [Creating Certiﬁcate Signing Requests](#creating-certiﬁcate-signing-requests)
+		- [生成自签名证书](#生成自签名证书)
+			- [制作多域名的自签名证书](#制作多域名的自签名证书)
+			- [查看自签名证书](#查看自签名证书)
 	- [生成自己的CA](#生成自己的ca)
 	- [测试TLS](#测试tls)
 		- [证书验证](#证书验证)
 		- [域名验证](#域名验证)
 
+Mozilla的证书：
+> https://hg.mozilla.org/releases/mozilla-beta/file/tip/security/nss/lib/ckfw/builtins/certdata.txt
 
-### 生成公私钥对
+Curl的证书：
+> https://curl.se/docs/caextract.html
+
+### 命令
+`openssl version -a` : 查看版本信息，`OPENSSLDIR` 中存放了openssl配置的路径
+`openssl help` : 
+
+
+### 证书制作
+大多数用户转向OpenSSL，因为他们希望配置和运行支持SSL的Web服务器。该过程包括三个步骤：
+1. 生成私钥
+2. 创建证书签名请求（CSR）并将其发送到CA
+3. 在Web服务器中安装CA提供的证书
+
+#### 生成公私钥对
 生成 RSA 公私密钥对，默认是 PKCS#8 格式：
 ```
 openssl genpkey -out fd.key \
@@ -41,7 +59,7 @@ openssl genpkey -out fd.key \
 -aes-128-cbc
 ```
 
-### Creating Certiﬁcate Signing Requests
+#### Creating Certiﬁcate Signing Requests
 1. 以交互的方式生成CSR
 	```
 	openssl req -new -key fd.key -out fd.csr
@@ -74,7 +92,7 @@ openssl genpkey -out fd.key \
    ```
 	然后执行 `openssl req -new -config fd.cnf -key fd.key -out fd.csr`
 
-### 生成自签名证书
+#### 生成自签名证书
 如果已经生成了CSR：
 ```
 openssl x509 -req -days 365 -in fd.csr -signkey fd.key -out fd.crt
@@ -91,7 +109,7 @@ openssl req -new -x509 -days 365 -key fd.key -out fd.crt \
  -subj "/C=GB/L=London/O=Feisty Duck Ltd/CN=www.feistyduck.com"
 ```
 
-#### 制作多域名的自签名证书
+##### 制作多域名的自签名证书
 将域名信息填写到一个 txt 文件 fd.ext 中，内容如下:
 ```
 subjectAltName = DNS:*.feistyduck.com, DNS:feistyduck.com
@@ -104,7 +122,7 @@ openssl x509 -req -days 365 \
 -extfile fd.ext
 ```
 
-#### 查看自签名证书
+##### 查看自签名证书
 ```
 openssl x509 -text -in fd.crt -noout
 ```

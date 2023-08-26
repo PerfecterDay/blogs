@@ -5,8 +5,8 @@
 	- [数据库表的新建修改与删除](#数据库表的新建修改与删除)
 		- [创建数据库表-mysql](#创建数据库表-mysql)
 		- [修改表结构](#修改表结构)
-		- [删除表：](#删除表)
-		- [清空表：](#清空表)
+		- [删除表](#删除表)
+		- [清空表](#清空表)
 	- [SLQ 查询](#slq-查询)
 		- [order by](#order-by)
 		- [limit](#limit)
@@ -101,21 +101,22 @@ ALTER TABLE group_msg ADD expire_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAM
 ```
 alter table table-name modify column-name datatype [default expr] [first|after column-name2]
 
+ALTER TABLE table_name RENAME COLUMN old_name TO new_name;
 ALTER TABLE group_msg MODIFY effect_start_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP comment '开始生效时间' after state;
 ALTER TABLE group_msg MODIFY expire_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP comment '失效时间' after effect_start_time;
 ```
 first或 after column 代表将目标列修改到指定位置（column-name2 之前或之后）。如果数据表里已经有数据，修改列很容易失败，因为很可能修改的列定义与原有的数据记录有冲突。如果修改数据列的默认值，则只会对新增的数据有影响，已有的数据不会有任何影响。
 
-3. 删除列：
+3. 删除列
 ```
 alter table table-name drop column-name
 ```
 删除列总是可以成功的，且会从每行中删除该列的数据，并释放该列所占的空间。所以删除列一般时间比较长，因为还要回收空间。
 
-### 删除表：
+### 删除表
     drop table table-name
 
-### 清空表：
+### 清空表
     truncate table-name
 
 ## SLQ 查询

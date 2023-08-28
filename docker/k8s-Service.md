@@ -1,6 +1,12 @@
 ## k8s-Service
 {docsify-updated}
 
+- [k8s-Service](#k8s-service)
+	- [Service 创建](#service-创建)
+	- [Service IP 原理](#service-ip-原理)
+	- [外网如何访问 Service](#外网如何访问-service)
+
+
 我们不应该期望 Kubernetes Pod 是健壮的，而是要假设 Pod 中的容器很可能因为各种原因发生故障而死掉。Deployment 等 controller 会通过动态创建和销毁 Pod 来保证应用整体的健壮性。换句话说，Pod 是脆弱的，但应用是健壮的。  
 每个 Pod 都有自己的 IP 地址。当 controller 用新 Pod 替代发生故障的 Pod 时，新 Pod 会分配到新的 IP 地址。这样就产生了一个问题：  
 如果一组 Pod 对外提供服务（比如 HTTP），它们的 IP 很有可能发生变化，那么客户端如何找到并访问这个服务呢？

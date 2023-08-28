@@ -1,5 +1,15 @@
-# java基础-JVM数据区域及参数设置
+## java基础-JVM数据区域及参数设置
 {docsify-updated}
+
+- [java基础-JVM数据区域及参数设置](#java基础-jvm数据区域及参数设置)
+	- [PC程序计数器](#pc程序计数器)
+	- [JVM 栈](#jvm-栈)
+	- [本地方法栈](#本地方法栈)
+	- [Java 堆](#java-堆)
+	- [方法区(元数据区)](#方法区元数据区)
+		- [运行时常量池](#运行时常量池)
+	- [直接内存](#直接内存)
+
 
 <center>
 <img src="pics/jvm运行时数据区.png" alt="JVM运行时数据区" width="50%" height="50%" >

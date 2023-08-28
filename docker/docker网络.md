@@ -1,4 +1,16 @@
 # docker 网络
+{docsify-updated}
+
+- [docker 网络](#docker-网络)
+	- [单宿主机的网络](#单宿主机的网络)
+		- [none 网络](#none-网络)
+		- [host 网络](#host-网络)
+		- [bridge 网络](#bridge-网络)
+		- [自定义网络](#自定义网络)
+	- [容器间通信](#容器间通信)
+	- [容器与外部通信](#容器与外部通信)
+
+
 
 Docker 网络从覆盖范围可以分为单个 host 上的网络和跨宿主机的网络。
 
@@ -35,7 +47,7 @@ Docker提供三种自定义网络的驱动：bridge、overlay 和 macvlan 。ove
 默认的 docker0 网桥与 mynet2 是隔离的，互相不能通信，要想两个网桥中的容器能够通信，可以通过 `docker network connect mynet2 containerId` 命令将容器连结到另一个网桥中即可:
 <center><img src="pics/docker-bridge3.jpg" width="40%"></center>
 
-### 容器间通信
+## 容器间通信
 容器之间可以通过 IP、Docker DNS Server 或 joined 容器三种方式通信。
 
 1. IP通信  
@@ -48,7 +60,7 @@ Docker提供三种自定义网络的驱动：bridge、overlay 和 macvlan 。ove
 	Joined 容器非常特别，它能是两个或多个容器共享同一个网络栈、网卡和配置信息，使容器之间可以通过 127.0.0.1 直接通信。只要在创建容器时指定`--network=container:<joined_container_name>`。  
 	Joined 适用于容器之间希望通过 loopback 高效快速地通信或者希望监控其它容器的网络流量时。
 
-### 容器与外部通信
+## 容器与外部通信
 1. 容器内访问外部网络-NAT  
 	<center><img src="pics/docker-communication.png" width="60%" style="inline"></center>
 

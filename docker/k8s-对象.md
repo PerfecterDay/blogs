@@ -4,7 +4,7 @@
 
 - [K8S-对象](#k8s-对象)
 	- [理解 Kubernetes 对象](#理解-kubernetes-对象)
-		- [对象规约（Spec）与状态（Status）](#对象规约spec与状态status)
+		- [对象规约-Spec与状态-Status](#对象规约-spec与状态-status)
 		- [对象描述](#对象描述)
 			- [必需字段](#必需字段)
 	- [对象名称和 ID](#对象名称和-id)
@@ -24,7 +24,7 @@
 
 Kubernetes 对象是一种“意向表达（Record of Intent）”。一旦创建该对象， Kubernetes 系统将不断工作以确保该对象存在。通过创建对象，你本质上是在告知 Kubernetes 系统，你想要的集群工作负载状态看起来应是什么样子的， 这就是 Kubernetes 集群所谓的期望状态（Desired State）。
 
-#### 对象规约（Spec）与状态（Status） 
+#### 对象规约-Spec与状态-Status 
 几乎每个 Kubernetes 对象包含两个嵌套的对象字段，它们负责管理对象的配置： **对象 spec（规约）** 和 **对象 status（状态）**。 对于具有 spec 的对象，你必须在创建对象时设置其内容，描述你希望对象所具有的特征： 期望状态（Desired State）。
 
 status 描述了对象的当前状态（Current State），它是由 Kubernetes 系统和组件设置并更新的。在任何时刻，Kubernetes 控制平面 都一直在积极地管理着对象的实际状态，以使之达成期望状态。

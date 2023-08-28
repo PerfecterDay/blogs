@@ -10,9 +10,7 @@
 	- [SSL证书主流的格式](#ssl证书主流的格式)
 		- [SSL证书格式转换方法](#ssl证书格式转换方法)
 	- [keytool 工具](#keytool-工具)
-	- [Openssl 工具](#openssl-工具)
 	- [Https 双向认证](#https-双向认证)
-
 
 ### 安全管理器与访问权限
 一旦某个类被加载到虚拟机中，并由检验器检查过之后， Java 平台的第二种安全机制就会启动，这个机制就是**安全管理器**。安全管理器是一个负责控制具体操作是否允许执行的类。安全管理器负责检查的操作包括以下内容：
@@ -104,6 +102,8 @@ Java的安全基础架构主要有以下特点：
 
 	算法名称是一个字符串，比如“ AES ”或者“ DES/CBC/PKCS5Padding ” 。DES ，即数据加密标准，是一个密钥长度为 56 位的古老的分组密码 。 DES 加密算法在现在看来已经是过时了，因为可以用穷举法将它破译（[参见该网页中的例子](http://w2.eff.org/Privacy/Crypto/Crypto_misc/DESCracker) ） 。 更好的选择是采用它的后续版本，即高级加密标准AES。
 
+	AES目前支持三种模式：AES-128 (128 bits), AES-192 (192 bits), and AES-256 (256 bits)。
+
 	Java种的 `Cipher` 类是所有加密算法的超类，通过调用 `getInstance(String algorithm)` 或者 `getInstance(String algorithm,String provider)` 来获得一个加密算法对象。一个`Cipher`可以有多种使用方式，比如加密、解密等，Java中定义了4种模式：  
 	1. Cipher.ENCRYPT_MODE
 	2. Cipher.DECRYPT_MODE
@@ -115,12 +115,16 @@ Java的安全基础架构主要有以下特点：
 	生成密钥：
 
 	1. 为加密算法获取 `KeyGenerator`，通过`KeyGenerator.getInstance("AES")`来获得。
-	2. 用随机源来初始化 `KeyGenerator`。
+	2. 用随机源或指定长度来初始化 `KeyGenerator`。
 	3. 调用 `KeyGenerator` 的 `generateKey()` 生成密钥
 	```
+	KeyGenerator keyGenerator = KeyGenerator.getInstance(cipher);
+	keyGenerator.init(keySize);
+	Key key = keyGenerator.generateKey();
+
 	Cipher cipher = Cipher.getInstance("AES");
-	Key key = new SecretKeySpec("test".getBytes(StandardCharsets.UTF_8), "AES");
-	cipher.init(Cipher.ENCRYPT_MODE,key);
+	cipher.init(Cipher.ENCRYPT_MODE, key);
+	return new String(Base64.getEncoder().encode(cipher.doFinal(val.getBytes())));
 	```
 
 4. 非对称加密  
@@ -187,165 +191,6 @@ JKS是是基于二进制编码的证书格式，扩展名是jks。JKS证书通�
 3. 打印证书内容： `keytool -printcert -file alice.cer`
 4. `keytool -list -keystore jre/lib/security/cacerts`
 5. 导入证书到密钥库： `keytool -importcert -keystore bob.certs -alias alice -file alice.cer` 绝对不妥将你并不完全信任的证书导入到密钥库中 。 一旦证书添加到密钥库中，使用密钥库的任何程序都会认为这些证书可以用来对签名进行校验。
-
-### Openssl 工具
-Here we’ll implement all the steps of that protocol, using openssl terminal commands. In
-practice you’re more likely to use openssl in the form of an API in another language- but
-learning the terminal commands is still valuable as a transferable skill. Each command is
-displayed with some explanations of its flags below.
-
-If you want to follow along, you can make 3 folders, 1 for Alice, Bob and the CA respectively.
-You need to repeat steps 1 and 2 for Bob and CA so they can have their own pair of keys.
-And you need to generate a self-signed certificate for the CA (shown below).
-
-1. 为 Alice 生成一个私钥：
-	```
-	openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:2048 -pkeyopt rsa_keygen_pubexp:3 -out privkey-A.pem
-	```
-	+ genpkey ➝ generate a private key
-	+ -algorithm RSA ➝ use the RSA algorithm (can also take “EC” for elliptic-curve)
-	+ -pkeyopt opt:value ➝ set opt to value (see items below)
-	+ rsa_keygen_bits:2048 ➝ sets the size of the key to 2048 bits (the default is 1024)
-	+ rsa_keygen_pubexp:3 ➝ sets the public exponent e to 3 (default is 65, 537)
-	+ -out privkey-A.pem ➝ outputs to the file privkey-A.pem
-
-2. 基于生成的私钥，为 Alice 生成一个公钥：
-	```
-	openssl pkey -in privkey-A.pem -pubout -out pubkey-A.pem
-	```
-	+ pkey ➝ processes public or private keys
-	+ -in privkey-A.pem ➝ read the key from filename privkey-A.pem
-	+ -pubout ➝ output a public key (by default, a private key is output)
-
-3. 查看生成的密钥信息
-	```
-	openssl pkey -in privkey-A.pem -text -noout
-	openssl pkey -pubin -in pubkey-A.pem -text -noout
-	```
-	+ -noout ➝ suppresses the command from printing out the base64 encoding as well.
-
-4. Alice生成一个证书签名请求（CSR-certificate signing request）
-	```
-	openssl req -new -key privkey-A.pem -out A-req.csr
-	```
-	+ req ➝ creates and processes signing requests
-	+ -new ➝ generates a new certificate request, will prompt Alice for some information
-	+ -key privkey-A.pem ➝ signs the request with Alice’s private key
-	The command will prompt Alice with these questions:
-	+ Country code [C]: {Alice fills in her country code}
-	+ Province/STate name [ST]: {Alice fills in her province name fully}
-	+ City/Location [L]: {The city Alice’s business is registered in, for example}
-	+ Organization Name [O]: {Alice’s business name, for example}
-	+ Organizational Unit Name [OU]: (Optional) {What part of the company is she?}
-	+ Common Name [CN]: the hostname+domain, i.e. “www.alice.com”
-	+ A challenge password []: {this can be used as a secret nonce between Alice and CA}
-
-5. 为CA机构生成一个自签名的CA证书
-	```
-	openssl req -x509 -new -nodes -key rootkey.pem -sha256 -days 1024 -out root.crt
-	```
-
-6. 使用CA证书为 Alice签名 CSR
-	```
-	openssl x509 -req -in A-req.csr -CA root.crt -CAkey rootkey.pem -CAcreateserial -out A.crt -days 500 -sha256
-	```
-	+ x509 ➝ an x509 certificate utility (displays, converts, edits and signs x509 certificates)
-	+ -req ➝ a certificate request is taken as input (default is a certificate)
-	+ -CA root.crt ➝ specifies the CA certificate to be used as the issuer of Alice’s certificate
-	+ -CAkey rootkey.pem ➝ specifies the private key used in signing (rootkey.pem)
-	+ -CAcreateserial ➝ creates a serial number file which contains a counter for how many certificates were signed by this CA
-	+ -days 500 ➝ sets Alice’s certificate to expire in 500 days
-	+ -sha256 ➝ specifies the hashing algorithm to be used for the certificate’s signature
-
-7. 查看Alice签名后的证书
-	```
-	openssl x509 -in Alice.crt -text -noout
-	```
-
-8. Alice验证bob 的公钥
-	```
-	openssl verify -CAfile root.crt Bob.crt
-	```
-	+ verify ➝ a utility that verifies certificate chains
-	+ -CAfile root.crt ➝ specified the trusted certificate (root.crt)
-	+ Bob.crt ➝ the certificate to verify
-	+ If you get an OK, you know the certificate can be trusted
-
-9. Alice 提取出 Bob 的公钥
-	```
-	openssl x509 -pubkey -in Bob.crt -noout > pubkey-B.pem
-	```
-
-10. Alice 使用 Bob 的公钥加密文件
-	```
-	openssl pkeyutl -encrypt -in largefile.txt -pubin -inkey pubkey-B.pem -out ciphertext.bin
-	```
-	+ pkeyutl ➝ utility to perform public key operations
-	+ -encrypt ➝ encrypt the input data
-	+ error! (recall: RSA is not meant for encrypting arbitrary large files- Alice needs to use symmetric key encryption for that)
-
-11. ALice 生成一个对称密钥
-	```
-	openssl rand -base64 32 -out symkey.pem
-	```
-	+ rand ➝ generates pseudo-random bytes (seeded by default by $HOME/.rnd)
-	+ -base64 32 ➝ outputs 32 random bytes and encodes it in base64
-
-12. Alice 使用Bob的公钥加密生成的对称密钥
-	```
-	openssl pkeyutl -encrypt -in symkey.pem -pubin -inkey pubkey-B.pem -out symkey.enc
-	```
-
-14. Alice 使用私钥签名加密后的对称密钥,并且使用sha1 哈希签名后的文件
-	```
-	openssl dgst -sha1 -sign privkey-A.pem -out signature.bin symkey.pem
-	```
-	+ dgst -sha1 ➝ hash the input file using the sha1 algorithm
-	+ -sign privkey-A.pem ➝ sign the hash with the specified private key
-	+ symkey.pem ➝ the input file to be hashed
-
-15. Bob 使用他的私钥解密加密后的文件
-	```
-	openssl pkeyutl -decrypt -in symkey.enc -inkey privkey-B.pem -out symkey.pem
-	```
-	+ -decrypt ➝ decrypt the input file
-
-16. Bob重复上面的步骤获取Alice 的公钥
-
-17. Bob 验证这条消息是来自 Alice
-	```
-	openssl dgst -sha1 -verify pubkey-A.pem -signature signature.bin symkey.pem
-	```
-	+ -verify pubkey-A.pem ➝ verify the signature using the specified filename
-	+ -signature signature.bin ➝ specifies the signature to be verified
-	+ symkey.pem ➝ the file to be hashed
-
-	```
-	openssl enc -aes-256-cbc -pass file:symkey.pem -p -md sha256 -in largefile.txt -out ciphertext.bin
-	```
-	+ enc -aes-256-cbc ➝ encrypt a file using the aes-256-cbc symmetric key algorithm
-	+ -pass file:symkey.pem ➝ specified the file to get the symmetric key from
-	+ -p ➝ prints the key, salt, initialization vector to the screen
-	+ -md sha256 ➝ uses sha256 as part of the key derivation function (a function that derives one or more secondary secret keys from a primary secret key)
-
-18. Bob使用对称密钥解密加密的文件
-	```
-	openssl enc -aes-256-cbc -d -pass file:symkey.pem -p -md sha256 -in ciphertext.bin -out largefile.txt
-	```
-	+ -d ➝ decryption flag
-
-
-其它openssl 命令：
-```
-导出一个网站的公钥：
-openssl s_client -connect 10.18.172.216:44300 -showcerts < /dev/null | openssl x509 -outform pem > cms_cert.pem
-
-查看公钥的信息：
-openssl x509 -in cms_cert.pem -noout -text
-
-用CA证书验证某个证书的合法性：
-sudo openssl verify -CAfile ~/Desktop/ISRGRootX1.pem ~/Desktop/R3.cer
-```
 
 ### Https 双向认证
 > https://help.aliyun.com/document_detail/160093.html

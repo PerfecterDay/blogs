@@ -1,4 +1,9 @@
 ## k8s Helm包管理器
+{docsify-updated}
+
+- [k8s Helm包管理器](#k8s-helm包管理器)
+	- [创建一个Helm Chart](#创建一个helm-chart)
+	- [Helm 常见操作](#helm-常见操作)
 
 简单地说，Helm是Kubernetes的一个软件包管理器。Helm相当于K8s的 `yum` 或 `apt` 。Helm部署 `Chart` ，你可以把它看成是一个打包的应用程序。它是你所有版本的、预配置的应用资源的集合，可以作为一个单元部署。然后你可以用不同的配置来部署另一个版本的 `Chart` 。
 
@@ -29,7 +34,7 @@ your-chart-name/
   templates/          # 模板目录， 当和values 结合时，可生成有效的Kubernetes manifest文件
   templates/NOTES.txt # 可选: 包含简要使用说明的纯文本文件
 ```
-+ Chart.yaml：这是把所有关于你要打包的图表的信息放在这里。所以，比如说，你的版本号，等等。这就是你要放所有这些细节的地方。
++ Chart.yaml：这是把所有关于你要打包的chart的信息放在这里。所以，比如说，你的版本号，等等。这就是你要放所有这些细节的地方。
 + Values.yaml：这是你定义所有你想注入模板的值的地方。如果你熟悉terraform，可以把它看作是helms variable.tf文件。
 + Charts/：这是你存储你的图表所依赖的其他图表的地方。你可能会调用另一个图表，而你的图表需要正常运行。
 + templates/：这个文件夹用于存放您要部署的图表的实际清单。例如，你可能要部署一个nginx，需要一个服务、configmap和secrets。你将把你的deployment.yaml、service.yaml、config.yaml和secrets.yaml都放在模板目录下。它们都将从上面的values.yaml中获得其值。

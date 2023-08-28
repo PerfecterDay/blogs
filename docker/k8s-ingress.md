@@ -1,6 +1,9 @@
 ## Ingress
 {docsify-updated}
 
+- [Ingress](#ingress)
+	- [Ingress 和 Service 的区别](#ingress-和-service-的区别)
+
 
 Ingress 公开从集群外部到集群内服务的 HTTP 和 HTTPS 路由。 流量路由由 Ingress 资源上定义的规则控制。
 
@@ -27,4 +30,4 @@ spec:
           servicePort: 80
 ```
 
-这样的话，对外部
+这样的话，对外部调用方来说，只要调用暴露的这个ingress端点即可。由 ingress 去做路由分发到不通服务。

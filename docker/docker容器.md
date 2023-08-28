@@ -5,13 +5,11 @@
 	- [容器操作的命令](#容器操作的命令)
 	- [实现容器的底层技术](#实现容器的底层技术)
 
-
 ### 容器操作的命令
 
 <center>
-<img src="/pics/container-state.jpg">
+	<img src="/pics/container-state.jpg">
 </center>
-
 
 1. 创建容器  
 	1. 创建并启动容器执行 command 命令 `docker run [options] image_name [command]` ，实际上是 `docker create` 和 `docker start` 的组合，容器是否**长久运行和 command 命令有关,只要命令不结束，容器也不会退出（exit 状态）**，相关选项:

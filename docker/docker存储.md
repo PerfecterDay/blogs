@@ -1,5 +1,10 @@
-# docker 存储
+## docker 存储
 {docsify-updated}
+
+- [docker 存储](#docker-存储)
+	- [Storage driver](#storage-driver)
+	- [Data Volume](#data-volume)
+	- [数据共享](#数据共享)
 
 Docker 为容器提供了两种存放数据的策略：
 1. 由 storage driver 管理的镜像层和容器层
@@ -29,7 +34,7 @@ Docker 提供了两种类型的 volume：
 两种 volume 的异同：
 <center><img src="pics/docker-volume.png" width="30%" style="inline"></center>
 
-可以使用 `docker inspect <container>` 或者 `docker volume` 来查看 volume 信息，但是 `ocker volume`只能看到 docker managed volume。
+可以使用 `docker inspect <container>` 或者 `docker volume` 来查看 volume 信息，但是 `docker volume`只能看到 docker managed volume。
 
 ### 数据共享
 1. 容器与宿主机之间分享数据

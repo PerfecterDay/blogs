@@ -1,3 +1,5 @@
 * [Home](/)
 * [..](../_sidebar.md)
 * [Jenkins简介](/devops/jenkins.md)
+* [Pipeline语法](/devops/pipeline语法.md)
+* [Promethues](/devops/promethues.md)

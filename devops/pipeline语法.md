@@ -1,3 +1,12 @@
+## Pipeline 语法
+{docsify-updated}
+
+- [Pipeline 语法](#pipeline-语法)
+	- [字符串插值](#字符串插值)
+	- [环境变量](#环境变量)
+	- [实例](#实例)
+
+
 所有有效的声明式流水线必须包含在一个 pipeline 块中, 比如:
 ```
 pipeline {

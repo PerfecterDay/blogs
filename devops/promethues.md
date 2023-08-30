@@ -4,6 +4,7 @@
 > https://www.prometheus.wang/promql/prometheus-query-language.html
 
 - [Promethues](#promethues)
+	- [时序数据概述](#时序数据概述)
 	- [Promethues监控指标](#promethues监控指标)
 		- [指标(Metric)](#指标metric)
 			- [Metric类型](#metric类型)
@@ -14,6 +15,21 @@
 		- [使用聚合操作](#使用聚合操作)
 			- [聚合操作](#聚合操作)
 		- [内置函数](#内置函数)
+
+### 时序数据概述
+Prometheus读写的是时序数据，与一般的数据对象相比，时序数据有其特殊性，tsdb对此进行了大量针对性的设计与优化。因此理解时序数据是理解Prometheus存储模型的第一步。通常，它由如下所示的标识和采样数据两部组成：
+
+`标识 -> {(t0, v0), (t1, v1), (t2, v2), (t3, v3)...}`
+
+标识用于区分各个不同的监控指标，在Prometheus中通常用指标名+一系列的label唯一地标识一个时间序列。如下为Prometheus抓取的一条时间序列，其中http_request_total为指标名，表示HTTP请求的总数，它有path和method两个label，用于表示各种请求的路径和方法。
+
+`http_request_total{path="/", method="GET"} -> {(t0, v1), (t1, v1)...}`
+
+事实上指标名最后也是作为一个特殊的label被存储的，它的key为__name__，如下所示。最终Prometheus存储在数据库中的时间序列标识就是一堆label。我们将这堆label称为series。
+
+`{__name__="http_request_total", path="/", method="GET"}`
+
+采样数据则由诸多的采样点（Prometheus中称为sample）构成，`t0, t1, t2...`表示样本采集的时间，`v0, v1, v2...`则表示指标在采集时刻的值。采样时间一般是单调递增的并且相邻sample的时间间隔往往相同，Prometheus中默认为15s。而且一般相邻sample的指标值v并不会相差太多。基于采样数据的上述特性，对它进行高效地压缩存储是完全可能的。Prometheus对于采样数据压缩算法的实现，参考了Facebook的时序数据库Gorilla中的做法，通过该算法，16字节的sample平均只需要1.37个字节的存储空间。
 
 ### Promethues监控指标
 Prometheus可以采集到当前主机所有监控指标的样本数据:
@@ -64,10 +80,10 @@ Prometheus定义了4中不同的指标类型(metric type)：
 PromQL是Prometheus内置的数据查询语言，其提供对时间序列数据丰富的查询，聚合以及逻辑运算能力的支持。并且被广泛应用在Prometheus的日常应用当中，包括对数据查询、可视化、告警处理当中。
 
 在 Prometheus 表达式的表达语言中，一个表达式或子表达式可以计算为以下四种类型之一：
-+ instant vector(瞬时/即时向量)：一组时间序列，每个时间序列包含一个样本，所有数据样本共享相同的时间戳。
-+ Range vector(范围向量)：一组时间序列，其中包含每个时间序列随时间变化的一系列数据点
-+ Scalar(标量)：一个简单的数字浮点值
-+ String(字符串)：一个简单的字符串值。目前未使用
++ `instant vector(瞬时/即时向量)`：一组时间序列，每个时间序列包含一个样本，所有数据样本共享相同的时间戳。
++ `Range vector(范围向量)`：一组时间序列，其中包含每个时间序列随时间变化的一系列数据点
++ `Scalar(标量)`：一个简单的数字浮点值
++ `String(字符串)`：一个简单的字符串值。目前未使用
 
 #### 瞬时查询
 PromQL支持使用=和!=两种完全匹配模式：
@@ -134,7 +150,7 @@ sum(sum(irate(node_cpu{mode!='idle'}[5m]))  / sum(irate(node_cpu[5m]))) by (inst
 + quantile (分布统计)
 
 #### 内置函数
-`increase(v range-vector)` 函数是PromQL中提供的众多内置函数之一。其中参数v是一个区间向量，increase函数获取区间向量中的第一个后最后一个样本并返回其增长量：
+`increase(v range-vector)` 函数是PromQL中提供的众多内置函数之一。其中参数v是一个区间向量，increase函数获取区间向量中的第一个和最后一个样本并返回其增长量：
 ```
 increase(node_cpu[2m]) / 120
 ```

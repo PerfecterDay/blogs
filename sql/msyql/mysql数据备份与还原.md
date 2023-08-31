@@ -1,5 +1,16 @@
-# mysql数据备份与还原
+## mysql数据备份与还原
 {docsify-updated}
+
+- [mysql数据备份与还原](#mysql数据备份与还原)
+	- [备份概述](#备份概述)
+	- [冷备](#冷备)
+	- [逻辑备份](#逻辑备份)
+		- [mysqldump 备份](#mysqldump-备份)
+		- [mysqldump 恢复](#mysqldump-恢复)
+		- [SELECT...INTO OUTFILE 备份](#selectinto-outfile-备份)
+		- [SELECT...INTO OUTFILE 恢复](#selectinto-outfile-恢复)
+		- [二进制日志备份与恢复](#二进制日志备份与恢复)
+		- [Mysql 数据恢复](#mysql-数据恢复)
 
 ### 备份概述
 根据备份方法不同，可以分为三类：
@@ -32,24 +43,30 @@
 
 #### mysqldump 备份
 `mysqldump [arguments] > file_name`，不能导出视图。
-重要参数：
 
-0. --all-databases: 备份所有数据库。
-1. --databases db_name1 db_name1 db_name1: 备份指定数据库
-2. --single-transaction : 在备份开始时，先执行 `start transaction` 语句开启事务，保证数据一致性，但是不能执行DDL语句，不能隔离DDL操作。且只对 Innodb 引擎有效
-3. --lock-tables(-l): 备份时，依次锁住数据库中每个架构下的所有表来保证单表的一致性，不能保证整个数据库的一致性。一般用于 MyIsam 引擎，且与 --single-transaction 互斥，不能同时使用。这个选项默认是打开的，也就是说备份时默认是锁表的，如果是热备，那么线上只能执行读语句，所有写事务都会被阻塞。
-4. --lock-all-tables(-x): 备份时，锁住所有架构下的所有表， 避免 --lock-tables 不能锁住所有表的问题。
-5. --add-drop-tables:在 create database 前先运行 drop database。此参数要和 --al-databases 或者 --databases 选项一起使用。
-6. --master-data[=value]： 通过改参数产生的备份文件主要用来建立一个 replication。value为1时，文件中记录 change master 语句；为2时，change master 语句被写出 sql注释。
-7. --events(-E): 备份事件调度器
-8. --routines(-R): 备份存储过程和函数。
-9. --triggers：备份触发器
-10. --hex-blob：将 binary、varbinary、blob、bit类型的数据备份为十六进制的格式，默认是不可读的乱码。
-11. --where='where_condition'(-w 'where_condition')：导出给定条件的数据。
+```
+mysqldump --databases nrng -uroot -p > nrng.sql
+rsync ./nrng.sql 10.4.153.130:/root/mysql
+mysqldump -uroot -p nrng < nrng.sql
+```
+
+重要参数：
+0. `--all-databases`: 备份所有数据库。
+1. `--databases db_name1 db_name1 db_name1`: 备份指定数据库
+2. `--single-transaction` : 在备份开始时，先执行 `start transaction` 语句开启事务，保证数据一致性，但是不能执行DDL语句，不能隔离DDL操作。且只对 Innodb 引擎有效
+3. `--lock-tables(-l)`: 备份时，依次锁住数据库中每个架构下的所有表来保证单表的一致性，不能保证整个数据库的一致性。一般用于 MyIsam 引擎，且与 `--single-transaction` 互斥，不能同时使用。这个选项默认是打开的，也就是说备份时默认是锁表的，如果是热备，那么线上只能执行读语句，所有写事务都会被阻塞。
+4. `--lock-all-tables(-x)`: 备份时，锁住所有架构下的所有表， 避免 --lock-tables 不能锁住所有表的问题。
+5. `--add-drop-tables`:在 create database 前先运行 drop database。此参数要和 --al-databases 或者 --databases 选项一起使用。
+6. `--master-data[=value]`： 通过改参数产生的备份文件主要用来建立一个 replication。value为1时，文件中记录 change master 语句；为2时，change master 语句被写出 sql注释。
+7. `--events(-E)`: 备份事件调度器
+8. `--routines(-R)`: 备份存储过程和函数。
+9. `--triggers`：备份触发器
+10. `--hex-blob`：将 binary、varbinary、blob、bit类型的数据备份为十六进制的格式，默认是不可读的乱码。
+11. `--where='where_condition'(-w 'where_condition')`：导出给定条件的数据。
 
 #### mysqldump 恢复
-1. mysql -uroot -p &lt; file_name
-2. source file_name
+1. `mysql -uroot -p < file_name`
+2. `source file_name`
 
 #### SELECT...INTO OUTFILE 备份
 ```
@@ -89,8 +106,8 @@ else
 fi
 ```
 
-主机的mysql数据文件：/Users/gtja/www/mysqldata/zentao:var/lib/mysql
-mysql日志： /var/log/mysql/error.log
++ 主机的mysql数据文件：/Users/gtja/www/mysqldata/zentao:var/lib/mysql
++ mysql日志： /var/log/mysql/error.log
 
 配置文件中(/etc/mysql/mariadb.conf.d/50-server.cnf)增加下述配置：
 ```
@@ -116,5 +133,7 @@ mysql -u user -p < single_dbtable_dump.sql
 mysql -u root -p < zt_bug_dump.sql
 ```
 将配置还原：
+```
 [mysqld]
 #innodb_force_recovery=1
+```

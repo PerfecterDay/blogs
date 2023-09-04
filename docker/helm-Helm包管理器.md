@@ -2,9 +2,9 @@
 {docsify-updated}
 
 - [Helm包管理器](#helm包管理器)
-  - [Helm的目标](#helm的目标)
-  - [Helm 架构组件](#helm-架构组件)
-  - [Helm 常见操作](#helm-常见操作)
+	- [Helm的目标](#helm的目标)
+	- [Helm 架构组件](#helm-架构组件)
+	- [Helm 安装](#helm-安装)
 
 简单地说，Helm是Kubernetes的一个软件包管理器。Helm相当于K8s的 `yum` 或 `apt` 。Helm部署 `Chart` ，你可以把它看成是一个打包的应用程序。它是你所有版本的、预配置的应用资源的集合，可以作为一个单元部署。然后你可以用不同的配置来部署另一个版本的 `Chart` 。
 
@@ -43,5 +43,7 @@ Helm是一个可执行文件，执行时分成两个不同的部分：
 
 Helm客户端和库是使用Go编程语言编写的，这个库使用Kubernetes客户端库与Kubernetes通信。现在，这个库使用REST+JSON。它将信息存储在Kubernetes的密钥中。 不需要自己的数据库。
 
-
-### Helm 常见操作
+### Helm 安装
+1. curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+2. chmod 700 get_helm.sh
+3. ./get_helm.sh

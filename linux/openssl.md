@@ -17,6 +17,7 @@
 	- [测试TLS](#测试tls)
 		- [证书验证](#证书验证)
 		- [域名验证](#域名验证)
+	- [常见的证书格式](#常见的证书格式)
 	- [实战](#实战)
 
 + [Mozilla的证书](https://hg.mozilla.org/releases/mozilla-beta/file/tip/security/nss/lib/ckfw/builtins/certdata.txt)
@@ -287,6 +288,56 @@ CRL： Certiﬁcate Revocation List (CRL)
 OSCP: Online Certiﬁcate Status Protocol 
 AIA: Authority Information Access
 
+### 常见的证书格式
+1. 二进制（DER）证书
+
+	包含原始形式的X.509证书，使用DER ASN.1编码。
+
+2. ASCII（PEM）证书
+
+	包含一个base64编码的DER证书，使用`-----BEGIN CERTIFICATE`开始，`-----ENDCERTIFICATE-----`结束。通常每个文件只有一个证书，尽管有些程序允许多个证书。例如，较旧的Apache web服务器版本需要服务器的证书单独在一个文件中，将所有中间证书一起放在另一个文件中。
+
+3. 旧版OpenSSL密钥格式
+	
+	包含原始形式的私钥，使用DER ASN.1编码。从历史上看，OpenSSL使用了一种基于`PKCS#1`的格式。现在，如果你使用正确的命令（即genpkey），OpenSSL默认为 `PKCS#8`。
+
+4. ASCII（PEM）密钥
+
+	包含一个base64编码的DER密钥，有时还包含其他元数据（例如用于密码保护的算法）。页眉和页脚中的文本根据底层密钥格式不同会显示不同。  
+	PKCS #1 标准主要用于 RSA密钥，其RSA公钥和RSA私钥PEM格式：
+	```
+	// PKCS#1公钥格式
+	-----BEGIN RSA PUBLIC KEY-----
+	BASE64 DATA...
+	-----END RSA PUBLIC KEY-----
+	// PKCS#1私钥格式
+	-----BEGIN RSA PRIVATE KEY-----
+	BASE64 DATA...
+	-----END RSA PRIVATE KEY-----
+	```
+	PKCS#8 标准定义了一个密钥格式的通用方案，其公钥和私钥PEM格式：
+	```
+	// PKCS#8公钥格式
+	-----BEGIN PUBLIC KEY-----
+	BASE64 DATA...
+	-----END PUBLIC KEY-----
+	// PKCS#8私钥格式
+	-----BEGIN PRIVATE KEY-----
+	BASE64 DATA...
+	-----END PRIVATE KEY-----
+	```
+
+5. PKCS#7证书
+
+	一种为传输签名或加密数据而设计的复杂格式，定义为RFC 2315。它通常以 `.p7b` 和 `.p7c` 扩展名一起出现，并且根据需要可以包含整个证书链。Java的keytool实用程序支持这种格式。
+
+6. PKCS#8密钥
+
+	新的私钥默认存储格式。`PKCS#8`在RFC 5208定义。无论出于何种原因，如果您需要从`PKCS#8`转换为传统格式，使用`pkcs8`命令。
+
+7. PKCS#12（PFX）密钥和证书
+
+	一种复杂的格式，可以存储和保护服务器密钥以及整个证书链，它通常与`.p12`和`.pfx`扩展名一起使用。这种格式通常用于Microsoft产品，但也用于客户端证书。如今，PFX 被用作`PKCS#12`的同义词。
 
 ### 实战
 Here we’ll implement all the steps of that protocol, using openssl terminal commands. In

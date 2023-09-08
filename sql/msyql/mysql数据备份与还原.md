@@ -66,7 +66,7 @@ mysqldump -uroot -p nrng < nrng.sql
 
 #### mysqldump 恢复
 1. `mysql -uroot -p < file_name`
-2. `source file_name`
+2. 登录到mysql后，执行：`source file_name`
 
 #### SELECT...INTO OUTFILE 备份
 ```

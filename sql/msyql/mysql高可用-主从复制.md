@@ -1,6 +1,10 @@
 # mysql高可用-主从复制
 {docsify-updated}
 
+- [mysql高可用-主从复制](#mysql高可用-主从复制)
+    - [复制原理](#复制原理)
+    - [一般步骤](#一般步骤)
+    - [Docker主从复制实战](#docker主从复制实战)
 
 ### 复制原理
 复制是 mysql 数据库提供的一种高可用高性能解决方案，分为3个步骤：
@@ -11,7 +15,7 @@
 <center><img src="pics/mysql-replacation.jpg" width="60%"></center>
 
 ### 一般步骤
-0. 必须在主从服务器上同时创建好需要同步的数据库
+0. **必须在主从服务器上同时创建好需要同步的数据库及表**，切记
 1. 首先在 master 主机服务器上新建用来同步复制 binlog 的账户
    ```
    create user repl@'%' identified by 'replGjgj0831!';

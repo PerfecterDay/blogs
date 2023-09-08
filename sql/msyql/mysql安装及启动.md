@@ -2,9 +2,9 @@
 {docsify-updated}
 
 - [mysql的安装及配置](#mysql的安装及配置)
-	- [Linux Redhat 8 下安装 mysql](#linux-redhat-8-下安装-mysql)
-	- [windows-mysql 安装](#windows-mysql-安装)
-	- [windows-mysql 安装为服务](#windows-mysql-安装为服务)
+  - [Linux Redhat 8 下安装 mysql](#linux-redhat-8-下安装-mysql)
+  - [windows-mysql 安装](#windows-mysql-安装)
+  - [windows-mysql 安装为服务](#windows-mysql-安装为服务)
 
 ### Linux Redhat 8 下安装 mysql
 Mysql官网下载以下RPM包：
@@ -28,6 +28,9 @@ yum localinstall mysql-community-server-8.0.33-1.el8.x86_64.rpm -y
 
 + `systemctl start mysqld` 启动服务。
 + `cat /var/log/mysqld.log | grep temporary`: 查询首次安装的登录账号和密码
++ 在配置文件 `/ect/my.cnf` 的 mysqld 中加上 `skip-grant-tables` 配置，然后启动 `systemctl start mysqld`，使用 mysql 可以直接登录.
+    然后清空root密码：`UPDATE mysql.user SET authentication_string='' WHERE user='root';`
+    接着就可以无密码登录了，登录后直接运行`ALTER USER 'root'@'localhost' IDENTIFIED BY 'Jhqqt0711!';`修改密码
 + `ALTER USER 'root'@'localhost' IDENTIFIED BY 'Jhqqt0711!';` //修改密码
 + `update mysql.user set host='%' where user='root';` //修改允许登录的地址
 + `CREATE USER 'app'@'%' IDENTIFIED BY 'Jhqqt0711!'` //创建一个app用户

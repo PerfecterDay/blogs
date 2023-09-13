@@ -30,6 +30,23 @@
     <!-- <url>http://maven.oschina.net/content/groups/public</url> -->
     </mirror>
   ```
+3. 配置Java的版本
+```
+<properties>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
+</properties>
+或者
+<plugins>
+    <plugin>    
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+            <source>1.8</source>
+            <target>1.8</target>
+        </configuration>
+    </plugin>
+</plugins>
+```
 
 #### maven 问题
 有时候使用 https 时会遇到如下错误：`sun.security.validator.ValidatorException: PKIX path building failed: sun.security.provider.certpath.SunCertPathBuilderException: unable to find valid certification path to requested target`

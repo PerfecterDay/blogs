@@ -8,7 +8,7 @@
   * [经典垃圾收集器](/java/jvm/kvm-经典的垃圾收集器.md)
   * [常用 Jvm 命令](/java/jvm/jvm-常用jvm命令.md)
   * [虚拟机性能监控与故障处理工具](/java/jvm/jvm-虚拟机性能监控与故障处理工具.md)
-* [Java基础](#)
+* [Java基础](https://www.baeldung.com/java-tutorial)
   * [入门，数据类型和数组和运算符](/java/java基础/java基础-数据类型和数组.md)
   * [流程控制](/java/java基础/java基础-流程控制语句.md)
   * [包和访问权限](/java/java基础/java基础-包和访问权限.md)

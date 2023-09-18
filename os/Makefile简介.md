@@ -1,6 +1,15 @@
-# makefile
+# makefile 和 Cmake
 {docsify-updated}
 
+- [makefile 和 Cmake](#makefile-和-cmake)
+  - [MakeFile](#makefile)
+    - [目标（target）](#目标target)
+    - [前置条件（prerequisites）](#前置条件prerequisites)
+    - [命令](#命令)
+  - [Cmake](#cmake)
+
+
+## MakeFile
 Makefile文件由一系列规则（rules）构成。每条规则的形式如下。
 
 ```
@@ -50,3 +59,5 @@ y : z
 每行命令之前必须有一个tab键。如果想用其他键，可以用内置变量.RECIPEPREFIX声明。
 
 
+## Cmake
+<center><img src="/pics/cmake.jpg" alt=""></center>

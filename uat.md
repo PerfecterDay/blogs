@@ -1,3 +1,16 @@
+# 阿里云运维
+{docsify-updated}
+
+- [阿里云运维](#阿里云运维)
+	- [REDIS](#redis)
+	- [Mysql](#mysql)
+	- [Kafka](#kafka)
+	- [远程登录](#远程登录)
+	- [日志收集配置](#日志收集配置)
+	- [修改密码](#修改密码)
+		- [离线缓存](#离线缓存)
+		- [NAT](#nat)
+
 ## REDIS
 删除资讯key-UAT：
 1. redis-cli -h r-3ns5xcjxon2hpod3zppd.redis.rds.aliyuncs.com -p 6379 -a iVWzhb80vUFyugxA keys 'info:*' | cat
@@ -110,3 +123,11 @@ LXPRDGMAA4 root/RGT8FEJiQ9cn7zgc
 LXPRDGMAA5 root/RGT8FEJiQ9cn7zgc
 
 mysql app/Jhqqt0711!
+
+
+### NAT 
+路由表->vtb-j6cwxl0dy4aooimaawn1v -> 添加条目：
+<center><img src="/pics/aliyun/nat-1.jpg" width="40%"></center>
+
+路由表->vtb-j6csko4njm003bkcrdll0 -> 添加条目：
+<center><img src="/pics/aliyun/nat-2.jpg" width="40%"></center>

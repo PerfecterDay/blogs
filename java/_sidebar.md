@@ -43,7 +43,7 @@
   * [内置锁](/java/多线程/java基础-内置锁.md)
   * [显示锁](/java/多线程/java基础-显式锁.md)
   * [底层原理](/java/多线程/java基础-并发之底层原理.md)
-  * [线程池与Fork-Join](/java/多线程/java基础-并发之执行器.md)
+  * [线程池与Fork-Join](/java/多线程/java基础-并发之线程池.md)
   * [AQS](/java/多线程/java基础-并发之AQS.md)
   * [并发容器与并发工具类](/java/多线程/java基础-并发容器与工具类.md)
   * [CompletableFuture](/java/多线程/java基础-CompletableFuture.md)

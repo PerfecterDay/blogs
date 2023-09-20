@@ -51,7 +51,7 @@ public double getTotalBalance(){
 }
 ```
 
-4. 对所有的修改 方法加写锁:
+4. 对所有的修改方法加写锁:
 ```
 public void transfer(. . .) {
 	writeLock.lock();

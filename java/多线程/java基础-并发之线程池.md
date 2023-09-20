@@ -2,21 +2,21 @@
 {docsify-updated}
 
 - [线程池与Fork-Join](#线程池与fork-join)
-	- [线程池的好处](#线程池的好处)
-	- [线程池类图结构](#线程池类图结构)
-	- [内置线程池](#内置线程池)
-	- [自创建线程池](#自创建线程池)
-		- [向线程池提交任务](#向线程池提交任务)
-		- [线程池的关闭](#线程池的关闭)
-		- [线程池使用总结](#线程池使用总结)
-		- [定时任务/延时任务](#定时任务延时任务)
-	- [线程池的分析](#线程池的分析)
-		- [源码分析](#源码分析)
-	- [合理配置线程池](#合理配置线程池)
-	- [线程池的监控](#线程池的监控)
-	- [Fork-Join 框架](#fork-join-框架)
-		- [ForkJoinPool](#forkjoinpool)
-		- [RecursiveAction](#recursiveaction)
+  - [线程池的好处](#线程池的好处)
+  - [线程池类图结构](#线程池类图结构)
+  - [内置线程池](#内置线程池)
+  - [自创建线程池](#自创建线程池)
+    - [向线程池提交任务](#向线程池提交任务)
+    - [线程池的关闭](#线程池的关闭)
+    - [线程池使用总结](#线程池使用总结)
+    - [定时任务/延时任务](#定时任务延时任务)
+  - [线程池的分析](#线程池的分析)
+    - [源码分析](#源码分析)
+  - [合理配置线程池](#合理配置线程池)
+  - [线程池的监控](#线程池的监控)
+  - [Fork-Join 框架](#fork-join-框架)
+    - [ForkJoinPool](#forkjoinpool)
+    - [RecursiveAction](#recursiveaction)
 
 
 ## 线程池的好处
@@ -138,7 +138,7 @@ void execute(Runnable command);
 4. 当不再提交任何任务时 ，调用 `shutdown` 。
 
 ### 定时任务/延时任务
-`ScheduIedExecutorService` 接口为预定执行（Scheduled Execution ）或重复执行任务而设计的方法 。 它是一种允许使用线程池机制的 `java.util.Timer` 的泛化 。 `Executors`类的 `newScheduledThreadPool()` 和 `newSingleThreadScheduledExecutor()` 方法将返回实现了 `ScheduIedExecutorService` 接口的对象，可以预定 `Runnable` 或 `Callable` 在初始的延迟之后只运行一次,也可以预定一个 `Runnable` 对象周期性地运行 。具体API如下：
+`ScheduIedExecutorService` 接口为预定执行（Scheduled Execution ）或重复执行任务而设计的方法 。 它是一种允许使用线程池机制的 `java.util.Timer` 的泛化 。 `Executors`类的 `newScheduledThreadPool()` 和 `newSingleThreadScheduledExecutor()` 方法将返回实现了 `ScheduledExecutorService` 接口的对象，可以预定 `Runnable` 或 `Callable` 在初始的延迟之后只运行一次,也可以预定一个 `Runnable` 对象周期性地运行 。具体API如下：
 ```
 public interface ScheduledExecutorService extends ExecutorService 
 {

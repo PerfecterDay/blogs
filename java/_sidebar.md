@@ -19,7 +19,7 @@
   * [内部类](/java/java基础/java基础-内部类.md)
   * [异常、断言和日志](/java/java基础/java基础-异常断言和日志.md)
   * [基础类库](/java/java基础/java基础-基础类库.md)
-  * [集合](#)
+  * [集合](https://www.baeldung.com/java-collections)
     * [集合类概述](/java/java基础/集合/java基础-集合类概述.md)
     * [List](/java/java基础/集合/java基础-List.md)
     * [Set](/java/java基础/集合/java基础-Set.md)

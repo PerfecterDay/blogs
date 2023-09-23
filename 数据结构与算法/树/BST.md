@@ -4,12 +4,12 @@
 > https://www.baeldung.com/cs/balanced-bst-from-sorted-list
 
 - [BST- Binary Search Tree,Binary Sorted Tree](#bst--binary-search-treebinary-sorted-tree)
-	- [BST-二叉搜索树的定义](#bst-二叉搜索树的定义)
-	- [BST-二叉搜索树的构造](#bst-二叉搜索树的构造)
-	- [平衡二叉搜索树](#平衡二叉搜索树)
-		- [创建平衡二叉搜索树](#创建平衡二叉搜索树)
-		- [Top-Down 方法](#top-down-方法)
-		- [Bottom-Up 方法](#bottom-up-方法)
+  - [BST-二叉搜索树的定义](#bst-二叉搜索树的定义)
+  - [BST-二叉搜索树的构造](#bst-二叉搜索树的构造)
+  - [平衡二叉搜索树](#平衡二叉搜索树)
+    - [创建平衡二叉搜索树](#创建平衡二叉搜索树)
+    - [Top-Down 方法](#top-down-方法)
+    - [Bottom-Up 方法](#bottom-up-方法)
 
 
 ### BST-二叉搜索树的定义
@@ -25,7 +25,7 @@ BST 的中序遍历就是一个排序。
 <center><img src="pics/bst-construct.svg" alt=""></center>
 
 ```
-public class UserCenterApp {
+public class BinarySearchTree {
     public static void main(String[] args) {
         BsTree bsTree = new BsTree();
         bsTree.insert(8);
@@ -35,7 +35,12 @@ public class UserCenterApp {
         bsTree.insert(10);
         bsTree.insert(1);
         bsTree.insert(20);
-        bsTree.traverse();
+        System.out.println("in order");
+        bsTree.inorderTraverse();
+        System.out.println("pre order");
+        bsTree.preorderTraverse();
+        System.out.println("post order");
+        bsTree.postorderTraverse();
         bsTree.bfsTraverse();
     }
 }
@@ -74,15 +79,102 @@ class BsTree {
         return node;
     }
 
-    public void traverse() {
-        inorderTraverse(this.root);
+    public void inorderTraverse() {
+        recInorderTraverse(this.root);
+        System.out.println("-----------------");
+        iteInorderTraverse(this.root);
     }
 
-    private void inorderTraverse(Node node) {
+    public void preorderTraverse() {
+        itePreorderTraverse(this.root);
+    }
+
+    public void postorderTraverse() {
+        itePostOderTraverse(this.root);
+    }
+
+    /*
+    * 递归的中序遍历，返回的排序的数列
+    * */
+    private void recInorderTraverse(Node node) {
         if (node != null) {
-            inorderTraverse(node.left);
+            recInorderTraverse(node.left);
             System.out.println(node.value);
-            inorderTraverse(node.right);
+            recInorderTraverse(node.right);
+        }
+    }
+
+    /*
+     * 借助栈实现迭代的中序遍历，返回的排序的数列
+     * */
+    private void iteInorderTraverse(Node node) {
+        if (node == null){
+            return;
+        }
+        Stack<Node> stack = new Stack();
+        while (node != null) {
+            stack.push(node);
+            node = node.left;
+        }
+        while (!stack.isEmpty()){
+            Node indexNode = stack.pop();
+            System.out.println(indexNode.value);
+            if (indexNode.right != null){
+                stack.push(indexNode.right);
+            }
+        }
+    }
+
+    /*
+     * 借助栈实现迭代的前序遍历，返回的排序的数列
+     * */
+    private void itePreorderTraverse(Node node) {
+        if (node == null){
+            return;
+        }
+        Set<Node> visited = new HashSet<>();
+        Stack<Node> stack = new Stack();
+        while (node != null) {
+            System.out.println(node.value);
+            visited.add(node);
+            stack.push(node);
+            node = node.left;
+        }
+        while (!stack.isEmpty()){
+            Node indexNode = stack.pop();
+            if (!visited.contains(indexNode)){
+                System.out.println(indexNode.value);
+                visited.add(indexNode);
+            }
+            if (indexNode.right != null){
+                stack.push(indexNode.right);
+            }
+        }
+    }
+
+    /*
+     * 借助栈实现迭代的后序遍历，返回的排序的数列
+     * */
+    private void itePostOderTraverse(Node node) {
+        if (node == null) {
+            return ;
+        }
+        Stack<Node> stack = new Stack<>();
+        Node prev = null;
+        while (node != null || !stack.isEmpty()) {
+            while (node != null) {
+                stack.push(node);
+                node = node.left;
+            }
+            node = stack.pop();
+            if (node.right == null || node.right == prev) {
+                System.out.println(node.value);
+                prev = node;
+                node = null;
+            } else {
+                stack.push(node);
+                node = node.right;
+            }
         }
     }
 
@@ -90,6 +182,9 @@ class BsTree {
         bfs(this.root);
     }
 
+    /*
+    * 借助队列实现广度优先遍历-层序遍历
+    * */
     private void bfs(Node node) {
         if (node == null) {
             return;
@@ -109,11 +204,10 @@ class BsTree {
     }
 }
 ```
-
 ### 平衡二叉搜索树
-首先，让我们定义一下平衡二叉搜索树的含义。平衡二叉树是一棵树，它的高度是 $O(log(n))$，其中n是树内的节点数。
-
-对于平衡树内的每个节点，左子树的高度与右子树的高度相差不得超过 1。
+首先，让我们定义一下平衡二叉搜索树的含义：
++ 平衡二叉树是一棵树，它的高度是 $O(log(n))$，其中n是树内的节点数。
++ 对于平衡树内的每个节点，左子树的高度与右子树的高度相差不得超过 1。
 
 #### 创建平衡二叉搜索树
 在创建平衡 BST 时，我们需要牢记高度条件。首先，让我们考虑一下将哪个节点作为根节点最好。

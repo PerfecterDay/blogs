@@ -11,9 +11,9 @@
 
 Java 集合大致可分为 Set 、List 、 Queue 和 Map 四种体系，其中
 + Set 代表 **无序的、不可重复的集合**；
-+ List 代表合**位置有序、可重复的集**
-+ Map 代表具有映射关系的集合
-+ Queue 代表队列集合的实现，是 Java 5 新增的
++ List 代表**位置有序、可重复的集**
++ Map 代表具有**key->value映射关系**的集合
++ Queue 代表**队列**集合的实现，是 Java 5 新增的
 
 ## 概述
 Java 集合主要由两个接口派生而出： `Collection` 和 `Map` ，它们是整个集合框架的根接口。
@@ -46,7 +46,7 @@ Collection的常用方法：
 	+ `void remove()`：删除集合中上一次 next 方法返回的元素
 	+ `void forEachRemaining(Consumer<? super E> action)`：Java 8 新增方法，可以使用 Lambda 表达式来遍历集合
 
-	<b>当遍历集合元素时，需要注意：
+	<b>当使用for循环或者foreach遍历集合元素时，需要注意：
 	`Collection` 集合里的元素不能被改变，增删都不行，但是可以更新设置某个元素的值，只有通过 `Iterator` 的 `remove()` 方法删除集合元素才可以；假如此时修改了集合（遍历的时候或者另外一个线程改变了集合元素的个数），将会引发 `ConcurrentModificationException` 异常。但是，也不能有多个 `Iterator` 在遍历的时候，修改集合，否则也会引发 `ConcurrentModificationException` 异常，多个迭代器遍历时，只能有一个迭代器能修改集合。</b>
 
 1. 使用 `Iterable` 接口  

@@ -1,10 +1,10 @@
 ## COLA 架构规范
 {docsify-updated}
-> https://mp.weixin.qq.com/s/QRq_mnifw62LMoHey-tMiQ
 
 - [COLA 架构规范](#cola-架构规范)
 	- [分层架构](#分层架构)
 	- [定义](#定义)
+	- [组件](#组件)
 
 
 ### 分层架构
@@ -19,11 +19,21 @@
 <center><img src="pics/cola-ac.png" width="60%"></center>
 
 ### 定义
-1. 实体（ENTITY）
-
+1. 实体（ENTITY）  
 	实体有唯一的标识，有生命周期且具有延续性。例如一个交易订单，从创建订单我们会给他一个订单编号并且是唯一的这就是实体唯一标识。同时订单实体会从创建，支付，发货等过程最终走到终态这就是实体的生命周期。订单实体在这个过程中属性发生了变化，但订单还是那个订单，不会因为属性的变化而变化，这就是实体的延续性。
 
-2.  值对象（VALUE-OBJECT）
+2. 值对象（VALUE-OBJECT）  
 	通过对象属性值来识别的对象，它将多个相关属性组合为一个概念整体。在 DDD 中用来描述领域的特定方面，并且是一个没有标识符的对象，叫作值对象。值对象没有唯一标识，没有生命周期，不可修改，当值对象发生改变时只能替换（例如String的实现）。
 3.  
 mvn archetype:generate -DgroupId='com.panda.baicy' -DartifactId='demo-web' -Dversion='1.0.0-SNAPSHOT' -Dpackage='com.panda.baicy' -DarchetypeArtifactId='cola-framework-archetype-web' -DarchetypeGroupId='com.alibaba.cola' -DarchetypeVersion='4.3.2'
+
+### 组件
+组件名称 | 功能 | 依赖
+------ | ---- | ----
+`cola-component-dto` | 定义了`DTO`格式，包括分页 |无
+`cola-component-exception` | 定义了异常格式，<br>主要有`BizException`和`SysException` |无
+`cola-component-statemachine` | 状态机组件 | 无
+`cola-component-domain-starter` | `Spring`托管的领域实体组件 | 无
+`cola-component-catchlog-starter` | 异常处理和日志组件 | `exception`、`dto`组件
+`cola-component-extension-starter` | 扩展点组件 | 无
+`cola-component-test-container` | 测试容器组件 | 无

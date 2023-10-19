@@ -1,5 +1,6 @@
 * [Home](/)
 * [..](../_sidebar.md)
+* [设计模式网站](https://refactoringguru.cn/design-patterns/catalog)
 * [UML类图](/设计模式/UML类图.md)
 * [命令模式](/设计模式/命令模式.md)
 * [策略模式](/设计模式/策略模式.md)

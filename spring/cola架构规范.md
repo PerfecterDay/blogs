@@ -1,6 +1,8 @@
 ## COLA 架构规范
 {docsify-updated}
 
+> https://modelbaba.com/architecture/ddd/2100.html
+
 - [COLA 架构规范](#cola-架构规范)
 	- [分层架构](#分层架构)
 	- [定义](#定义)

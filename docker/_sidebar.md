@@ -20,5 +20,5 @@
   * [helm-Helm包管理器](/docker/helm-Helm包管理器.md)
   * [helm-Chart](/docker/helm-chart.md)
   * [helm-命令行](/docker/helm-helm命令行.md)
-* [阿里云运维](/uat.md)
-* [阿里云问题列表](/docker/阿里云问题列表.md)
+* [阿里云运维](/gtja/uat.md)
+* [阿里云问题列表](/gtja/阿里云问题列表.md)

@@ -1,16 +1,18 @@
 ## COLA 架构规范
 {docsify-updated}
 
-> https://modelbaba.com/architecture/ddd/2100.html
+> https://modelbaba.com/architecture/ddd/2100.html   
+> https://www.baeldung.com/hexagonal-architecture-ddd-spring
 
 - [COLA 架构规范](#cola-架构规范)
-	- [分层架构](#分层架构)
-	- [定义](#定义)
-	- [组件](#组件)
+  - [分层架构](#分层架构)
+  - [定义](#定义)
+  - [组件](#组件)
+  - [archetype](#archetype)
 
+[Github链接](https://github.com/alibaba/COLA)
 
 ### 分层架构
-
 <center><img src="pics/cola.png" width="60%"></center>
 
 + User Interface 为用户界面层，向用户展示信息和传入用户命令。这里指的用户不单单只使用用户界面的人，也可能是外部系统，诸如用例中的参与者。
@@ -27,7 +29,7 @@
 2. 值对象（VALUE-OBJECT）  
 	通过对象属性值来识别的对象，它将多个相关属性组合为一个概念整体。在 DDD 中用来描述领域的特定方面，并且是一个没有标识符的对象，叫作值对象。值对象没有唯一标识，没有生命周期，不可修改，当值对象发生改变时只能替换（例如String的实现）。
 3.  
-mvn archetype:generate -DgroupId='com.panda.baicy' -DartifactId='demo-web' -Dversion='1.0.0-SNAPSHOT' -Dpackage='com.panda.baicy' -DarchetypeArtifactId='cola-framework-archetype-web' -DarchetypeGroupId='com.alibaba.cola' -DarchetypeVersion='4.3.2'
+
 
 ### 组件
 组件名称 | 功能 | 依赖
@@ -39,3 +41,20 @@ mvn archetype:generate -DgroupId='com.panda.baicy' -DartifactId='demo-web' -Dver
 `cola-component-catchlog-starter` | 异常处理和日志组件 | `exception`、`dto`组件
 `cola-component-extension-starter` | 扩展点组件 | 无
 `cola-component-test-container` | 测试容器组件 | 无
+
+### archetype
+1. Web
+```
+mvn archetype:generate -DgroupId='com.panda.baicy' -DartifactId='demo-web' -Dversion='1.0.0-SNAPSHOT' -Dpackage='com.panda.baicy' -DarchetypeArtifactId='cola-framework-archetype-web' -DarchetypeGroupId='com.alibaba.cola' -DarchetypeVersion='4.3.2'
+```
+2. Service
+```
+mvn archetype:generate \
+    -DgroupId=com.alibaba.cola.demo.service \
+    -DartifactId=demo-service \
+    -Dversion=1.0.0-SNAPSHOT \
+    -Dpackage=com.alibaba.demo \
+    -DarchetypeArtifactId=cola-framework-archetype-service \
+    -DarchetypeGroupId=com.alibaba.cola \
+    -DarchetypeVersion=4.3.2
+```

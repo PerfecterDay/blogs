@@ -8,6 +8,7 @@
 	- [grpc-spring-boot-starter 配置](#grpc-spring-boot-starter-配置)
 	- [grpcurl工具](#grpcurl工具)
 	- [grpc注册consul](#grpc注册consul)
+	- [常见错误](#常见错误)
 
 
 gRPC 可以使用 `protocol buffers` 作为其接口定义语言（IDL）和底层消息交换格式。
@@ -175,4 +176,24 @@ spring:
         health-check-critical-timeout: 3m
         heartbeat:
           enable: true
+```
+
+### 常见错误
+
+Protobuf 版本不一致：
+```
+org.springframework.web.util.NestedServletException: Handler dispatch failed; nested exception is java.lang.NoSuchMethodError: com.google.protobuf.GeneratedMessageV3.isStringEmpty(Ljava/lang/Object;)Z
+```
+解决：
+```
+<dependency>
+	<groupId>mysql</groupId>
+	<artifactId>mysql-connector-java</artifactId>
+	<exclusions>
+		<exclusion>
+			<groupId>com.google.protobuf</groupId>
+			<artifactId>protobuf-java</artifactId>
+		</exclusion>
+	</exclusions>
+</dependency>
 ```

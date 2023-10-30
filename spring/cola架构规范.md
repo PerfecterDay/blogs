@@ -9,11 +9,14 @@
   - [定义](#定义)
   - [组件](#组件)
   - [archetype](#archetype)
+  - [依赖关系](#依赖关系)
 
 [Github链接](https://github.com/alibaba/COLA)
 
 ### 分层架构
-<center><img src="pics/cola.png" width="60%"></center>
+<center><img src="pics/cola.png" width="54%">
+<img src="pics/cola-layer.png" width="45%"></center>
+
 
 + User Interface 为用户界面层，向用户展示信息和传入用户命令。这里指的用户不单单只使用用户界面的人，也可能是外部系统，诸如用例中的参与者。
 + Application 为应用层，用来协调应用的活动，不包含业务逻辑，通过编排领域模型，包括领域对象及领域服务，使它们互相协作。不保留业务对象的状态，但它保有应用任务的进度状态。
@@ -58,3 +61,7 @@ mvn archetype:generate \
     -DarchetypeGroupId=com.alibaba.cola \
     -DarchetypeVersion=4.3.2
 ```
+
+
+### 依赖关系
+start -> adapter -> app -> client, infrastructure -> domain

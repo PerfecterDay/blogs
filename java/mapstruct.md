@@ -172,3 +172,27 @@ In the end, add the proxy method:
 default Car mapContext(CarDTO car, @Context String owner) {
     return mapCar(car, owner);
 }
+
+
+```
+@Mapper
+public interface CustomerScrResultMapper {
+
+    @Mapping(target = "tradeAccount", source = "tradeAccount")
+    @Mapping(target = "scrCheckSeq", source = "scrSeq")
+    @Mapping(target = "targetItemId", source = "result.targetItemName")
+    CustomerScrResult transFromMatchResult(MatchItemResult result, String tradeAccount, String scrSeq);
+
+    //    @Mapping(source = "targetItemName",target = "target_item_name")
+//    @Mapping(source = "fundValue",target = "fund_value")
+//    @Mapping(source = "customerValue",target = "customer_value")
+//    @Mapping(source = "matchResult", target = "target_item_name")
+    default CustomerScrResult mapContext(MatchItemResult matchItemResult, @Context ScrContext context) {
+        return transFromMatchResult(matchItemResult, context.getCustomer().getTradeAccount(), context.getScrSeq());
+    }
+
+    List<CustomerScrResult> transFromMatchResults(List<MatchItemResult> resultList,
+                                                  @Context ScrContext context);
+
+}
+```

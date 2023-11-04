@@ -86,6 +86,8 @@ Map<String, Object> map
 	`objectMapper.configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, false);`
 3. 是否允许枚举到数字的转换(`DeserializationFeature.FAIL_ON_NUMBERS_FOR_ENUMS`)
 	`objectMapper.configure(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES, false);`
+4. 忽略大小写（`MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES`）
+	`objectMapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES,true);`
 
 还有许多其他的配置可以参考[官网](https://github.com/FasterXML/jackson-databind/wiki/Serialization-Features)
 

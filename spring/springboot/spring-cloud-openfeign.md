@@ -7,7 +7,7 @@
 	- [简介](#简介)
 	- [集成步骤](#集成步骤)
 	- [配置](#配置)
-		- [Java 代码配置](#java-代码配置)
+		- [自定义 Java 代码配置](#自定义-java-代码配置)
 		- [配置文件配置](#配置文件配置)
 		- [熔断降级](#熔断降级)
 		- [Interceptors](#interceptors)
@@ -49,7 +49,7 @@ Spring Cloud OpenFeign 是一个用于Spring Boot应用程序的声明式REST客
 		Post getPostById(@PathVariable("postId") Long postId);
 	}
 	```
-	在 `@FeignClient` 注解中的value参数是一个强制性的、任意的客户端名称，指定了当前 feign client 的名字，如果集成了服务发现，这个名字会作为服务发现的服务名去解析服务端的URL，的而通过url参数，我们可以人工指定服务端API的基本URL。
+	在 `@FeignClient` 注解中的value参数是一个强制性的、任意的客户端名称，指定了当前 feign client 的名字，如果集成了服务发现，这个名字会作为服务发现的服务名去解析服务端的URL，而通过url参数，我们可以人工指定服务端API的基本URL。
 4. 可以在其他Bean 中注入声明的 Feign 客户端了。
 
 ### 配置
@@ -66,7 +66,7 @@ Spring Cloud使用 `FeignClientsConfiguration` 类为每个命名的客户端按
 + Retryer - 重试组件
 
 
-#### Java 代码配置
+#### 自定义 Java 代码配置
 如果我们想定制这些Bean中的一个或多个，我们可以通过创建一个配置类来覆盖它们，然后将其添加到 `FeignClient` 注解的 `configuration` 属性中。
 ```
 @FeignClient(value = "jplaceholder",
@@ -86,7 +86,7 @@ public class ClientConfiguration {
 }
 ```
 
-`ClientConfiguration` 不需要注释 `@Configuration` 。但是，如果使用了 `@Configuration` ，则应注意将其排除在任何包含此配置的 `@ComponentScan` 之外，因为指定后它将成为 `feign.Decoder` 、`feign.Encoder` 、 `feign.Contract` 等的默认源。要避免这种情况，可以将其放在与任何 `@ComponentScan` 或 `@SpringBootApplication` 无关的独立包中，或者在 `@ComponentScan` 中明确将其排除。
+`ClientConfiguration` 不需要注释 `@Configuration` 。但是，如果使用了 `@Configuration` ，则应注意将其排除在任何包含此配置的 `@ComponentScan` 之外，因为指定后它将成为 `feign.Decoder` 、`feign.Encoder` 、 `feign.Contract` 等的默认配置。要避免这种情况，可以将其放在与任何 `@ComponentScan` 或 `@SpringBootApplication` 无关的独立包中，或者在 `@ComponentScan` 中明确将其排除。
 
 
 #### 配置文件配置

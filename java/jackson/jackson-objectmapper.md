@@ -165,3 +165,4 @@ objectMapper.setDateFormat(df);
 String carAsString = objectMapper.writeValueAsString(request);
 // output: {"car":{"color":"yellow","type":"renault"},"datePurchased":"2016-07-03 11:43 AM CEST"}
 ```
+https://stackoverflow.com/questions/21384820/is-there-a-jackson-datatype-module-for-jdk8-java-time

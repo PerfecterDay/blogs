@@ -29,10 +29,10 @@
 `HashMap`底层使用的技术与`HashSet`一致,都是使用散列表数据结构实现的。需要注意的是，`HashMap`中的散列和比较只发生在键上，与键关联的值不能进行散列或比较。同样， `HashMap`也可以设置初始桶数量和装填因子。
 
 ### TreeMap
-`TreeMap`与`TreeSet`类似，也是有序的映射表，可以指定在构造时指定 `Comparator` 对象对元素进行排序。
+`TreeMap`与`TreeSet`类似，也是有序的映射表，**可以指定在构造时指定 `Comparator` 对象对元素进行排序。**
 
 ### LinkedHashMap
-`LinkedHashMap`是插入位置有序的映射表，元素会按照加入映射表的顺序排序。
+`LinkedHashMap`**是插入位置有序的映射表，元素会按照加入映射表的顺序排序。**
 
 ## HashMap 和 Hashtable 的区别
 1. `Hashtable` 是一个线程安全的 Map 实现，但 `HashMap` 不是线程安全的，因为没有锁的开销，所以 `HashMap` 性能会更好点

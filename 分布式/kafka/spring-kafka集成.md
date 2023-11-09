@@ -4,13 +4,13 @@
 > https://docs.spring.io/spring-boot/docs/current/reference/html/messaging.html#messaging.kafka
 
 - [Kafka 与 Spring/Spring-boot 的集成](#kafka-与-springspring-boot-的集成)
-	- [添加 maven 依赖](#添加-maven-依赖)
-	- [创建 Topic](#创建-topic)
-	- [生产者-发布消息](#生产者-发布消息)
-	- [消费者-消费消息](#消费者-消费消息)
-		- [消费特定partition的信息](#消费特定partition的信息)
-		- [添加消息过滤器](#添加消息过滤器)
-	- [Springboot 配置](#springboot-配置)
+  - [添加 maven 依赖](#添加-maven-依赖)
+  - [创建 Topic](#创建-topic)
+  - [生产者-发布消息](#生产者-发布消息)
+  - [消费者-消费消息](#消费者-消费消息)
+    - [消费特定partition的信息](#消费特定partition的信息)
+    - [添加消息过滤器](#添加消息过滤器)
+  - [Springboot 配置](#springboot-配置)
 
 
 ### 添加 maven 依赖
@@ -132,7 +132,9 @@ public void sendMessage(String message) {
 
 ### 消费者-消费消息
 为了消费消息，我们需要配置一个 `ConsumerFactory` 和一个 `KafkaListenerContainerFactory` 。一旦这些 bean 在Spring bean 工厂中可用，就可以使用 `@KafkaListener` 注解来配置基于POJO的消费者。  
-如果是用的Spring，需要手动在配置类中需要有`@EnableKafka`注解，以便在spring管理的Bean上实现对`@KafkaListener`注解的检测:
+如果我们没有显式地定义 `KafkaListenerContainerFactory` ，Springboot 会自动配置一个默认的 `KafkaListenerContainerFactory` ，其键定义在 `spring.kafka.listener.*`.
+
+如果是用的Spring，需要手动在配置类中添加`@EnableKafka`注解，以便在spring管理的Bean上实现对`@KafkaListener`注解的检测:
 ```
 @EnableKafka
 @Configuration
@@ -175,7 +177,7 @@ public void listenGroupFoo(String message) {
     System.out.println("Received Message in group foo: " + message);
 }
 ```
-我们可以为实现多个消费者监听同一个 Topic，每个监听器都有一个不同的组ID。此外，一个消费者可以监听来自不同 Topic 的消息：
+我们可以为实现多个消费者监听同一个 Topic，每个监听器都有一个不同的groupId。此外，一个消费者可以监听来自不同 Topic 的消息：
 ```
 @KafkaListener(topics = "topic1, topic2", groupId = "bar")
 ```

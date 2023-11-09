@@ -2,16 +2,43 @@
 {docsify-updated}
 
 - [Mapstruct](#mapstruct)
+  - [依赖与插件](#依赖与插件)
   - [不同名字映射](#不同名字映射)
   - [类型转换](#类型转换)
-  - [执行java 语句](#执行java-语句)
-  - [集合](#集合)
+  - [执行java语句](#执行java语句)
+  - [增加自定义转换逻辑](#增加自定义转换逻辑)
+  - [集合转换](#集合转换)
   - [命名方法](#命名方法)
   - [插件冲突](#插件冲突)
   - [](#)
 
 https://www.baeldung.com/mapstruct  
 https://www.baeldung.com/java-mapstruct-mapping-collections
+
+
+### 依赖与插件
+```
+<dependency>
+    <groupId>org.mapstruct</groupId>
+    <artifactId>mapstruct</artifactId>
+    <version>1.5.5.Final</version> 
+</dependency>
+
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-compiler-plugin</artifactId>
+    <version>3.11.0</version>
+    <configuration>
+        <annotationProcessorPaths>
+            <path>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct-processor</artifactId>
+                <version>1.5.5.Final</version>
+            </path>
+        </annotationProcessorPaths>
+    </configuration>
+</plugin>
+```
 
 ### 不同名字映射
 不同名字之间的map：
@@ -45,7 +72,7 @@ EmployeeDTO employeeToEmployeeDTO(Employee entity);
 Employee employeeDTOtoEmployee(EmployeeDTO dto);
 ```
 
-### 执行java 语句
+### 执行java语句
 当某个字段需要特殊处理时：
 ```
 // List<String> 转 String
@@ -57,7 +84,24 @@ public interface PublishVersionRequst2AppVersionEntityMapper {
 }
 ```
 
-### 集合
+### 增加自定义转换逻辑
+```
+@Mapper
+public abstract class OrderSyncRequestMapper {
+    @BeforeMapping
+    protected void getVouncherNo(FundOrder fundOrder, @MappingTarget OrderSyncRequest orderSyncRequest) {
+        if (StringUtils.equalsIgnoreCase("s", fundOrder.getOrderType())) {
+            orderSyncRequest.setVoucherNo(fundOrder.getHoldFundVoucherNo());
+        } else {
+            orderSyncRequest.setVoucherNo(fundOrder.getInstrumentVoucherNo());
+        }
+    }
+    @Mapping(target = "instrument", source = "fund")
+    public abstract OrderSyncRequest fromFundOrder(FundOrder fundOrder);
+}
+```
+
+### 集合转换
 转换 List 集合类型时，必须声明元素类型的转换方法：
 ```
 @Mapper

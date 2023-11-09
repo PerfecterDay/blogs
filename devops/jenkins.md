@@ -2,6 +2,12 @@
 {docsify-updated}
 > https://www.jenkins.io/zh/doc/book/pipeline/syntax/
 
+- [Jenkins 语法](#jenkins-语法)
+  - [安装](#安装)
+  - [Pipeline](#pipeline)
+  - [问题](#问题)
+
+
 Jenkins是一款开源 CI&CD 软件，用于自动化各种任务，包括构建、测试和部署软件。
 Jenkins 支持各种运行方式，可通过系统包、Docker 或者通过一个独立的 Java 程序。
 
@@ -128,10 +134,11 @@ pipeline {
 
 通过 archiveArtifacts 步骤和文件匹配表达式可以很容易的完成构建结果记录和存储
 
+### 问题
 mvn not found/docker not found:
 需要添加
 tools {
 	maven 'maven'
 	dockerTool 'docker'
 }
-且在Jenkins全局工具配置中增加Maven和 docker 设置，docker 是包含 `bin/docker` 的父目录，如果本地安装目录是 `/usr/local/bin/docker`,那么因该填 `/usr/local/`
+**且在Jenkins全局工具配置中增加Maven和 docker 设置，docker 是包含 `bin/docker` 的父目录，如果本地安装目录是 `/usr/local/bin/docker`,那么因该填 `/usr/local/`**

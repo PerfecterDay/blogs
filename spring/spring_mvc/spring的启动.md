@@ -7,8 +7,6 @@
 		- [初始化器中使用编程的方式启动 Spring](#初始化器中使用编程的方式启动-spring)
 		- [Springboot中的内置容器启动](#springboot中的内置容器启动)
 	- [Spring Framework 的配置方式](#spring-framework-的配置方式)
-		- [创建 XML 配置](#创建-xml-配置)
-		- [创建混合配置](#创建混合配置)
 			- [组件扫描的开启](#组件扫描的开启)
 			- [扫描注解配置](#扫描注解配置)
 		- [使用 @Configuration 配置](#使用-configuration-配置)
@@ -79,15 +77,15 @@ Sprinboot 使用代码编程的方式启动内置的 Servlet 容器，通过 `To
 4. 在 `ServletContextInitializer` <- `RegistrationBean`<-`DynamicRegistrationBean`<-`ServletRegistrationBean`<-`DispatcherServletRegistrationBean` 的体系下，只要我们声明 `DispatcherServletRegistrationBean` 或者 其他的 `RegistrationBean` 类型，springboot 就会帮我们注册到 servlet 容器。
 5. springboot 的 `DispatcherServletAutoConfiguration#DispatcherServletRegistrationConfiguration#dispatcherServletRegistration(DispatcherServlet dispatcherServlet,WebMvcProperties webMvcProperties, ObjectProvider<MultipartConfigElement> multipartConfig)`方法就声明了`DispatcherServletRegistrationBean`，这就是为什么Springboot能自动帮我们配置好 DispatcherServlet 的原因。
 
-通过以上分析，如果我们想注册除了 `DispatcherServlet` 以外的自定义 servlet ，只要声明一个 `ServletRegistrationBean` 的 bean 即可。类似的，`FilterRegistrationBean` 可以注册自定义的 `Filter` 。 如果自己实现 `Filetr` 接口又想使用 Spring 容器功能，springboot 提供了方便的 `DelegatingFilterProxyRegistrationBean` 类型，我们只要
+通过以上分析，如果我们想注册除了 `DispatcherServlet` 以外的自定义 servlet ，只要声明一个 `ServletRegistrationBean` 的 bean 即可。类似的，`FilterRegistrationBean` 可以注册自定义的 `Filter` 。 如果自己实现 `Filetr` 接口又想使用 Spring 容器功能，springboot 提供了方便的 `DelegatingFilterProxyRegistrationBean` 类型，我们只要自定义一个 `DelegatingFilterProxyRegistrationBean` 类型的 bean 即可。
 
 ## Spring Framework 的配置方式
 Spring Framework 的配置大致可以分为三种方式：
 
-### 创建 XML 配置
+1. 创建 XML 配置
 这是最传统的配置方式，使用 &lt;beans&gt; XML 命名空间，将需要注入的 bean 配置在 ,&lt;bean&gt; 标签下即可配置 bean 。
 
-### 创建混合配置
+2. 创建混合配置
 XML 配置文件的缺点是太繁杂，一个大型的企业级应用中，可能会定义数百个 bean ,每个 bean 都至少要三行代码的话，光是配置文件都要数千行。
 
 spring 注解配置的核心在于 **组件扫描** 和 **注解配置**。 

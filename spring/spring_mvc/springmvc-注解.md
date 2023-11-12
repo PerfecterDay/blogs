@@ -29,9 +29,9 @@
 ### @RequestMapping
 可以使 `@RequestMapping` 注解将请求映射到控制器方法。它有多种属性，可通过URL、HTTP方法、请求参数、头和媒体类型进行匹配。可以在类级别使用它来表达共享映射，也可以在方法级别使用它来缩小特定端点映射的范围。
 RequestMapping 有很多属性可以指定匹配的细节：
-`consumes` ： 匹配指定请求的特定的 `Content-Type` ， `!text/plain` 指除 `text/plain` 以外的任何内容类型。
-`params` : 匹配指定 `parameter=value` 的请求
-`headers` : 匹配指定 `myHeader=myValue` 的请求
++ `consumes` ： 匹配指定请求的特定的 `Content-Type` ， `!text/plain` 指除 `text/plain` 以外的任何内容类型。
++ `params` : 匹配指定 `parameter=value` 的请求
++ `headers` : 匹配指定 `myHeader=myValue` 的请求
 
 ```
 @PostMapping(path = "/pets", consumes = "application/json", ) 
@@ -57,9 +57,9 @@ public class MyConfig {
 }
 ```
 
-@RequestMapping 方法可以使用 URL 模式进行映射。有两种选择：
-1. PathPattern - 与URL路径匹配的预解析模式，也作为PathContainer进行预解析。该解决方案专为网络使用而设计，可有效处理编码和路径参数，并能高效匹配。
-2. AntPathMatcher - 将字符串模式与字符串路径相匹配。这是最初的解决方案，也用于Spring配置，以选择classpath、文件系统和其他位置上的资源。它的效率较低，而且字符串路径输入对于有效处理编码和URL的其他问题是一个挑战。
+`@RequestMapping` 方法可以使用 URL 模式进行映射。有两种选择：
+1. `PathPattern` - 与URL路径匹配的预解析模式，也作为PathContainer进行预解析。该解决方案专为网络使用而设计，可有效处理编码和路径参数，并能高效匹配。
+2. `AntPathMatcher` - 将字符串模式与字符串路径相匹配。这是最初的解决方案，也用于Spring配置，以选择classpath、文件系统和其他位置上的资源。它的效率较低，而且字符串路径输入对于有效处理编码和URL的其他问题是一个挑战。
 
 
 ### 特定方法的

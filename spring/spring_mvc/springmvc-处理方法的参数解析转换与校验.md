@@ -2,7 +2,9 @@
 {docsify-updated}
 
 - [SpringMvc 的处理方法参数绑定与校验](#springmvc-的处理方法参数绑定与校验)
+	- [本文解决的核心问题](#本文解决的核心问题)
 	- [参数绑定- HandlerMethodArgumentResolver 及 HttpMessageConverter](#参数绑定--handlermethodargumentresolver-及-httpmessageconverter)
+	- [HandlerMethodArgumentResolver 和 HttpMessageConverter 的关系](#handlermethodargumentresolver-和-httpmessageconverter-的关系)
 	- [数据绑定流程剖析](#数据绑定流程剖析)
 - [请求参数验证](#请求参数验证)
 	- [Spring 参数校验的原理](#spring-参数校验的原理)
@@ -12,17 +14,88 @@
 	- [自定义校验注解](#自定义校验注解)
 	- [@InitBinder](#initbinder)
 
+<center><img src="pics/spring-http-journey.webp"></center>
+
+
+### 本文解决的核心问题
+**一个Http请求中的参数或者Json请求体是如何被转换成Controller中的参数对象的 ？**
+
+直接看一个例子，添加自定义的 `HandlerMethodArgumentResolver` 和 `HttpMessageConverter`：
+```
+@Configuration
+public class WebConfig implements WebMvcConfigurer {
+
+    @Override
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+        resolvers.clear();
+        resolvers.add(new HandlerMethodArgumentResolver() {
+            @Override
+            public boolean supportsParameter(MethodParameter parameter) {
+                return true;
+            }
+
+            @Override
+            public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
+                System.out.println("abc");
+                return null;
+            }
+        });
+    }
+
+    @Override
+    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+        converters.clear();
+        converters.add(new HttpMessageConverter<Object>() {
+            @Override
+            public boolean canRead(Class<?> clazz, MediaType mediaType) {
+                return true;
+            }
+
+            @Override
+            public boolean canWrite(Class<?> clazz, MediaType mediaType) {
+                return true;
+            }
+
+            @Override
+            public List<MediaType> getSupportedMediaTypes() {
+                List<MediaType> mediaTypes = new ArrayList<>();
+                mediaTypes.add(MediaType.ALL);
+                return mediaTypes;
+            }
+
+            @Override
+            public Object read(Class<?> clazz, HttpInputMessage inputMessage) throws IOException, HttpMessageNotReadableException {
+                System.out.println("AAA");
+                return null;
+            }
+
+            @Override
+            public void write(Object o, MediaType contentType, HttpOutputMessage outputMessage) throws IOException, HttpMessageNotWritableException {
+                System.out.println("BBB");
+
+            }
+        });
+    }
+}
+
+@GetMapping("/test")
+public Response test(User user){
+	return Response.buildSuccess();
+}
+```
+Spring处理参数绑定时首先会根据参数信息寻找合适的 `HandlerMethodArgumentResolver`(比如参数用 @RequestBody 注解修饰，就会用内置 `RequestResponseBodyMethodProcessor` 的解析器)，上例中没有用 `@RequestBody` 注解，就会使用我们自定义的参数解析器解析参数。通常在解析器内部会根据 MediaType 不同使用不同 `HttpMessageConverter` 转换 Http 请求。
+
 
 Spring 会根据请求方法签名的不同，将请求消息中的信息 以一定的方式转换并绑定到请求方法的入参中。当请求消息到达真正需要调用的方法时(如指定的业务方法)，Spring MVC 还有很多工作要做，包括数据转换、数据格式化及数据校验等。
 
 ### 参数绑定- HandlerMethodArgumentResolver 及 HttpMessageConverter
-常见的参数解析器： `PathVariableMethodArgumentResolver` , `RequestResponseBodyMethodProcessor`, `RequestHeaderMethodArgumentResolver`
+常见的参数解析器： `PathVariableMethodArgumentResolver` , `RequestResponseBodyMethodProcessor`, `RequestHeaderMethodArgumentResolver`，
 会用到很多 `HttpMessageConverter`
 
 ```
 RequestMappingHandlerAdapter.invokeHandlerMethod()->ServletInvocableHandlerMethod.invokeAndHandle()
 ->InvocableHandlerMethod.invokeForRequest()->HandlerMethodArgumentResolverComposite.resolveArgument()
-->PathVariableMethodArgumentResolver.resolveArgument() 
+->RequestResponseBodyMethodProcessor.resolveArgument() -> HttpMessageConverter.read()
 ```
 
 `HandlerMethodArgumentResolver` 的调用过程:
@@ -56,6 +129,37 @@ public Object resolveArgument(MethodParameter parameter, @Nullable ModelAndViewC
 	return adaptArgumentIfNecessary(arg, parameter);
 }
 ```
+
+### HandlerMethodArgumentResolver 和 HttpMessageConverter 的关系
+
+`HandlerMethodArgumentResolver` 的职责是将 http 请求映射到处理器的方法参数，并且会处理一些参数验证逻辑，这点可以从其定义的方法看出来：
+```
+public interface HandlerMethodArgumentResolver {
+    boolean supportsParameter(MethodParameter parameter);
+
+    @Nullable
+    Object resolveArgument(MethodParameter parameter, @Nullable ModelAndViewContainer mavContainer, NativeWebRequest webRequest, @Nullable WebDataBinderFactory binderFactory) throws Exception;
+}
+```
+在解析参数绑定的过程中会用到 `HttpMessageConverter` 的方法。而 `HttpMessageConverter` 主要是将 http消息转换成一个特定对象以及将一个对象转换成Http消息：
+```
+public interface HttpMessageConverter<T> {
+    boolean canRead(Class<?> clazz, @Nullable MediaType mediaType);
+
+    boolean canWrite(Class<?> clazz, @Nullable MediaType mediaType);
+
+    List<MediaType> getSupportedMediaTypes();
+
+    default List<MediaType> getSupportedMediaTypes(Class<?> clazz) {
+        return !this.canRead(clazz, (MediaType)null) && !this.canWrite(clazz, (MediaType)null) ? Collections.emptyList() : this.getSupportedMediaTypes();
+    }
+
+    T read(Class<? extends T> clazz, HttpInputMessage inputMessage) throws IOException, HttpMessageNotReadableException;
+
+    void write(T t, @Nullable MediaType contentType, HttpOutputMessage outputMessage) throws IOException, HttpMessageNotWritableException;
+}
+```
+
 
 ### 数据绑定流程剖析
 Spring MvC通过反射机制对目标处理方法的签名进行分析，将请求消息绑定到处理方法的入参中。数据鄉定的核心部件是DataBinder，其运行机制描述如下所示：

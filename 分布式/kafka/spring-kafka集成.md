@@ -253,6 +253,7 @@ spring:
     bootstrap-servers: "localhost:9092"
     consumer:
       group-id: "myGroup"
+      auto-offset-reset: earliest/latest/none
 ```
 
 

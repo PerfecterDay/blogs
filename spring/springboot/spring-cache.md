@@ -2,11 +2,11 @@
 {docsify-updated}
 
 - [Spring Cache的集成](#spring-cache的集成)
-	- [缓存基础知识](#缓存基础知识)
-	- [自己实现缓存的简单实现](#自己实现缓存的简单实现)
-	- [Spring Cache 的注解](#spring-cache-的注解)
-	- [JSR-107 Cache](#jsr-107-cache)
-	- [Springboot 集成 redis 缓存](#springboot-集成-redis-缓存)
+  - [缓存基础知识](#缓存基础知识)
+  - [自己实现缓存的简单实现](#自己实现缓存的简单实现)
+  - [Spring Cache 的注解](#spring-cache-的注解)
+  - [JSR-107 Cache](#jsr-107-cache)
+  - [Springboot 集成 redis 缓存](#springboot-集成-redis-缓存)
 
 
 ### 缓存基础知识

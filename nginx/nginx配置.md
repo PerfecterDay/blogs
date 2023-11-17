@@ -142,14 +142,25 @@ nginx一个最常用的功能就是作为一个反向代理服务器，即收到
 nginx转发指令是 `proxy_pass` ，参数转发的完整地址，包括协议、url和端口号。
 
 ```
-	# 路径匹配
-	location /app1 {
-		proxy_pass https://backend1;
-		proxy_set_header X-real-ip $remote_addr;
-		proxy_set_header Host $proxy_host;
-		proxy_next_upstream http_500 http_404 error timeout invalid_header;
-		proxy_http_version 1.1;
-	}
+stream { 
+    upstream stream_backend { 
+        server srv1.example.com weight=75;
+        server srv2.example.com weight=25; 
+    } 
+    server { 
+        listen 80; 
+        proxy_pass stream_backend; 
+    } 
+}
+
+# 路径匹配
+location /app1 {
+	proxy_pass https://backend1;
+	proxy_set_header X-real-ip $remote_addr;
+	proxy_set_header Host $proxy_host;
+	proxy_next_upstream http_500 http_404 error timeout invalid_header;
+	proxy_http_version 1.1;
+}
 ```
 
 正向代理与反向代理的区别：

@@ -3,7 +3,7 @@
 * [计算机组成](/计算机/_sidebar.md)
 * [操作系统](/os/_sidebar.md)
 * [数据结构与算法](/数据结构与算法/_sidebar.md)
-* [网络协议](/TCP-ip/_sidebar.md)
+* [网络协议](/network/_sidebar.md)
 * [Java](/java/_sidebar.md)
 * [Go](/go/_sidebar.md)
 * [Git](/git/_sidebar.md)

@@ -6,6 +6,7 @@
 	- [类型变量的限定与范型通配符](#类型变量的限定与范型通配符)
 	- [范型方法](#范型方法)
 	- [泛型擦除](#泛型擦除)
+	- [范型的约束与局限性](#范型的约束与局限性)
 	- [泛型与继承](#泛型与继承)
 
 
@@ -76,5 +77,27 @@ arrayToCollection(arr3,list2);
 + 桥方法被合成来保持多态。（合成的桥方法有可能调用了新定义的方法。）
 + 为保持类型安全性，必要时插入强制类型转换。
 
+### 范型的约束与局限性
+1. 不能用基本类型作为类型参数。因此，没有`Pair<double>`，只有`Pair<Double>`。当然， 其原因是类型擦除。擦除之后，Pair 类含有Object 类型的域，而Object不能存储double值。
+2. 不能在静态域或方法中引用类型变量。禁止使用带有类型变量的静态域和方法。
+   ```
+   public class Singleton<T> {
+	private static T singleInstance; // EROR 
+	public static T getSingleInstance{ // EROR
+		if (singleInstance = nul) construct new instance of T 
+		return singleInstance;
+	} 
+   ```
+3. 不能抛出或捕获泛型类的实例，既不能抛出也不能捕获泛型类对象。实际上，甚至泛型类扩展 `Throwable` 都是不合法的 。
 
 ### 泛型与继承
+假设我们定义了应该泛型类Pair，Manager是Employee的子类，那么它们的继承关系如下:
+<center><img src="pics/generics-1.png" alt=""></center>
+
+总结一下就是无论S与T有什么关系，通常，`Pair<S>`与`Pair<T>`都没有任何关系。
+
+还需要说明的是，泛型类可以扩展或实现其他的泛型类。就这一点而言，它们与普通的类没有什么区别。  
+ArrayList类实现了List接口。这意味着，一个`ArrayList<Manager>`可以转换为一个`List<Manager>`。但是，如前面所见，`ArrayList<Manager>`不是一个`ArrayList<Employee>`或`List<Employee>`。
+
+<center><img src="pics/generics-2.png" alt=""></center>
+

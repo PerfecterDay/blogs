@@ -96,5 +96,10 @@
     使用git bush时，使用git add XX 添加文件后，git status 发现中文文件名是数字形式，比如"\123\456\789.txt"，点击也无法打开，二使用ls，git log都可以显示中文，最后修改配置:
     `git config --global core.quotepath false ` 解决
 
+2.  unable to access 'https://github.com/ScoopInstaller/Scoop/': SSL certificate problem: unable to get local issuer certificate
+	`git config --global http.sslVerify false`
+
+3. nable to access 'https://github.com/ScoopInstaller/Scoop/': schannel: next InitializeSecurityContext failed: Unknown error (0x80092012)
+	`git config --system http.sslbackend openssl`
 
 

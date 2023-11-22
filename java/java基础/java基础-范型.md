@@ -21,13 +21,14 @@ public void test(List<Object> list){...}//严格要求传入 List<Object> 范型
 List<String> sList = new ArrayList();
 test(sList);
 ```
-当创建了带范型声明的接口、父类之后，可以创建接口的实现类，或者从父类来派生子类，如果**实现类或者派生子类不是范型类，那么当使用这些接口、父类时，不能再包含类型形参，必须指定具体的类型实参；如果实现类或者派生子类是范型类，则可以为指定与父类相同的类型参数**。如下面的代码是错误的：
+当创建了带范型声明的接口、父类之后，可以创建接口的实现类，或者从父类来派生子类，如果**实现类或者派生子类不是范型类（判断是不是范型类，只要看类名后边是否有尖括号包裹的类型形参即可），那么当使用这些接口、父类时，不能再包含类型形参，必须指定具体的类型实参；如果实现类或者派生子类是范型类，则可以为指定与父类相同的类型参数**。如下面的代码是错误的：
 ```
 class Creatrue<T>{}
 class Man extends Creatrue<T>{} //编译错误
 class Man extends Creatrue<String>{} //可以正确编译
-class Man<T> extends Creatrue<T>{} //可以正确编译
+class Man<T> extends Creatrue<T>{} //可以正确编译，此时形参名必须相同为T
 class Man<T> extends Creatrue<String>{} //可以正确编译
+class Man<U,R> extends Creatrue<String>{} //可以正确编译
 ```
 ### 类型变量的限定与范型通配符
 声明类型参数时使用 extends 关键字可以限定类型参数的范围：
@@ -91,10 +92,10 @@ arrayToCollection(arr3,list2);
 3. 不能抛出或捕获泛型类的实例，既不能抛出也不能捕获泛型类对象。实际上，甚至泛型类扩展 `Throwable` 都是不合法的 。
 
 ### 泛型与继承
-假设我们定义了应该泛型类Pair，Manager是Employee的子类，那么它们的继承关系如下:
+假设我们定义了一个泛型类`Pair`，`Manager`是`Employee`的子类，那么它们的继承关系如下:
 <center><img src="pics/generics-1.png" alt=""></center>
 
-总结一下就是无论S与T有什么关系，通常，`Pair<S>`与`Pair<T>`都没有任何关系。
+**总结一下就是无论S与T有什么关系，通常，`Pair<S>`与`Pair<T>`都没有任何关系。**
 
 还需要说明的是，泛型类可以扩展或实现其他的泛型类。就这一点而言，它们与普通的类没有什么区别。  
 ArrayList类实现了List接口。这意味着，一个`ArrayList<Manager>`可以转换为一个`List<Manager>`。但是，如前面所见，`ArrayList<Manager>`不是一个`ArrayList<Employee>`或`List<Employee>`。

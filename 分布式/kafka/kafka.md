@@ -11,3 +11,5 @@ request.required.acks有三个值 0 1 -1
 ### 不能连接
 ConsumerCoordinator  - [Consumer clientId=consumer-infoGroup-1, groupId=infoGroup] Discovered group coordinator storm10
 035:9092 (id: 2147481869 rack: null)
+
+阿里云的kafka 必须创建对应的 group 才能监听

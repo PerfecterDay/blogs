@@ -10,7 +10,7 @@
   - [集合转换](#集合转换)
   - [命名方法](#命名方法)
   - [插件冲突](#插件冲突)
-  - [](#)
+  - [复杂转换-多个输入组成一个对象](#复杂转换-多个输入组成一个对象)
 
 https://www.baeldung.com/mapstruct  
 https://www.baeldung.com/java-mapstruct-mapping-collections
@@ -178,20 +178,20 @@ No property named "sms" exists in source parameter/No property named "sms" exist
 ```
 
 
-### 
+### 复杂转换-多个输入组成一个对象
 I have Car:
 + id
 + brand
 + model
 + owner
+
 And CarDTO:
 + id
 + brand
 + model
-In my service class I'm passing additional parameter "owner" and I need to convert the list.
 
-Is it possible to add "owner" to Mapper?
-
+In my service class I'm passing additional parameter "owner" and I need to convert the list.  
+Is it possible to add "owner" to Mapper?  
 If yes then I suppose it should be something similar to this (not working).
 ```
 @Mapper
@@ -203,20 +203,22 @@ List<Car> mapCars(List<CarDTO> cars, String owner);
 ```
 
 Firstly, add a single object mapping method:
-
+```
 @Maping(target = "owner", source = "owner")
 Car mapCar(CarDTO car, String owner);
+```
 Then define a method for mapping a list of objects with @Context:
 
-List<Car> mapCars(List<CarDTO> cars, @Context String owner);
+```List<Car> mapCars(List<CarDTO> cars, @Context String owner);```
+
 Since @Context parameters are not meant to be used as source parameters, a proxy method should be added to point MapStruct to the right single object mapping method to make it work.
 
 In the end, add the proxy method:
-
+```
 default Car mapContext(CarDTO car, @Context String owner) {
     return mapCar(car, owner);
 }
-
+```
 
 ```
 @Mapper

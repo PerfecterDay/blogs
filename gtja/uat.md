@@ -81,6 +81,8 @@ alikafka-post-public-intl-sg-uq832vxmo01-3-vpc.alikafka.aliyuncs.com:9092
 curl -X POST localhost:10000/user/app/configuration
 curl -X POST localhost:8888/user/app/configuration
 
+阿里云的kafka 必须创建对应的 topic/group,并且添加白名单 才能监听
+
 ## 远程登录
 1. VNC登录：重置密码
 2. Workbench登录：Sunthy80@

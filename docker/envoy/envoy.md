@@ -3,6 +3,8 @@
 > https://github.com/envoyproxy/envoy
 
 
+<center><img src="pics/envoy-architecture.webp" alt=""></center>
+
 ### 配置输出日志
 envoy -c envoy-demo.yaml --log-path logs/custom.log
 

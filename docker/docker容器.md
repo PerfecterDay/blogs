@@ -41,10 +41,10 @@
 	2.  `docker exec -it [containerid]`：`-it` 以交互模式打开 pseudo-TTY，执行 bash，其结果就是打开了一个 bash 终端。
 	3.  启动时直接进入容器，适用于要保持容器后台运行的情况：`docker run -it [imageid] [command]` -> `docker run -it nginx /bin/bash`
 		```
-		docker run -dit --name user-center-com-gmas -v /Users/coder_wang/Workspace/uat-docker/user-com-gmas:/usr/local/gtja/com_gmas -p 8910:8910  golang:1.17.7-stretch
+				docker run -dit --name user-center-com-gmas -v /Users/coder_wang/Workspace/uat-docker/user-com-gmas:/usr/local/gtja/com_gmas -p 8910:8910  golang:1.17.7-stretch
 		```
 
-	attach 与 exec 主要区别如下:
+		attach 与 exec 主要区别如下:
     	+ attach 直接进入容器 启动命令 的终端，不会启动新的进程。
     	+ exec 则是在容器中打开新的终端，并且可以启动新的进程。
     	+ 如果想直接在终端中查看启动命令的输出，用 attach；其他情况使用 exec。
@@ -59,15 +59,19 @@
 
 
 ### 实现容器的底层技术
-cgroup 和 namespace 是最重要的两种技术——cgroup 实现资源限额，namespace 实现资源隔离。
+cgroup 和 namespace 是最重要的两种技术
++ cgroup 实现资源限额，
++ namespace 实现资源隔离。
 
-1. cgroup(全称Control Group) : 提供资源分配与管理功能。  
+1. cgroup(全称Control Group) : 提供资源分配与管理功能。
+
    Linux 操作系统通过 cgroup 可以设置进程使用 CPU、内存 和 IO 资源的限额。相信你已经猜到了：前面我们看到的`--cpu-shares`、`-m`、`--device-write-bps` 实际上就是在配置 cgroup。
    cgroup 到底长什么样子呢？我们可以在 /sys/fs/cgroup 中找到它。在 /sys/fs/cgroup/cpu/docker 目录中，保存了对CPU资源的限制配置，Linux 会为每个容器创建一个 cgroup 目录，以容器长ID 命名。
    目录中包含所有与 cpu 相关的 cgroup 配置，文件 cpu.shares 保存的就是 --cpu-shares 的配置，值为 512。
    同样的，/sys/fs/cgroup/memory/docker 和 /sys/fs/cgroup/blkio/docker 中保存的是内存以及 Block IO 的 cgroup 配置。
 
 2. namespace : 提供环境隔离功能。  
+
     在每个容器中，我们都可以看到文件系统，网卡等资源，这些资源看上去是容器自己的。拿网卡来说，每个容器都会认为自己有一块独立的网卡，即使 host 上只有一块物理网卡。这种方式非常好，它使得容器更像一个独立的计算机。
     Linux 实现这种方式的技术是 namespace。namespace 管理着 host 中全局唯一的资源，并可以让每个容器都觉得只有自己在使用它。换句话说，namespace 实现了容器间资源的隔离。
 	Linux 使用了六种 namespace，分别对应六种资源： `Mount` 、 `UTS` 、 `IPC` 、 `PID` 、`Network` 和 `User`，下面我们分别讨论。

@@ -87,6 +87,7 @@ public interface Condition {
    `com.gtja.test.AutoConfigurationTest`
 
 ### [自定义starter](https://docs.spring.io/spring-boot/docs/current/reference/html/features.html#features.developing-auto-configuration.custom-starter)
+Spring Boot 2.7 引入了用于注册自动配置的新 `META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports` 文件，同时保持了与 spring.factories 中注册的向后兼容性。在此版本中，使用 `org.springframework.boot.autoconfigure.EnableAutoConfiguration` 关键字在 `spring.factories` 中注册自动配置的支持已被移除，转而使用 imports 文件。`spring.factories` 中其他键下的条目不受影响。
 
 ### @SpringBootApplication 
 通常我们使用 @SpringBootApplication 在启动 springboot 的 main 方法所在类上标注来启动自动注解功能。

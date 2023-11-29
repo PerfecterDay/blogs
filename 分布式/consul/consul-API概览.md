@@ -97,19 +97,6 @@ Consul HTTP API是一个RESTful接口，允许你在网络中利用Consul功能�
 - [`/session`](https://developer.hashicorp.com/consul/api-docs/session)：在Consul中创建和管理[session]（https://developer.hashicorp.com/consul/docs/dynamic-app-config/sessions）。你可以使用会话来建立分布式和细粒度的锁，以确保节点正确写入Consul KV存储。
 
 
-
-spring-cloud-consul-
-
-ConsulAutoRegistration
-
-ConsulDiscoveryClientConfiguration
-            ConsulDiscoveryProperties
-HeartbeatProperties
-
-ConsulAutoServiceRegistrationListener
-只有web应用时才会注册服务
-
-
 ### [HTTP API](https://developer.hashicorp.com/consul/api-docs/catalog#list-nodes-for-service)
 查找所有注册的服务信息： `curl http://localhost:8500/v1/catalog/services`
 查找所有注册的数据中心信息： `curl http://localhost:8500/v1/catalog/datacenters`

@@ -8,5 +8,5 @@
   * [Springboot 中的回调扩展点](/spring/springboot/springboot中的一些回调接口.md)
   * [Springboot Actuator](/spring/springboot/springboot-actutor.md)
   * [Spring Async](/spring/springboot/spring-async集成.md)
-  * [Spring Cache](/spring/springboot/spring-cache.md)
+  * [Spring 缓存](/spring/springboot/spring-cache.md)
   * [Spring cloud open feign](/spring/springboot/spring-cloud-openfeign.md)

@@ -6,6 +6,7 @@
   - [自己实现缓存的简单实现](#自己实现缓存的简单实现)
   - [Spring Cache 的注解](#spring-cache-的注解)
   - [JSR-107 Cache](#jsr-107-cache)
+  - [Caffeine](#caffeine)
   - [Springboot 集成 redis 缓存](#springboot-集成-redis-缓存)
 
 
@@ -131,6 +132,33 @@ JavaCaching定义了4个核心接又，分别是CachingProvider、CacheManager�
 + Entry：是一个存储在Cache中的键值对。每个存储在Cache中的条目都有一个定义的有效期，即ExpiryDuration。一旦超过这个时间，条目即为过期状态。一旦过期，条目将不可访问。缓存有效期可以通过ExpiryPolicy设置。
 
 <center><img src="/pics/jcahce.jpg"></center>
+
+### Caffeine
+```
+<dependencies>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-cache</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>com.github.ben-manes.caffeine</groupId>
+        <artifactId>caffeine</artifactId>
+    </dependency>
+</dependencies>
+
+@Bean
+public Caffeine caffeineConfig() {
+    return Caffeine.newBuilder().expireAfterWrite(60, TimeUnit.MINUTES);
+}
+
+@Bean
+public CacheManager cacheManager(Caffeine caffeine) {
+    CaffeineCacheManager caffeineCacheManager = new CaffeineCacheManager();
+    caffeineCacheManager.setCaffeine(caffeine);
+    return caffeineCacheManager;
+}
+```
+
 
 
 ### Springboot 集成 redis 缓存

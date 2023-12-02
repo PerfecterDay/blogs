@@ -6,6 +6,7 @@
 	- [Future](#future)
 	- [CompletableFuture](#completablefuture)
 		- [将 CompletableFuture 当作简单Future来用](#将-completablefuture-当作简单future来用)
+	- [并行执行多个 Futures](#并行执行多个-futures)
 
 
 异步计算很难推理。通常，我们希望将任何计算视为一系列步骤，但在异步计算中，表示为回调的操作往往分散在代码中，或者相互嵌套。当我们需要处理某个步骤中可能出现的错误时，情况就会变得更糟。
@@ -39,6 +40,8 @@ public Future<String> calculateAsync() throws InterruptedException {
     return completableFuture;
 }
 ```
+
+### 并行执行多个 Futures
 
 1. 异步操作完成时的操作回调，获取操作结果
 	```

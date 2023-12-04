@@ -1,5 +1,11 @@
-# maven 常用命令参数和配置
+## maven 常用命令参数和配置
 {docsify-updated}
+
+- [maven 常用命令参数和配置](#maven-常用命令参数和配置)
+    - [maven 常用命令](#maven-常用命令)
+    - [maven 常用配置](#maven-常用配置)
+    - [maven 问题](#maven-问题)
+
 
 #### maven 常用命令
 0. `mvn -B archetype:generate -DgroupId=com.my -DartifactId=simple-weather -DpackageName=com.baicy -Dversion=1.0 `: 以batch模式创建新项目，会选择 Archetype ，可能需要删除 settings配置文件中 archetypeRepository 和 archetypeCatalog 配置。
@@ -11,7 +17,7 @@
 6. `mvn clean cobertura:cobertura -Dcobertura.report.format=html`:生成html格式的测试覆盖率报告
 7. `mvn help:effective-pom`：生成完整的 POM 文件，包含 super pom
 8. `mvn help:effective-settings`: 查看当前 maven 生效的设置
-9. 安装本地JAR包到本地仓库：`mvn install:install-file -Dfile= -DgroupId=org.codehaus.mojo -DartifactId=tmaven-versions-plugin -Dversion=2.2 -Dpackaging=jar`
+9. 安装本地JAR包到本地仓库：`mvn install:install-file -Dfile="D:\workspace\trade\trade-center\trade-center-service\lib\ZHConverter.jar" -DgroupId="com.spreada.utils.chinese" -DartifactId="ZHConverter" -Dversion="1.0" -Dpackaging="jar"`
 10. `mvn package -DskipTests`: 跳过测试运行
 11. `mvn package -Dmvn.test.skip=true`：跳过测试代码编译同时跳过测试运行
 12. `mvn test -Dtest=testClass1,testClass2|Random*Test`：运行指定的测试类（|代表或）

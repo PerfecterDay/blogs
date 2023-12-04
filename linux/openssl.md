@@ -3,6 +3,7 @@
 
 - [OpenSSL](#openssl)
 	- [命令](#命令)
+	- [证书格式](#证书格式)
 	- [证书制作](#证书制作)
 		- [生成公私钥对](#生成公私钥对)
 		- [Creating Certiﬁcate Signing Requests](#creating-certiﬁcate-signing-requests)
@@ -26,6 +27,9 @@
 ### 命令
 + `openssl version -a` : 查看版本信息，`OPENSSLDIR` 中存放了openssl配置的路径
 + `openssl help` : 帮助信息
+
+### 证书格式
+<center><img src="pics/pki-overview-1536x797.png" width="70%"></center>
 
 ### 证书制作
 大多数用户转向OpenSSL，因为他们希望配置和运行支持SSL的Web服务器。该过程包括三个步骤：

@@ -4,16 +4,16 @@
 > https://kingfree.gitbook.io/consul/getting-started/agent
 
 - [Consul API 概览](#consul-api-概览)
-	- [consul 命令行-CLI](#consul-命令行-cli)
-	- [Consul HTTP API Overview](#consul-http-api-overview)
-		- [连接你的服务](#连接你的服务)
-		- [启用零信任的网络安全](#启用零信任的网络安全)
-		- [观察你的网络](#观察你的网络)
-		- [管理 Consul](#管理-consul)
-		- [动态地配置](#动态地配置)
-	- [HTTP API](#http-api)
-	- [问题](#问题)
-	- [Helm安装 consul 集群](#helm安装-consul-集群)
+  - [consul 命令行-CLI](#consul-命令行-cli)
+  - [Consul HTTP API Overview](#consul-http-api-overview)
+    - [连接你的服务](#连接你的服务)
+    - [启用零信任的网络安全](#启用零信任的网络安全)
+    - [观察你的网络](#观察你的网络)
+    - [管理 Consul](#管理-consul)
+    - [动态地配置](#动态地配置)
+  - [HTTP API](#http-api)
+  - [问题](#问题)
+  - [Helm安装 consul 集群](#helm安装-consul-集群)
 
 
 ### consul 命令行-CLI
@@ -138,25 +138,25 @@ spring.cloud.consul.discovery.heartbeat.reregister-service-on-failure=true
 
 https://developer.hashicorp.com/consul/docs/k8s/installation/install
 
-`helm install consul hashicorp/consul --set global.name=consul --set server.storage=2Gi --create-namespace --namespace consul`
+`helm install consul hashicorp/consul --set global.name=consul --set server.storage=2Gi --create-namespace --namespace consul`  
 `helm install consul hashicorp/consul --set global.name=consul-cluster --set server.storage=500M --set server.storageClass=alicloud-disk-available --namespace consul`
-
-helm install consul hashicorp/consul --set global.name=consul-cluster --set server.storage=500M --namespace consul
-
+`helm install consul hashicorp/consul --set global.name=consul-cluster --set server.storage=500M --namespace consul`
 
 存储声明 PVC ：
-  name: data-consul-consul-cluster-server-0
+```
+name: data-consul-consul-cluster-server-0
   namespace: consul
   resourceVersion: '34177039'
   uid: 91fe6fc4-85c7-48b5-b3b1-8b1085294d43
-
+```
 要与存储卷 PV ：
-  claimRef:
+```
+claimRef:
     apiVersion: v1
     kind: PersistentVolumeClaim
     name: data-consul-consul-cluster-server-0
     namespace: consul
     resourceVersion: '6283149'
     uid: e64352c1-47e3-462e-a5b7-724ac08d7862
-  
-保持一致
+```
+uid保持一致

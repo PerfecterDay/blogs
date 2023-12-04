@@ -10,3 +10,4 @@
   * [Spring Async](/spring/springboot/spring-async集成.md)
   * [Spring 缓存](/spring/springboot/spring-cache.md)
   * [Spring cloud open feign](/spring/springboot/spring-cloud-openfeign.md)
+  * [Spring email 发送邮件](/spring/springboot/spring-email.md)

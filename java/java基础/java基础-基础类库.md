@@ -9,11 +9,9 @@
 		- [Object类](#object类)
 		- [Objects类](#objects类)
 		- [日期时间相关 Date/Calendar](#日期时间相关-datecalendar)
-		- [字符串](#字符串)
 	- [国际化（I18N）与本地化（L10N）](#国际化i18n与本地化l10n)
 	- [属性文件加载](#属性文件加载)
 		- [Math类](#math类)
-
 
 ## 系统相关
 
@@ -70,9 +68,6 @@ Date date = calendar.getTime();
 calendar.setTime(date);
 ```
 Java 8 新增了 `java.time` 包，包含了许多与时间相关的类。
-
-### 字符串
-
 
 ## 国际化（I18N）与本地化（L10N）
 Java 程序的国际化主要通过如下三个类完成：

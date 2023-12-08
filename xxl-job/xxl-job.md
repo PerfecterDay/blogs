@@ -28,9 +28,22 @@ curl -XPOST 'http://localhost:9000/xxl-job-admin/jobinfo/trigger' \
 EmbedServer
 EmbedHttpServerHandler
 
-curl -XPOST http://10.176.112.27:9001/run \
+curl -XPOST http://localhost:9001/run \
 -H 'XXL-JOB-ACCESS-TOKEN:default_token' \
---data-raw '{"jobId":2,"executorHandler":"delUserJob","executorParams":"","executorBlockStrategy":"SERIAL_EXECUTION","executorTimeout":0,"logId":9"logDateTime":1686185214070,"glueType":"BEAN","glueSource":"","glueUpdatetime":1670467769000,"broadcastIndex":0,"broadcastTotal":1}'
+--data-raw '{
+	"jobId": 2,
+	"executorHandler": "fundTradeDateSyncer",
+	"executorParams": "",
+	"executorBlockStrategy": "SERIAL_EXECUTION",
+	"executorTimeout": 0,
+	"logId": "9",
+	"logDateTime": 1686185214070,
+	"glueType": "BEAN",
+	"glueSource": "",
+	"glueUpdatetime": 1670467769000,
+	"broadcastIndex": 0,
+	"broadcastTotal": 1
+}'
 
 curl -XPOST http://10.176.112.27:9001/run \
 -H 'XXL-JOB-ACCESS-TOKEN:default_token' \

@@ -32,7 +32,8 @@ public SpringApplication(ResourceLoader resourceLoader, Class<?>... primarySourc
 	this.mainApplicationClass = deduceMainApplicationClass();
 }
 
-在构造过程中多次用到了 getSpringFactoriesInstances 加载 BootstrapRegistryInitializer/ApplicationContextInitializer/ApplicationListener 等对象，此处涉及到Springboot 的 SPI 机制：SpringFactoriesLoader ：
+在构造过程中多次用到了 getSpringFactoriesInstances 加载 BootstrapRegistryInitializer/ApplicationContextInitializer/ApplicationListener 等对象，
+此处涉及到Springboot 的 SPI 机制：SpringFactoriesLoader ：
 private <T> List<T> getSpringFactoriesInstances(Class<T> type, ArgumentResolver argumentResolver) {
 	return SpringFactoriesLoader.forDefaultResourceLocation(getClassLoader()).load(type, argumentResolver);
 }
@@ -48,7 +49,8 @@ public ConfigurableApplicationContext run(String... args) {
 	DefaultBootstrapContext bootstrapContext = createBootstrapContext();
 	ConfigurableApplicationContext context = null;
 	configureHeadlessProperty();
-	SpringApplicationRunListeners listeners = getRunListeners(args); //获取SpringApplicationRunListener，然后在springboot启动过程中的不同阶段通知（调用）这些listener
+	//获取SpringApplicationRunListener，然后在springboot启动过程中的不同阶段通知（调用）这些listener
+	SpringApplicationRunListeners listeners = getRunListeners(args); 
 	listeners.starting(bootstrapContext, this.mainApplicationClass);
 	try {
 		ApplicationArguments applicationArguments = new DefaultApplicationArguments(args);

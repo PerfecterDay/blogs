@@ -9,12 +9,13 @@
 	- [去除字符串最后一个字符](#去除字符串最后一个字符)
 	- [统计字符串里字符的数量](#统计字符串里字符的数量)
 	- [split](#split)
-	- [字符串压缩 （https://www.baeldung.com/java-9-compact-string）](#字符串压缩-httpswwwbaeldungcomjava-9-compact-string)
+	- [字符串压缩](#字符串压缩)
 		- [Java6 的 Compressed String](#java6-的-compressed-string)
 		- [Java 9 的 Compact String](#java-9-的-compact-string)
 	- [字符串比较](#字符串比较)
 	- [换行符](#换行符)
 	- [字符串池](#字符串池)
+	- [String 的API](#string-的api)
 
 
 ### 定义多行字符串
@@ -84,7 +85,7 @@ String[] splitted = StringUtils.split("car jeep scooter"); //  Apache Commons La
 String[] splitted = "peter,james,thomas".split(",");
 ```
 
-### 字符串压缩 （https://www.baeldung.com/java-9-compact-string）
+### 字符串压缩
 在JDK早期版本中，字符串在内部由包含字符串字符的 `char[]` 表示。每个字符由 2 个字节组成，因为 Java 内部使用 UTF-16。
 
 例如，如果字符串包含一个英语单词，那么每个字符的前 8 位都将为 0，因为 ASCII 字符可以用一个字节来表示。
@@ -161,3 +162,29 @@ assertThat(string1.equalsIgnoreCase(string2)).isTrue();
 在 Java 7 之前，JVM 将 Java 字符串池放在 PermGen 空间中，该空间有固定大小，不能在运行时扩展，也不能进行垃圾回收。在 PermGen（而不是 Heap）中置入字符串的风险在于，如果置入的字符串过多，JVM 就会出现 OutOfMemory 错误。
 
 从 Java 7 开始，Java 字符串池存储在堆空间，由 JVM 进行垃圾回收。这种方法的优点是降低了发生 OutOfMemory 错误的风险，因为未引用的字符串将从池中删除，从而释放了内存。
+
+### String 的API
++ String.String()
++ String.codePointCount()
++ String.codePointAt()
++ String.concat()
++ String.contains()
++ String.copyValueOf()
++ String.endsWith()
++ String.format()
++ String.getBytes()
++ String.indexOf()
++ String.intern()
++ String.isEmpty()
++ String.lastIndexOf()
++ String.regionMatches()
++ String.replace()
++ String.replaceAll()
++ String.split()
++ String.startsWith()
++ String.subSequence()
++ String.substring()
++ String.toLowerCase()
++ String.toUpperCase()
++ String.trim()
++ String.valueOf()

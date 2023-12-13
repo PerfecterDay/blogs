@@ -13,6 +13,7 @@
 	- [使用代理服务器](#使用代理服务器)
 		- [Proxy](#proxy)
 		- [ProxySelector](#proxyselector)
+	- [实现请求代理转发功能](#实现请求代理转发功能)
 
 
 ### Java的基本网络支持
@@ -135,3 +136,59 @@ Proxy 有一个构造器： Proxy(Proxy.Type type, SocketAddress sa)，sa指定�
 实现了自定义的 ProxySelector 后，还需要将其设置为默认的代理选择器才会生效， ProxySelector 提供了下述静态方法来获取和设置默认的 ProxySelector：
 + static ProxySelector getDefault(): 获取默认的 ProxySelector
 + static void setDefault(ProxySelector ps)： 设置默认的 ProxySelector
+
+
+### 实现请求代理转发功能
+```
+package com.minigod.controller.user;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Enumeration;
+
+@RestController
+@RequestMapping("/app/user")
+public class ProxyController {
+
+    @Value("${app.user.url}")
+    private String url;
+
+    @PostMapping("/**")
+    public ResponseEntity<String> proxy(@RequestBody String body, HttpServletRequest servletRequest, HttpServletResponse response) {
+        try {
+            HttpMethod method = HttpMethod.resolve(servletRequest.getMethod());
+            String uriStr = servletRequest.getRequestURI().replace("/app/user", "");
+            URI uri = new URI(url + uriStr);
+
+            HttpHeaders headers = new HttpHeaders();
+            Enumeration<String> headerNames = servletRequest.getHeaderNames();
+
+            while (headerNames.hasMoreElements()) {
+                String headerName = headerNames.nextElement();
+                headers.set(headerName, servletRequest.getHeader(headerName));
+            }
+
+            HttpEntity<String> httpEntity = new HttpEntity<>(body, headers);
+            RestTemplate restTemplate = new RestTemplate();
+            ResponseEntity<String> serverResponse = restTemplate.exchange(uri, method, httpEntity, String.class);
+            return serverResponse;
+
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
+    }
+}
+```

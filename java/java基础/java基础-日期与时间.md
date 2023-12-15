@@ -11,7 +11,7 @@
 		- [日期时间转字符串](#日期时间转字符串)
 		- [字符串转时间](#字符串转时间)
 	- [与老的时间类的转换](#与老的时间类的转换)
-
+	- [Period 和 Duration](#period-和-duration)
 
 日期-时间API由主包`java.time`和四个子包组成：
 
@@ -130,3 +130,52 @@ ZonedDateTime zonedDateTime = ZonedDateTime.parse("1990-01-01 1:00:00",DateTimeF
 
 ### 与老的时间类的转换
 <center><img src="pics/date-transform.png" width="90%"></center>
+
+### Period 和 Duration
+这两个类都可以用来表示时间量或确定两个日期之间的差值。这两个类的主要区别在于，Period 使用基于日期的值,用来表示多少年月日，而 Duration 使用基于时间的值，用来表示多少天时分秒。
+
+`Period` 类使用年、月、日单位来表示一段时间。
+通过使用 `between()` 方法，我们可以获得一个`Period`对象，作为两个日期之间的差值，并且可以使用 `getYears()`、`getMonths()` 和 `getDays()` 方法确定`Period`的日期单位：
+```
+LocalDate startDate = LocalDate.of(2015, 2, 20);
+LocalDate endDate = LocalDate.of(2017, 1, 15);
+
+Period period = Period.between(startDate, endDate);
+
+LOG.info("Years:" + period.getYears() + 
+  " months:" + period.getMonths() + 
+  " days:"+period.getDays());
+```
+
+另一种创建`Period`对象的方法是使用专用方法根据天数、月数、周数或年数创建：
+```
+Period fromUnits = Period.of(3, 10, 10);
+Period fromDays = Period.ofDays(50);
+Period fromMonths = Period.ofMonths(5);
+Period fromYears = Period.ofYears(10);
+Period fromWeeks = Period.ofWeeks(40);
+
+assertEquals(280, fromWeeks.getDays());
+```
+
+还可以通过解析文本序列来创建周期对象，文本序列的格式必须是 `PnYnMnD`：
+```
+Period fromCharYears = Period.parse("P2Y");
+assertEquals(2, fromCharYears.getYears());
+
+Period fromCharUnits = Period.parse("P2Y3M5D");
+assertEquals(5, fromCharUnits.getDays());
+```
+
+
+`Duration` 类表示以秒或纳秒为单位的时间间隔，最适合在需要更高精度的情况下处理较短的时间量。
+要根据文本序列创建 "持续时间 "对象，其形式必须是 `PnDTnHnMn.nS`：
+```
+Instant start = Instant.parse("2017-10-03T10:15:30.00Z");
+Instant end = Instant.parse("2017-10-03T10:16:30.00Z");
+        
+Duration duration = Duration.between(start, end);
+
+Duration fromChar1 = Duration.parse("P1DT1H10M10.5S");
+Duration fromChar2 = Duration.parse("PT10M");
+```

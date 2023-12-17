@@ -1,6 +1,31 @@
 # java基础-NIO
 {docsify-updated}
 
+- [java基础-NIO](#java基础-nio)
+  - [流与块的比较](#流与块的比较)
+  - [通道](#通道)
+  - [缓冲区](#缓冲区)
+    - [缓冲区的状态变量](#缓冲区的状态变量)
+      - [Capacity](#capacity)
+      - [position](#position)
+      - [limit](#limit)
+      - [flip方法](#flip方法)
+      - [clear方法](#clear方法)
+      - [get() 方法](#get-方法)
+      - [put()方法](#put方法)
+      - [缓冲区分配和包装](#缓冲区分配和包装)
+  - [NIO 网络编程的一般步骤](#nio-网络编程的一般步骤)
+    - [服务器端打开一个 ServerSocketChannel](#服务器端打开一个-serversocketchannel)
+    - [Selector](#selector)
+    - [SelectionKey](#selectionkey)
+    - [内部循环](#内部循环)
+    - [监听新连接](#监听新连接)
+    - [接受新的连接](#接受新的连接)
+    - [删除处理过的 SelectionKey](#删除处理过的-selectionkey)
+    - [处理传入的 I/O 数据](#处理传入的-io-数据)
+    - [回到主循环](#回到主循环)
+
+
 主要转自：https://www.ibm.com/developerworks/cn/education/java/j-nio/j-nio.html
 
 ## 流与块的比较

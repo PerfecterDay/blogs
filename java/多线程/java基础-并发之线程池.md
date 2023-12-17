@@ -5,7 +5,7 @@
   - [线程池的好处](#线程池的好处)
   - [线程池类图结构](#线程池类图结构)
   - [内置线程池](#内置线程池)
-  - [自创建线程池](#自创建线程池)
+  - [自定义线程池](#自定义线程池)
     - [向线程池提交任务](#向线程池提交任务)
     - [线程池的关闭](#线程池的关闭)
     - [线程池使用总结](#线程池使用总结)
@@ -42,7 +42,7 @@ JDK1.5 提供了一个 `Executors` 工厂来生产线程池，该工厂里包含
 4. `newScheduledThreadPool(int corePoolSize )`: 创建一个具有固定线程数的线程池，它可以在指定延迟后执行线程任务。corePoolSize指池中保存的线程数，即使线程是空闲的也保存下来
 5. `newSingleThreadScheduledExecutor()`: 创建一个只有单线程的线程池，它可以在指定延迟后执行线程任务。
 
-## 自创建线程池
+## 自定义线程池
 
 我们可以通过继承 `ThreadPoolExecutor` 来创建一个线程池。
 
@@ -83,7 +83,7 @@ JDK1.5 提供了一个 `Executors` 工厂来生产线程池，该工厂里包含
                                       RejectedExecutionHandler handler)
 ``` 
 
-1. **int corePoolSize**（线程池的基本大小）：当提交一个任务到线程池时，线程池会创建一个线程来执行任务，即使其他空闲的基本线程能够执行新任务也会创建线程，等到需要执行的任务数大于线程池基本大小时就不再创建。如果调用了线程池的 `prestartAllCoreThreads()` 方法，线程池会提前创建并启动所有基本线程。
+1. **int corePoolSize**（线程池的基本大小）：当提交一个任务到线程池时，线程池会创建一个线程来执行任务，即使其他空闲的核心线程能够执行新任务也会创建线程，等到需要执行的任务数大于线程池基本大小时就不再创建。如果调用了线程池的 `prestartAllCoreThreads()` 方法，线程池会提前创建并启动所有核心线程。
 2. **int maximumPoolSize**（线程池最大大小）：线程池允许创建的最大线程数。如果队列满了，并且已创建的线程数小于最大线程数，则线程池会再创建新的线程执行任务。值得注意的是如果使用了无界的任务队列这个参数就没什么效果。
 3. **long keepAliveTime**（线程活动保持时间）：线程池的工作线程空闲后，保持存活的时间。所以如果任务很多，并且每个任务执行的时间比较短，可以调大这个时间，提高线程的利用率。
 4. **TimeUnit unit**（线程活动保持时间的单位）：可选的单位有天（DAYS），小时（HOURS），分钟（MINUTES），毫秒(MILLISECONDS)，微秒(MICROSECONDS, 千分之一毫秒)和毫微秒(NANOSECONDS, 千分之一微秒)。
@@ -133,7 +133,7 @@ void execute(Runnable command);
 ### 线程池使用总结
 下面总结了在使用连接池时应该做的事 ：
 1. 调用 `Executors` 类中静态的方法 `newCachedThreadPool()` 或 `newFixedThreadPool()` 创建线程池 。
-2. 调用 `submit()` 提交 `Runnable` 或 `Callable` 对象
+2. 调用 `submit()/execute()` 提交 `Runnable` 或 `Callable` 对象
 3. 如果想要取消一个任务或提交 `Callable` 对象, 那就要保存好返回的 `Future` 对象
 4. 当不再提交任何任务时 ，调用 `shutdown` 。
 
@@ -161,13 +161,34 @@ public interface ScheduledExecutorService extends ExecutorService
             long initialDelay,
           long delay,
           TimeUnit unit);
+    
+    @Test
+    public void givenUsingExecutorService_whenSchedulingRepeatedTask_thenCorrect() 
+        throws InterruptedException {
+        TimerTask repeatedTask = new TimerTask() {
+            public void run() {
+                System.out.println("Task performed on " + new Date());
+            }
+        };
+        ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+        long delay  = 1000L;
+        long period = 1000L;
+        executor.scheduleAtFixedRate(repeatedTask, delay, period, TimeUnit.MILLISECONDS);
+        Thread.sleep(delay + period * 3);
+        executor.shutdown();
+    }
 }
 ```
+
+`Timer` 和 `ExecutorService` 解决方案的主要区别:
++ `Timer` 对系统时钟的变化很敏感；而 `ScheduledThreadPoolExecutor` 则不然。
++ `Timer　只有一个执行线程；而` `ScheduledThreadPoolExecutor` 可以配置任意数量的线程。
++ 在 `TimerTask` 中抛出的运行时异常会杀死线程，因此后续的计划任务不会继续运行；而在 `ScheduledThreadExecutor` 中，当前任务会被取消，但其他任务会继续运行。
 
 ## 线程池的分析
 当提交一个新任务到线程池时，线程池的处理流程如下：
 
-1. 首先线程池判断基本线程池是否已满(corePoolSize)？没满（线程数&lt;corePoolSize），即使有空闲线程，也会创建一个工作线程来执行任务。满了（已经达到核心线程数）则进入下一步。
+1. 首先线程池判断核心线程池是否已满(corePoolSize)？没满（线程数&lt;corePoolSize），即使有空闲线程，也会创建一个工作线程来执行任务。满了（已经达到核心线程数）则进入下一步。
 2. 看看是否有空闲线程可用，有空闲线程则使用空闲线程执行任务；若无空闲线程，则进入下一步。
 3. 线程池判断工作队列是否已满？没满，则将新提交的任务存储在工作队列里。满了，则进入下一步。
 4. 最后线程池判断线程池是否已达最大线程数（maximumPoolSize）？没满，则创建一个新的工作线程来执行任务，满了，则交给饱和策略来处理这个任务。
@@ -190,7 +211,7 @@ public void execute(Runnable command) {
 				return;
 			c = ctl.get();
 		}
-		//如线程数大于等于基本线程数或线程创建失败，则将当前任务放到工作队列中。
+		//如线程数大于等于核心线程数或线程创建失败，则将当前任务放到工作队列中。
 		if (isRunning(c) && workQueue.offer(command)) {
 			int recheck = ctl.get();
 			if (! isRunning(recheck) && remove(command))

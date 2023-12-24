@@ -8,7 +8,7 @@
   * [docker-compose](/docker/docker-compose.md)
   * [podman](/docker/podman.md)
 * [k8s](#)
-  * [k8s集群创建与交互](/docker/k8s/k8s-创建k8s集群.md)
+  * [k8s集群创建及使用kubectl交互](/docker/k8s/k8s-创建k8s集群及使用kubectl.md)
   * [k8s-概念及架构](/docker/k8s/k8s-概念及架构.md)
   * [k8s-对象描述](/docker/k8s/k8s-对象.md)
   * [k8s-deployment](/docker/k8s/k8s-deployment.md)

@@ -5,7 +5,6 @@
   * [Springboot 启动过程](/spring/springboot/springboot启动原理分析.md)
   * [Springboot 自动配置原理](/spring/springboot/springboot自动配置原理.md)
   * [Springboot 配置文件加载及常用配置](/spring/springboot/springboot配置文件加载及常规配置.md)
-  * [Springboot 中的回调扩展点](/spring/springboot/springboot中的一些回调接口.md)
   * [Springboot Actuator](/spring/springboot/springboot-actutor.md)
   * [Spring Async](/spring/springboot/spring-async集成.md)
   * [Spring 缓存](/spring/springboot/spring-cache.md)

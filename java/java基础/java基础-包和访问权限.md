@@ -3,6 +3,7 @@
 
 - [包和访问权限](#包和访问权限)
 	- [package、import和import static](#packageimport和import-static)
+	- [包与目录结构及CLASSPATH](#包与目录结构及classpath)
 	- [访问权限控制](#访问权限控制)
 
 
@@ -24,6 +25,13 @@ Java允许把一组功能相关的类放在一个包下，从而组成逻辑上�
 为了简化编程，Java引入了 import 语句， import 语句可以导入指定包下的某个类或所有类。 import 语句需要出现在 package 语句之后、类定义之前。 import 中的 \* 只能代表类，不能代表包。就是说如果引用指定包下的 \*，不能导入该包中子包下的类。 
 
 `import static` 可以导入指定类中的静态成员或方法。使用 import 导入类后，可以省略包名，使用 `import static` 导入后，连类名都可以省略了。
+
+### 包与目录结构及CLASSPATH
+包名称与用于存储类的目录结构密切相关。例如，包 com.zzz.project1.subject2 的类 Circle 存储为`$BASE_DIR\comzz\z\project1\subproject2\Circle.class`，其中 $BASE_DIR 表示包的基本目录。显然，软件包名称中的 "点 "对应的是文件系统的子目录。
+
+基本目录（`$BASE_DIR`）可以位于文件系统的任何位置。因此，Java 编译器和运行时必须知道 `$BASE_DIR` 的位置，以便找到类。这可以通过一个名为 CLASSPATH 的环境变量来实现。(CLASSPATH 与另一个环境变量 PATH 类似，后者用于命令 shell 搜索可执行程序）。
+
+在编写 GUI 程序时，我们经常会被两个软件包混淆：java.awt 和 java.awt.event。它们是两个不同的包，共享一些共同的目录结构。属于 java.awt 包的类保存在`$BASE_DIR/java/awt/`目录下，而 java.awt.event 包的类保存在`$BASE_DIR/java/awt/event/`目录下。 java.awt 和 java.awt.event 是两个不同的包，它们有共同的前缀和目录结构。Java 中没有子包的概念（即 java.awt.event 不是 java.awt 的子包）。
 
 ### 访问权限控制
 <center><img src="pics/access-control.jpg" alt="" width=60%></center>

@@ -30,7 +30,7 @@
    + `ConcurrentSkipListMap`
    + `ConcurrentSkipListSet`
    + `ConcurrentLinkedQueue`
-   + `CopyOnWriteArrayList`：当线程修改集合时，将对底层数组进行拷贝
+   + `CopyOnWriteArrayList`：当线程修改集合时，将对底层数组进行拷贝。当我们为 `CopyOnWriteArrayList` 创建迭代器时，我们得到的是调用 `iterator()` 时列表中数据的不可变快照。
    + `CopyOnWriteArraySet`：当线程修改集合时，将对底层数组进行拷贝
 3. 同步包装器  
    使用 `Collections` 工具类的以 synchronized 开头的方法，能将普通集合包装成线程安全的集合。通常，不应该使用这种包装器包装的集合，而应该使用java.util.current 包中的集合。一个例外是，如果需要经常被修改的数组列表或集合（ArrayList/ArraySet），包装器集合比`CopyOnWriteArrayList`/`CopyOnWriteArraySet`更加高效。

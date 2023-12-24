@@ -31,7 +31,8 @@
 RequestMapping 有很多属性可以指定匹配的细节：
 + `consumes` ： 匹配指定请求的特定的 `Content-Type` ， `!text/plain` 指除 `text/plain` 以外的任何内容类型。
 + `params` : 匹配指定 `parameter=value` 的请求
-+ `headers` : 匹配指定 `myHeader=myValue` 的请求
++ `headers` : 匹配指定 `myHeader=myValue` 的请求,请注意，在 curl 语法中，头关键字和头值之间用冒号隔开，这与 HTTP 规范相同，而在 Spring 中则使用等号。
+
 
 ```
 @PostMapping(path = "/pets", consumes = "application/json", ) 
@@ -195,17 +196,3 @@ public ResponseEntity<String> handle() {
 Spring MVC支持异步生成ResponseEntity，或为主体使用单值和多值反应类型。这允许以下类型的异步响应：
 + `ResponseEntity<Mono<T>>` 或 `ResponseEntity<Flux<T>>` 可立即知道响应状态和标头，而正文则在稍后异步提供。如果正文由 0...1 个值组成，请使用 Mono；如果可以产生多个值，请使用 Flux。
 + `Mono<ResponseEntity<T>>` 可在稍后异步提供所有三项内容--响应状态、头信息和正文。这允许响应状态和头信息根据异步请求处理的结果而变化。
-
-
-
-
-
-
-
-
-
-
-
-
-
-

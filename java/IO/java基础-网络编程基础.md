@@ -2,18 +2,18 @@
 {docsify-updated}
 
 - [java基础-网络编程基础](#java基础-网络编程基础)
-	- [Java的基本网络支持](#java的基本网络支持)
-		- [IP地址：InetAddress](#ip地址inetaddress)
-		- [URLEncoder 和 URLDecoder](#urlencoder-和-urldecoder)
-		- [URL、URLConnection 和 URLPermission](#urlurlconnection-和-urlpermission)
-	- [基于TCP的网络编程](#基于tcp的网络编程)
-	- [基于UDP的网络编程](#基于udp的网络编程)
-		- [使用 DatagramSocket 发送、接收 UDP 数据](#使用-datagramsocket-发送接收-udp-数据)
-		- [使用 MulticastSocket 实现多点广播](#使用-multicastsocket-实现多点广播)
-	- [使用代理服务器](#使用代理服务器)
-		- [Proxy](#proxy)
-		- [ProxySelector](#proxyselector)
-	- [实现请求代理转发功能](#实现请求代理转发功能)
+  - [Java的基本网络支持](#java的基本网络支持)
+    - [IP地址：InetAddress](#ip地址inetaddress)
+    - [URLEncoder 和 URLDecoder](#urlencoder-和-urldecoder)
+    - [URL、URLConnection 和 URLPermission](#urlurlconnection-和-urlpermission)
+  - [基于TCP的网络编程](#基于tcp的网络编程)
+  - [基于UDP的网络编程](#基于udp的网络编程)
+    - [使用 DatagramSocket 发送、接收 UDP 数据](#使用-datagramsocket-发送接收-udp-数据)
+    - [使用 MulticastSocket 实现多点广播](#使用-multicastsocket-实现多点广播)
+  - [使用代理服务器](#使用代理服务器)
+    - [Proxy](#proxy)
+    - [ProxySelector](#proxyselector)
+  - [实现请求代理转发功能](#实现请求代理转发功能)
 
 
 ### Java的基本网络支持
@@ -37,7 +37,7 @@ URLEncoder 和 URLDecoder 提供了静态的工具方法 encode 和 decode 来�
 
 #### URL、URLConnection 和 URLPermission
 URL 对象代表统一资源定位器，通常而言URL由协议名、主机、端口、路径和查询参数组成：  
-protocol://host:port/resource?queryParam1=value1&queryParam2=value2...
+`protocol://host:port/resource?queryParam1=value1&queryParam2=value2...`
 
 URL类提供了多个构造器用于创建URL对象，一旦构建一个URL对象，可以使用它提供的方法来获取资源：
 1. `String getFile()`: 获取URL的资源名

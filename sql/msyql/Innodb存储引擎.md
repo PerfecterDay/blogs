@@ -23,7 +23,7 @@ Purge Thread 用来回收已经提交的事务的 undo log页。 可以在配置
 
     缓冲池就是一块内存区域，数据库读取页时，首先判断磁盘页是否在内存池中，如果在，就直接读取内存中的页，否则从磁盘读取该页并将页加载到缓冲池中。  
     对于页的修改操作，也是首先修改缓存池中的页，然后以一定的频率刷新回磁盘。注意刷新到磁盘的操做不是每次修改页时都会发生的，而是通过 Checkpoint 的机制来刷新的。
-    ![Innodb 内存数据对象](../../pics/innodb-memory-pool.jpg)
+    <center><img src="/pics/innodb-memory-pool.jpg" width="50%"></center>
 
     缓冲池的大小设置参数： `innoodb_buffer_pool_size` 。从 Innodb 1.0.x 开始，允许有多个缓冲池实例，通过 `innodb_buffer_pool_instances` 参数设置缓冲池个数。这样做的好处是减少数据库内部的资源竞争，提高数据库的并发能力。
 

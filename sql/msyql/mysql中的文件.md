@@ -63,7 +63,7 @@ mysql是插件式的存储引擎结构，但无论一张表采取那种存储引
 
 #### 表空间文件
 Innodb 存储引擎以索引组织表的形式来存储数据，所有的数据都存放在一个空间中，称为表空间。表空间又由段、区、页组成。大致如下图所示：
-![Innodb 数据逻辑存储结构](../../pics/mysql-tablespace.png)
+<center><img src="/pics/mysql-tablespace.png" width="50%"></center>
 
 innodb 采用将存储数据按表空间进行存放的设计，默认配置下会有一个初始大小10M的名为 ibdata1 的文件，该文件就是默认的表空间文件。用户可以通过参数 `innodb_data_file_path` 对默认表空间文件进行设置。设置表空间文件后，所有基于 innodb 存储引擎的表的数据都会保存到该共享表空间中。
 

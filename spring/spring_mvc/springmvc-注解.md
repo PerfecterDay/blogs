@@ -29,9 +29,10 @@
 ### @RequestMapping
 可以使 `@RequestMapping` 注解将请求映射到控制器方法。它有多种属性，可通过URL、HTTP方法、请求参数、头和媒体类型进行匹配。可以在类级别使用它来表达共享映射，也可以在方法级别使用它来缩小特定端点映射的范围。
 RequestMapping 有很多属性可以指定匹配的细节：
-+ `consumes` ： 匹配指定请求的特定的 `Content-Type` ， `!text/plain` 指除 `text/plain` 以外的任何内容类型。
++ `consumes` ： 匹配`Content-Type`是指定值的请求 ，`!text/plain` 指除 `text/plain` 以外的任何内容类型。
 + `params` : 匹配指定 `parameter=value` 的请求
 + `headers` : 匹配指定 `myHeader=myValue` 的请求,请注意，在 curl 语法中，头关键字和头值之间用冒号隔开，这与 HTTP 规范相同，而在 Spring 中则使用等号。
++ `produces` : 处理器会返回特定 `Content-Type` 的响应
 
 
 ```

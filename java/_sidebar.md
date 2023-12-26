@@ -10,6 +10,8 @@
   * [常用 Jvm 命令](/java/jvm/jvm-常用jvm命令.md)
   * [虚拟机性能监控与故障处理工具](/java/jvm/jvm-虚拟机性能监控与故障处理工具.md)
   * [Dump Heap堆](/java/jvm/jvm-dump堆.md)
+  * [AoT编译-Ahead of Time Compilation](https://www.baeldung.com/ahead-of-time-compilation)
+  * [Servless-aws lambada](https://www.baeldung.com/java-aws-lambda)
 * [Java基础](https://www.baeldung.com/java-tutorial)
   * [入门，数据类型和数组和运算符](/java/java基础/java基础-数据类型和数组.md)
   * [流程控制](/java/java基础/java基础-流程控制语句.md)

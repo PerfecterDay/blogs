@@ -9,7 +9,6 @@
 	- [Http2](#http2)
 	- [Http3](#http3)
 		- [域名分片](#域名分片)
-	- [Content-type](#content-type)
 	- [数据压缩](#数据压缩)
 
 
@@ -42,10 +41,12 @@ http://www.example.com:80/path/to/myfile?key1=val1&key2=val2#somewhereInDocument
 ### Http 消息格式
 <center><img src="pics/httpmsgstructure2.png" width="80%"></center>
 
-1. Http 请求
-	1.  一个 HTTP 方法，一个动词（像 GET、PUT 或者 POST）或者一个名词（像 HEAD 或者 OPTIONS），描述要执行的动作。例如，GET 表示要获取资源，POST 表示向服务器推送数据（创建或修改资源，或者产生要返回的临时文件）。
+1. **Http 请求**
+	1.  一个 HTTP 方法，一个动词（像 GET、PUT 或者 POST）或者一个名词（像 HEAD 或者 OPTIONS），描述要执行的动作。  
+   		例如，GET 表示要获取资源，POST 表示向服务器推送数据（创建或修改资源，或者产生要返回的临时文件）。
 	2. 请求目标（request target），通常是一个 URL，或者是协议、端口和域名的绝对路径，通常以请求的环境为特征。请求的格式因不同的 HTTP 方法而异。它可以是：
-      	+ 一个绝对路径，末尾跟上一个 '?' 和查询字符串。这是最常见的形式，称为原始形式（origin form），被 GET、POST、HEAD 和 OPTIONS 方法所使用。
+      	+ 一个绝对路径，末尾跟上一个 '?' 和查询字符串。  
+  			这是最常见的形式，称为原始形式（origin form），被 GET、POST、HEAD 和 OPTIONS 方法所使用。
       		```
 			POST / HTTP/1.1
       		GET /background.png HTTP/1.0
@@ -55,9 +56,9 @@ http://www.example.com:80/path/to/myfile?key1=val1&key2=val2#somewhereInDocument
       	+ 一个完整的 URL，被称为绝对形式（absolute form），主要在使用 GET 方法连接到代理时使用。`GET http://developer.mozilla.org/en-US/docs/Web/HTTP/Messages HTTP/1.1`
       	+ 由域名和可选端口（以 ':' 为前缀）组成的 URL 的 authority 部分，称为 authority form。仅在使用 CONNECT 建立 HTTP 隧道时才使用。`CONNECT developer.mozilla.org:80 HTTP/1.1`
       	+ 星号形式（asterisk form），一个简单的星号（'*'），配合 OPTIONS 方法使用，代表整个服务器。`OPTIONS * HTTP/1.1`
-	3. HTTP 版本（HTTP version），定义了剩余消息的结构，作为对期望的响应版本的指示符。
+	1. HTTP 版本（HTTP version），定义了剩余消息的结构，作为对期望的响应版本的指示符。
 
-2. HTTP 响应
+2. **HTTP 响应**
 
 	HTTP 响应的起始行被称作状态行（status line），包含以下信息：
 	1. 协议版本，通常为 HTTP/1.1。
@@ -106,14 +107,20 @@ HTTP/2 在 HTTP/1.1 有几处基本的不同：
 + 压缩了标头。因为标头在一系列请求中常常是相似的，其移除了重复和传输重复数据的成本。
 + 其允许服务器在客户端缓存中填充数据，通过一个叫服务器推送的机制来提前请求。
 
+HTTP/1.x 消息有一些性能上的缺点：
++ 与主体不同，标头不会被压缩。
++ 两个消息之间的标头通常非常相似，但它们仍然在连接中重复传输。
++ 无法多路复用。当在同一个服务器打开几个连接时：TCP 热连接比冷连接更加有效。
+
+HTTP/2 引入了一个额外的步骤：它将 HTTP/1.x 消息分成帧并嵌入到流（stream）中。数据帧和报头帧分离，这将允许报头压缩。将多个流组合，这是一个被称为多路复用（multiplexing）的过程，它允许更有效的利用底层 TCP 连接。
+http2的消息格式：
+<center><img src="pics/binary_framing2.png" width="50%"></center>
+HTTP 帧现在对 Web 开发人员是透明的。在 HTTP/2 中，这是一个在 HTTP/1.1 和底层传输协议之间附加的步骤。Web 开发人员不需要在其使用的 API 中做任何更改来利用 HTTP 帧；当浏览器和服务器都可用时，HTTP/2 将被打开并使用。
+
 ### Http3
 QUIC 是一种在 UDP 上实现的多路复用传输协议。在 HTTP/3 中，它取代 TCP 成为传输层。
 
-QUIC 的设计目的是为 HTTP 连接提供更快的设置和更低的延迟。特别是
-
-在 TCP 中，初始 TCP 握手后可选择进行 TLS 握手，但必须在数据传输前完成 TLS 握手。由于 TLS 现在几乎无处不在，QUIC 将 TLS 握手整合到初始 QUIC 握手中，从而减少了设置过程中必须交换的信息数量。
-HTTP/2 是一种多路复用协议，允许同时进行多个 HTTP 事务。不过，这些事务是在单个 TCP 连接上多路复用的，这意味着 TCP 层的数据包丢失和随后的重传会阻塞所有事务。QUIC 通过 UDP 运行，并为每个数据流分别实施丢包检测和重传，从而避免了这一问题，这意味着丢包仅会阻塞丢包的特定数据流。
-
+QUIC 旨在为 HTTP 连接设计更低的延迟。类似于 HTTP/2，它是一个多路复用协议，但是 HTTP/2 通过单个 TCP 连接运行，所以在 TCP 层处理的数据包丢失检测和重传可以阻止所有流。QUIC 通过 UDP 运行多个流，并为每个流独立实现数据包丢失检测和重传，因此如果发生错误，只有该数据包中包含数据的流才会被阻止。
 
 #### 域名分片
 作为 HTTP/1.x 的连接，请求是序列化的，哪怕本来是无序的，在没有足够庞大可用的带宽时，也无从优化。一个解决方案是，浏览器为每个域名建立多个连接，以实现并发请求。曾经默认的连接数量为 2 到 3 个，现在比较常用的并发连接数已经增加到 6 条。如果尝试大于这个数字，就有触发服务器 DoS 保护的风险。
@@ -121,40 +128,6 @@ HTTP/2 是一种多路复用协议，允许同时进行多个 HTTP 事务。不�
 如果服务器端想要更快速的响应网站或应用程序的应答，它可以迫使客户端建立更多的连接。例如，不要在同一个域名下获取所有资源，假设有个域名是 `www.example.com`，我们可以把它拆分成好几个域名：`www1.example.com、www2.example.com、www3.example.com`。所有这些域名都指向同一台服务器，浏览器会同时为每个域名建立 6 条连接（在我们这个例子中，连接数会达到 18 条）。这一技术被称作**域名分片**。
 
 除非你有紧急而迫切的需求，**不要使用这一过时的技术**；而是升级到 HTTP/2。在 HTTP/2 里，做域名分片就没必要了：HTTP/2 的连接可以很好的处理并发的无优先级的请求。域名分片甚至会影响性能。大多数 HTTP/2 的实现还会使用一种称作[连接聚合](https://daniel.haxx.se/blog/2016/08/18/http2-connection-coalescing/)的技术去尝试合并被分片的域名。
-
-### Content-type
-raw->json
-	Content-Type: application/json
-	Req-body
-	{
-		"a": "1"
-	}
-
-raw->text
-	Content-Type: application/text
-	Req-body
-	{
-		"a": "1"
-	}
-
-raw->xml
-	Content-Type: application/xml
-	Req-body
-	{
-		"a": "1"
-	}
-
-
-form
-	Content-Type: multipart/form-data; boundary=--------------------------058363263533734731568425
-	Req-body
-	a: "1"
-
-
-x-www-form-urlencoded
-	Content-Type: application/x-www-form-urlencoded
-	Req-body
-	a: "1"
 
 ### 数据压缩
 为了选择要采用的压缩算法，浏览器和服务器之间会使用主动协商机制。浏览器发送 `Accept-Encoding` 标头，其中包含有它所支持的压缩算法，以及各自的优先级，服务器则从中选择一种，使用该算法对响应的消息主体进行压缩，并且发送 `Content-Encoding` 标头来告知浏览器它选择了哪一种算法。由于该内容协商过程是基于编码类型来选择资源的展现形式的，在响应时，服务器至少发送一个包含 `Accept-Encoding` 的 `Vary` 标头；这样的话，缓存服务器就可以对资源的不同展现形式进行缓存。

@@ -186,3 +186,4 @@ static class Fallback implements TestClient {
 
 
 /Users/coder_wang/.sdkman/candidates/java/current/lib/src.zip!/java.base/sun/net/www/protocol/http/HttpURLConnection.java
+/Users/coder_wang/.sdkman/candidates/java/17.0.7-tem/lib/src.zip!/java.base/java/net/HttpURLConnection.java

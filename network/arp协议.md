@@ -1,6 +1,9 @@
 # ARP 协议
 {docsify-updated}
 
+- [ARP 协议](#arp-协议)
+
+
 知道主机的 IP 地址并不能让内核发送一帧数据给主机。内核（如以太网驱动程序）必须知道目的端的硬件地址才能发送数据。ARP 的功能是在 32 bit的 IP 地址和采用不同网络技术的硬件地址之间提供动态映射。
 
 <center><img src="pics/arp.png" alt="" width="100%"></center>

@@ -1,6 +1,9 @@
 # ICMP(Internet Control Message Protocol)协议
 {docsify-updated}
 
+- [ICMP(Internet Control Message Protocol)协议](#icmpinternet-control-message-protocol协议)
+      - [ICMP报文格式](#icmp报文格式)
+
 #### ICMP报文格式
 <center><img src="pics/icmp.png" alt="" width="40%"></center>
 

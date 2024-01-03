@@ -16,3 +16,4 @@
 * [Springboot](/spring/springboot/_sidebar.md)
 * [Spring Security](/spring/spring_security/_sidebar.md)
 * [COLA代码架构规范](/spring/cola架构规范.md)
+* [精彩博客](https://www.logicbig.com/tutorials/spring-framework/spring-core.html)

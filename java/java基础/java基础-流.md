@@ -2,12 +2,19 @@
 {docsify-updated}
 
 - [流](#流)
-	- [Java 流概述](#java-流概述)
-	- [创建Stream](#创建stream)
-	- [Collectors API](#collectors-api)
+  - [Java 流概述](#java-流概述)
+  - [创建Stream](#创建stream)
+  - [Collectors API](#collectors-api)
 
 
 ### Java 流概述
+流遵循了“做什么而非怎么做”的原则 。 在流的示例中，我们描述了需要做什么:获取长单词，并对它们计数 。我们没有指定该操作应该以什么顺序或者在哪个线程中执行 。相比之下，本节开头处的循环要确切地指定计算应该如何工作，因此也就丧失了进行优化的机会。
+流表面上看起来和集合很类似，都可以让我们转换和获取数据。但是，它们之间存在着显著的差异:
+1. 流并不存储其元素。 这些元素可能存储在底层的集合中，或者是按需生成的。
+2. 流的操作不会修改其数据源 。 例如， filter 方法不会从新的流中移除元素，而是会
+生成一个新的流，其中不包含被过滤掉的元素 。
+3. 流的操作是尽可能惰性执行的。 这意味着直至需要其结果时，操作才会执行。 例如，如果我们只想查找前 5 个长单词而不是所有长单词，那么 filter 方法就会在匹配到第 5 个 单词后停止过滤 。 因此，我们甚至可以操作无限流 。
+
 Java 8 中增加了 Stream API，简化了串行或并行的大批量操作。这个 API 提供了两个关键抽象：
 1. Stream（流）
 
@@ -42,15 +49,13 @@ Java 8 中增加了 Stream API，简化了串行或并行的大批量操作。�
     stream2.forEach(System.out::println);
     ```
 
-3. 基于Supplier
+3. 基于Supplier的无限流
 
     创建Stream还可以通过 `Stream.generate()`方法，它需要传入一个`Supplier`对象：
     `Stream<String> s = Stream.generate(Supplier<String> sp);`
     基于`Supplier`创建的Stream会不断调用`Supplier.get()`方法来不断产生下一个元素，这种Stream保存的不是元素，而是算法，它可以用来表示无限序列。
     例如，我们编写一个能不断生成自然数的Supplier，它的代码非常简单，每次调用get()方法，就生成下一个自然数：
     
-    <a id="demo"></a>
-
     ```
     public class Main {
         public static void main(String[] args) {

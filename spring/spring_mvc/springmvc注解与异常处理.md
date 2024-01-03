@@ -1,15 +1,15 @@
-# Spring MVC 的注解、参数校验与异常处理
+# Spring MVC 的常见注解与异常处理
 {docsify-updated}
 
-- [Spring MVC 的注解、参数校验与异常处理](#spring-mvc-的注解参数校验与异常处理)
-	- [常用注解](#常用注解)
-		- [HTTP请求相关的注解](#http请求相关的注解)
-		- [HTTP 相应相关的注解](#http-相应相关的注解)
-		- [其他相关注解](#其他相关注解)
-	- [统一异常处理](#统一异常处理)
-		- [使用 @ExceptionHandler 注解](#使用-exceptionhandler-注解)
-		- [实现 HandlerExceptionResolver 接口并注册到 bean 容器](#实现-handlerexceptionresolver-接口并注册到-bean-容器)
-		- [使用 @ControllerAdvice+ @ExceptionHandler 注解](#使用-controlleradvice-exceptionhandler-注解)
+- [Spring MVC 的常见注解与异常处理](#spring-mvc-的常见注解与异常处理)
+  - [常用注解](#常用注解)
+    - [HTTP请求相关的注解](#http请求相关的注解)
+    - [HTTP 相应相关的注解](#http-相应相关的注解)
+    - [其他相关注解](#其他相关注解)
+  - [统一异常处理](#统一异常处理)
+    - [使用 @ExceptionHandler 注解](#使用-exceptionhandler-注解)
+    - [实现 HandlerExceptionResolver 接口并注册到 bean 容器](#实现-handlerexceptionresolver-接口并注册到-bean-容器)
+    - [使用 @ControllerAdvice+ @ExceptionHandler 注解](#使用-controlleradvice-exceptionhandler-注解)
 
 
 

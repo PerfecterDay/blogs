@@ -1,0 +1,12 @@
+develop_activity - 活动开发
+develop_ops - 运营平台开发
+develop_user_bmp - 用户中心后台
+
+
+http://10.184.161.160/jenkins   admin/admin123@
+http://10.187.144.11:8081/nexus/#welcome        maven
+https://dev.jfrog.gtjai.net/ 
+
+
+10.18.172.37 dev.jfrog.gtjai.net  
+jfrog需要配置host

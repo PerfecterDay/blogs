@@ -37,7 +37,7 @@
 + `CURDATE()` :　将**当前日期**按照'YYYY-MM-DD' 或YYYYMMDD 格式的值返回，具体格式根据函数用在字符串或是数字语境中而定。
 + `CURTIME()` :　将当前时间以'HH:MM:SS'或 HHMMSS 的格式返回， 具体格式根据函数用在字符串或是数字语境中而定。`CURRENT_TIME` 和`CURRENT_TIME()` 是`CURTIME()`的同义词。
 + `CURRENT_TIMESTAMP` : 返回当前时间，和`CURRENT_TIMESTAMP()` 、`NOW()`是同义词。
-+ `DATE(expr)` : 提取日期或时间日期表达式expr中的日期部分。 `SELECT DATE('2003-12-31 01:02:03');->  '2003-12-31'`
++ `DATE(expr)/YEAR(expr)/TIME(expr)` : 提取日期或时间日期表达式expr中的日期/年份/时间部分。 `SELECT DATE('2003-12-31 01:02:03');->  '2003-12-31'`
 + `DATEDIFF(expr,expr2)` : `DATEDIFF()` 返回起始时间 expr和结束时间expr2之间的天数。Expr和expr2 为日期或 d ate-and-time 表达式。计算中只用到这些值的日期部分。
 + `DATE_ADD(date,INTERVAL expr type) DATE_SUB(date,INTERVAL expr type)`: 这些函数执行日期运算。 date 是一个 DATETIME 或DATE值，用来指定起始时间。 expr 是一个表达式，用来指定从起始日期添加或减去的时间间隔值。  Expr是一个字符串;对于负值的时间间隔，它可以以一个 ‘-’开头。type 为关键词，它指示了表达式被解释的方式。 
 + `FROM_UNIXTIME(unix_timestamp) , FROM_UNIXTIME(unix_timestamp,format)`: 返回'YYYY-MM-DD HH:MM:SS'或YYYYMMDDHHMMSS 格式值的unix_timestamp参数表示，具体格式取决于该函数是否用在字符串中或是数字语境中。
@@ -45,7 +45,6 @@
 + `NOW()`: 返回当前日期和时间值，其格式为 'YYYY-MM-DD HH:MM:SS' 或YYYYMMDDHHMMSS ， 具体格式取决于该函数是否用在字符串中或数字语境中。
 + `QUARTER(date)`: 返回date 对应的一年中的季度值，范围是从 1到 4。
 + `STR_TO_DATE(str,format)`: 这是DATE_FORMAT() 函数的倒转。它获取一个字符串 str 和一个格式字符串format。若格式字符串包含日期和时间部分，则 STR_TO_DATE()返回一个 DATETIME 值， 若该字符串只包含日期部分或时间部分，则返回一个 DATE 或TIME值。`ELECT STR_TO_DATE('04/31/2004', '%m/%d/%Y'); -> '2004-04-31'`
-+ `TIME(expr)`: 提取一个时间或日期时间表达式的时间部分，并将其以字符串形式返回。
 + `UNIX_TIMESTAMP(), UNIX_TIMESTAMP(date)` :若无参数调用，则返回一个Unix timestamp ('1970-01-01 00:00:00' GMT 之后的秒数) 作为无符号整数。若用date 来调用UNIX_TIMESTAMP()，它会将参数值以'1970-01-01 00:00:00' GMT后的秒数的形式返回。date可以是一个DATE 字符串、一个 DATETIME字符串、一个 TIMESTAMP或一个当地时间的YYMMDD或YYYMMDD格式的数字。
 
 ### 数值处理函数

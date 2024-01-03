@@ -14,4 +14,4 @@
   * [Spring-MVC中的注解](/spring/spring_mvc/springmvc-注解.md)
   * [Spring-MVC 的配置](/spring/spring_mvc/springmvc的配置.md)
   * [Spring-MVC中 参数绑定与校验](/spring/spring_mvc/springmvc-处理方法的参数解析转换与校验.md)
-  * [Spring-MVC常见注解、参数校验以及异常处理](/spring/spring_mvc/springmvc注解与异常处理.md)
+  * [Spring-MVC常见注解以及异常处理](/spring/spring_mvc/springmvc注解与异常处理.md)

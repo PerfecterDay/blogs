@@ -1,5 +1,7 @@
 # Mac Homebrew 的使用
 {docsify-updated}
+
+>https://zhuanlan.zhihu.com/p/547898033  
 >https://www.xiebruce.top/983.html
 
 - [Mac Homebrew 的使用](#mac-homebrew-的使用)

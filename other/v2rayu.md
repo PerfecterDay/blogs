@@ -15,3 +15,6 @@ sudo codesign --force --deep --sign - ~/.V2rayU/v2ray-core/v2ray
 ```
 然后就能正常运行了。
 来自：https://discussionschinese.apple.com/thread/254968153
+
+v2ray 无法使用？
+删除 `~/.V2rayU` 下的所有文件，重启app

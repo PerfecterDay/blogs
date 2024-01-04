@@ -3,17 +3,17 @@
 > https://kubernetes.io/zh-cn/docs/concepts/overview/working-with-objects/labels/
 
 - [K8S-对象](#k8s-对象)
-	- [理解 Kubernetes 对象](#理解-kubernetes-对象)
-		- [对象规约-Spec与状态-Status](#对象规约-spec与状态-status)
-		- [对象描述](#对象描述)
-			- [必需字段](#必需字段)
-	- [对象名称和 ID](#对象名称和-id)
-	- [标签和选择算符](#标签和选择算符)
-		- [标签](#标签)
-		- [标签选择算符](#标签选择算符)
-	- [名字空间](#名字空间)
-	- [注解](#注解)
-	- [字段选择器](#字段选择器)
+  - [理解 Kubernetes 对象](#理解-kubernetes-对象)
+    - [对象规约-Spec与状态-Status](#对象规约-spec与状态-status)
+    - [对象描述](#对象描述)
+      - [必需字段](#必需字段)
+  - [对象名称和 ID](#对象名称和-id)
+  - [标签和选择算符](#标签和选择算符)
+    - [标签](#标签)
+    - [标签选择算符](#标签选择算符)
+  - [名字空间](#名字空间)
+  - [注解](#注解)
+  - [字段选择器](#字段选择器)
 
 
 ### 理解 Kubernetes 对象
@@ -22,12 +22,12 @@
 + 可以被应用使用的资源
 + 关于应用运行时行为的策略，比如重启策略、升级策略以及容错策略
 
-Kubernetes 对象是一种“意向表达（Record of Intent）”。一旦创建该对象， Kubernetes 系统将不断工作以确保该对象存在。通过创建对象，你本质上是在告知 Kubernetes 系统，你想要的集群工作负载状态看起来应是什么样子的， 这就是 Kubernetes 集群所谓的期望状态（Desired State）。
+Kubernetes 对象是一种“意向表达（Record of Intent）”。一旦创建该对象， Kubernetes 系统将不断工作以确保该对象存在。通过创建对象，你本质上是在告知 Kubernetes 系统，你想要的集群工作负载状态看起来应是什么样子的， 这就是 Kubernetes 集群所谓的**期望状态**（Desired State）。
 
 #### 对象规约-Spec与状态-Status 
-几乎每个 Kubernetes 对象包含两个嵌套的对象字段，它们负责管理对象的配置： **对象 spec（规约）** 和 **对象 status（状态）**。 对于具有 spec 的对象，你必须在创建对象时设置其内容，描述你希望对象所具有的特征： 期望状态（Desired State）。
+几乎每个 Kubernetes 对象包含两个嵌套的对象字段，它们负责管理对象的配置： **对象 spec（规约）** 和 **对象 status（状态）**。 对于具有 spec 的对象，你必须在创建对象时设置其内容，描述你希望对象所具有的特征： **期望状态**（Desired State）。
 
-status 描述了对象的当前状态（Current State），它是由 Kubernetes 系统和组件设置并更新的。在任何时刻，Kubernetes 控制平面 都一直在积极地管理着对象的实际状态，以使之达成期望状态。
+status 描述了对象的**当前状态**（Current State），它是由 Kubernetes 系统和组件设置并更新的。在任何时刻，Kubernetes 控制平面都一直在积极地管理着对象的实际状态，以使之达成期望状态。
 
 #### 对象描述
 创建 Kubernetes 对象时，必须提供对象的 spec，用来描述该对象的期望状态， 以及关于对象的一些基本信息（例如名称）。 当使用 Kubernetes API 创建对象时（直接创建或经由 kubectl 创建）， API 请求必须在请求主体中包含 JSON 格式的信息。 大多数情况下，你需要提供 .yaml 文件为 kubectl 提供这些信息。kubectl 在发起 API 请求时，将这些信息转换成 JSON 格式。
@@ -37,7 +37,7 @@ status 描述了对象的当前状态（Current State），它是由 Kubernetes 
 + `apiVersion` - 创建该对象所使用的 Kubernetes API 的版本
 + `kind` - 想要创建的对象的类别
 + `metadata` - 帮助唯一标识对象的一些数据，包括一个 name 字符串、UID 和可选的 namespace
-+ `spec` - 你所期望的该对象的状态，对每个 Kubernetes 对象而言，其 spec 之精确格式都是不同的
++ `spec` - 你所期望的该对象的状态，对每个 Kubernetes 对象而言，其 spec 的精确格式都是不同的
 
 `kubectl --validate` 可以验证
 

@@ -3,30 +3,42 @@
 
 - [Chart](#chart)
   - [Chart 目录结构](#chart-目录结构)
-  - [Chart.yaml](#chartyaml)
+    - [Chart.yaml](#chartyaml)
+    - [values.yaml](#valuesyaml)
+    - [templates 目录](#templates-目录)
   - [自定义创建一个 Chart](#自定义创建一个-chart)
     - [templates](#templates)
     - [内置对象](#内置对象)
     - [Values 文件](#values-文件)
+    - [多环境配置](#多环境配置)
+  - [调试](#调试)
 
+chart 是 Helm 的应用打包格式。 chart 由一系列文件组成，这些文件描述了 Kubernetes部署应用时所需要的资源。
+
+chart 的大致工作原理就是使用被称作 template 的文件来定义各种资源（Service 、 Deployment 、 PersistentVolumeClaim 、 Secret 、ConfigMap 等），模板中很多配置值都是通过在 values.yaml 或者命令行或者其它途径中获取，以达到可配置化，最终 template 会被渲染成和普通的 k8s 资源定义yaml 文件一样的一个文件然后通过k8s API去部署。
 
 ### Chart 目录结构
 chart是一个组织在文件目录中的集合。目录名称就是chart名称（没有版本信息）。因而描述WordPress的chart可以存储在wordpress/目录中。当你创建一个新的 Chart 时，Helm有一定的结构,。要创建，运行 `helm create YOUR-CHART-NAME` 。一旦创建完毕，目录结构应该是这样的：
 ```
-wordpress/
-  Chart.yaml          # 包含了chart信息的YAML文件
-  LICENSE             # 可选: 包含chart许可证的纯文本文件
-  README.md           # 可选: 可读的README文件
-  values.yaml         # chart 默认的配置值
-  values.schema.json  # 可选: 一个使用JSON结构的values.yaml文件
-  charts/             # 包含chart依赖的其他chart
-  crds/               # 自定义资源的定义
-  templates/          # 模板目录， 当和values 结合时，可生成有效的Kubernetes manifest文件
-  templates/NOTES.txt # 可选: 包含简要使用说明的纯文本文件
+mychart
+│ .helmignore
+│ Chart.yaml
+│ values.yaml
+├─charts
+└─templates
+    │  deployment.yaml
+    │  hpa.yaml
+    │  ingress.yaml
+    │  NOTES.txt
+    │  service.yaml
+    │  serviceaccount.yaml
+    │  _helpers.tpl
+    └─tests
+            test-connection.yaml
 ```
 
-### Chart.yaml
-Chart.yaml文件是chart必需的。包含了以下字段：
+#### Chart.yaml
+Chart.yaml文件是chart必需的，描述chart的概要信息，name 和 version 是必填项，其他都是可选项。
 ```
 apiVersion: chart API 版本 （必需）
 name: chart名称 （必需）
@@ -59,6 +71,109 @@ deprecated: 不被推荐的chart （可选，布尔值）
 annotations:
   example: 按名称输入的批注列表 （可选）.
 ```
+
+#### values.yaml
+chart 支持在安装时根据参数进行定制化配置，而 values.yaml 则提供了这些配置参数的默认值。
+```
+# Default values for mychart.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: nginx
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Automatically mount a ServiceAccount's API credentials?
+  automount: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+podLabels: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: chart-example.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+# Additional volumes on the output Deployment definition.
+volumes: []
+# - name: foo
+#   secret:
+#     secretName: mysecret
+#     optional: false
+
+# Additional volumeMounts on the output Deployment definition.
+volumeMounts: []
+# - name: foo
+#   mountPath: "/etc/foo"
+#   readOnly: true
+nodeSelector: {}
+tolerations: []
+affinity: {}
+```
+
+#### templates 目录
+各类 Kubernetes 资源的配置模板都放置在这里。 Helm 会将 values.yaml 中的参数值注入模板中，生成标准的 YAML 配置文件。模板是 chart 最重要的部分，也是 HeIm 最强大的地方。模板增加了应用部署的灵活性，能够适用不同的环境。
 
 ### 自定义创建一个 Chart
 当我们使用下述命令创建一个chart时：
@@ -148,8 +263,8 @@ helm install --debug --dry-run goodly-guppy ./mychart
 
 + chart中的values.yaml文件
 + 如果是子chart，就是父chart中的values.yaml文件
-+ 使用-f参数(helm install -f myvals.yaml ./mychart)传递到 helm install 或 helm upgrade的values文件
-+ 使用--set (比如helm install --set foo=bar ./mychart)传递的单个参数
++ 使用-f参数(`helm install -f myvals.yaml ./mychart`)传递到 helm install 或 helm upgrade的values文件
++ 使用--set (比如`helm install --set foo=bar ./mychart`)传递的单个参数
 
 以上列表有明确顺序：默认使用values.yaml，可以被父chart的values.yaml覆盖，继而被用户提供values文件覆盖， 最后会被--set参数覆盖，优先级为values.yaml最低，--set参数最高。
 
@@ -157,3 +272,22 @@ helm install --debug --dry-run goodly-guppy ./mychart
 ```
 helm install stable/drupal --set image=my-registry/drupal:0.1.0 --set livenessProbe.exec.command=[cat,docroot/CHANGELOG.txt] --set livenessProbe.httpGet=null
 ```
+
+#### 多环境配置
+除了接受 values.yaml 的默认值，我们还可以定制化 chart, 比如设置 mysqlRootPassword 。Helm 有两种方式传递配置参数：
+1. 指定自己的 values 文件。通常的做法是首先通过 `helm inspect values mysql > myvalues.yaml` 生成 values 文件，然后设置自定义的 mysqlRootPassword ，最后执行 `helm install -f myvalues.yaml mysql` 。
+2. 通过 --set 直接传入参数值: `helm install nginx --set servers.foo.port=80`
+
+https://github.com/codefresh-contrib/helm-promotion-sample-app/tree/master
+创建 `values-dev.yaml/values-stage.yaml/values-prod.yaml`
+```
+helm install example-qa sample-app -n qa -f values-dev.yaml
+helm install example-staging sample-app -n staging -f values-stage.yaml
+helm install example-prod sample-app -n production -f values-prod.yaml
+```
+
+### 调试
++ `helm lint`: 是验证chart是否遵循最佳实践的首选工具。
++ `helm template --debug`: 在本地测试渲染chart模板。
++ `helm install --dry-run --debug`：我们已经看到过这个技巧了，这是让服务器渲染模板的好方法，然后返回生成的清单文件。
++ `helm get manifest`: 这是查看安装在服务器上的模板的好方法。

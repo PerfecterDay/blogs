@@ -3,6 +3,7 @@
 powershell 中查看环境变量
 1. `ls env:`
 2. `echo $env:JAVA_HOME`
+3. `tree /f` : 显示目录树
 
 ### powershell 为变量设置别名
 如果你想为自己的 Windows PowerShell 设置永久的命令别名 (Alias)，可以遵循以下步骤：

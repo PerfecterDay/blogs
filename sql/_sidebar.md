@@ -6,5 +6,6 @@
   * [索引与散列](/sql/索引与散列.md)
   * [数据库并发控制-锁](/sql/数据库并发控制-基于锁的协议.md)
   * [数据库事务](/sql/数据库事务.md)
+  * [数据库事务实战](/sql/数据库事务实战.md)
 * [Mysql](/sql/msyql/_sidebar.md)
 * [Sharding-jdbc](/sql/sharding-jdbc/_sidebar.md)

@@ -63,6 +63,58 @@ HTTP 独有
 + UMSDR: 上游请求达到最大流持续时长
 
 
+### 配置websocket
+ ```
+ - match:
+        safe_regex: { google_re2: {}, regex: "^/yichat.*" }
+    typed_per_filter_config:
+        envoy.filters.http.ext_authz:
+        "@type": type.googleapis.com/envoy.extensions.filters.http.ext_authz.v3.ExtAuthzPerRoute
+        disabled: true
+    route: { cluster: kefu-cluster-1, timeout: { seconds: 0 }, upgrade_configs: [{upgrade_type: websocket}] }
+ ```
+
+1. uatfile upload host 不匹配返回403 : auto_host_rewrite
+   `route: { cluster: uatfile-cluster, timeout: { seconds: 10 } ,auto_host_rewrite: true}`
+2. 设置超时时间: timeout
+   `route: { cluster: uatfile-cluster, timeout: { seconds: 60 } ,auto_host_rewrite: true}`
+3. 上游服务配置 https : transport_socket
+   ```
+   clusters:
+     - name: service_envoyproxy_io
+       type: LOGICAL_DNS
+       # Comment out the following line to test on v6 networks
+       dns_lookup_family: V4_ONLY
+       load_assignment:
+         cluster_name: service_envoyproxy_io
+         endpoints:
+         - lb_endpoints:
+           - endpoint:
+               address:
+                 socket_address:
+                   address: www.envoyproxy.io
+                   port_value: 443
+       transport_socket:
+         name: envoy.transport_sockets.tls
+         typed_config:
+           "@type": type.googleapis.com/envoy.extensions.transport_sockets.tls.v3.UpstreamTlsContext
+   ```
+4. uatfile 返回413,Payload Too Large: per_connection_buffer_limit_bytes
+   ```
+   clusters:
+    name: cluster_0
+    connect_timeout: 5s
+    per_connection_buffer_limit_bytes: 16000000
+    load_assignment:
+      cluster_name: some_service
+      endpoints:
+        - lb_endpoints:
+          - endpoint:
+              address:
+                socket_address:
+                  address: ::1
+                  port_value: 46685
+   ```
 
 ```
 sudo docker run -idt --name envoy --restart=always -e TZ="Asia/Shanghai" -e loglevel=debug -v /etc/localtime:/etc/localtime -v "/root/dev/envoy/logs:/tmp" -v "/root/dev/envoy/test.cer:/etc/envoy/test.cer" -v "/root/dev/envoy/testserver.key:/etc/envoy/test.key" -v "/root/dev/envoy/envoy.yaml:/etc/envoy/envoy.yaml" --net=host  4b976b6b0e19

@@ -42,13 +42,36 @@ public Future<String> calculateAsync() throws InterruptedException {
 ```
 
 ### 并行执行多个 Futures
+假设我们需要调用两个远程 API：`firstApiCall()` 和 `secondApiCall()`。第一个 API 的结果将是第二个 API 的输入。如果使用 Future 接口，就无法异步地将这两个操作结合起来：
+```
+class Demo {
+ public static void main(String[] args) throws ExecutionException, InterruptedException {
+   ExecutorService executor = Executors.newSingleThreadExecutor();
+   Future<String> firstApiCallResult = executor.submit(
+           () -> firstApiCall(someValue)
+   );
+   
+   String stringResult = firstApiCallResult.get();
+   Future<String> secondApiCallResult = executor.submit(
+           () -> secondApiCall(stringResult)
+   );
 
-1. 异步操作完成时的操作回调，获取操作结果
-	```
-	public CompletableFuture<T> whenComplete(BiConsumer<? super T,? super Throwable> action)
-	public CompletableFuture<T> whenCompleteAsync(BiConsumer<? super T,? super Throwable> action)
-	public CompletableFuture<T> whenCompleteAsync(BiConsumer<? super T,? super Throwable> action, Executor executor)
-	public CompletableFuture<T> exceptionally(Function<Throwable,? extends T> fn)
-	```
-	whenComplete：是执行当前任务的线程执行继续执行 whenComplete 的任务。
-	whenCompleteAsync：是执行把 whenCompleteAsync 这个任务继续提交给线程池来进行执行。
+   doOtherThings();
+ }
+}
+```
+在上面的代码示例中，我们通过在 `ExecutorService` 上提交一个返回 Future 的任务来调用第一个 API。我们需要将该值传递给第二个 API，但获取该值的唯一方法是使用我们之前讨论过的 Future 方法的 `get()`，而使用该方法会**阻塞主线程**。现在我们必须等到第一个 API 返回结果后再做其他事情。
+
+```
+class Demo {
+  public static void main(String[] args) {
+
+    var finalResult = CompletableFuture.supplyAsync(
+         () -> firstApiCall(someValue)
+    )
+    .thenApply(firstApiResult -> secondApiCall(firstApiResult));
+
+	doOtherThings();
+  }
+}
+```

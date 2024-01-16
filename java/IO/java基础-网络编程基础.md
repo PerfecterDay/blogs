@@ -180,6 +180,7 @@ public class ProxyController {
                 String headerName = headerNames.nextElement();
                 headers.set(headerName, servletRequest.getHeader(headerName));
             }
+            headers.remove(HttpHeaders.ACCEPT_ENCODING); // 不加这行在gzip 下会有问题
 
             HttpEntity<String> httpEntity = new HttpEntity<>(body, headers);
             RestTemplate restTemplate = new RestTemplate();

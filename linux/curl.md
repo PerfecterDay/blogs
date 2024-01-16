@@ -1,6 +1,10 @@
 # curl 命令简介
 {docsify-updated}
 
+- [curl 命令简介](#curl-命令简介)
+		- [检查Http服务是否支持gzip](#检查http服务是否支持gzip)
+
+
 1. 不带有任何参数时，curl 就是发出 GET 请求。
 	`curl http://www.baidu.com`
 2. `-A` ：指定客户端的用户代理标头，即 `User-Agent` 。curl 的默认用户代理字符串是`curl/[version]`
@@ -61,6 +65,11 @@
 28. `curl --compressed -vv 'https://www.baidu.com' -w '%{size_download}'` : 显示压缩数据及数据大小
 29. `-w` : 按指定格式显示本次传输的信息，用字符串表示
 
+### 检查Http服务是否支持gzip
+```
+curl https://www.baidu.com/ --silent --write-out "%{size_download}\n" --output /dev/null
+curl https://www.baidu.com/ --silent -H "Accept-Encoding: gzip,deflate" --write-out "%{size_download}\n" --output /dev/null
+```
 
 ```
 curl -k --proxy 10.184.161.160:443 --cert /home/5.11/server.pem https://10.18.172.216:44300/APIServer/SendRequest -F

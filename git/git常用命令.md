@@ -101,3 +101,10 @@
 
 3. nable to access 'https://github.com/ScoopInstaller/Scoop/': schannel: next InitializeSecurityContext failed: Unknown error (0x80092012)
 	`git config --system http.sslbackend openssl`
+
+4. ssh: connect to host github.com port 22: Connection timed out
+	```
+	Host github.com
+	Hostname ssh.github.com
+	Port 443
+	```

@@ -2,10 +2,10 @@
 {docsify-updated}
 
 - [Docker 镜像](#docker-镜像)
-	- [镜像的分层结构](#镜像的分层结构)
-	- [镜像的构建](#镜像的构建)
-		- [Dockerfile 常用指令](#dockerfile-常用指令)
-		- [镜像操作](#镜像操作)
+  - [镜像的分层结构](#镜像的分层结构)
+  - [镜像的构建](#镜像的构建)
+    - [Dockerfile 常用指令](#dockerfile-常用指令)
+    - [镜像操作](#镜像操作)
 
 
 Docker 发明的初衷就是为了方便软件的部署，通常我们开发完一款服务，部署的时候需要在服务器上安装运行环境、依赖库、配置环境等等，这些工作在不同的操作系统或者不同的系统版本上都要求部署人员具有相关的知识。而且可能开发环境和部署环境的不同，导致服务在部署环境的行为会有差异。这些种种原因就驱使人们想研究出一种能屏蔽这些差异的工具，Docker 就是这样一款工具。
@@ -88,9 +88,13 @@ Docker 通过扩展现有镜像，创建新的镜像。特殊情况下，基于�
 3. 删除镜像 
     + 删除镜像：`docker image rm [选项] <镜像1< [<镜像2< ...]` 或者更短的 `docker rmi <imgid>`
     + 删除虚悬镜像(dangling image): `docker image prune`
+    + 删除所有镜像： `docker rmi -f $(docker images -aq)`
 4. 上传镜像 
     + 上传到 Registry ，默认dockerHub：`docker push user_name/<repository>:tag`
 5. 导入/导出镜像  
    + `docker save [imgId] -o [imgfile]`
    + `docker load -i [imgfile]`  
 	这种导出的镜像是没有镜像名字的，需要手动修改导入的镜像名字：`docker tag [imgId] [<repository>:<tag>]`
+6. 查看 docker 空间占用
+   + `docker system df`
+   + `docker system prune -a --volumes`

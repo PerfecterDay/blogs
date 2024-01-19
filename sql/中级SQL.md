@@ -57,6 +57,18 @@ A和B的自然连接：**来自A表的元组和来自B表的元组在共同属�
 下图给出了所有连接类型的列表。任意的连接形式可以和任意的连接条件（自然连接、using条件连接或on条件连接）进行组合。
 <center><img src="pics/join.jpg" alt=""></center>
 
+### 连接更新
+```
+UPDATE LOGIN_RECORD L JOIN DEVICE D ON L.LOGIN_DEVICE=D.DEVICE_ID SET L.DEVICE_MODEL = D.DEVICE_MODEL;
+
+UPDATE TABLE1 T1
+    LEFT JOIN  TABLE2 T2
+    ON T1.COLUMN1 = T2.COLUMN1
+SET T1.COLUMN2 = T2.COLUMN2,
+    T1.COLUMN3 = T2.COLUMN3
+WHERE T1.COLUMN1 IN(21,31);
+```
+
 ## 完整性约束
 完整性约束保证授权用户对数据库所做的修改不会破坏数据的一致性，防止的是对数据库的以外破坏。
 

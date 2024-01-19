@@ -165,3 +165,18 @@ location /app1 {
 
 正向代理与反向代理的区别：
 1. 反向向代理通常只能代理若干服务器的服务，nginx 配置中配置了多个 location -> proxy_pass，用户到特定服务的访问会被反向代理代理掉。但是正向代理往往并不限制用户对服务的访问（或者说能代理用户所有的访问流量），然后代替用户去访问目标服务器。
+
+
+### nginx 自定义错误页面隐藏版本信息
+```
+http {
+    server_tokens off;
+}
+
+server{
+	error_page 404 /404.html;
+	location = /404.html {
+	root /usr/share/nginx/html;
+	}
+}
+```

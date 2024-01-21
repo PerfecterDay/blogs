@@ -48,12 +48,13 @@
 20. `git reset`:恢复暂存区文件为版本库状态,工作区文件不会改变
 21. `git reset --hard head~1`:用上一次提交的版本库状态恢复暂存区和工作区
 22. `git log`: 查看提交历史记录
-23. `git log filename`: 查看某个文件的历史提交记录
-24. `git show <commit_id>`: 查看某次提交的信息信息
-25. `git reflog`:查看引用历史记录
-26. `git reset ref`:将版本库恢复到某次提交状态，适用于往前reset后又想往后reset
-27. `git stash`:将当前工作区中的修改保存起来,并用版本库中的内容恢复暂存区和工作区，当开发到一半时，需要处理另一个bug时使用
-28. `git stash pop`:将保存的内容恢复到工作区
+23. `git log -p -2`: 查看最近的2次提交及更改的内容
+24. `git log filename`: 查看某个文件的历史提交记录
+25. `git show <commit_id>`: 查看某次提交的信息信息
+26. `git reflog`:查看引用历史记录
+27. `git reset ref`:将版本库恢复到某次提交状态，适用于往前reset后又想往后reset
+28. `git stash`:将当前工作区中的修改保存起来,并用版本库中的内容恢复暂存区和工作区，当开发到一半时，需要处理另一个bug时使用
+29. `git stash pop`:将保存的内容恢复到工作区
 
 ### git 分支
 0. `git checkout -b 本地分支名x origin/远程分支名x `: 在本地新建分支x，并自动切换到该本地分支x

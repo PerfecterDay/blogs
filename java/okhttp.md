@@ -1,4 +1,14 @@
-# Okhttp简介
+## Okhttp简介
+{docsify-updated}
+
+- [Okhttp简介](#okhttp简介)
+  - [核心类及作用](#核心类及作用)
+  - [Get 请求](#get-请求)
+  - [Post 请求](#post-请求)
+  - [HttpUrl.Builder-构造带参数的 URL](#httpurlbuilder-构造带参数的-url)
+  - [异步发送请求](#异步发送请求)
+  - [设置超实时间](#设置超实时间)
+
 
 Okhttp是一个处理网络请求的开源项目,是安卓端最火热的轻量级框架,由移动支付Square公司贡献(该公司还贡献了Picasso)用于替代 HttpUrlConnection 和 Apache HttpClient (android API23 6.0里已移除HttpClient,现在已经打不出来)
 
@@ -16,6 +26,24 @@ Okhttp是一个处理网络请求的开源项目,是安卓端最火热的轻量�
 
 OKHTTP支持Android 5 +（API级别21 +）和Java 8 +。
 
+### 核心类及作用
++ `Request` : 代表一个 Http 请求实体信息，可以多次发送一个 Request，每次 Request 相同，但是 Call 不同
++ `Request.Builder` : 用来创建 Request 的 builder
+  + `addHeader("Content-Type", "application/json")`: 添加请求头
++ `HttpUrl` : 代表 Http URL
++ `HttpUrl.Builder` : 用来创建 HttpUrl 的 builder
+  + `addQueryParameter(String paramName, String paramValue)`
+  + `HttpUrl.new Builder()`: 创建 builder
++ `RequestBody` : 代表一个请求体内容，通常用于 POST 请求，常用的有 `FormBody` 和 `MultipartBody`
+  + `new FormBoday.Builder().build()`
+  + `new MultipartBody.Builder().build()`
+  + `RequestBody.create(json, JSON)`
++ `OkHttpClient` : 核心类，用来发送Http 请求
++ `Call` : 代表每一次 Http 请求调用过程，可以多次发送一个 Request，每次 Request 相同，但是 Call 不同 
+  + `client.newCall(Reqeust request)` ： 生成一个 Call 对象
+  + `execute()`： 同步发送 http 请求
+  + `enqueue(Callback callback)` ： 异步发送 Http 请求
++ `OkHttpClient.Builder` : 创建 OkHttpClient 的 builder
 
 ### Get 请求
 发起一个 Get 请求时简单的：
@@ -26,7 +54,7 @@ String run(String url) throws IOException {
   Request request = new Request.Builder()
       .url(url)
       .build();
-
+  
   try (Response response = client.newCall(request).execute()) {
     return response.body().string();
   }
@@ -50,4 +78,46 @@ String post(String url, String json) throws IOException {
     return response.body().string();
   }
 }
+```
+
+### HttpUrl.Builder-构造带参数的 URL
+```
+HttpUrl.Builder urlBuilder 
+  = HttpUrl.parse(BASE_URL + "/ex/bars").newBuilder();
+urlBuilder.addQueryParameter("id", "1");
+
+String url = urlBuilder.build().toString();
+```
+
+### 异步发送请求
+```
+Request request = new Request.Builder()
+    .url(BASE_URL + "/date")
+    .build();
+
+Call call = client.newCall(request);
+call.enqueue(new Callback() {
+    public void onResponse(Call call, Response response) 
+      throws IOException {
+        // ...
+    }
+    
+    public void onFailure(Call call, IOException e) {
+        fail();
+    }
+});
+```
+
+### 设置超实时间
+```
+OkHttpClient client = new OkHttpClient.Builder()
+      .readTimeout(1, TimeUnit.SECONDS)
+      .build();
+
+Request request = new Request.Builder()
+  .url(BASE_URL + "/delay/2")
+  .build();
+
+Call call = client.newCall(request);
+Response response = call.execute();
 ```

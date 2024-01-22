@@ -69,6 +69,15 @@ SET T1.COLUMN2 = T2.COLUMN2,
 WHERE T1.COLUMN1 IN(21,31);
 ```
 
+### 删除重复数据
+```
+UPDATE `allfunds_price` as a JOIN 
+(SELECT max(`update_time_cpzx`) as update_time_cpzx, `isin`  , `pub_dt` 
+FROM allfunds_price
+GROUP BY isin, pub_dt) as b on a.`update_time_cpzx` = b.update_time_cpzx and a.`isin` = b.isin
+and a.`pub_dt` =b.pub_dt set a.is_del = 1;
+```
+
 ## 完整性约束
 完整性约束保证授权用户对数据库所做的修改不会破坏数据的一致性，防止的是对数据库的以外破坏。
 

@@ -2,10 +2,10 @@
 {docsify-updated}
 
 - [Kafka线上环境部署管理及监控](#kafka线上环境部署管理及监控)
-	- [Kafka 参数配置](#kafka-参数配置)
-	- [Zookeeper 配置文件](#zookeeper-配置文件)
-	- [Kafka的启动与管理](#kafka的启动与管理)
-	- [Kafka 集群监控](#kafka-集群监控)
+  - [Kafka 参数配置](#kafka-参数配置)
+  - [Zookeeper 配置文件](#zookeeper-配置文件)
+  - [Kafka的启动与管理](#kafka的启动与管理)
+  - [Kafka 集群监控](#kafka-集群监控)
 
 
 ### Kafka 参数配置
@@ -73,3 +73,5 @@ server.3=zk3:2888:3888
 ### Kafka 集群监控
 CMAK(原名 Kafka Manager)：
 https://github.com/yahoo/CMAK
+
+docker run -it --name=kafka-ui --network=host -e DYNAMIC_CONFIG_ENABLED=true provectuslabs/kafka-ui

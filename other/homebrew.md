@@ -5,11 +5,14 @@
 >https://www.xiebruce.top/983.html
 
 - [Mac Homebrew 的使用](#mac-homebrew-的使用)
+	- [使用代理加速](#使用代理加速)
 	- [国内 homebrew 加速](#国内-homebrew-加速)
 	- [常用命令](#常用命令)
 	- [brew services](#brew-services)
 		- [Jenv 进行JDK多版本管理](#jenv-进行jdk多版本管理)
 
+## 使用代理加速
+`ALL_PROXY=socks5://127.0.0.1:1080 brew update && brew upgrade`
 
 ## 国内 homebrew 加速
 ```

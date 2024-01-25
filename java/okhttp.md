@@ -111,8 +111,10 @@ call.enqueue(new Callback() {
 ### 设置超实时间
 ```
 OkHttpClient client = new OkHttpClient.Builder()
-      .readTimeout(1, TimeUnit.SECONDS)
-      .build();
+    .connectTimeout(10, TimeUnit.SECONDS) //连接超时时间
+    .writeTimeout(10, TimeUnit.SECONDS) // 写超时时间
+    .readTimeout(30, TimeUnit.SECONDS) // 读超时时间
+    .build();
 
 Request request = new Request.Builder()
   .url(BASE_URL + "/delay/2")

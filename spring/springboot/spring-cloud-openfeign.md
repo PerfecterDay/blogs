@@ -65,6 +65,22 @@ Spring Cloud使用 `FeignClientsConfiguration` 类为每个命名的客户端按
 + Client – `FeignBlockingLoadBalancerClient` 或者默认的 Feign client
 + Retryer - 重试组件
 
+等效代码
+```
+Feign.builder()
+// Decode JSON from respone body
+.decoder(new SpringDecoder(null))
+// Encode JSON for request body
+.encoder(new FormEncoder())
+.retryer(new Retryer.Default())
+.client(new OkHttpClient(new okhttp3.OkHttpClient().newBuilder()
+		.connectTimeout(1, TimeUnit.MINUTES)
+		.writeTimeout(1, TimeUnit.MINUTES)
+		.readTimeout(1, TimeUnit.MINUTES)
+		.build()))
+.target(CmsService.class, "/monkeys");
+```
+
 
 #### 自定义 Java 代码配置
 如果我们想定制这些Bean中的一个或多个，我们可以通过创建一个配置类来覆盖它们，然后将其添加到 `FeignClient` 注解的 `configuration` 属性中。

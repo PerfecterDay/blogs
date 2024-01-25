@@ -44,7 +44,6 @@ MyService myService = Resilience4jFeign.builder(decorators).target(MyService.cla
 如果其中一个机制生效，则会抛出相应的RuntimeException，例如，`CircuitBreakerOpenException`或`RequestNotPermitted`（提示：这些机制不会扩展`FeignException`类）。
 
 
-
 ##  装饰器的顺序
 装饰器的使用顺序和声明它们的顺序相对应。当构建`FeignDecorators`时，必须对此保持警惕，因为顺序会影响结果行为。
 
@@ -83,7 +82,9 @@ MyService myService = Resilience4jFeign.builder(decorators).target(MyService.cla
 
 在本例中，当抛出`FeignException`时（通常是在HTTP请求失败时）调用`requestFailedFallback`，而只有在`CircuitBreakerOpenException`的情况下才会调用`circuitBreakerFallback`。检查`FeignDecorators`类以获得更多降级的方法。
 
+<center>
 <img src="pics/feign-decorators.png" />
+</center>
 <!-- ![avatar](pics/feign-decorators.png) -->
 
 所有降级方法必须实现“目标”中声明的相同接口（Resilience4jFeign.Builder#target)方法，否则将引发IllegalArgumentException。

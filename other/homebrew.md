@@ -10,6 +10,7 @@
 	- [常用命令](#常用命令)
 	- [brew services](#brew-services)
 		- [Jenv 进行JDK多版本管理](#jenv-进行jdk多版本管理)
+		- [](#)
 
 ## 使用代理加速
 `ALL_PROXY=socks5://127.0.0.1:1080 brew update && brew upgrade`
@@ -107,3 +108,22 @@ Removing unused plist /Users/gabe/Library/LaunchAgents/homebrew.mxcl.mysql.plist
    ```
 4. jenv versions 显示可用的 JDK 版本，如果没有的话，需要使用 `jenv add [pathToJDK]` 添加安装的JDK
 5. `jenv local [javaversion]` 切换 JDK 版本
+
+
+### 
+```
+# 显示 Homebrew 本地的 Git 仓库
+$ brew --repo
+
+# 显示 Homebrew 安装路径
+$ brew --prefix
+
+# 显示 Homebrew Cellar 路径
+$ brew --cellar
+
+# 显示 Homebrew Caskroom 路径
+$ brew --caskroom
+
+# 缓存路径
+$ brew --cache
+```

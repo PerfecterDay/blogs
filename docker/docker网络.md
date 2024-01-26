@@ -73,3 +73,5 @@ Docker提供三种自定义网络的驱动：bridge、overlay 和 macvlan 。ove
 	当 curl 访问 10.0.2.15:32773 时，docker-proxy 转发给容器 172.17.0.2:80。  
 	httpd 容器响应请求并返回结果。
 
+3. 访问宿主机  
+   使用 `host.docker.internal` 不要使用 `127.0.0.1` 地址

@@ -17,6 +17,7 @@
   * [Kafka线上环境部署管理及监控](/分布式/kafka/Kafka-线上环境部署与管理.md)
   * [Kafka-producer开发](/分布式/kafka/Kafka-producer开发.md)
   * [Kafka-consumer开发](/分布式/kafka/Kafka-consumer开发.md)
+  * [Kafka-位移](/分布式/kafka/kafka-consumer-offset.md)
   * [Kafka-设计原理](/分布式/kafka/Kafka-设计原理.md)
   * [Spring Kafka集成](/分布式/kafka/spring-kafka集成.md)
 * [grpc](#)

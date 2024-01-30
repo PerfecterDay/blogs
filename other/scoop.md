@@ -2,10 +2,11 @@
 {docsify-updated}
 
 - [Scoop](#scoop)
-	- [Scoop 安装](#scoop-安装)
-	- [安装配置 aria2](#安装配置-aria2)
-	- [更换国内源](#更换国内源)
-	- [常用命令](#常用命令)
+  - [Scoop 安装](#scoop-安装)
+  - [安装配置 aria2](#安装配置-aria2)
+  - [更换国内源](#更换国内源)
+  - [使用代理](#使用代理)
+  - [常用命令](#常用命令)
 
 
 ### Scoop 安装
@@ -42,6 +43,11 @@ PowerShell requires an execution policy in [Unrestricted, RemoteSigned, ByPass] 
 
 推荐源：https://codechina.csdn.net/mirrors 或者  https://hub.fastgit.org/。  
 示例： https://github.com/Ash258/Scoop-Sysinternals.git/ ->  https://hub.fastgit.org/Ash258/Scoop-Sysinternals.git
+
+### 使用代理
+`scoop config proxy proxy.example.org:8080` ： 配置代理
+`scoop config proxy localhost:10809` ：配置代理
+`scoop config rm proxy` : 删除代理
 
 ### 常用命令
 1. `scoop search program-name` : 查找软件

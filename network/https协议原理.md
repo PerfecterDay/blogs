@@ -10,6 +10,7 @@
 	- [java 对 Https 的支持](#java-对-https-的支持)
 		- [KeyManager](#keymanager)
 		- [TrustManager](#trustmanager)
+		- [启用 Java SSL 调试日志](#启用-java-ssl-调试日志)
 	- [问题总结](#问题总结)
 
 ### HTTPS协议原理
@@ -117,6 +118,9 @@ TrustManager 和 KeyManager 之间的关系
 + TrustManager决定远程认证凭证（以及连接）是否应该被信任(通常是认证通信的对方)。
 + KeyManager决定向远程主机发送哪些认证凭证（通常是提供让对方认证的凭证）。
 
+#### 启用 Java SSL 调试日志
++ 命令行参数：`java -Djavax.net.debug=ssl -jar MyApp.jar`
++ 使用系统参数：`System.setProperty("javax.net.debug", "ssl");`
 
 ### 问题总结
 当遇到 https 证书验证失败时，你需要选择下面三种方法中的一个来解决：

@@ -25,7 +25,9 @@ consumer 提交位移的主要机制是通过向所属的 coordinator 发送位�
 设置使用手动提交位移非常简单，仅仅需要在构建 KafkaConsumer 时设置 enable.auto.comrnit=false ，然后调用 comrnitSync 或commitAsync 方法即可。
 
 ### `__consumer_offsets`
-位移记录的是以 (group_id, topic, partion, offset)
+位移记录的是以 `(group_id, topic, partion, offset)` 元组的形式保存的，可以把它想象成一个 KV 格式的消息， key就是一个三元组: `(group.id,topic,分区号)`， 而 value就是 offset 的值。 每当更新同一个 key的最新 offset值时，该 topic就会写入一条含有 最新 offset 的消息，同时 Kafka会定期地对该 topic执行压实操作(compact)，即为每个消息 key 只保存含有最新 offset 的消息。 这样既避免了对分区日志消息的修改 ，也 控制住了 __consumer_offsets topic总体的日志容量 ，同时还能实时反映最新的消费进度。
+
+<center><img src="pics/consumer_offset.jpg" width="50%"></center>
 
 #### 查看 `__consumer_offsets` 的数据格式
 `kafka-console-consumer --formatter "kafka.coordinator.group.GroupMetadataManager\$OffsetsMessageFormatter" --bootstrap-server localhost:9092 --topic __consumer_offsets --from-beginning`

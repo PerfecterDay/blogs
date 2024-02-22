@@ -69,9 +69,10 @@ server.3=zk3:2888:3888
     `kafka-console-producer.sh --topic quick-start --bootstrap-server localhost:9092`
 4. 从指定topic读取消息  
    `kafka-console-consumer.sh --topic quick-start --from-beginning --bootstrap-server localhost:9092`
+   `kafka-console-consumer --topic topic2 --from-beginning --group=test --bootstrap-server localhost:9092`
 
 ### Kafka 集群监控
 CMAK(原名 Kafka Manager)：
 https://github.com/yahoo/CMAK
 
-docker run -it --name=kafka-ui --network=host -e DYNAMIC_CONFIG_ENABLED=true provectuslabs/kafka-ui
+`docker run -it --name=kafka-ui -p 9090:8080 -e DYNAMIC_CONFIG_ENABLED=true provectuslabs/kafka-ui`

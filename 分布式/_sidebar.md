@@ -7,6 +7,7 @@
 * [Redis](#)
   * [Redis入门](/分布式/redis/Redis入门.md)
   * [Redis持久化](/分布式/redis/Redis持久化.md)
+  * [Redis缓存淘汰策略](/分布式/redis/Redis-key过期策略.md)
   * [Redis高可用](/分布式/redis/Redis高可用.md)
   * [Redis集群](/分布式/redis/Redis集群.md)
   * [Redis Lua脚本](/分布式/redis/Redis-lua.md)

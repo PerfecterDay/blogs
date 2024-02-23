@@ -37,6 +37,9 @@ Istio [Bookinfo](https://istio.io/latest/zh/docs/examples/bookinfo/) 示例包
 
 此任务的最初目标是应用将所有流量路由到微服务的 `v1` （版本 1）的规则。稍后，您将应用规则根据 HTTP 请求 header 的值路由流量。
 
+#### UI界面修改路由比例
+<center><img src="pics/kali-1.jpg" width="60%"></center>
+
 #### 路由到版本1
 1. 在可以使用 Istio 控制 Bookinfo 版本路由之前，需要定义可用的版本：
 	```

@@ -3,3 +3,4 @@
 * [入门](/go/入门.md)
 * [打包与工具链](/go/打包与工具链.md)
 * [go GRPC](/go/go-grpc.md)
+* [go语言圣经](https://golang-china.github.io/gopl-zh/ch10/ch10-07.html)

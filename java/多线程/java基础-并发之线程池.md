@@ -20,6 +20,7 @@
 
 
 ## 线程池的好处
+<center><img src="pics/threadpool.webp" width=40% height=40%></center>
 
 合理利用线程池能够带来三个好处：
 
@@ -128,12 +129,12 @@ void execute(Runnable command);
 1. `shutdown()` 的原理是只是将线程池的状态设置成 `SHUTDOWN` 状态，然后中断所有没有正在执行任务的线程。
 2. `shutdownNow()` 的原理是遍历线程池中的工作线程，然后逐个调用线程的 `interrupt()` 方法来中断线程，所以无法响应中断的任务可能永远无法终止。 `shutdownNow()` 会首先将线程池的状态设置成 `STOP` ，然后尝试停止所有的正在执行或暂停任务的线程，并返回等待执行任务的列表。
 
-只要调用了这两个关闭方法的其中一个，`isShutdown`方法就会返回true。当所有的任务都已关闭后,才表示线程池关闭成功，这时调用`isTerminaed`方法会返回true。至于我们应该调用哪一种方法来关闭线程池，应该由提交到线程池的任务特性决定，通常调用shutdown来关闭线程池，如果任务不一定要执行完，则可以调用`shutdownNow`。
+只要调用了这两个关闭方法的其中一个，`isShutdown`方法就会返回true。当所有的任务都已关闭后,才表示线程池关闭成功，这时调用`isTerminaed`方法会返回true。至于我们应该调用哪一种方法来关闭线程池，应该由提交到线程池的任务特性决定，通常调用 `shutdown` 来关闭线程池，如果任务不一定要执行完，则可以调用`shutdownNow`。
 
 ### 线程池使用总结
 下面总结了在使用连接池时应该做的事 ：
 1. 调用 `Executors` 类中静态的方法 `newCachedThreadPool()` 或 `newFixedThreadPool()` 创建线程池 。
-2. 调用 `submit()/execute()` 提交 `Runnable` 或 `Callable` 对象
+2. 调用 `submit(Runnable/Callable t)/execute(Runnable t)` 提交 `Runnable` 或 `Callable` 对象
 3. 如果想要取消一个任务或提交 `Callable` 对象, 那就要保存好返回的 `Future` 对象
 4. 当不再提交任何任务时 ，调用 `shutdown` 。
 

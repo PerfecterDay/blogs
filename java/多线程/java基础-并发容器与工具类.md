@@ -5,7 +5,8 @@
 	- [并发容器](#并发容器)
 	- [并发工具类](#并发工具类)
 		- [CountDownLatch](#countdownlatch)
-		- [同步屏障 CyclicBarrier](#同步屏障-cyclicbarrier)
+		- [循环同步屏障 CyclicBarrier](#循环同步屏障-cyclicbarrier)
+		- [CountdownLatch 和 CyclicBarrier 的区别](#countdownlatch-和-cyclicbarrier-的区别)
 		- [Semaphore](#semaphore)
 		- [线程间交换数据的 Exchanger](#线程间交换数据的-exchanger)
 
@@ -79,15 +80,48 @@ class Task implements Callable<Integer> {
 }
 ```
 
-### 同步屏障 CyclicBarrier  
+`CountDownLatch` 会使调用其 `await()` 方法的线程阻塞，直到其他线程集中的线程调用其上的 `countDown()` 方法使其计数变为0. 阻塞在`await()`的线程才会继续执行。
+
+### 循环同步屏障 CyclicBarrier  
 `CyclicBarrier` 的字面意思是可循环使用（Cyclic）的屏障（Barrier）。它要做的事情是，让一组线程到达一个屏障（也可以叫同步点）时被阻塞，直到最后一个线程到达屏障时，屏障才会开门，所有被屏障拦截的线程才会继续运行。
 
 `CyclicBarrier` 默认的构造方法是 `CyclicBarrier(int parties)`，其参数表示屏障拦截的线程数量，每个线程调用 `await` 方法告诉 `CyclicBarrier` 我已经到达了屏障，然后当前线程被阻塞。当指定数量的线程都到达屏障时，所有被阻塞的线程才会继续执行。
 
 `CyclicBarrier` 可以用于多线程计算数据，最后合并计算结果的场景。
 
-`CountDownLatch` 的计数器只能使用一次，而 `CyclicBarrier` 的计数器可以使用 `reset()` 方法重置。所以 `CyclicBarrier` 能处理更为复杂的业务场景。例如，如果计算发生错误，可以重置计数
+```
+public class CyclicBarrierTest {
+    private final static ExecutorService EXECUTOR_SERVICE = Executors.newFixedThreadPool(5);
+    private final static CyclicBarrier BARRIER = new CyclicBarrier(10);
+    public static void main(String[] args) {
+        for (int i = 0; i < 10; i++) {
+            final String name = "玩家" + i;
+            EXECUTOR_SERVICE.execute(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        Thread.sleep(2000);
+                        System.out.println(name + "已准备,等待其他玩家准备...");
+                        BARRIER.await();
+                        Thread.sleep(1000);
+                        System.out.println(name + "已加入游戏");
+                    } catch (InterruptedException e) {
+                        System.out.println(name + "离开游戏");
+                    } catch (BrokenBarrierException e) {
+                        System.out.println(name + "离开游戏");
+                    }
+                }
+            });
+        }
+        EXECUTOR_SERVICE.shutdown();
+    }
+}
+```
+
+### CountdownLatch 和 CyclicBarrier 的区别
+1. `CountDownLatch` 的计数器只能使用一次，而 `CyclicBarrier` 的计数器可以使用 `reset()` 方法重置。所以 `CyclicBarrier` 能处理更为复杂的业务场景。例如，如果计算发生错误，可以重置计数
 器，并让线程重新执行一次。
+
 
 ### Semaphore  
 `Semaphore` （信号量）是用来控制同时访问特定资源的线程数量，它通过协调各个线程，以保证合理的使用公共资源。 `Semaphore` 的用法也很简单，首先线程使用 `Semaphore` 的 `acquire()` 方法获取一个许可证，使用完之后调用 `release()` 方法归还许可证。还可以用 `tryAcquire()` 方法尝试获取许可证。

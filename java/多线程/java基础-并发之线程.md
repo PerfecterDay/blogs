@@ -2,15 +2,17 @@
 {docsify-updated}
 
 - [java线程](#java线程)
-  - [线程的三种创建方式](#线程的三种创建方式)
-  - [线程的一些属性](#线程的一些属性)
-  - [线程的状态](#线程的状态)
-    - [BLOCKED 和 WAITING 区别](#blocked-和-waiting-区别)
+	- [线程的三种创建方式](#线程的三种创建方式)
+	- [线程的一些属性](#线程的一些属性)
+	- [线程的状态](#线程的状态)
+		- [BLOCKED 和 WAITING 区别](#blocked-和-waiting-区别)
+		- [wait 和 sleep 的区别](#wait-和-sleep-的区别)
+		- [interrupt](#interrupt)
 - [线程之间的通信及同步](#线程之间的通信及同步)
-  - [volatile](#volatile)
-  - [ThreadLocal](#threadlocal)
-  - [等待通知机制](#等待通知机制)
-  - [等待/通知的经典范式](#等待通知的经典范式)
+	- [volatile](#volatile)
+	- [ThreadLocal](#threadlocal)
+	- [等待通知机制](#等待通知机制)
+	- [等待/通知的经典范式](#等待通知的经典范式)
 
 
 ### 线程的三种创建方式
@@ -134,6 +136,18 @@ class Thread4 extends Thread{
 2. 站在调度器的角度上，假如一个线程释放了锁，调度器调度是需要考虑 BLOCKED 队列中的线程让它们争用锁，但是不需要考虑 WAITING 队列中的线程。
 <center><img src="pics/wait-blocked.png" width=40% heght=40%></center>
 
+#### wait 和 sleep 的区别
+简单地说，wait() 是一个用于线程同步的实例方法。
+它可以在任何对象上调用，因为它就定义在 `java.lang.Object` 中，但只能在**同步代码块中调用。它会释放对象上的锁**，以便另一个线程可以跳入并获取锁。
+另一方面，Thread.sleep() 是一个静态方法，可以在任何上下文中调用。`Thread.sleep()` 会暂停当前线程，**但不会释放任何锁**。
+
+#### interrupt
+中断标志或中断状态是线程的内部标志，在线程被中断时被设置。要设置它，只需在线程对象上调用 thread.interrupt()。
+
+如果线程当前在抛出 InterruptedException 的方法（wait、join、sleep 等）中，则该方法会立即抛出 InterruptedException。线程可根据自己的逻辑自由处理该异常。
+
+如果线程不在此类方法中，并且调用了 thread.interrupt()，则不会发生任何特殊情况。线程有责任使用静态 Thread.interrupted() 或实例 isInterrupted() 方法定期检查中断状态。这些方法的区别在于，静态 Thread.interrupted() 会清除中断标志，而 isInterrupted() 不会。
+
 ## 线程之间的通信及同步
 
 ### volatile
@@ -181,4 +195,3 @@ class Thread4 extends Thread{
         Object.notify();
     }
 ```
-

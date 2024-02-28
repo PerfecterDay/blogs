@@ -144,9 +144,11 @@ class Thread4 extends Thread{
 #### interrupt
 中断标志或中断状态是线程的内部标志，在线程被中断时被设置。要设置它，只需在线程对象上调用 thread.interrupt()。
 
-如果线程当前在抛出 InterruptedException 的方法（wait、join、sleep 等）中，则该方法会立即抛出 InterruptedException。线程可根据自己的逻辑自由处理该异常。
+具体来说，当对一个线程，调用 interrupt() 时，
++ 如果线程处于被阻塞状态（例如处于sleep, wait, join 等状态），那么线程将立即退出被阻塞状态，并抛出一个InterruptedException异常。仅此而已。
++ 如果线程处于正常活动状态，那么会将该线程的中断标志设置为 true，仅此而已。被设置中断标志的线程将继续正常运行，不受影响。interrupt() 并不能真正的中断线程，需要被调用的线程自己进行配合才行。
 
-如果线程不在此类方法中，并且调用了 thread.interrupt()，则不会发生任何特殊情况。线程有责任使用静态 Thread.interrupted() 或实例 isInterrupted() 方法定期检查中断状态。这些方法的区别在于，静态 Thread.interrupted() 会清除中断标志，而 isInterrupted() 不会。
+线程有责任使用静态 `Thread.interrupted()` 或实例 `isInterrupted()` 方法定期检查中断状态。这些方法的区别在于，静态 `Thread.interrupted()` 会清除中断标志，而 `isInterrupted()` 不会。
 
 ## 线程之间的通信及同步
 

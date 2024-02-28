@@ -3,6 +3,7 @@
 - [Queue](#queue)
 	- [PriorityQueue 实现类](#priorityqueue-实现类)
 	- [Deque 接口与 ArrayDeque 实现类](#deque-接口与-arraydeque-实现类)
+	- [DelayQueue](#delayqueue)
 
 
 `Queue` 用于模拟队列这种数据结构，队列通常是先进先出（FIFO）的容器。队列的头部保存存放时间最长的元素，队尾保存存放时间最短的元素。通常人们可以快速地在队尾添加一个元素（入队），并且在对头移除一个元素（出队）。双端队列允许在队列两端同时添加或删除元素。但是队列通常不支持在中间添加或删除元素，也不允许随机访问。
@@ -43,3 +44,50 @@
 
 `Deque` 不仅可以当成双端队列来使用，而且可以被当成栈来使用，因为含有 `push()` 、 `pop()` 方法。  
 `Deque` 接口有一个典型实现类 `ArrayDeque` ，基于数组实现的双端队列，可以在初始化时指定数组大小，如果不指定，则默认大小是 16。
+
+
+### DelayQueue
+```
+public static void main(String[] args) throws InterruptedException {
+	DelayObject objectA = new DelayObject("a",10000);
+	DelayObject objectB = new DelayObject("b",2000);
+	DelayObject objectC = new DelayObject("c",1000);
+
+	DelayQueue<DelayObject> delayQueue = new DelayQueue();
+	delayQueue.put(objectA);
+	delayQueue.put(objectB);
+	delayQueue.put(objectC);
+	DelayObject object = delayQueue.take();
+	while (object != null){
+		System.out.println("Consumer take: " + object);
+		object = delayQueue.take();
+	}
+}
+
+static class DelayObject implements Delayed {
+	private String data;
+	private long startTime;
+
+	DelayObject(String data, long delayInMilliseconds) {
+		this.data = data;
+		this.startTime = System.currentTimeMillis() + delayInMilliseconds;
+	}
+
+	//返回剩余的延时；零或负值表示延时已过，可以出队
+	@Override
+	public long getDelay(TimeUnit unit) {
+		long diff = startTime - System.currentTimeMillis();
+		return unit.convert(diff, TimeUnit.MILLISECONDS);
+	}
+
+	@Override
+	public int compareTo(Delayed o) {
+		return Ints.saturatedCast(this.startTime - ((DelayObject) o).startTime);
+	}
+
+	@Override
+	public String toString() {
+		return "{" + "data='" + data + '\'' + ", startTime=" + startTime + '}';
+	}
+}
+```

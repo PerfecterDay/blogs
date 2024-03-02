@@ -1,5 +1,12 @@
-# Netty的组件和设计
+## Netty的组件和设计
 {docsify-updated}
+
+- [Netty的组件和设计](#netty的组件和设计)
+	- [Channel 接口](#channel-接口)
+	- [EventLoop](#eventloop)
+	- [ChannelHandler 和 ChannelPipeline](#channelhandler-和-channelpipeline)
+	- [线程模型](#线程模型)
+
 
 + Channel—Socket;
 + EventLoop—控制流、多线程处理、并发;
@@ -70,8 +77,3 @@ Channel 的方法：
 ### 线程模型
 
 <center><img src="pics/netty_thread_model.png" alt=""></center>
-
-
-
-
-#### 引导

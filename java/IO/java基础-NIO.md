@@ -16,7 +16,7 @@
       - [缓冲区分配和包装](#缓冲区分配和包装)
   - [NIO 网络编程的一般步骤](#nio-网络编程的一般步骤)
     - [服务器端打开一个 ServerSocketChannel](#服务器端打开一个-serversocketchannel)
-    - [Selector](#selector)
+    - [Selector/Reactor](#selectorreactor)
     - [SelectionKey](#selectionkey)
     - [内部循环](#内部循环)
     - [监听新连接](#监听新连接)
@@ -131,7 +131,9 @@ ss.bind( address );
 ```
 第一行创建一个新的 `ServerSocketChannel` ，最后三行将它绑定到给定的端口。第二行将 `ServerSocketChannel` 设置为*非阻塞*的 。我们必须对每一个要使用的套接字通道调用这个方法，否则异步 I/O 就不能工作。
 
-### Selector
+### Selector/Reactor
+Reactor 模式本质上指的是使用”IO多路复用(IO multiplexing) + 非阻塞IO(non-blocking IO)”的模式。所谓“IO多路复用”，指的就是select/poll/epoll这一系列的多路选择器。它支持线程同时在多个文件描述符上阻塞，并在其中某个文件描述符可读写时收到通知。 **IO复用其实复用的不是IO连接，而是复用线程，让一个thread of control能够处理多个连接。**
+
 `Selector` 就是您注册对各种 I/O 事件的兴趣的地方，而且当那些事件发生时，就是这个对象告诉您所发生的事件。
 我们关心某个channel是否发生了读写或者Accept事件，就把这个channel和相应的事件通过channel的register方法注册到selector对象上，这样selector会在这些channel上发生了你感兴趣的事件时通知你。
 

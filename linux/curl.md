@@ -338,4 +338,11 @@ curl -X POST -d '{
 
 curl -X GET https://gtjdata.iqdii.com/jybapp/price/GetStockMarketInfo?session=
    
+
+TTL:
+curl -H "Content-type: application/json" -H 'Accept: application/json' -XPOST http://192.168.20.25:8089/mobile/services/v0/operatorLogin -d '{
+"operatorID": "GMTAPI",
+"entityID": "GTJA",
+"language": "en_US",
+"password": "E9CEE71AB932FDE863338D08BE4DE9DFE39EA049BDAFB342CE659EC5450B69AE"}'   
 ```

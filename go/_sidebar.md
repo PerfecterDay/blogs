@@ -8,5 +8,6 @@
 * [函数](/go/函数.md)
 * [方法](/go/方法.md)
 * [接口](/go/接口.md)
+* [Goroutines和Channels](/go/Goroutines和Channels.md)
 * [go GRPC](/go/go-grpc.md)
-* [go语言圣经](https://golang-china.github.io/gopl-zh/ch10/ch10-07.html)
+* [go语言圣经](https://golang-china.github.io/gopl-zh/index.html)

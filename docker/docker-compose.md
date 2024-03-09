@@ -21,6 +21,7 @@
     - [working\_dir](#working_dir)
     - [environment](#environment)
     - [volumes](#volumes)
+    - [depends\_on](#depends_on)
 
 
 我们知道使用一个 Dockerfile 模板文件，可以让用户很方便的定义一个单独的应用容器。然而，在日常工作中，经常会碰到需要多个容器相互配合来完成某项任务的情况。例如要实现一个 Web 项目，除了 Web 服务容器本身，往往还需要再加上后端的数据库服务容器，甚至还包括负载均衡容器等。
@@ -81,7 +82,8 @@ volumes: ➎
 ##### run
 格式为 `docker-compose run [options] [-p PORT...] [-e KEY=VAL...] SERVICE [COMMAND] [ARGS...]`  
 
-在指定服务上执行一个命令。 启动一个容器，并运行一个一次性的命令。被依赖的容器会同时启动，除非用了 `--no-deps` 参数。
+在指定服务上执行一个命令。 启动一个容器，并运行一个一次性的命令。被依赖的容器会同时启动，除非用了 `--no-deps` 参数。  
+请注意，如果运行时容器镜像已经存在，它不会重新构建镜像，如果要重新构建容器运行的镜像则需要重新 `build` 。
 
 #### up
 启动所有在 Compose 文件中定义的容器，并且把它们的日志信息汇集一起。通常会使用 -d 参数使 Compose 在后台运行。
@@ -163,3 +165,7 @@ volumes:
 ```
 
 如果路径为数据卷名称，必须在文件中配置数据卷。
+
+
+#### depends_on
+"service_started", "service_healthy", "service_completed_successfully"

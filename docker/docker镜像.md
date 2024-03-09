@@ -5,6 +5,7 @@
   - [镜像的分层结构](#镜像的分层结构)
   - [镜像的构建](#镜像的构建)
     - [Dockerfile 常用指令](#dockerfile-常用指令)
+      - [多阶段构建](#多阶段构建)
     - [镜像操作](#镜像操作)
 
 
@@ -72,6 +73,64 @@ Docker 通过扩展现有镜像，创建新的镜像。特殊情况下，基于�
 9. `COPY` ： 类似于ADD，区别在于不会做文件提取和解压的工作。
 10. `RUN` : 用来执行命令行命令的。由于命令行的强大能力，RUN 指令在定制镜像时是最常用的指令之一。
 11. `EXPOSE <端口1> [<端口2>...]` : 仅仅是声明容器打算使用什么端口而已，并不会自动在宿主机进行端口映射。
+
+##### 多阶段构建
+```
+FROM --platform=linux/amd64 golang:alpine AS builder
+
+# Set Go env
+ENV CGO_ENABLED=0 GOOS=linux
+ENV GOPROXY https://goproxy.cn,direct
+WORKDIR /go/src/go-trade-gmt
+
+# Install dependencies
+RUN apk --update --no-cache add ca-certificates gcc libtool make musl-dev protoc git
+
+# Build Go binary
+COPY Makefile go.mod go.sum ./
+RUN make init && go mod download 
+COPY . .
+RUN make proto tidy build client
+
+
+## Deployment container
+FROM --platform=linux/amd64 alpine:3.19 
+# FROM --platform=linux/amd64 scratch 
+WORKDIR /gmt
+
+COPY --from=builder /etc/ssl/certs /etc/ssl/certs
+COPY --from=builder /go/src/go-trade-gmt /gmt
+ENTRYPOINT ["/gmt/go-trade-gmt"]
+CMD ["--config_path=configs/config-sit.yaml"]
+```
+
+默认情况下，阶段没有命名，而是以整数编号来表示，第一条 FROM 指令从 0 开始。不过，你可以在 FROM 指令中添加 AS <NAME> 来为阶段命名。本示例通过命名阶段并在 COPY 指令中使用该名称。这意味着，即使以后 Dockerfile 中的指令重新排序，COPY 也不需要改变源引用。
+
+build 镜像时可以使用 `--target` 来指定特定的阶段：
+```
+docker build --target builder -t hello .
+```
+
+另外 ，在使用多阶段构建时，你并不局限于从 Dockerfile 中之前创建的阶段中复制。你可以使用 `COPY --from` 指令可以从单独的镜像复制，可以使用本地镜像名称、本地或 Docker 注册表上的标签或标签 ID。如有必要，Docker 客户端会提取镜像，并从那里复制工件。语法如下
+```
+COPY --from=nginx:latest /etc/nginx/nginx.conf /nginx.conf
+```
+
+还可以使用 `FROM` 来引用前一阶段的构建，这样可以复用前一阶段的所有内容：
+```
+FROM alpine:latest AS builder
+RUN apk --no-cache add build-base
+
+FROM builder AS build1
+COPY source1.cpp source.cpp
+RUN g++ -o /binary source.cpp
+
+FROM builder AS build2
+COPY source2.cpp source.cpp
+RUN g++ -o /binary source.cpp
+```
+
+在使用多阶段的Dockerfile build镜像时，除非使用了 `--target` 标志指定阶段，否则 Dockerfile 中定义的最后一个阶段将是运行构建命令时构建的阶段。这适用于 `docker build` 和 `docker buildx build`。
 
 #### 镜像操作
 1. 获取镜像 

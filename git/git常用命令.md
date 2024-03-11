@@ -91,6 +91,15 @@
 20. `git push` : 如果当前分支只有一个追踪分支，那么主机名都可以省略
 21. `git ls-remote -h -- ssh://git@gjywgitlab.gtja.net:223/gtja-app-platform/user-center-g/user-center-service.git`
 
+### Git 配置
+1. `git config --global url."https://wangzhongzhu026484:wzz900119!@gjywgitlab.gtja.net".insteadOf "http://gjywgitlab.gtja.net"`
+2. 配置用户名、密码：
+   ```
+   git config --global user.name 用户命
+   git config --global user.password 密码
+   git config --global user.email "1548429568@qq.com"
+   ```
+3. `git remote set-url origin https://{username}:{password}@github.com/{username}/project.git`
 
 #### 常见问题
 1. windows乱码：  

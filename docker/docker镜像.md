@@ -106,11 +106,6 @@ CMD ["--config_path=configs/config-sit.yaml"]
 
 默认情况下，阶段没有命名，而是以整数编号来表示，第一条 FROM 指令从 0 开始。不过，你可以在 FROM 指令中添加 AS <NAME> 来为阶段命名。本示例通过命名阶段并在 COPY 指令中使用该名称。这意味着，即使以后 Dockerfile 中的指令重新排序，COPY 也不需要改变源引用。
 
-build 镜像时可以使用 `--target` 来指定特定的阶段：
-```
-docker build --target builder -t hello .
-```
-
 另外 ，在使用多阶段构建时，你并不局限于从 Dockerfile 中之前创建的阶段中复制。你可以使用 `COPY --from` 指令可以从单独的镜像复制，可以使用本地镜像名称、本地或 Docker 注册表上的标签或标签 ID。如有必要，Docker 客户端会提取镜像，并从那里复制工件。语法如下
 ```
 COPY --from=nginx:latest /etc/nginx/nginx.conf /nginx.conf
@@ -130,7 +125,11 @@ COPY source2.cpp source.cpp
 RUN g++ -o /binary source.cpp
 ```
 
-在使用多阶段的Dockerfile build镜像时，除非使用了 `--target` 标志指定阶段，否则 Dockerfile 中定义的最后一个阶段将是运行构建命令时构建的阶段。这适用于 `docker build` 和 `docker buildx build`。
+在使用多阶段的Dockerfile build镜像时，可以使用 `--target` 来指定特定的阶段：
+```
+docker build --target builder -t hello .
+```
+如果没有使用 `--target` 标志指定阶段，会以 Dockerfile 中定义的最后一个阶段将作为运行构建命令时构建的阶段。这适用于 `docker build` 和 `docker buildx build`。
 
 #### 镜像操作
 1. 获取镜像 
@@ -154,6 +153,15 @@ RUN g++ -o /binary source.cpp
    + `docker save [imgId] -o [imgfile]`
    + `docker load -i [imgfile]`  
 	这种导出的镜像是没有镜像名字的，需要手动修改导入的镜像名字：`docker tag [imgId] [<repository>:<tag>]`
+
+    docker export是用来将container的文件系统进行打包的。
+   + `docker export -o postgres-export.tar postgres`
+   + `docker import postgres-export.tar postgres:latest`
+
+    总结一下docker save和docker export的区别：
+    + docker save保存的是镜像（image），docker export保存的是容器（container）；
+    + docker load用来载入镜像包，docker import用来载入容器包，但两者都会恢复为镜像；
+    + docker load不能对载入的镜像重命名，而docker import可以为镜像指定新名称。
 6. 查看 docker 空间占用
    + `docker system df`
    + `docker system prune -a --volumes`

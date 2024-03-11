@@ -11,6 +11,7 @@
   - [Access Log](#access-log)
   - [配置输出日志](#配置输出日志)
   - [配置websocket](#配置websocket)
+  - [问题列表](#问题列表)
   - [重写请求路径，禁用三防](#重写请求路径禁用三防)
 
 <center><img src="pics/envoy-architecture.webp" width="60%"></center>
@@ -97,6 +98,7 @@ envoy -c envoy-demo.yaml --log-path logs/custom.log
     route: { cluster: kefu-cluster-1, timeout: { seconds: 0 }, upgrade_configs: [{upgrade_type: websocket}] }
  ```
 
+### 问题列表
 1. uatfile upload host 不匹配返回403 : auto_host_rewrite
    `route: { cluster: uatfile-cluster, timeout: { seconds: 10 } ,auto_host_rewrite: true}`
 2. 设置超时时间: timeout

@@ -6,6 +6,7 @@
 
 - [Mac Homebrew 的使用](#mac-homebrew-的使用)
 	- [使用代理加速](#使用代理加速)
+	- [安装软件的默认配置文件位置](#安装软件的默认配置文件位置)
 	- [国内 homebrew 加速](#国内-homebrew-加速)
 	- [常用命令](#常用命令)
 	- [brew services](#brew-services)
@@ -14,6 +15,11 @@
 
 ## 使用代理加速
 `ALL_PROXY=socks5://127.0.0.1:1080 brew update && brew upgrade`
+
+## 安装软件的默认配置文件位置
+ ```
+ /opt/homebrew/etc/proxychains.conf
+```
 
 ## 国内 homebrew 加速
 ```

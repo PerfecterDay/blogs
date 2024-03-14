@@ -3,10 +3,10 @@
 > https://mp.weixin.qq.com/s/n7ZeWXIpchZ0_QGLZdrfpg
 
 - [ProxyChains 和 netcat](#proxychains-和-netcat)
-	- [ProxyChains](#proxychains)
-		- [proxychain 安装](#proxychain-安装)
-		- [使用配置](#使用配置)
-	- [netcat](#netcat)
+  - [ProxyChains](#proxychains)
+    - [proxychain 安装](#proxychain-安装)
+    - [使用配置](#使用配置)
+  - [netcat](#netcat)
 
 
 ## ProxyChains
@@ -23,14 +23,16 @@ Proxychains.exe 通过给动态链接的程序注入一个 DLL，对 Ws2_32.dll 
 ### 使用配置
 
 1. Proxychains.exe 按照以下顺序寻找配置：
-    在 Win32 环境中
-    + 环境变量 %PROXYCHAINS_CONF_FILE% 或通过 -f 命令行参数指定的文件
-    + %USERPROFILE%\.proxychains\proxychains.conf（Win32 用户主目录）
-    + (CSIDL_APPDATA)\Proxychains\proxychains.conf（在现代 Windows 版本中，典型的路径如 C:\Users\<用户名>\AppData\Roaming\Proxychains\proxychains.conf）
-    + (CSIDL_COMMON_APPDATA)\Proxychains\proxychains.conf（在现代 Windows 版本中，典型的路径如 C:\ProgramData\Proxychains\proxychains.conf）
-
+    在 Win32 环境中:
+        + 环境变量 %PROXYCHAINS_CONF_FILE% 或通过 -f 命令行参数指定的文件
+        + %USERPROFILE%\.proxychains\proxychains.conf（Win32 用户主目录）
+        + (CSIDL_APPDATA)\Proxychains\proxychains.conf（在现代 Windows 版本中，典型的路径如 C:\Users\<用户名>\AppData\Roaming\Proxychains\proxychains.conf）
+        + (CSIDL_COMMON_APPDATA)\Proxychains\proxychains.conf（在现代 Windows 版本中，典型的路径如 C:\ProgramData\Proxychains\proxychains.conf）
+    在 Macos ：
+        `/opt/homebrew/etc/proxychains.conf`
+  
 2. `proxychains -l V -f D:\applications\Scoop\apps\proxychains\0.6.8\proxychains.conf curl https://www.google.com.hk/`
-
+3. `proxychains4 brew update && brew upgrade`
 
 ## netcat
 nc -l -t localhost 91111

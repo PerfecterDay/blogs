@@ -74,6 +74,9 @@ Redis是一种基于键值对（key-value）的NoSQL数据库，与很多键值�
    12. `renamenx key newkey`： 只有 newkey 不存在时才会重命名成功，由于重命名键期间会执行del命令删除旧的键，如果键对应的值比较大，会存在阻塞Redis的可能性，这点不要忽视。
    13. 随机返回一个键： `randomkey`
 
+3. 信息查看命令
+   1. 查看连接的客户端：`redis 127.0.0.1:6379> CLIENT LIST` 
+
 
 ### 数据类型
 

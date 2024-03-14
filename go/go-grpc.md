@@ -2,9 +2,11 @@
 {docsify-updated}
 
 - [go 与 GRPC 集成](#go-与-grpc-集成)
-  - [环境配置](#环境配置)
-  - [编译](#编译)
-  - [代码](#代码)
+	- [环境配置](#环境配置)
+	- [编译](#编译)
+	- [代码示例](#代码示例)
+	- [问题](#问题)
+	- [原理](#原理)
 
 ### 环境配置
 
@@ -24,7 +26,7 @@ protoc --go_out=. --go_opt=paths=source_relative \
     helloworld/helloworld.proto
 ```
 
-### 代码
+### 代码示例
 ```
 package main
 
@@ -63,3 +65,84 @@ func main() {
 	}
 }
 ```
+
+### 问题
+```
+rpc Handle (Request) returns (Response) {}
+
+jsonservice.pb.micro.go
+func (c *greeterService) Handle(ctx context.Context, in *Request, opts ...client.CallOption) (*Response, error) {
+	req := c.c.NewRequest(c.name, "Greeter.Handle", in)
+	out := new(Response)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+
+rpc handle (Request) returns (Response) {}
+func (c *greeterService) Handle(ctx context.Context, in *Request, opts ...client.CallOption) (*Response, error) {
+	req := c.c.NewRequest(c.name, "Greeter.handle", in)
+	out := new(Response)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+```
+
+### 原理
+
+1. 服务端会使用生成的 pb.go 文件中的方法和描述去注册服务的信息（服务名/方法名/handler等）
+	jsonservice_grpc.pb.go
+	```
+	func RegisterGreeterServer(s grpc.ServiceRegistrar, srv GreeterServer) {
+		s.RegisterService(&Greeter_ServiceDesc, srv)
+	}
+
+	var Greeter_ServiceDesc = grpc.ServiceDesc{
+		ServiceName: "grpc_client.Greeter",
+		HandlerType: (*GreeterServer)(nil),
+		Methods: []grpc.MethodDesc{
+			{
+				MethodName: "handle",
+				Handler:    _Greeter_Handle_Handler,
+			},
+		},
+		Streams:  []grpc.StreamDesc{},
+		Metadata: "jsonservice.proto",
+	}
+	```
+	信息都会保存到grpc 的 Sever 结构体中（services）。
+	```
+	type Server struct {
+		opts serverOptions
+
+		mu  sync.Mutex // guards following
+		lis map[net.Listener]bool
+		// conns contains all active server transports. It is a map keyed on a
+		// listener address with the value being the set of active transports
+		// belonging to that listener.
+		conns    map[string]map[transport.ServerTransport]bool
+		serve    bool
+		drain    bool
+		cv       *sync.Cond              // signaled when connections close for GracefulStop
+		services map[string]*serviceInfo // service name -> service info
+		events   trace.EventLog
+
+		quit               *grpcsync.Event
+		done               *grpcsync.Event
+		channelzRemoveOnce sync.Once
+		serveWG            sync.WaitGroup // counts active Serve goroutines for GracefulStop
+
+		channelzID int64 // channelz unique identification number
+		czData     *channelzData
+
+		serverWorkerChannels []chan *serverWorkerData
+	}
+	```
+
+2. grpc服务端收到请求的时候就会根据传入的服务名和方法名去寻找注册的服务和方法并调用

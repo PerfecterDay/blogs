@@ -2,6 +2,7 @@
 {docsify-updated}
 > https://www.ruanyifeng.com/blog/2022/08/dns-query.html  
 > https://ruanyifeng.com/blog/2016/06/dns.html
+> https://coredns.io/manual/toc/
 
 - [DNS](#dns)
 	- [域名的树状结构](#域名的树状结构)

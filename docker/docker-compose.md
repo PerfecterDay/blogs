@@ -81,9 +81,12 @@ volumes: ➎
 
 ##### run
 格式为 `docker-compose run [options] [-p PORT...] [-e KEY=VAL...] SERVICE [COMMAND] [ARGS...]`  
-
+```
+docker compose -f docker-compose-builder.yaml run --rm compile
+```
 在指定服务上执行一个命令。 启动一个容器，并运行一个一次性的命令。被依赖的容器会同时启动，除非用了 `--no-deps` 参数。  
 请注意，如果运行时容器镜像已经存在，它不会重新构建镜像，如果要重新构建容器运行的镜像则需要重新 `build` 。
+`--rm` 参数用来指示运行完成后删除容器，否则每次都会新建容器
 
 #### up
 启动所有在 Compose 文件中定义的容器，并且把它们的日志信息汇集一起。通常会使用 -d 参数使 Compose 在后台运行。

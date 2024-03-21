@@ -2,6 +2,7 @@
 {docsify-updated}
 
 - [grpc入门](#grpc入门)
+	- [gRpc 简介](#grpc-简介)
 	- [gRpc实现的一般步骤](#grpc实现的一般步骤)
 		- [服务端实现与启动](#服务端实现与启动)
 		- [客户端实现](#客户端实现)
@@ -10,6 +11,16 @@
 	- [grpc注册consul](#grpc注册consul)
 	- [常见错误](#常见错误)
 
+### gRpc 简介
+RPC 只是一种方法调用模型，只要我们能从本地调用远程服务，就可以说这是某种类型的 RPC。  
+由于客户端和服务可以通过不同的协议（如 UDP、TCP、HTTP、HTTP/2）进行通信，因此 RPC 也有不同的类型。  
+Protobuf 和 JSON、XML 一样，都是数据交换格式，只不过 json 和 xml 基于文本，而 protobuf 基于字节，可以节省大量带宽和序列化时间。  
+
+因此，我们可以将这两者结合起来，形成各种 RPC。例如，通过 UDP 发送 JSON 数据是 RPC 的一种形式，通过 TCP 发送 XML 数据是另一种形式，通过 UDP 发送 Protobuf 数据是另一种形式。  
+GRPC 是一种通过 HTTP/2 协议发送 Protobuf 数据的 RPC。
+
+go-micro 是一个微服务框架，服务通过 RPC 进行通信，因此 go-micro 为开发者提供了各种 RPC 供选择，它们以插件的形式出现，如 UDP、HTTP、GRPC 等。  
+GRPC 是一种通信模型，可以用 C++、JAVA、Go 等大多数语言实现。因此，Go-GRPC 就是一个用 go 语言编写的 GRPC 插件。
 
 gRPC 可以使用 `protocol buffers` 作为其接口定义语言（IDL）和底层消息交换格式。
 

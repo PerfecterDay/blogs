@@ -1,17 +1,19 @@
 ## AVL树-平衡二叉搜索树
 {docsify-updated}
 
+> https://www.baeldung.com/cs/balanced-bst-from-sorted-list
+
 - [AVL树-平衡二叉搜索树](#avl树-平衡二叉搜索树)
-  - [创建平衡二叉搜索树](#创建平衡二叉搜索树)
-    - [Top-Down 方法](#top-down-方法)
-    - [Bottom-Up 方法](#bottom-up-方法)
-  - [保持平衡性](#保持平衡性)
-    - [右旋](#右旋)
-    - [左旋](#左旋)
-    - [先左旋后右旋](#先左旋后右旋)
-    - [先右旋后左旋](#先右旋后左旋)
-    - [旋转的选择](#旋转的选择)
-  - [AVL树实现代码](#avl树实现代码)
+	- [由有序列表创建平衡二叉搜索树](#由有序列表创建平衡二叉搜索树)
+		- [Top-Down 方法](#top-down-方法)
+		- [Bottom-Up 方法](#bottom-up-方法)
+	- [保持平衡性](#保持平衡性)
+		- [右旋](#右旋)
+		- [左旋](#左旋)
+		- [先左旋后右旋](#先左旋后右旋)
+		- [先右旋后左旋](#先右旋后左旋)
+		- [旋转的选择](#旋转的选择)
+	- [AVL树实现代码](#avl树实现代码)
 
 1962 年 G.M.Adelson‑Velsky 和 E.M.Landis 在 论 文 “An algorithm for the organization ofinformation”中提出了「AVL 树」。为了纪念他们，将平衡二叉树称为AVL树。
 
@@ -19,7 +21,7 @@
 + 平衡二叉树是一棵二叉搜索树树，它的高度是 $O(log(n))$，其中n是树内的节点数。
 + 对于平衡树内的每个节点，左子树的高度与右子树的高度相差不得超过 1。
 
-### 创建平衡二叉搜索树
+### 由有序列表创建平衡二叉搜索树
 在创建平衡 BST 时，我们需要牢记高度条件。首先，让我们考虑一下将哪个节点作为根节点最好。
 
 **由于我们需要平衡树，所以必须将中间的值作为根节点。然后，我们可以将中间值之前的值添加到树的左边。因此，所有较小的值都将被添加到左侧子树。同样，我们将中间值之后的值添加到树的右边，这样所有较大的值都会添加到右边的子树中。**
@@ -29,7 +31,6 @@
 但是，如果我们只有指向列表中第一个元素的指针，那么获取中间元素就比较麻烦了。因此，在这种情况下，我们将使用Bottom-up的方法。
 
 #### Top-Down 方法
-
 自上而下的方法使用排序数组来创建平衡的 BST。因此，我们可以在恒定时间内访问数组内的任意索引：
 <center><img src="pics/quicklatex.com-bd18cef6ee8eb252f700ebf114b4d5fa_l3.svg" alt=""></center>
 
@@ -67,9 +68,29 @@ class BalanceBstree extends BsTree {
 ```
 
 #### Bottom-Up 方法
-
 自下而上的方法使用链表来构建平衡的 BST。因此，我们会有一个指向列表头部的指针，我们只能在恒定时间内向前移动这个指针。
 <center><img src="pics/quicklatex.com-0ab014825b9004386afe016d6b44ec97_l3.svg" alt=""></center>
+
+```
+algorithm TopDownBST(A, L, R):
+    // INPUT
+    //   A = The sorted array
+    //   L = The left side of the current range
+    //   R = The right side of the current range
+    // OUTPUT
+    //   The root of the balanced BST
+
+    if L > R:
+        return null
+
+    mid <- (L + R) / 2
+
+    root.value <- A[mid]
+    root.left <- TopDownBST(A, L, mid - 1)
+    root.right <- TopDownBST(A, mid + 1, R)
+
+    return root
+```
 
 ### 保持平衡性
 AVL 树的特点在于“旋转”操作，它能够在不影响二叉树的中序遍历序列的前提下，使失衡节点重新恢复平衡。换句话说，旋转操作既能保持“二叉搜索树”的性质，也能使树重新变为“平衡二叉树”。  
@@ -130,7 +151,7 @@ return child;
 <center><img src="pics/rotate.jpg" width="60%"></center>
 
 节点的「平衡因子 balance factor」定义为节点**左子树的高度减去右子树的高度**，同时规定空节点的平衡因子为 0.
-<center><img src="pics/rotate-2.jpg" width="60%"></center>
+<center><img src="pics/rotate-2.jpg" width="50%"></center>
 
 ```
 /* 执行旋转操作，使该子树重新恢复平衡 */

@@ -1,11 +1,10 @@
 ## BST-二叉搜索树
 {docsify-updated}
 > https://www.baeldung.com/cs/sorting-binary-tree  
-> https://www.baeldung.com/cs/balanced-bst-from-sorted-list
 
 - [BST-二叉搜索树](#bst-二叉搜索树)
-  - [BST-二叉搜索树的定义](#bst-二叉搜索树的定义)
-  - [BST-二叉搜索树的构造](#bst-二叉搜索树的构造)
+	- [BST-二叉搜索树的定义](#bst-二叉搜索树的定义)
+	- [BST-二叉搜索树的构造](#bst-二叉搜索树的构造)
 
 
 ### BST-二叉搜索树的定义

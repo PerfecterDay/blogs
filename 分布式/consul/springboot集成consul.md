@@ -1,6 +1,8 @@
 ## Springboot 集成 Consul
 {docsify-updated}
 
+> https://cloud.spring.io/spring-cloud-static/Greenwich.M3/multi/multi_spring-cloud-consul-discovery.html
+
 - [Springboot 集成 Consul](#springboot-集成-consul)
   - [配置类](#配置类)
   - [服务注册过程](#服务注册过程)
@@ -58,7 +60,7 @@ public class ConsulAutoServiceRegistrationAutoConfiguration {
            healthCheckPath: ${management.server.servlet.context-path}/actuator/health
            healthCheckInterval: 15s
    ```
-   如果要禁用健康检查，设置 `spring.cloud.consul.discovery.register-health-check=false`
+   如果要禁用健康检查，设置 `spring.cloud.consul.discovery.register-health-check=false`,`management.health.consul.enabled=false`
 4. TTL检查：应用程序会主动向 Consul 代理发送心跳信号，而不是 Consul 代理向应用程序发送请求。
    ```
    spring:

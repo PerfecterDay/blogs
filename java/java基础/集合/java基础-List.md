@@ -8,6 +8,7 @@
 	- [LinkedList 实现类](#linkedlist-实现类)
 	- [Arrays.ArrayList](#arraysarraylist)
 	- [各种线性表的性能分析](#各种线性表的性能分析)
+	- [常用操作](#常用操作)
 
 
 `List` 集合代表一个元素位置有序、可重复的集合，集合中每个元素都有其对应的**顺序索引（位置）**。访问元素一般有两种方式：
@@ -74,3 +75,10 @@ List 除了可以使用 `iterator()` 来获取 `Iterator` 迭代器以外，还�
 1. 如果需要遍历 List 集合元素：对于数组类（`ArrayList、ArrayDeque、Vector`等）List应该使用随机访问形式(`get(index)`)来遍历；对于链表类（ `LinkedList` )，则应该采用迭代器（`Iterator`)来遍历集合元素
 2. 如果需要经常执行插入、删除操作来改变包含大量数据的List集合，应该优先考虑链表类的 `LinkedList` 。使用 `ArrayList` 可能需要经常重新分配内存数组
 3. 如果有多个线程需要同时访问List集合，应该使用 `Collections` 工具类将集合包装成线程安全的类。
+
+### 常用操作
+1. 拷贝list
+   + `List<Plant> copy = new ArrayList<>(list);` 由于我们在这里复制的是引用，而不是克隆对象，因此对一个元素的每次修改都会影响两个列表，因此，最好使用构造函数来复制不可变对象。
+   + `copy.addAll(list);`
+   + `Collections.copy(dest, source);`: 必须保证 dest 的size 大于等于 src 的size
+   + `List<T> copy = List.copyOf(list);`： 唯一的条件是给定的集合不能为null，也不能包含任何null元素。

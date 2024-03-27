@@ -62,11 +62,21 @@ boolean 类型只有两个直接量值： true 、 false 。
 #### 直接量
 并不是所有的类型都可以指定直接量，能指定直接量的只有三种类型：基本类型、字符串类型 和 null 引用。具体而言， Java 支持以下8中类型的直接量：
 1. int 类型的直接量：在程序中直接给出的整数类型数值，可分为二进制、十进制、八进制和十六进制4种，二进制以 0B 或 0b 开头，八进制以 0 开头，十六进制以 0x 或 0X 开头。
+   ```
+   // Decimal declaration and possible chars are [0-9]
+   int decimal    =  495;        
+   // HexaDecimal declaration starts with 0X or 0x and possible chars are [0-9A-Fa-f]
+   int hexa       =  0X1EF; 
+   // Octal declaration starts with 0 and possible chars are [0-7] 
+   int octal      =  0757;  
+   // Binary representation starts with 0B or 0b and possible chars are [0-1]  
+   int binary     =  0b111101111; 
+   ```
 2. long 类型的直接量： 在整型值后边添加L(小l极度不推荐)后就变成了 long 类型的直接量。
 3. double 类型的直接量：直接给出一个标准小数形式或者科学计数法形式的浮点数就是 double 类型额直接量。
 4. float 类型的直接量：在一个浮点数后加f或F就变成了 float 类型。
 5. boolean 类型直接量： true 、false。
-6. char 类型直接量： char 类型的直接量有三种形式，分别是单引号括起来的字符、转义字符和 Unicode 值表示的字符。如 'a' 、 '\n' 和 '\u0061'。
+6. char 类型直接量： char 类型的直接量有三种形式，分别是单引号括起来的字符、转义字符和 Unicode 值表示的字符。如 'a' 、 '\n' 和 '\u0061','\001'。
 7. String 类型直接量： 一个用双引号括起来的字符序列就是 String 类型直接量。
 8. null ：可以赋值给任意引用类型。
 

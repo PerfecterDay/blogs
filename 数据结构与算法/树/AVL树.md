@@ -4,16 +4,16 @@
 > https://www.baeldung.com/cs/balanced-bst-from-sorted-list
 
 - [AVL树-平衡二叉搜索树](#avl树-平衡二叉搜索树)
-	- [由有序列表创建平衡二叉搜索树](#由有序列表创建平衡二叉搜索树)
-		- [Top-Down 方法](#top-down-方法)
-		- [Bottom-Up 方法](#bottom-up-方法)
-	- [保持平衡性](#保持平衡性)
-		- [右旋](#右旋)
-		- [左旋](#左旋)
-		- [先左旋后右旋](#先左旋后右旋)
-		- [先右旋后左旋](#先右旋后左旋)
-		- [旋转的选择](#旋转的选择)
-	- [AVL树实现代码](#avl树实现代码)
+  - [由有序列表创建平衡二叉搜索树](#由有序列表创建平衡二叉搜索树)
+    - [Top-Down 方法](#top-down-方法)
+    - [Bottom-Up 方法](#bottom-up-方法)
+  - [保持平衡性](#保持平衡性)
+    - [右旋](#右旋)
+    - [左旋](#左旋)
+    - [先左旋后右旋](#先左旋后右旋)
+    - [先右旋后左旋](#先右旋后左旋)
+    - [旋转的选择](#旋转的选择)
+  - [AVL树实现代码](#avl树实现代码)
 
 1962 年 G.M.Adelson‑Velsky 和 E.M.Landis 在 论 文 “An algorithm for the organization ofinformation”中提出了「AVL 树」。为了纪念他们，将平衡二叉树称为AVL树。
 
@@ -72,9 +72,9 @@ class BalanceBstree extends BsTree {
 <center><img src="pics/quicklatex.com-0ab014825b9004386afe016d6b44ec97_l3.svg" alt=""></center>
 
 ```
-algorithm TopDownBST(A, L, R):
+algorithm BottomUpBST(head, L, R):
     // INPUT
-    //   A = The sorted array
+    //   head = Pointer to the first element in the linked list
     //   L = The left side of the current range
     //   R = The right side of the current range
     // OUTPUT
@@ -85,9 +85,17 @@ algorithm TopDownBST(A, L, R):
 
     mid <- (L + R) / 2
 
-    root.value <- A[mid]
-    root.left <- TopDownBST(A, L, mid - 1)
-    root.right <- TopDownBST(A, mid + 1, R)
+    // Build left subtree
+    root.left <- BottomUpBST(head, L, mid - 1)
+
+    // Assign root value
+    root.value <- head.data
+
+    // Move to the next element in the list
+    head <- head.next
+
+    // Build right subtree
+    root.right <- BottomUpBST(head, mid + 1, R)
 
     return root
 ```

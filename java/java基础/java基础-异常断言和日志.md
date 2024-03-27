@@ -13,10 +13,26 @@
 ### 异常
 Java 的异常结构：
 <center>
-<img src="pics/exception.png" alt="" width=500px>
+<img style="inline" src="pics/exception.png" alt="" width=500px>
+
+```
+              ---> Throwable <--- 
+              |    (checked)     |
+              |                  |
+              |                  |
+      ---> Exception           Error
+      |    (checked)        (unchecked)
+      |
+RuntimeException
+  (unchecked)
+```
 </center>
 
-Java语言规范将派生于Error类或RuntimeException类的所有异常称为非受查（unchecked）异常，所有其他的异常称为受查（checked）异常。这是两个很有用的术语，在后面还会用到。编译器将核查是否为所有的受查异常提供了异常处理器。
+Java语言规范:
++ 将派生于Error类或RuntimeException类的所有异常称为**非受查（unchecked）异常**。
++ 所有其他的异常称为**受查（checked）异常**。  
+这是两个很有用的术语，在后面还会用到。编译器将核查是否为所有的受查异常提供了异常处理器。
+
 派生于RuntimeException的异通常是由程序错误导致的，包含下面几种常见情况：
 + 错误的类型转换。
 + 数组访问越界。

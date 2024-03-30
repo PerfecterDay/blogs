@@ -65,7 +65,7 @@ Collection的常用方法：
 
 ### 集合与数组之间的转换
 1. 数组转集合
-   使用 `Arrays.asList(Object[])`方法能将数组转换为 List，继而可以作为构造器参数用来构造各种集合（Map,Set,Queue等）。
+   使用 `Arrays.asList(Object[])`方法能将数组转换为 List，继而可以作为构造器参数用来构造各种集合（Map,Set,Queue等）。注意，这样得到的list 是不能执行 `add()/remove()`等操作的。
 2. 集合转数组
    使用 `Collection` 接口的`toArray()`方法转换为 `Object[]`,或者提供指定类型数组参数来转换成指定类型的数组，如：
    `staff.toArray(new String[staff.size()])`

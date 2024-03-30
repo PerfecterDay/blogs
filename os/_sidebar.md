@@ -1,6 +1,7 @@
 * [Home](/)
 * [..](../_sidebar.md)
 * [汇编基础及Bochs调试](/os/汇编基础及Bochs调试.md)
+* [内联汇编](/os/内联汇编.md)
 * [Makefile简介](/os/Makefile简介.md)
 * [计算机启动过程及硬件控制](/os/计算机启动过程及硬件控制.md)
 * [系统调用与API](/os/系统调用与API.md)

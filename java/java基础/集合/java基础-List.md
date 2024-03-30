@@ -41,7 +41,7 @@ List 除了可以使用 `iterator()` 来获取 `Iterator` 迭代器以外，还�
 + `void set(E e)`：更新指定位置元素值
 
 ### ArrayList 和 Vector
-`ArrayList` 和 `Vector` 都是基于**数组**实现的 List 类，底层封装了一个动态的、允许再分配的 `Object[]` 数组（或泛型数组）。
+`ArrayList` 和 `Vector` 都是基于**数组**实现的 List 类，底层封装了一个动态的、允许再分配的 `Object[]` 动态数组（或泛型数组）。
 
 如果创建 `ArrayList` 或者 `Vector` 时，没有指定数组长度，则默认大小是10，如果 List 长度增长到数组最大长度时，再添加元素就要重新分配数组并将原数组中的元素拷贝到新数组中，会有很大开销。所以，如果开始就知道 List 的大小，可以在创建时就指定，这样能避免数组重分配，提高性能。
 
@@ -49,7 +49,7 @@ List 除了可以使用 `iterator()` 来获取 `Iterator` 迭代器以外，还�
 + `void ensureCapacity(int minCapacity)`：增加数组长度，数组长度 += minCapacity
 + `void trimToSize()`：调整数组长度为当前元素个数，释放空间
 
-两者有一个显著的区别就是： `ArrayList` 是线程不安全的，而 `Vector` 是线程安全的。即使如此，也不推荐使用 `Vector` 类ddd，如果想要线程安全可以使用 `Collections` 工具类，它可以将 `ArrayList` 变成线程安全的类。
+两者有一个显著的区别就是： `ArrayList` 是线程不安全的，而 `Vector` 是线程安全的。即使如此，也不推荐使用 `Vector` 类，如果想要线程安全可以使用 `Collections` 工具类，它可以将 `ArrayList` 变成线程安全的类。
 
 ### LinkedList 实现类
 `LinkedList` 底层是由链表结构实现的，Java 种的链表都是由双向链表实现的。

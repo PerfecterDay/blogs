@@ -2,18 +2,18 @@
 {docsify-updated}
 
 - [异常、断言和日志](#异常断言和日志)
-	- [异常](#异常)
-		- [声明受查异常](#声明受查异常)
-		- [finally 语句](#finally-语句)
-		- [带资源的 try 语句](#带资源的-try-语句)
-	- [断言](#断言)
-	- [日志](#日志)
+  - [异常](#异常)
+    - [声明受查异常](#声明受查异常)
+    - [finally 语句](#finally-语句)
+    - [带资源的 try 语句](#带资源的-try-语句)
+  - [断言](#断言)
+  - [日志](#日志)
 
 
 ### 异常
 Java 的异常结构：
-<center>
-<img style="inline" src="pics/exception.png" alt="" width=500px>
+
+<img style="display: inline;" src="pics/exception.png" alt="" width=500px>
 
 ```
               ---> Throwable <--- 
@@ -26,27 +26,33 @@ Java 的异常结构：
 RuntimeException
   (unchecked)
 ```
-</center>
 
 Java语言规范:
-+ 将派生于Error类或RuntimeException类的所有异常称为**非受查（unchecked）异常**。
-+ 所有其他的异常称为**受查（checked）异常**。  
-这是两个很有用的术语，在后面还会用到。编译器将核查是否为所有的受查异常提供了异常处理器。
++ 将派生于 `Error` 类或 `RuntimeException` 类的所有异常称为**非受查（unchecked）异常**。
++ 所有其他的异常称为**受查（checked）异常**。 
+ 
+**编译器将核查是否为所有的受查异常提供了异常处理器。**
 
-派生于RuntimeException的异通常是由程序错误导致的，包含下面几种常见情况：
-+ 错误的类型转换。
-+ 数组访问越界。
-+ 访问null指针。
+派生于 `RuntimeException` 的异通常是由程序错误导致的，包含下面几种常见情况：
++ 错误的类型转换。 -`ClassCastException`
++ 数组访问越界。- `IndexOutOfBoundsException`
++ 访问null指针 - `NullPointerException`
++ `IllegalArgumentException`
++ `SecurityException`
 
-而程序本身没有问题，但由于像I/O错误这类问题导致的异常不是派生于RuntimeException，常见的有：
-+ 试图在文件尾部后面读取数据。
-+ 试图打开一个不存在的文件。
-+ 试图根据给定的字符串查找Class对象，而这个字符串表示的类并不存在。
+`Errors`: 代表严重且通常无法恢复的情况，如库不兼容、无限递归或内存泄漏。
++ `StackOverflowError`
++ `OutOfMemoryError`
+
+而程序本身没有问题，但由于像I/O错误这类问题导致的异常不是派生于 `RuntimeException` ，常见的有：
++ 试图在文件尾部后面读取数据。`
++ 试图打开一个不存在的文件。 `FileNotFoundException`
++ 试图根据给定的字符串查找Class对象，而这个字符串表示的类并不存在。`ClassNotFoundException`
 
 #### 声明受查异常
 如果遇到了无法处理的情况，那么Java的方法可以抛出一个异常。这个道理很简单：一个方法不仅需要告诉编译器将要返回什么值，还要告诉编译器有可能发生什么错误。 
  
-一个方法必须声明所有可能抛出的受查异常，而非受查异常要么不可控制（Error），要么就应该避免发生（RuntimeException）。如果方法没有声明所有可能发生的受查异常，编译器就会发出一个错误消息。也就是说如果方法中本身含有 throw 异常语句，编译器严格地执行throws说明符。如果调用了一个抛出受查异常的方法，就必须对它进行处理，或者继续传递（throw）。
+一个方法必须声明所有可能抛出的受查异常，而非受查异常要么不可控制（Error），要么就应该避免发生（RuntimeException）。如果方法没有声明所有可能发生的受查异常，编译器就会发出一个错误消息。也就是说如果方法中本身含有 `throw` 异常语句，编译器严格地执行 `throws` 说明符。如果调用了一个抛出受查异常的方法，就必须对它进行处理，或者继续传递（throw）。
 
 如果编写一个覆盖超类的方法，而这个方法又没有抛出异常（如JComponent中的paintComponent），那么这个方法就必须捕获方法代码中出现的每一个受查异常。**不允许在子类的throws说明符中出现超过超类方法所列出的异常类范围。**
 
@@ -69,9 +75,10 @@ Java语言规范:
 try(Resource res1 = ....; Resource res2 =...){
     // work with res
 }
+结束时，会自动依次调用 res2.close()、res1.close() 关闭资源
 ```
-这个块正常退出时，或者存在一个异常时，都会调用 res.close（）方法，就好像使用了finally块一样。
-还可以指定多个资源。
+这个块正常退出时，或者存在一个异常时，都会调用 `res.close()`方法，就好像使用了finally块一样。  
+还可以指定多个资源。当指定多个资源时，会按照声明顺序的逆序依次调用各个资源的 `close()` 方法以释放资源。
 
 ### 断言
 断言机制允许在测试期间向代码中插入一些检查语句。当代码发布时，这些插入的检测语句将会被自动地移走。Java语言引入了关键字assert。这个关键字有两种形式：

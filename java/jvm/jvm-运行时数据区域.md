@@ -1,5 +1,6 @@
 ## java基础-JVM数据区域及参数设置
 {docsify-updated}
+> https://mp.weixin.qq.com/s/fg2Dy0Dbhcrn5QaNydp1WQ
 
 - [java基础-JVM数据区域及参数设置](#java基础-jvm数据区域及参数设置)
 	- [PC程序计数器](#pc程序计数器)
@@ -10,7 +11,8 @@
 		- [运行时常量池](#运行时常量池)
 	- [直接内存](#直接内存)
 	- [代码缓存区](#代码缓存区)
-
+	- [垃圾收集器](#垃圾收集器)
+	- [JIT 编译器](#jit-编译器)
 
 <center>
 <img src="pics/jvm运行时数据区.png" alt="JVM运行时数据区" width="50%" height="50%" >
@@ -69,6 +71,7 @@ JDK1.6 及之前的版本：
 
 JDk1.8之后：
 + `-XX:MetaspaceSize=128m -XX:MaxMetaspaceSize=512m`
++ `-XX:CompressedClassSpaceSize`
 
 #### 运行时常量池
 运行时常量池是方法区的一部分。 Java 的 Class 文件中除了有**类的版本、字段、方法、接口**等信息外，还有一项就是常量池，**用于存放编译期生成的各种字面常量和符号引用**，这部分内容在类加载后进入方法区的运行时常量池存放。
@@ -108,15 +111,34 @@ JDK 1.4 中引入了 NIO 类，引入了一种基于通道与缓冲区的 I/O �
 ```
 
 ### 代码缓存区
-代码缓存不是单一的代码堆，而是被分割成不同的代码堆，每个代码堆包含特定类型的编译代码。这样的设计可以将具有不同属性的代码分开。
-这样做的主要目的是提高性能，并实现未来的扩展。
+Java Code Cache 是啥： 如果 Java 每次都需要即时编译成机器码，再执行，效率太慢了。那么是不是对于某些热点代码，编译后的机器码，缓存起来，这样下次就不用重新即时编译了，多快乐。Java Code Cache 就是用来干这个的。但是编译后的机器码太大了，Java Code Cache 的空间是有限的，也不能将所有的代码都编译成机器码缓存起来。所以就需要一些优化与清理策略。
 
-编译代码有三种不同的顶级类型：
-+ JVM internal (non-method) code :JVM 内部（非方法）代码
-+ Profiled-code :剖析代码
-+ Non-profiled code :非剖析代码
+C1，C2 编译器与分层编译（Tiered Compilation）以及编译级别（Compilation Level）： C1，C2 按照老概念来看，分别是客户端编译器和服务端编译器，随着 -server 的 Java 参数的消失，代表着 Java 程序本质上不再区分客户端服务端，所以目前所有的 Java 进程都是 C1，C2混合使用。
+
+C1 编译器对代码做一些简单的优化并加入一些采样代码， C2 针对 C1 加入的代码的采样结果，做更多的分析（语法解析，逃逸分析，高级优化器等等），优化成为更好的代码。C1是一个简单快速的编译器，主要关注点在于局部优化，而放弃许多耗时较长的全局优化手段。C2 则是关注于耗时较长的全局优化手段。同时由于 Java Code Cache 是有限的，有些代码可能优化后被淘汰，需要重新编译，没必要对于每种代码都进行 C1 C2 的优化，那些执行次数少的代码，直接编译执行即可。
+
+Java Code Cache 分块（Segmented Code Cache）： 从 Java 9 开始引入的 Code Cache 分块，主要解决之前把所有种类代码放一起，导致扫描的时候效率低下。例如之前说的有些代码经过 C1 优化，之后 C2 优化，这些代码最好分开存储。（C1 优化过得代码，C2 优化完之后，C1的要被清理掉）。每个代码堆包含特定类型的编译代码，这样的设计可以将具有不同属性的代码分开。这样做的主要目的是提高性能，并实现未来的扩展。
+
+目前 Java Code Cache 编译代码有三种不同的类型：
++ JVM internal (non-method) code :JVM 内部（非方法）代码，这些是 JIT 编译器要用到的内存区域，例如编译器要用的缓存等等。他们会永远存在于 Code Cache 内。
++ Profiled-code :带采样优化的代码
++ Non-profiled code :不带采样未优化的代码
 
 相应的代码堆有:
 + 非方法代码堆（codeheap non-nmethods）：包含非方法代码，如编译器缓冲区和字节码解释器。这种代码类型将永远保留在代码缓存中。
 + 剖析代码堆(codeheap profiled nmethods)：包含经过轻度优化的剖析方法，生命周期较短。
 + 非剖析代码堆(codeheap non-profiled nmethods)：包含经过全面优化的非剖析方法，生命周期可能较长。
+
+使用jvm选项设置内存：
++ `-XX:NonNMethodCodeHeapSize`: 非方法代码堆大小.
++ `-XX:ProfiledCodeHeapSize`: 带采样的代码堆大小.
++ `-XX:NonProfiledCodeHeapSize`: 不带采样的代码堆大小.
++ `-XX:ReservedCodeCacheSize` 以上三个加起来需要等于这个
+
+### 垃圾收集器
+垃圾回收器的结构和算法需要额外的内存来进行堆管理。这些结构包括 Mark Bitmap、Mark Stack（用于遍历对象图）、Remembered Sets（用于记录区域间引用）等。其中一些结构是可以直接调整的，例如 `-XX:MarkStackSizeMax`，其他结构则取决于堆布局，例如 G1 区域越大（-XX:G1HeapRegionSize），记忆集就越小。
+
+不同 GC 算法的 GC 内存开销也不同。`-XX:+UseSerialGC` 和 `-XX:+UseShenandoahGC` 的内存开销最小。G1 或 CMS 可能会轻松占用堆总大小的 10% 左右。
+
+### JIT 编译器
+JIT 编译器本身也需要内存来完成工作。通过关闭分层编译或减少编译器线程数，可以再次减少内存占用：-XX:CICompilerCount.

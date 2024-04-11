@@ -184,4 +184,5 @@ kube-dns 是一个 DNS 服务器。每当有新的 Service 被创建，kube-dns 
 		- ip: 10.4.152.180
 	```
 4. ExternalName  
-	将服务映射到 externalName 字段的内容（例如，映射到主机名 api.foo.bar.example）。 该映射将集群的 DNS 服务器配置为返回具有该外部主机名值的 CNAME 记录。 无需创建任何类型代理。
+	ExternalName类型的Service将集群外部的域名映射到集群内部的Service上，例如将外部的数据库域名映射到集群内部的Service名，那么就能在集群内部通过Service名直接访问。  
+	该映射将集群的 DNS 服务器配置为返回具有该外部主机名值的 CNAME 记录。 无需创建任何类型代理。

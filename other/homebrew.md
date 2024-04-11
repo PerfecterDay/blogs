@@ -132,4 +132,7 @@ $ brew --caskroom
 
 # 缓存路径
 $ brew --cache
+
+# 删除下载的文件
+brew cleanup --prune=all -n
 ```

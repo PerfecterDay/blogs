@@ -11,6 +11,15 @@
 ### 枚举类入门
 Java 5新增了一个 enum 关键字（它与class、interface关键字的地位相同），用以定义枚举类。枚举类是一种特殊类，它一样可以有自己的变量、方法，可以实现一个或多个接口，也可以定义自己的构造器。一个Java源文件最多只能定义一个 public 访问权限的枚举类，且该源文件也必须和枚举类的类名相同。
 
+```
+public enum Season{
+    SPRING,
+    SUMMER,
+    AUTUMN,
+    WINTER;
+}
+```
+
 但枚举类终究不是普通类，它与普通类有如下区别：
 1. 枚举类可以实现一个或多个接口，但是使用 enum 定义的枚举类默认继承了 `java.lang.Enum` 类，而不是默认的 Object 类，因此枚举类不能显示继承其它父类。 `java.lang.Enum` 实现了 `java.lang.Serializable` 和 `java.lang.Comparable` 两个接口。
 2. 使用 enum 定义非抽象的枚举类默认会使用 final 修饰，因此枚举类不能派生子类。

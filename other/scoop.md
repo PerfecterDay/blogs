@@ -1,13 +1,5 @@
-## Scoop 
+# Scoop 
 {docsify-updated}
-
-- [Scoop](#scoop)
-  - [Scoop 安装](#scoop-安装)
-  - [安装配置 aria2](#安装配置-aria2)
-  - [更换国内源](#更换国内源)
-  - [使用代理](#使用代理)
-  - [常用命令](#常用命令)
-
 
 ### Scoop 安装
 powershell中运行以下命令：
@@ -36,6 +28,10 @@ scoop config aria2-warning-enabled false
 ```
 PowerShell requires an execution policy in [Unrestricted, RemoteSigned, ByPass] to run Scoop. For example, to set the execution policy to 'RemoteSigned' please run :  
 `Set-ExecutionPolicy RemoteSigned -Scope CurrentUser`.
+
+下载文件：
+`aria2c -x 8 https://download.pytorch.org/whl/cu117/torch-1.13.0%2Bcu117-cp310-cp310-linux_x86_64.whl#sha256=7f013d8097cb3741ac8d6745a63ef3c945df9be40514fbc026409261c234c2e2`
+
 
 ### 更换国内源
 1. 更换scoop自身源：`scoop config SCOOP_REPO http://mirror.repo`

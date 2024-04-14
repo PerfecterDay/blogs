@@ -1,25 +1,5 @@
-## aircrack 破解Wi-Fi密码
+# aircrack 破解Wi-Fi密码
 {docsify-updated}
-
-- [aircrack 破解Wi-Fi密码](#aircrack-破解wi-fi密码)
-  - [Linux 篇（Recommended | 推荐）](#linux-篇recommended--推荐)
-  - [1. Install | 安装 aircrack-ng](#1-install--安装-aircrack-ng)
-  - [2. View available wireless network cards | 查看可用的无线网卡](#2-view-available-wireless-network-cards--查看可用的无线网卡)
-  - [3. Specify the wireless network card to turn on the monitor mode | 指定无线网卡开启监听模式。](#3-specify-the-wireless-network-card-to-turn-on-the-monitor-mode--指定无线网卡开启监听模式)
-  - [4. Scan for nearby wireless networks | 扫描附近的无线网络](#4-scan-for-nearby-wireless-networks--扫描附近的无线网络)
-  - [5. 使用参数过滤扫描列表，确定扫描目标](#5-使用参数过滤扫描列表确定扫描目标)
-  - [6. 使用 aireplay-ng 对目标设备发起攻击](#6-使用-aireplay-ng-对目标设备发起攻击)
-  - [7. 使用 aircrack-ng 暴力破解 Wi-Fi 密码](#7-使用-aircrack-ng-暴力破解-wi-fi-密码)
-  - [8. 无线网卡退出监听模式](#8-无线网卡退出监听模式)
-- [MAC OS 篇](#mac-os-篇)
-  - [1. 查看网卡名称](#1-查看网卡名称)
-  - [2. 使用 airport 监听无线网络](#2-使用-airport-监听无线网络)
-  - [3. 使用 airport 进行抓包](#3-使用-airport-进行抓包)
-  - [4. 安装 aircrack-ng](#4-安装-aircrack-ng)
-  - [5. 使用 aircrack-ng 执行破解](#5-使用-aircrack-ng-执行破解)
-  - [Windows](#windows)
-  - [更多安装方式参考：安装 Aircrack-ng](#更多安装方式参考安装-aircrack-ng)
-
 
 > 本文只做技术探讨，切勿用于非法用途；转自：https://github.com/conwnet/wpa-dictionary/blob/master/README.md
 

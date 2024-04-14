@@ -1,4 +1,4 @@
-## Helm包管理器
+#Helm包管理器
 {docsify-updated}
 
 - [Helm包管理器](#helm包管理器)

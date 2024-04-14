@@ -2,6 +2,7 @@
 * [Home](/)
 * [计算机组成](/计算机/_sidebar.md)
 * [操作系统](/os/_sidebar.md)
+* [Linux系统编程](/os/linux系统编程/_sidebar.md)
 * [数据结构与算法](/数据结构与算法/_sidebar.md)
 * [网络协议](/network/_sidebar.md)
 * [Java](/java/_sidebar.md)

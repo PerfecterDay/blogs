@@ -1,4 +1,4 @@
-## K8S 调度、抢占和驱逐
+#K8S 调度、抢占和驱逐
 {docsify-updated}
 
 > https://kubernetes.io/zh-cn/docs/concepts/scheduling-eviction/assign-pod-node/#inter-pod-affinity-and-anti-affinity

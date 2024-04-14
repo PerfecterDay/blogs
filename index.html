@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Blogs</title>
@@ -11,16 +12,18 @@
 
   <link rel="stylesheet" href="./.css/vue.css">
   <link rel="stylesheet" href="./.css/sidebar.min.css" />
+  <link rel="stylesheet" href="./.css/toc.css">
 
 
   <style>
     table {
       width: fit-content;
-      margin-left:auto; 
-      margin-right:auto;
+      margin-left: auto;
+      margin-right: auto;
     }
   </style>
 </head>
+
 <body>
   <div id="app"></div>
   <script>
@@ -31,18 +34,25 @@
       repo: '',
       noEmoji: true,
       relativePath: true,
-	  loadNavbar: true,
+      loadNavbar: true,
       auto2top: true,
-      mergeNavbar: true
+      mergeNavbar: true,
+      toc: {
+        scope: '.markdown-section',
+        headings: 'h1, h2, h3, h4, h5, h6',
+        title: '',
+      },
     }
   </script>
 
-	<script src=".js/katex.min.js"></script>
-	<script src="./.js/docsify.js"></script>
-	<script src="./.js/docsify-sidebar-collapse.min.js"></script>
-	<link rel="stylesheet" href="./.css/katex.min.css"/>	
-	<script src=".js/marked@4.js"></script>
-	<script src=".js/docsify-katex.js"></script>
+  <script src=".js/katex.min.js"></script>
+  <script src="./.js/docsify.js"></script>
+  <script src="./.js/docsify-sidebar-collapse.min.js"></script>
+  <link rel="stylesheet" href="./.css/katex.min.css" />
+  <script src=".js/marked@4.js"></script>
+  <script src=".js/docsify-katex.js"></script>
+  <script src=".js/toc.js"></script>
 
 </body>
+
 </html>

@@ -1,4 +1,4 @@
-## Java基础-写文件
+#Java基础-写文件
 {docsify-updated}
 
 - [Java基础-写文件](#java基础-写文件)

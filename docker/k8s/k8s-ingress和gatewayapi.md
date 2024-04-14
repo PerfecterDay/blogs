@@ -1,4 +1,4 @@
-## Ingress 和 gateway api
+#Ingress 和 gateway api
 {docsify-updated}
 
 - [Ingress 和 gateway api](#ingress-和-gateway-api)

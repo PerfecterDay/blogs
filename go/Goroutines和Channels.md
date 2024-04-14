@@ -1,4 +1,4 @@
-## Goroutines和Channels.md
+#Goroutines和Channels.md
 {docsify-updated}
 
 - [Goroutines和Channels.md](#goroutines和channelsmd)

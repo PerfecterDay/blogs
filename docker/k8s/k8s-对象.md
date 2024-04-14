@@ -1,4 +1,4 @@
-## K8S-对象
+#K8S-对象
 {docsify-updated}
 > https://kubernetes.io/zh-cn/docs/concepts/overview/working-with-objects/labels/
 

@@ -1,4 +1,4 @@
-## Helm 命令行
+#Helm 命令行
 {docsify-updated}
 
 - [Helm 命令行](#helm-命令行)

@@ -1,4 +1,4 @@
-## Java基础-字符串类
+#Java基础-字符串类
 {docsify-updated}
 
 - [Java基础-字符串类](#java基础-字符串类)

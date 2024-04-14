@@ -1,19 +1,6 @@
-## Kafka-producer 开发 
+# Kafka-producer 开发 
 {docsify-updated}
 >https://www.instaclustr.com/blog/a-visual-understanding-to-ensuring-your-kafka-data-is-literally-in-order/
-
-- [Kafka-producer 开发](#kafka-producer-开发)
-	- [Java版 producer 工作流程](#java版-producer-工作流程)
-		- [producer 的主要参数](#producer-的主要参数)
-		- [ProducerRecord](#producerrecord)
-		- [RecordMetadata](#recordmetadata)
-		- [消息分区机制](#消息分区机制)
-		- [保证顺序](#保证顺序)
-	- [消息序列化](#消息序列化)
-	- [Producer 拦截器](#producer-拦截器)
-	- [无消息丢失配置](#无消息丢失配置)
-	- [多线程处理](#多线程处理)
-
 
 ### Java版 producer 工作流程
 如下图所示：

@@ -1,4 +1,4 @@
-## 接口与Lambda表达式
+#接口与Lambda表达式
 {docsify-updated}
 - [接口与Lambda表达式](#接口与lambda表达式)
 	- [接口](#接口)

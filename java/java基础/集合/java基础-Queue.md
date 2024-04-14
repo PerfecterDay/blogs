@@ -1,4 +1,4 @@
-## Queue
+#Queue
 {docsify-updated}
 - [Queue](#queue)
 	- [PriorityQueue 实现类](#priorityqueue-实现类)

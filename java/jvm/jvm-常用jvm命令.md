@@ -1,4 +1,4 @@
-## java基础-常用jvm命令
+#java基础-常用jvm命令
 {docsify-updated}
 - [java基础-常用jvm命令](#java基础-常用jvm命令)
 	- [jps](#jps)

@@ -1,16 +1,5 @@
-## 文件IO
+# 文件IO
 {docsify-updated}
-
-- [文件IO](#文件io)
-  - [通用 I/O 模型的系统调用API](#通用-io-模型的系统调用api)
-  - [设置文件读写位置](#设置文件读写位置)
-  - [在文件特定偏移量处的 I/O:pread()和 pwrite()](#在文件特定偏移量处的-iopread和-pwrite)
-    - [文件空洞](#文件空洞)
-  - [通用 I/O 模型以外的操作:ioctl()](#通用-io-模型以外的操作ioctl)
-  - [文件描述符和打开文件之间的关系](#文件描述符和打开文件之间的关系)
-  - [大文件 I/O](#大文件-io)
-  - [/dev/fd目录](#devfd目录)
-
 
 ### 通用 I/O 模型的系统调用API
 + `fd = open(pathname, flags, mode)`  

@@ -2,16 +2,16 @@
 {docsify-updated}
 
 - [Java基础-写文件](#java基础-写文件)
-  - [使用`BufferedWriter`](#使用bufferedwriter)
-  - [使用 `PrintWriter`](#使用-printwriter)
-  - [使用 `FileOutputStream`](#使用-fileoutputstream)
-  - [使用 `DataOutputStream`](#使用-dataoutputstream)
-  - [使用 `RandomAccessFile`](#使用-randomaccessfile)
-  - [使用 `FileChannel`](#使用-filechannel)
-  - [使用 `Files`](#使用-files)
-  - [临时文件](#临时文件)
-  - [文件锁](#文件锁)
-  - [总结](#总结)
+    - [使用`BufferedWriter`](#使用bufferedwriter)
+    - [使用 `PrintWriter`](#使用-printwriter)
+    - [使用 `FileOutputStream`](#使用-fileoutputstream)
+    - [使用 `DataOutputStream`](#使用-dataoutputstream)
+    - [使用 `RandomAccessFile`](#使用-randomaccessfile)
+    - [使用 `FileChannel`](#使用-filechannel)
+    - [使用 `Files`](#使用-files)
+    - [临时文件](#临时文件)
+    - [文件锁](#文件锁)
+    - [总结](#总结)
 
 ###  使用`BufferedWriter`  
 如果我们能获取到文件的 `InputStream` 流，就能使用下述方法读取文件内容：
@@ -59,6 +59,8 @@ outStream.close();
 ```
 
 ### 使用 `RandomAccessFile`
+`FileOutputStream` 只能从头到尾写内容到文件中，要在文件某个位置进行读写操作需要使用 `RandomAccessFile`。
+
 ```
 RandomAccessFile rw = new RandomAccessFile(filename, "rw");
 rw.seek(position);
@@ -68,6 +70,12 @@ rw.seek(position);
 result = rw.readInt();
 
 rw.close();
+
+try (RandomAccessFile raf = new RandomAccessFile(file, "rw")) {
+  raf.seek(0);
+  raf.writeBytes("# ");
+  System.out.println(path.getFileName() + "文件内容修改成功");
+}
 ```
 
 ### 使用 `FileChannel`

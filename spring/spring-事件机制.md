@@ -1,4 +1,4 @@
-## spring 事件机制
+#  spring 事件机制
 {docsify-updated}
 
 > https://docs.spring.io/spring-framework/reference/core/beans/context-introduction.html

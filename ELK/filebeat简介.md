@@ -52,12 +52,12 @@ output.elasticsearch:  # 输出到elasticsearch
     enabled: true
     verification_mode: none
 
-#output.console:
+# output.console:
 #  enabled: true
 #  pretty: true
 
 
-#output.elasticsearch:
+# output.elasticsearch:
 #  hosts: ["https://myEShost:9200"]
 #  username: "filebeat_internal"
 #  password: "YOUR_PASSWORD" 

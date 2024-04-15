@@ -1,4 +1,4 @@
-## mysql的安装及配置
+#  mysql的安装及配置
 {docsify-updated}
 
 - [mysql的安装及配置](#mysql的安装及配置)

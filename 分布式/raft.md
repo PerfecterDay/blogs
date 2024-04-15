@@ -1,4 +1,4 @@
-## 分布式理论-Raft
+#  分布式理论-Raft
 {docsify-updated}
 
 - [分布式理论-Raft](#分布式理论-raft)

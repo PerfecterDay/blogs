@@ -1,4 +1,4 @@
-## Kafka-设计原理
+#  Kafka-设计原理
 {docsify-updated}
 
 - [Kafka-设计原理](#kafka-设计原理)

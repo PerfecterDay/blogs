@@ -1,4 +1,4 @@
-### Maven Archetype 开发
+#   Maven Archetype 开发
 {docsify-updated}
 
 - [Maven Archetype 开发](#maven-archetype-开发)

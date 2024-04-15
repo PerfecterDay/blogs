@@ -1,4 +1,4 @@
-### Redis 分布式集群
+#   Redis 分布式集群
 {docsify-updated}
 
 > https://redis.io/docs/management/scaling/

@@ -1,4 +1,4 @@
-## Redis 缓存淘汰策略
+#  Redis 缓存淘汰策略
 {docsify-updated}
 
 > https://redis.io/docs/reference/eviction/

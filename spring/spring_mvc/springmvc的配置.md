@@ -1,4 +1,4 @@
-## Spring MVC 配置
+#  Spring MVC 配置
 {docsify-updated}
 
 - [Spring MVC 配置](#spring-mvc-配置)

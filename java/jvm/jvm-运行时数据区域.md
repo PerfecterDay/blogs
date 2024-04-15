@@ -1,4 +1,4 @@
-#java基础-JVM数据区域及参数设置
+# java基础-JVM数据区域及参数设置
 {docsify-updated}
 > https://mp.weixin.qq.com/s/fg2Dy0Dbhcrn5QaNydp1WQ
 

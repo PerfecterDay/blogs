@@ -1,4 +1,4 @@
-#JVM、JRE和JDK之前的区别
+# JVM、JRE和JDK之前的区别
 {docsify-updated}
 
 - [JVM、JRE和JDK之前的区别](#jvmjre和jdk之前的区别)

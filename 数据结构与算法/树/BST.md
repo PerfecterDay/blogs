@@ -1,4 +1,4 @@
-## BST-二叉搜索树
+#  BST-二叉搜索树
 {docsify-updated}
 > https://www.baeldung.com/cs/sorting-binary-tree  
 

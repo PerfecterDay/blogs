@@ -1,4 +1,4 @@
-#Map
+# Map
 {docsify-updated}
 
 - [Map](#map)
@@ -34,7 +34,7 @@
 ### LinkedHashMap
 `LinkedHashMap`**是插入位置有序的映射表，元素会按照加入映射表的顺序排序。**
 
-#HashMap 和 Hashtable 的区别
+# HashMap 和 Hashtable 的区别
 1. `Hashtable` 是一个线程安全的 Map 实现，但 `HashMap` 不是线程安全的，因为没有锁的开销，所以 `HashMap` 性能会更好点
 2. `Hashtable` 不允许使用 null 作为 key 和 value。如果试图把 null 放入 `Hashtable` 将会引发 NPE，但 `HashMap` 可以使用 null 作为 key 或 value。     
 与 `HashSet` 类似， `HashMap` 、 `Hashtable` 判断两个 key 相等的标准也是： **两个 key 通过 `equals()` 方法返回 true ，且 `hashCode()` 返回值也相同。**    

@@ -1,4 +1,4 @@
-## Springboot 自动配置原理
+#  Springboot 自动配置原理
 {docsify-updated}
 
 ```table-of-contents

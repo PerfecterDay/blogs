@@ -1,4 +1,4 @@
-## AVL树-平衡二叉搜索树
+#  AVL树-平衡二叉搜索树
 {docsify-updated}
 
 > https://www.baeldung.com/cs/balanced-bst-from-sorted-list

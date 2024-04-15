@@ -1,4 +1,4 @@
-#COLA 架构规范
+# COLA 架构规范
 {docsify-updated}
 
 > https://modelbaba.com/architecture/ddd/2100.html   

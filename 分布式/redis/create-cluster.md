@@ -1,4 +1,4 @@
-## Create-cluster 脚本
+#  Create-cluster 脚本
 
 ```
 #!/bin/bash

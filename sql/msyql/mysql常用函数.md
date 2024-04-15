@@ -1,4 +1,4 @@
-## Mysql 常用函数
+#  Mysql 常用函数
 {docsify-updated}
 
 - [Mysql 常用函数](#mysql-常用函数)

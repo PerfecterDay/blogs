@@ -1,4 +1,4 @@
-## 使用Spring email 发送邮件
+#  使用Spring email 发送邮件
 {docsify-updated}
 
 - [使用Spring email 发送邮件](#使用spring-email-发送邮件)

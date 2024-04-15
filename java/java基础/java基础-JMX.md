@@ -1,4 +1,4 @@
-#JMX
+# JMX
 {docsify-updated}
 
 - [JMX](#jmx)

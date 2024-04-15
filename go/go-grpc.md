@@ -1,4 +1,4 @@
-#go 与 GRPC 集成
+# go 与 GRPC 集成
 {docsify-updated}
 
 - [go 与 GRPC 集成](#go-与-grpc-集成)

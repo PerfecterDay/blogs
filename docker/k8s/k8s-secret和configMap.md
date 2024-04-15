@@ -1,4 +1,4 @@
-#k8s-secret和configMap
+# k8s-secret和configMap
 {docsify-updated}
 
 - [k8s-secret和configMap](#k8s-secret和configmap)

@@ -1,4 +1,4 @@
-## ChannelHandler
+#  ChannelHandler
 {docsify-updated}
 
 - [ChannelHandler](#channelhandler)

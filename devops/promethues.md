@@ -1,4 +1,4 @@
-#Promethues
+# Promethues
 {docsify-updated}
 
 > https://www.prometheus.wang/promql/prometheus-query-language.html

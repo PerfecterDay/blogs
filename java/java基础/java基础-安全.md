@@ -1,16 +1,5 @@
-#安全相关
+# 安全相关
 {docsify-updated}
-
-- [安全相关](#安全相关)
-	- [安全管理器与访问权限](#安全管理器与访问权限)
-		- [安全策略文件](#安全策略文件)
-	- [JAAS(Java Authentication and Authorization)](#jaasjava-authentication-and-authorization)
-	- [java SPI(Servicec provider Interface)机制](#java-spiservicec-provider-interface机制)
-	- [安全加密算法](#安全加密算法)
-	- [SSL证书主流的格式](#ssl证书主流的格式)
-		- [SSL证书格式转换方法](#ssl证书格式转换方法)
-	- [keytool 工具](#keytool-工具)
-	- [Https 双向认证](#https-双向认证)
 
 ### 安全管理器与访问权限
 一旦某个类被加载到虚拟机中，并由检验器检查过之后， Java 平台的第二种安全机制就会启动，这个机制就是**安全管理器**。安全管理器是一个负责控制具体操作是否允许执行的类。安全管理器负责检查的操作包括以下内容：

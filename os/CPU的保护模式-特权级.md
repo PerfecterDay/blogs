@@ -1,4 +1,4 @@
-## CPU保护模式
+#  CPU保护模式
 {docsify-updated}
 
 - [CPU保护模式](#cpu保护模式)

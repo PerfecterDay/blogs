@@ -1,4 +1,4 @@
-## Kafka 中的位移
+#  Kafka 中的位移
 {docsify-updated}
 
 - [Kafka 中的位移](#kafka-中的位移)

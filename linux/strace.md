@@ -1,4 +1,4 @@
-## 跟踪系统调用 strace
+#  跟踪系统调用 strace
 {docsify-updated}
 
 - [跟踪系统调用 strace](#跟踪系统调用-strace)

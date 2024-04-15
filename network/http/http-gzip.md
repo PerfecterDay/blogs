@@ -1,4 +1,4 @@
-## Http gzip 压缩
+#  Http gzip 压缩
 {docsify-updated}
 
 - [Http gzip 压缩](#http-gzip-压缩)

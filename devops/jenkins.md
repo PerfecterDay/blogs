@@ -1,4 +1,4 @@
-#Jenkins 语法
+# Jenkins 语法
 {docsify-updated}
 > https://www.jenkins.io/zh/doc/book/pipeline/syntax/
 

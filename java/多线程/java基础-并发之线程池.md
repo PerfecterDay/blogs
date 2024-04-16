@@ -9,7 +9,6 @@
     - [向线程池提交任务](#向线程池提交任务)
     - [线程池的关闭](#线程池的关闭)
     - [线程池使用总结](#线程池使用总结)
-    - [定时任务/延时任务](#定时任务延时任务)
   - [线程池的分析](#线程池的分析)
     - [源码分析](#源码分析)
   - [合理配置线程池](#合理配置线程池)
@@ -137,54 +136,6 @@ void execute(Runnable command);
 2. 调用 `submit(Runnable/Callable t)/execute(Runnable t)` 提交 `Runnable` 或 `Callable` 对象
 3. 如果想要取消一个任务或提交 `Callable` 对象, 那就要保存好返回的 `Future` 对象
 4. 当不再提交任何任务时 ，调用 `shutdown` 。
-
-### 定时任务/延时任务
-`ScheduIedExecutorService` 接口为预定执行（Scheduled Execution ）或重复执行任务而设计的方法 。 它是一种允许使用线程池机制的 `java.util.Timer` 的泛化 。 `Executors`类的 `newScheduledThreadPool()` 和 `newSingleThreadScheduledExecutor()` 方法将返回实现了 `ScheduledExecutorService` 接口的对象，可以预定 `Runnable` 或 `Callable` 在初始的延迟之后只运行一次,也可以预定一个 `Runnable` 对象周期性地运行 。具体API如下：
-```
-public interface ScheduledExecutorService extends ExecutorService 
-{
-	// 预定在指定的时间之后执行任务
-    public ScheduledFuture<?> schedule(Runnable command,
-          long delay, TimeUnit unit);
- 
-    public <V> ScheduledFuture<V> schedule(Callable<V> callable,
-          long delay, TimeUnit unit);
- 
- 	// 预定在初始的延迟结束后 ，周期性地运行给定的任务 ，周期长度是 period
-    public ScheduledFuture<?> scheduleAtFixedRate(Runnable command,
-        long initialDelay,
-        long period,
-        TimeUnit unit);
-
- 	// 预定在初始的延迟结束后周期性地给定的任务 ， 在一次调用完成和下一次调用开始之
-间有长度为 delay 的延迟
-    public ScheduledFuture<?> scheduleWithFixedDelay(Runnable command,
-            long initialDelay,
-          long delay,
-          TimeUnit unit);
-    
-    @Test
-    public void givenUsingExecutorService_whenSchedulingRepeatedTask_thenCorrect() 
-        throws InterruptedException {
-        TimerTask repeatedTask = new TimerTask() {
-            public void run() {
-                System.out.println("Task performed on " + new Date());
-            }
-        };
-        ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-        long delay  = 1000L;
-        long period = 1000L;
-        executor.scheduleAtFixedRate(repeatedTask, delay, period, TimeUnit.MILLISECONDS);
-        Thread.sleep(delay + period * 3);
-        executor.shutdown();
-    }
-}
-```
-
-`Timer` 和 `ExecutorService` 解决方案的主要区别:
-+ `Timer` 对系统时钟的变化很敏感；而 `ScheduledThreadPoolExecutor` 则不然。
-+ `Timer　只有一个执行线程；而` `ScheduledThreadPoolExecutor` 可以配置任意数量的线程。
-+ 在 `TimerTask` 中抛出的运行时异常会杀死线程，因此后续的计划任务不会继续运行；而在 `ScheduledThreadExecutor` 中，当前任务会被取消，但其他任务会继续运行。
 
 ## 线程池的分析
 当提交一个新任务到线程池时，线程池的处理流程如下：

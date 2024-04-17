@@ -11,7 +11,6 @@
 * [软件包管理](/linux/软件包管理.md)
 * [Shell 脚本简介](/linux/shell.md)
 * [Shell 条件判断](/linux/shell-条件判断.md)
-* [cUrl](/linux/curl.md)
 * [SSH简介](/linux/ssh.md)
 * [vim手册](/linux/vim手册.md)
 * [openssl](/linux/openssl.md)

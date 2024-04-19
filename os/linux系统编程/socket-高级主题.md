@@ -13,3 +13,19 @@ while((n =read(diskfilefd,buf,BUF_SIZE)) > 0){
 系统调用 sendfile()被设计为用来消除这种低效性。如图61-1 右侧所示，当应用程序调用sendfile()时，文件内容会直接传送到套接字上，而不会经过用户空间。这种技术被称为零拷贝传输（zero-copy transfer）。 
 
 <center><img src="pics/zero-copy.png" width="40%"></center>
+
+## shutdown()系统调用
+在套接字上调用`close()`会将双向通信通道的两端都关闭。有时候，只关闭连接的一端也是有用处的，这样数据只能在一个方向上通过套接字传输。系统调用`shutdown()`提供了这种功能。
+```
+#include <sys/socket.h>
+int shutdown (int sockfd, int how);
+```
+系统调用 shutdown()可以根据参数 how 的值选择关闭套接字通道的一端还是两端。参数 how 的值可以指定为如下几种:
++ SHUT_RD   
+  关闭连接的读端。之后的读操作将返回文件结尾(0)。数据仍然可以写入到套接字上。在 UNIX 域流式套接字上执行了 SHUT_RD 操作后，对端应用程序将接收到一个 SIGPIPE 信 号，如果继续尝试在对端套接字上做写操作的话将产生 EPIPE 错误。如 61.6.6 节中讨论的， SHUT_RD 对于 TCP 套接字来说没有什么意义。
++ SHUT_WR
+  关闭连接的写端。一旦对端的应用程序已经将所有剩余的数据读取完毕，它就会检测到文件结尾。后续对本地套接字的写操作将产生 SIGPIPE 信号以及 EPIPE 错误。而由对端写入的数据仍然可以在套接字上读取。换句话说，这个操作允许我们在仍然能读取对端发回给我 们的数据时，通过文件结尾来通知对端应用程序本地的写端已经关闭了。SHUT_WR 操作在 ssh 和 rsh 中都有用到(参见[Stevens，1994]中的 18.5 节)。在 shutdown()中最常用到的操作就是 SHUT_WR，有时候也被称为半关闭套接字。
++ SHUT_RDWR
+	将连接的读端和写端都关闭。这等同于先执行 SHUT_RD，跟着再执行一次 SHUT_WR操作。
+
+除了参数 how 的语义之外，shutdown()同 close()之间的另一个重要区别是:无论该套接字上是否还关联有其他的文件描述符，shutdown()都会关闭套接字通道。(换句话说，shutdown()是根据 打开的文件描述(open file description)来执行操作，而同文件描述符无关。见图 <a href="#/os/linux系统编程/文件IO#file">5-1</a> 。)

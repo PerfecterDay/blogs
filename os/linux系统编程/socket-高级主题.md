@@ -14,6 +14,12 @@ while((n =read(diskfilefd,buf,BUF_SIZE)) > 0){
 
 <center><img src="pics/zero-copy.png" width="40%"></center>
 
+```
+#include <sys/sendfile.h>
+ssize t sendfile(int out_fd,int in_fd, off_t *offset, size_t count);
+```
+系统调用 sendfile()在代表输入文件的描述符 in_fd 和代表输出文件的描述符 out_fd 之间传送文件内容（字节）。描述符 out_fd 必须指向一个套接字。参数 in_fd 指向的文件必须是可以进行 mmap()操作的。在实践中，这通常表示一个普通文件。这些局限多少限制了sendfile()的使用。我们可以使用 sendfile()将数据从文件传递到套接字上，但反过来就不行。另外，我们也不能通过 sendfile()在两个套接字之间直接传送数据。 
+
 ## shutdown()系统调用
 在套接字上调用`close()`会将双向通信通道的两端都关闭。有时候，只关闭连接的一端也是有用处的，这样数据只能在一个方向上通过套接字传输。系统调用`shutdown()`提供了这种功能。
 ```
@@ -28,4 +34,18 @@ int shutdown (int sockfd, int how);
 + SHUT_RDWR
 	将连接的读端和写端都关闭。这等同于先执行 SHUT_RD，跟着再执行一次 SHUT_WR操作。
 
-除了参数 how 的语义之外，shutdown()同 close()之间的另一个重要区别是:无论该套接字上是否还关联有其他的文件描述符，shutdown()都会关闭套接字通道。(换句话说，shutdown()是根据 打开的文件描述(open file description)来执行操作，而同文件描述符无关。见图 <a href="#/os/linux系统编程/文件IO#file">5-1</a> 。)
+除了参数 how 的语义之外，shutdown()同 close()之间的另一个重要区别是:无论该套接字上是否还关联有其他的文件描述符，shutdown()都会关闭套接字通道。(换句话说，shutdown()是根据 打开的文件描述(open file description)来执行操作，而同文件描述符无关。见图 <a href="#/os/linux系统编程/文件IO#file">5-1</a> 。)  
+例如，假设sockfd 指向一个已连接的流式套接字，如果执行下列调用，那么连接依然会保持打开状态，我们仍然可以通过文件描述符fd2在该连接上做I/O 操作:
+```
+int fd2 = dup(sockfd);
+close(sockfd);
+```
+但是，如果我们执行如下的调用，那么该连接的双向通道都会关闭，通过fd2 也无法再执行 I/O 操作了：
+```
+int fd2 = dup(sockfd);
+shutdown(sockfd,SHUT_RDWR);
+```
+
+需要注意的是，shutdown()并不会关闭文件描述符，就算参数how 指定为SHUT_RDWR 时也是如此。要关闭文件描述符，我们必须另外调用 close()。
+
+## 专用于套接字的 I/O 系统调用：recv()和 send() 

@@ -48,7 +48,7 @@ source ~/.bash_profile
 
 > 摘译自 [robots.thoughtbot.com](http://robots.thoughtbot.com/starting-and-stopping-background-services-with-homebrew)
 
-`launchctl` 命令加载，卸载开机自动运行的服务，在 OS X 中，服务本身存储在 `.plist` 文件中（即 property list），这些文件的位置一般在 `~/Library/LaunchAgents` 或 `/Library/LaunchAgents`。可以使用 `launchctl load $PATH_TO_LIST` 和 `unload them with launchctl unload $PATH_TO_LIST` 命令来加载/卸载他们。加载就是允许这个程序开机执行，卸载反之。
+`launchctl` 命令加载/卸载开机自动运行的服务，在 OS X 中，服务本身存储在 `.plist` 文件中（即 property list），这些文件的位置一般在 `~/Library/LaunchAgents` 或 `/Library/LaunchAgents`。可以使用 `launchctl load $PATH_TO_LIST` 和 `launchctl unload $PATH_TO_LIST` 命令来加载/卸载他们。加载就是允许这个程序开机执行，卸载反之。
 
 如果你使用 `Homebrew` 安装过 `mysql` 那么下面的安装后提示你可能比较熟悉
  ```
@@ -99,6 +99,8 @@ mysql      started    87538 /Users/gabe/Library/LaunchAgents/homebrew.mxcl.mysql
 $ brew services cleanup
 Removing unused plist /Users/gabe/Library/LaunchAgents/homebrew.mxcl.mysql.plist
  ```
+
+`brew services list` 列出的 plist 文件在软件安装包中都会有一个对应的原始文件（在 `brew --cellar` 的对应目录中），每次执行 `brew services start` 启动服务，homebrew 都会将原始文件拷贝到 `~/Library/LaunchAgents`。所以直接边界 `~/Library/LaunchAgents` 目录下的 plist 文件不会生效。需要编辑原始文件。
 
 ### Jenv 进行JDK多版本管理
 1. 安装Jenv ：`brew install jenv`

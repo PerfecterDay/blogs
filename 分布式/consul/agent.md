@@ -2,9 +2,9 @@
 {docsify-updated}
 
 - [Agent API](#agent-api)
-	- [概览](#概览)
-	- [Checks 相关](#checks-相关)
-	- [Service 相关](#service-相关)
+		- [概览](#概览)
+		- [Checks 相关](#checks-相关)
+		- [Service 相关](#service-相关)
 
 `/agent`端点用于与本地Consul代理进行交互。通常，服务和检查是在代理处注册的，然后由代理承担起保持该数据与集群同步的责任。例如，代理向目录注册服务和检查，并执行反熵以从中断中恢复。
 
@@ -63,6 +63,7 @@ curl -XPUT http://consul-cluster-server.consul.svc.cluster.local:8500/v1/agent/l
 1. 列出注册的检查：`curl -XGET http://consul-cluster-server.consul.svc.cluster.local:8500/v1/agent/checks`
 2. 注册检查：`curl -XPUT http://consul-cluster-server.consul.svc.cluster.local:8500/v1/agent/check/register`
 3. 注销检查：`curl -XPUT http://consul-cluster-server.consul.svc.cluster.local:8500/v1/agent/check/deregister/{check_id}` check_id是路径参数
+4. `curl -XPUT http://consul-cluster-server.consul.svc.cluster.local:8500/v1//agent/check/pass/{check_id}`
 
 ### Service 相关
 1. 列出注册的服务：`curl -XGET http://consul-cluster-server.consul.svc.cluster.local:8500/v1/agent/services`
@@ -94,27 +95,3 @@ curl -XPUT http://consul-cluster-server.consul.svc.cluster.local:8500/v1/agent/l
 	}'
 	```
 6. 取消服务注册： `curl -XPUT http://consul-cluster-server.consul.svc.cluster.local:8500/v1/agent/service/deregister/{service_id}`
-
-
-ConsulServiceRegistry 注册服务时使用的 endpoint：
-http://consul:8500/v1/agent/service/register?token=
-body:
-```
-{
-	"ID": "trade-center-service-8100",
-	"Name": "trade-center-service",
-	"Tags": [],
-	"Address": "10.176.81.23",
-	"Meta": {
-		"secure": "false",
-		"gRPC_port": "8101"
-	},
-	"Port": 8101,
-	"Check": {
-		"Interval": "10s",
-		"HTTP": "http://10.176.81.23:8100/actuator/health",
-		"Header": {},
-		"DeregisterCriticalServiceAfter": "3m"
-	}
-}
-```

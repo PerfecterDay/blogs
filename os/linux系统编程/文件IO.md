@@ -24,7 +24,7 @@ int close(int fd);
     在所有输入/输出操作完成后，调用 close()，释放文件描述符 fd 以及 与之相关的内核资源。
 
 ### 标准输入输出
-<center><img src="pics/stdio.png" width="40%"></center>
+<center><img src="pics/stdio.png" width="60%"></center>
 
 ### flags参数
 <center><img src="pics/filemode.png" width="60%"></center>

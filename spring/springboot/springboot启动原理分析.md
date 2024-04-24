@@ -14,8 +14,6 @@
 			- [自定义添加 Runner](#自定义添加-runner)
 		- [测试代码](#测试代码)
 
-
-
 ## 启动过程
 ```java
 绝大部分Springboot 的启动部分都是:
@@ -179,72 +177,63 @@ public <T> List<T> load(Class<T> factoryType, @Nullable ArgumentResolver argumen
 ## 扩展点
 
 ### SpringApplicationRunListener
-`SpringApplication run()` 方法的侦听器。 `SpringApplicationRunListeners` 是通过 `SpringFactoriesLoader` 加载的，应该声明一个接受 `SpringApplication` 实例和`String[]``参数的公共构造函数。SpringApplication` 每次运行都会创建一个新的 `SpringApplicationRunListener` 实例。
+`SpringApplicationRunListener` 是 `SpringApplication run()` 方法的侦听器。 与 spring events 机制不同，它是专门用来监控 `run()` 方法的，但是 spring events 可以在各个业务逻辑中随时使用。创建自定义 `SpringApplicationRunListener` 一般要两个步骤：
+1. `SpringApplicationRunListener` 是通过 `SpringFactoriesLoader` 加载的，所以必须在 `META-INF/spring.factories`中声明：
+   ```
+	org.springframework.boot.SpringApplicationRunListener=\
+	com.gtja.gjyw.MyRunnerListener
+   ```
+2. 自定义一个类`SpringApplicationRunListener`接口，实现类应该定义一个接受 `SpringApplication` 实例和`String[]`参数的公共构造函数。`SpringApplication` 每次运行都会创建一个新的 `SpringApplicationRunListener` 实例。
 
 `SpringApplicationRunListener` 的方法会在 `SpringApplication run()` 方法的不同阶段被调用。
-
 ```
-public interface SpringApplicationRunListener {
-	/**
-	 * Called immediately when the run method has first started. Can be used for very
-	 * early initialization.
-	default void starting(ConfigurableBootstrapContext bootstrapContext) {
-	}
+public class MyRunnerListener implements SpringApplicationRunListener {
+    public MyRunnerListener(SpringApplication application, String[] args) {
+    }
 
-	/**
-	 * Called once the environment has been prepared, but before the
-	default void environmentPrepared(ConfigurableBootstrapContext bootstrapContext,
-			ConfigurableEnvironment environment) {
-	}
+    @Override
+    public void starting(ConfigurableBootstrapContext bootstrapContext) {
+        System.out.println(">>>>>>>>> starting");
+    }
 
-	/**
-	 * Called once the {@link ApplicationContext} has been created and prepared, but
-	 * before sources have been loaded.
-	default void contextPrepared(ConfigurableApplicationContext context) {
-	}
+    @Override
+    public void environmentPrepared(ConfigurableBootstrapContext bootstrapContext, ConfigurableEnvironment environment) {
+        System.out.println(">>>>>>>>> environmentPrepared");
+    }
 
-	/**
-	 * Called once the application context has been loaded but before it has been
-	 * refreshed.
-	default void contextLoaded(ConfigurableApplicationContext context) {
-	}
+    @Override
+    public void contextPrepared(ConfigurableApplicationContext context) {
+        System.out.println(">>>>>>>>> contextPrepared");
+    }
 
-	/**
-	 * The context has been refreshed and the application has started but
-	 * {@link CommandLineRunner CommandLineRunners} and {@link ApplicationRunner
-	 * ApplicationRunners} have not been called.
-	default void started(ConfigurableApplicationContext context, Duration timeTaken) {
-		started(context);
-	}
+    @Override
+    public void contextLoaded(ConfigurableApplicationContext context) {
+        System.out.println(">>>>>>>>> contextLoaded");
+    }
 
-	/**
-	 * Called immediately before the run method finishes, when the application context has
-	 * been refreshed and all {@link CommandLineRunner CommandLineRunners} and
-	 * {@link ApplicationRunner ApplicationRunners} have been called.
-	default void ready(ConfigurableApplicationContext context, Duration timeTaken) {
-		running(context);
-	}
+    @Override
+    public void started(ConfigurableApplicationContext context, Duration timeTaken) {
+        System.out.println(">>>>>>>>> started >>>>>>");
+    }
 
-	/**
-	 * Called immediately before the run method finishes, when the application context has
-	 * been refreshed and all {@link CommandLineRunner CommandLineRunners} and
-	 * {@link ApplicationRunner ApplicationRunners} have been called.
-	 * @param context the application context.
-	 * @since 2.0.0
-	 * @deprecated since 2.6.0 for removal in 3.0.0 in favor of
-	 * {@link #ready(ConfigurableApplicationContext, Duration)}
-	 */
-	@Deprecated
-	default void running(ConfigurableApplicationContext context) {
-	}
+    @Override
+    public void started(ConfigurableApplicationContext context) {
+        System.out.println(">>>>>>>>> started -----------");
+    }
 
-	/**
-	 * Called when a failure occurs when running the application.
-	 * @param context the application context or {@code null} if a failure occurred before
-	 * the context was created
-	default void failed(ConfigurableApplicationContext context, Throwable exception) {
-	}
-
+    @Override
+    public void ready(ConfigurableApplicationContext context, Duration timeTaken) {
+        System.out.println(">>>>>>>>> ready");
+    }
+    @Override
+    public void running(ConfigurableApplicationContext context) {
+        System.out.println(">>>>>>>>> running");
+    }
+    
+    @Override
+    public void failed(ConfigurableApplicationContext context, Throwable exception) {
+        System.out.println(">>>>>>>>> failed");
+    }
 }
 ```
 
@@ -253,8 +242,7 @@ public interface SpringApplicationRunListener {
 通常用于需要对应用上下文进行编程初始化的网络应用程序中。例如，针对上下文环境注册属性源或激活配置文件。请参阅 `ContextLoader` 和 `FrameworkServlet` 支持，分别用于声明 "contextInitializerClasses "上下文参数和初始参数。
 我们鼓励 `ApplicationContextInitializer` 处理程序检测 Spring 的 Ordered 接口是否已实现或 @Order 注解是否存在，并在调用前对实例进行相应排序。
 
-`ApplicationContextInitializer` 是在springboot启动过程(refresh方法前)调用,主要是在 `ApplicationContextInitializer` 中 `initialize` 方法中拉起了 `ConfigurationClassPostProcessor` 这个类(我在springboot启动流程中有描述)，通过这个 processor 实现了 beandefinition 。言归正传， `ApplicationContextInitializer` 实现主要有3种方式：
-
+`ApplicationContextInitializer` 是在springboot启动过程(refresh方法前)调用,主要是在 `ApplicationContextInitializer` 中 `initialize` 方法中拉起了 `ConfigurationClassPostProcessor` 这个类(我在springboot启动流程中有描述)，通过这个 processor 实现了 beandefinition 。言归正传， 自定义 `ApplicationContextInitializer` 主要有3种方式：
 1. **使用spring.factories方式**
 
 	首先我们自定义个类实现了 `ApplicationContextInitializer` ,然后在resource下面新建 `META-INF/spring.factories` 文件。然后在文件中加入：
@@ -279,7 +267,7 @@ public interface SpringApplicationRunListener {
 	}
 	```
 
-3. **直接通过 `SpringApplication` 的 `addXXX` 方法**
+3. **直接通过 `SpringApplication` 的 `addInitializers()` 方法注册**
 
 	```
 	public static void main(String[] args) {
@@ -288,7 +276,6 @@ public interface SpringApplicationRunListener {
 		application.run(args);
 	}
 	```
-
 
 ### ApplicationRunner 和 CommandLineRunner
 在开发过程中会有这样的场景：需要在容器启动的时候执行一些内容，比如：读取配置文件信息，数据库连接，删除临时文件，清除缓存信息，在Spring框架下是通过 `ApplicationListener` 监听器来实现的。在Spring Boot中给我们提供了两个接口 `CommandLineRunner` 和 `ApplicationRunner` ，来帮助我们实现这样的需求。
@@ -333,30 +320,31 @@ public interface CommandLineRunner {
 
 ### 测试代码
 ```
-@SpringBootApplication(scanBasePackages = {"com.panda.baicy", "com.alibaba.cola"})
-public class Application {
-
+@SpringBootApplication
+public class App {
     public static void main(String[] args) {
-        SpringApplication springApplication = new SpringApplication(Application.class);
-        springApplication.addInitializers(applicationContext -> {
-            System.out.println(applicationContext.getEnvironment());
+        SpringApplication application = new SpringApplication(App.class);
+        application.setBanner((Environment environment, Class<?> sourceClass, PrintStream out)->{out.println("My own banner");});
+        application.addInitializers(applicationContext -> {
+            System.out.println("ApplicationContextInitializer>>>");
         });
-        springApplication.run(args);
+        application.run();
     }
 
     @Bean
     public ApplicationRunner applicationRunner(){
         return (ApplicationArguments agrs) ->{
-            System.out.println(agrs.getSourceArgs());
+            System.out.println("ApplicationRunner>>>"+agrs.getSourceArgs());
         };
     }
 
     @Bean
     public CommandLineRunner commandLineRunner(){
         return (String[] agrs) ->{
-            System.out.println(Arrays.asList(agrs));
+            System.out.println("CommandLineRunner>>>"+Arrays.asList(agrs));
         };
     }
-
 }
 ```
+除此之外还有上面自定义的 `SpringApplicationRunListener`，运行截图：
+<center><img src="pics/springboot-run.png" alt=""></center>

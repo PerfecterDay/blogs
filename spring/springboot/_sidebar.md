@@ -2,7 +2,7 @@
 * [..](../_sidebar.md)
 * [Springboot](#)
   * [Springboot 及相关项目的官方文档](https://spring.io/projects/spring-boot)
-  * [Springboot 启动过程](/spring/springboot/springboot启动原理分析.md)
+  * [Springboot 启动过程及扩展点](/spring/springboot/springboot启动原理分析.md)
   * [Springboot 自动配置原理](/spring/springboot/springboot自动配置原理.md)
   * [Springboot 配置文件加载及常用配置](/spring/springboot/springboot配置文件加载及常规配置.md)
   * [Springboot Actuator](/spring/springboot/springboot-actutor.md)

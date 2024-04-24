@@ -1,9 +1,8 @@
 #  Springboot 自动配置原理
 {docsify-updated}
 
-```table-of-contents
-```
-### 自动配置原理
+
+## 自动配置原理
 Springboot（通常是各种starter） 实际上就是为我们写好了很多 @Configuration 注解的配置类，这些类中大量使用了基于 @Conditional 注解的配置，以在满足一些条件时自动为我们注入一些 Bean 。那么还有一个问题，我们知道，要使 @Configuration 注解的配置类生效，主要有三种方式：
 1. 它处于自动扫描的包下，会被自动扫描
 2. 被其他配置类用 @Import 引用
@@ -59,8 +58,7 @@ public interface Condition {
 
 更多 `@Conditional` 注解，可参考[官方文档](https://docs.spring.io/spring-boot/docs/current/reference/html/features.html#features.developing-auto-configuration.condition-annotations)
 
-
-### [自定义自动配置](https://docs.spring.io/spring-boot/docs/current/reference/html/features.html#features.developing-auto-configuration)
+## 自定义自动配置  [官方指导](https://docs.spring.io/spring-boot/docs/current/reference/html/features.html#features.developing-auto-configuration)
 自动配置必须通过在导入文件中命名的方式加载。确保它们被定义在特定的包空间中，并且永远不会成为组件扫描的目标。此外，自动配置类不应允许组件扫描查找其他组件。应使用特定的 `@Import` 注解来代替。
 
 另外，自动配置类必须啊放在一个单独的jar 中。
@@ -80,7 +78,7 @@ public interface Condition {
 2. resources 目录下新建 `META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports` 文件并写入以下内容。
    `com.gtja.test.AutoConfigurationTest`
 
-### [自定义starter](https://docs.spring.io/spring-boot/docs/current/reference/html/features.html#features.developing-auto-configuration.custom-starter)
+## 自定义starter [官方指导](https://docs.spring.io/spring-boot/docs/current/reference/html/features.html#features.developing-auto-configuration.custom-starter)
 Spring Boot 2.7 引入了用于注册自动配置的新 `META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports` 文件，同时保持了与 spring.factories 中注册的向后兼容性。在此版本中，使用 `org.springframework.boot.autoconfigure.EnableAutoConfiguration` 关键字在 `spring.factories` 中注册自动配置的支持已被移除，转而使用 imports 文件。`spring.factories` 中其他键下的条目不受影响。
 
 ### @SpringBootApplication 注解

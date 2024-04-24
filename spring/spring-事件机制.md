@@ -3,11 +3,11 @@
 
 > https://docs.spring.io/spring-framework/reference/core/beans/context-introduction.html
 - [spring 事件机制](#spring-事件机制)
-	- [Java 观察者模式（事件机制）](#java-观察者模式事件机制)
-	- [spring 事件体系](#spring-事件体系)
-	- [Spring事件体系的具体实现](#spring事件体系的具体实现)
-	- [Spring自带的发布事件](#spring自带的发布事件)
-	- [实现自己的业务事件发布与监听](#实现自己的业务事件发布与监听)
+		- [Java 观察者模式（事件机制）](#java-观察者模式事件机制)
+		- [spring 事件体系](#spring-事件体系)
+		- [Spring事件体系的具体实现](#spring事件体系的具体实现)
+		- [Spring自带的发布事件](#spring自带的发布事件)
+		- [实现自己的业务事件发布与监听](#实现自己的业务事件发布与监听)
 
 
 Spring 的 ApplicationContext 能够发布事件并且允许注册相应的事件监听器，因此，它拥有一套完善的事件发布和监听机制。在 Java 中， `java.util.EventObject` 类和 `java.util.EventListener` 接口描述了事件和监听器。在事件体系中，除了事件和监听器外，还有另外三个重要概念。
@@ -40,7 +40,22 @@ finishRefresh();
 
 然后， Spring 根据反射机制，从注册的 bean 中，找出所有实现了 `ApplicationListener` 的 bean ，并将它们注册为容器的事件监听器，实际操作就是将其添加到事件广播器所提供的事件监听器注册表中。
 
-最后，调用容器的事件发布接口 **`publishEvent()`** 向容器中所有的监听器发布事件。
+最后，调用容器的事件发布接口 **`publishEvent()`** 向容器中所有的监听器发布事件。所谓的发布事件本质上其实就是构造一个事件，然后循环调用 `ApplicationListener`的 `onApplicationEvent`方法：
+```
+@Override
+public void multicastEvent(final ApplicationEvent event, @Nullable ResolvableType eventType) {
+	ResolvableType type = (eventType != null ? eventType : resolveDefaultEventType(event));
+	Executor executor = getTaskExecutor();
+	for (ApplicationListener<?> listener : getApplicationListeners(event, type)) {
+		if (executor != null) {
+			executor.execute(() -> invokeListener(listener, event));
+		}
+		else {
+			invokeListener(listener, event);
+		}
+	}
+}
+```
 
 ### Spring自带的发布事件
 
@@ -53,7 +68,17 @@ finishRefresh();
 | RequestHandledEvent | A web-specific event telling all beans that an HTTP request has been serviced. This event is published after the request is complete. This event is only applicable to web applications that use Spring’s DispatcherServlet. |
 | ServletRequestHandledEvent | A subclass of RequestHandledEvent that adds Servlet-specific context information. |
 
-### 实现自己的业务事件发布与监听
+### 手动实现自己的业务事件发布与监听
 1. 定义业务事件，继承自 `ApplicationEvent` 
 2. 发布者（需要发布自定义业务事件的业务Bean）实现 `ApplicationEventPublisherAware`,`ApplicationContextAware` 接口，利用 `ApplicationContext` 对象就可以发布自定义的事件
-3. 实现 `ApplicationListener` 接口，实现监听自定义事件逻辑
+3. 实现 `ApplicationListener` 接口并注册到容器中，实现监听自定义事件逻辑
+4. 或者使用 `@EventListener` 注解：
+   ```
+	@Component
+	public class AnnotationDrivenEventListener {
+		@EventListener
+		public void handleContextStart(ContextStartedEvent cse) {
+			System.out.println("Handling context started event.");
+		}
+	}
+   ```

@@ -14,6 +14,7 @@
       - [ConsulServiceRegistry](#consulserviceregistry)
       - [ConsulAutoServiceRegistrationListener](#consulautoserviceregistrationlistener)
     - [服务发现](#服务发现)
+    - [自定义注册](#自定义注册)
     - [问题](#问题)
 
 consul提供的各种语言的SDK/开发库： https://developer.hashicorp.com/consul/api-docs/libraries-and-sdks  
@@ -61,36 +62,35 @@ public class ConsulAutoServiceRegistrationAutoConfiguration {
 2. 如果要禁用服务注册（当你只作为服务消费者时），设置`spring.cloud.consul.discovery.register=fales`，默认是 true
 3. 配置Consul健康检查，conusl发请求给服务以检查健康状态
    Consul 实例的健康检查默认位于"/actuator/health"，这是 Spring Boot Actuator 应用程序中健康端点的默认位置。如果使用非默认上下文路径或 servlet 路径（如 server.servletPath=/foo），即使是 Actuator 应用程序也需要更改。
-   ```yml
-   spring:
-     cloud:
-       consul:
-         discovery:
-           healthCheckPath: ${management.server.servlet.context-path}/actuator/health
-           healthCheckInterval: 15s #配置consul多久进行一次健康检查
-   ```
-   如果要禁用健康检查，设置 `spring.cloud.consul.discovery.register-health-check=false`,`management.health.consul.enabled=false`
-4. TTL检查：应用程序会主动向 Consul 代理发送心跳信号，而不是 Consul 代理向应用程序发送请求。
-   ```yml
-   spring:
-     cloud:
-       consul:
-         discovery:
-           heartbeat:
-             enabled: true
-             ttl: 10s
-   ```
-5. 注册服务时提供 MetaData
-   ```yml
-   spring:
-     cloud:
-       consul:
-         discovery:
-           metadata:
+4. 如果要禁用健康检查，设置 `spring.cloud.consul.discovery.register-health-check=false`,`management.health.consul.enabled=false`
+5. TTL检查：应用程序会主动向 Consul 代理发送心跳信号，而不是 Consul 代理向应用程序发送请求。
+6. 注册服务时提供 MetaData
+```
+spring:
+  application:
+    name: trade-center-service
+  cloud:
+    service-registry:
+      auto-registration:
+        registerManagement: false //关闭management endpoint 的注册
+    consul:
+      host: consul
+      port: 8500
+      discovery:
+        hostInfo:
+          ipAddress: 10.176.81.23
+        service-name: ${spring.application.name}
+        register: true
+        port: ${grpc.server.port}
+        healthCheckUrl: "http://${spring.cloud.consul.discovery.hostInfo.ipAddress}:${management.server.port}/actuator/health"
+        health-check-critical-timeout: 3m
+        heartbeat:
+          enabled: true
+          ttl: 10s
+        metadata:
              myfield: myvalue
              anotherfield: anothervalue
-   ```
-
+```
 #### HeartbeatProperties
 `HeartbeatProperties` 对应的配置前缀是 `spring.cloud.consul.discovery.heartbeat`。
 
@@ -251,6 +251,70 @@ Spring Cloud 支持 Feign（REST 客户端构建器）和 Spring RestTemplate，
        return null;
    }
    ```
+
+### 自定义注册
+```
+@Bean
+public ConsulRegistrationCustomizer customizer(ConsulDiscoveryProperties properties,HeartbeatProperties ttlConfig) {
+      return (ConsulRegistration reg)->{
+      NewService service = reg.getService();
+      Integer port = service.getPort();
+      NewService.Check check = new NewService.Check();
+      if (StringUtils.hasText(properties.getHealthCheckCriticalTimeout())) {
+            check.setDeregisterCriticalServiceAfter(properties.getHealthCheckCriticalTimeout());
+      }
+      if (ttlConfig.isEnabled()) {
+            // FIXME 3.0.0
+            // https://github.com/spring-cloud/spring-cloud-consul/issues/614
+            check.setTtl(ttlConfig.getTtl().getSeconds() + "s");
+      }
+
+      Assert.notNull(port, "createCheck port must not be null");
+      Assert.isTrue(port > 0, "createCheck port must be greater than 0");
+
+//            if (properties.getHealthCheckUrl() != null) {
+//                check.setHttp(properties.getHealthCheckUrl());
+//            }
+//            else {
+//                check.setHttp(String.format("%s://%s:%s%s", properties.getScheme(), properties.getHostname(), port,
+//                        properties.getHealthCheckPath()));
+//            }
+      check.setTcp(service.getAddress().concat(":").concat(String.valueOf(port)));
+      check.setHeader(properties.getHealthCheckHeaders());
+      check.setInterval(properties.getHealthCheckInterval());
+      check.setTimeout(properties.getHealthCheckTimeout());
+      check.setTlsSkipVerify(properties.getHealthCheckTlsSkipVerify());
+      service.setCheck(check);
+      };
+}
+
+@Bean
+public MyConsulAutoServiceRegistrationListener myConsulAutoServiceRegistrationListener(
+      ConsulAutoServiceRegistration registration) {
+      return new MyConsulAutoServiceRegistrationListener(registration);
+}
+
+
+static class MyConsulAutoServiceRegistrationListener extends ConsulAutoServiceRegistrationListener{
+      private final ConsulAutoServiceRegistration autoServiceRegistration2;
+
+      public MyConsulAutoServiceRegistrationListener(ConsulAutoServiceRegistration autoServiceRegistration) {
+      super(autoServiceRegistration);
+      autoServiceRegistration2 = autoServiceRegistration;
+      }
+
+      @Override
+      public boolean supportsEventType(Class<? extends ApplicationEvent> eventType) {
+
+      return eventType.equals(ApplicationStartedEvent.class);
+      }
+
+      @Override
+      public void onApplicationEvent(ApplicationEvent applicationEvent) {
+      this.autoServiceRegistration2.start();
+      }
+}
+```
 
 ### 问题
 1. preferIpAddress ： 测试环境需要IP访问，主机名不通

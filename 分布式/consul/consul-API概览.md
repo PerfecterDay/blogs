@@ -1,6 +1,6 @@
 #  Consul API 概览
 {docsify-updated}
-> https://developer.hashicorp.com/consul
+> https://developer.hashicorp.com/consul  
 > https://kingfree.gitbook.io/consul/getting-started/agent
 
 - [Consul API 概览](#consul-api-概览)

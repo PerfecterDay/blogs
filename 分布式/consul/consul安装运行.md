@@ -1,7 +1,7 @@
 # consul安装与运行
 {docsify-updated}
 
-> https://developer.hashicorp.com/consul/docs/agent  
+> https://developer.hashicorp.com/consul/docs/agent    
 > https://developer.hashicorp.com/consul/docs/agent/config
 
 

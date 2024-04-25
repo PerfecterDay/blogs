@@ -14,7 +14,7 @@
       - [ConsulServiceRegistry](#consulserviceregistry)
       - [ConsulAutoServiceRegistrationListener](#consulautoserviceregistrationlistener)
     - [服务发现](#服务发现)
-    - [自定义注册](#自定义注册)
+    - [自定义注册-使用tcp health check](#自定义注册-使用tcp-health-check)
     - [问题](#问题)
 
 consul提供的各种语言的SDK/开发库： https://developer.hashicorp.com/consul/api-docs/libraries-and-sdks  
@@ -252,25 +252,41 @@ Spring Cloud 支持 Feign（REST 客户端构建器）和 Spring RestTemplate，
    }
    ```
 
-### 自定义注册
+### 自定义注册-使用tcp health check
 ```
-@Bean
-public ConsulRegistrationCustomizer customizer(ConsulDiscoveryProperties properties,HeartbeatProperties ttlConfig) {
-      return (ConsulRegistration reg)->{
-      NewService service = reg.getService();
-      Integer port = service.getPort();
-      NewService.Check check = new NewService.Check();
-      if (StringUtils.hasText(properties.getHealthCheckCriticalTimeout())) {
+@Configuration
+public class ConsulRegister implements ConsulRegistrationCustomizer{
+
+    @Resource
+    @Lazy
+    ConsulAutoServiceRegistration registration;
+    @Resource
+    ConsulDiscoveryProperties properties;
+    @Resource
+    HeartbeatProperties ttlConfig;
+
+
+    @EventListener
+    public void pullUpConsulRegister(ApplicationStartedEvent event) {
+        registration.start();
+    }
+
+    @Override
+    public void customize(ConsulRegistration reg) {
+        NewService service = reg.getService();
+        Integer port = service.getPort();
+        NewService.Check check = new NewService.Check();
+        if (StringUtils.hasText(properties.getHealthCheckCriticalTimeout())) {
             check.setDeregisterCriticalServiceAfter(properties.getHealthCheckCriticalTimeout());
-      }
-      if (ttlConfig.isEnabled()) {
+        }
+        if (ttlConfig.isEnabled()) {
             // FIXME 3.0.0
             // https://github.com/spring-cloud/spring-cloud-consul/issues/614
             check.setTtl(ttlConfig.getTtl().getSeconds() + "s");
-      }
+        }
 
-      Assert.notNull(port, "createCheck port must not be null");
-      Assert.isTrue(port > 0, "createCheck port must be greater than 0");
+        Assert.notNull(port, "createCheck port must not be null");
+        Assert.isTrue(port > 0, "createCheck port must be greater than 0");
 
 //            if (properties.getHealthCheckUrl() != null) {
 //                check.setHttp(properties.getHealthCheckUrl());
@@ -279,40 +295,13 @@ public ConsulRegistrationCustomizer customizer(ConsulDiscoveryProperties propert
 //                check.setHttp(String.format("%s://%s:%s%s", properties.getScheme(), properties.getHostname(), port,
 //                        properties.getHealthCheckPath()));
 //            }
-      check.setTcp(service.getAddress().concat(":").concat(String.valueOf(port)));
-      check.setHeader(properties.getHealthCheckHeaders());
-      check.setInterval(properties.getHealthCheckInterval());
-      check.setTimeout(properties.getHealthCheckTimeout());
-      check.setTlsSkipVerify(properties.getHealthCheckTlsSkipVerify());
-      service.setCheck(check);
-      };
-}
-
-@Bean
-public MyConsulAutoServiceRegistrationListener myConsulAutoServiceRegistrationListener(
-      ConsulAutoServiceRegistration registration) {
-      return new MyConsulAutoServiceRegistrationListener(registration);
-}
-
-
-static class MyConsulAutoServiceRegistrationListener extends ConsulAutoServiceRegistrationListener{
-      private final ConsulAutoServiceRegistration autoServiceRegistration2;
-
-      public MyConsulAutoServiceRegistrationListener(ConsulAutoServiceRegistration autoServiceRegistration) {
-      super(autoServiceRegistration);
-      autoServiceRegistration2 = autoServiceRegistration;
-      }
-
-      @Override
-      public boolean supportsEventType(Class<? extends ApplicationEvent> eventType) {
-
-      return eventType.equals(ApplicationStartedEvent.class);
-      }
-
-      @Override
-      public void onApplicationEvent(ApplicationEvent applicationEvent) {
-      this.autoServiceRegistration2.start();
-      }
+        check.setTcp(service.getAddress().concat(":").concat(String.valueOf(port)));
+        check.setHeader(properties.getHealthCheckHeaders());
+        check.setInterval(properties.getHealthCheckInterval());
+        check.setTimeout(properties.getHealthCheckTimeout());
+        check.setTlsSkipVerify(properties.getHealthCheckTlsSkipVerify());
+        service.setCheck(check);
+    }
 }
 ```
 

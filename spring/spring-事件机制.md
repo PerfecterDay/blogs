@@ -3,11 +3,12 @@
 
 > https://docs.spring.io/spring-framework/reference/core/beans/context-introduction.html
 - [spring 事件机制](#spring-事件机制)
-		- [Java 观察者模式（事件机制）](#java-观察者模式事件机制)
-		- [spring 事件体系](#spring-事件体系)
-		- [Spring事件体系的具体实现](#spring事件体系的具体实现)
-		- [Spring自带的发布事件](#spring自带的发布事件)
-		- [实现自己的业务事件发布与监听](#实现自己的业务事件发布与监听)
+	- [Java 观察者模式（事件机制）](#java-观察者模式事件机制)
+	- [spring 事件体系](#spring-事件体系)
+	- [Spring事件体系的具体实现](#spring事件体系的具体实现)
+	- [Spring自带的发布事件](#spring自带的发布事件)
+	- [Springboot的内置事件](#springboot的内置事件)
+	- [手动实现自己的业务事件发布与监听](#手动实现自己的业务事件发布与监听)
 
 
 Spring 的 ApplicationContext 能够发布事件并且允许注册相应的事件监听器，因此，它拥有一套完善的事件发布和监听机制。在 Java 中， `java.util.EventObject` 类和 `java.util.EventListener` 接口描述了事件和监听器。在事件体系中，除了事件和监听器外，还有另外三个重要概念。
@@ -18,15 +19,15 @@ Spring 的 ApplicationContext 能够发布事件并且允许注册相应的事�
 
 事件源、事件监听器注册表和事件广播器这3个角色有时可以由同一个对象承担，其实就是观察者模式中的 `Observable` ，监听器就类似于 `Observer` 。事件体系其实是观察者模式的一种具体实现方式。
 
-### Java 观察者模式（事件机制）
+## Java 观察者模式（事件机制）
 <center><img src="pics/java-event.png" width=45%></center>
 
-### spring 事件体系
+## spring 事件体系
 <center><img src="pics/spring-event.png" width=55%></center>
 
 可以根据需要扩展 `ApplicationEvent` 定义自己的事件。
 
-### Spring事件体系的具体实现
+## Spring事件体系的具体实现
 Spring 在 `ApplicationContext` 接口的抽象实现类 `AbstratApplicationContext`中完成事件体系的搭建。`AbstratApplicationContext`中拥有一个 `ApplicationEventMulticaster` 的成员，该成员提供了容器监听器的注册表。`AbstratApplicationContext`在 `refresh()` 这个容器启动方法中通过以下3个步骤搭建了事件的基础设施：
 ```
 ..
@@ -57,18 +58,32 @@ public void multicastEvent(final ApplicationEvent event, @Nullable ResolvableTyp
 }
 ```
 
-### Spring自带的发布事件
+## Spring自带的发布事件
 
-| Event | Explanation |
-| ----------- | ----------- |
-| ContextRefreshedEvent | Published when the ApplicationContext is initialized or refreshed (for example, by using the refresh() method on the ConfigurableApplicationContext interface). Here, “initialized” means that all beans are loaded, post-processor beans are detected and activated, singletons are pre-instantiated, and the ApplicationContext object is ready for use. As long as the context has not been closed, a refresh can be triggered multiple times, provided that the chosen ApplicationContext actually supports such “hot” refreshes. For example, XmlWebApplicationContext supports hot refreshes, but GenericApplicationContext does not. |
-| ContextStartedEvent | Published when the ApplicationContext is started by using the start() method on the ConfigurableApplicationContext interface. Here, “started” means that all Lifecycle beans receive an explicit start signal. Typically, this signal is used to restart beans after an explicit stop, but it may also be used to start components that have not been configured for autostart (for example, components that have not already started on initialization). |
-| ContextStoppedEvent | Published when the ApplicationContext is stopped by using the stop() method on the ConfigurableApplicationContext interface. Here, “stopped” means that all Lifecycle beans receive an explicit stop signal. A stopped context may be restarted through a start() call. |
-| ContextClosedEvent | Published when the ApplicationContext is being closed by using the close() method on the ConfigurableApplicationContext interface or via a JVM shutdown hook. Here, "closed" means that all singleton beans will be destroyed. Once the context is closed, it reaches its end of life and cannot be refreshed or restarted. |
-| RequestHandledEvent | A web-specific event telling all beans that an HTTP request has been serviced. This event is published after the request is complete. This event is only applicable to web applications that use Spring’s DispatcherServlet. |
-| ServletRequestHandledEvent | A subclass of RequestHandledEvent that adds Servlet-specific context information. |
++ `ContextRefreshedEvent` — is published when the ApplicationContext is either initialized or refreshed. This can also be raised using the refresh() method on the ConfigurableApplicationContext interface.
++ `ContextStartedEvent` — is published when the ApplicationContext is started using the start() method on the ConfigurableApplicationContext interface. At this stage you can poll your database or you can restart any stopped application after receiving this event.
++ `ContextStoppedEvent` — is published when the ApplicationContext is stopped using the stop() method on the ConfigurableApplicationContext interface. You can do required housekeep work after receiving this event.
++ `ContextClosedEvent` — is published when the ApplicationContext is closed using the close() method on the ConfigurableApplicationContext interface. A closed context reaches its end of life; it cannot be refreshed or restarted.
 
-### 手动实现自己的业务事件发布与监听
+<center><img src="pics/spring-events.webp" width="90%"></center>
+
+## Springboot的内置事件
++ `ApplicationStartingEvent` — is sent at the start of a run but before any processing, except for the registration of listeners and initializers.
++ `ApplicationEnvironmentPreparedEvent` — is sent when the Environment to be used in the context is known but before the context is created.
++ `ApplicationContextInitializedEvent` — is sent when the ApplicationContext is prepared and ApplicationContextInitializers have been called but before any bean + definitions are loaded.
++ `ApplicationPreparedEvent` — is sent just before the refresh is started but after bean definitions have been loaded.
++ `ApplicationStartedEvent` — is sent after the context has been refreshed but before any application and command-line runners have been called.
++ `AvailabilityChangeEvent` — is sent right after with LivenessState.CORRECT to indicate that the application is considered as live and after with ReadinessState.ACCEPTING_TRAFFIC to indicate that the application is ready to service requests.
++ `ApplicationReadyEvent` — is sent after any application and command-line runners have been called.
++ `ApplicationFailedEvent` — is sent if there is an exception on startup.
+
+The above list only includes SpringApplicationEvents that are tied to a SpringApplication. In addition to these, the following events are also published after ApplicationPreparedEvent and before ApplicationStartedEvent:
++ `WebServerInitializedEvent` is sent after the WebServer is ready. `ServletWebServerInitializedEvent` and `ReactiveWebServerInitializedEvent` are the servlet and reactive variants respectively.
++ `ContextRefreshedEvent` is sent when an ApplicationContext is refreshed.
+
+<center><img src="pics/springboot-events.webp" width="90%"></center>
+
+## 手动实现自己的业务事件发布与监听
 1. 定义业务事件，继承自 `ApplicationEvent` 
 2. 发布者（需要发布自定义业务事件的业务Bean）实现 `ApplicationEventPublisherAware`,`ApplicationContextAware` 接口，利用 `ApplicationContext` 对象就可以发布自定义的事件
 3. 实现 `ApplicationListener` 接口并注册到容器中，实现监听自定义事件逻辑

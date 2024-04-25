@@ -136,5 +136,6 @@ $ brew --caskroom
 $ brew --cache
 
 # 删除下载的文件
-brew cleanup --prune=all -n
+brew cleanup --prune=all -n ##-n 会给出提示不会真的删除
+brew cleanup --prune=all # 删除文件
 ```

@@ -1,4 +1,4 @@
-#Ingress 和 gateway api
+# Ingress 和 gateway api
 {docsify-updated}
 
 - [Ingress 和 gateway api](#ingress-和-gateway-api)
@@ -8,7 +8,7 @@
 
 Ingress 公开从集群外部到集群内服务的 HTTP 和 HTTPS 路由。 流量路由由 Ingress 资源上定义的规则控制。
 
-### Ingress 和 Service 的区别
+## Ingress 和 Service 的区别
 由于您只有一个提供 http 服务的服务，因此您目前使用 LoadBalancer 服务类型的解决方案效果很好。试想一下，你有多个基于 http 的服务，你想让它们在不同的路由上对外提供服务。您必须为每个服务创建一个 LoadBalancer 服务，默认情况下，您将为每个服务获得不同的 IP 地址。相反，您可以使用 Ingress，它位于这些服务之前并负责路由选择。
 ```
 apiVersion: networking.k8s.io/v1
@@ -35,6 +35,6 @@ spec:
 
 <center><img src="/pics/ingressFanOut.svg" width="60%"></center>
 
-### gateway api
+## gateway api
 Gateway API 是 Ingress API 的后续版本。不过，它不包括 Ingress 类型。
 

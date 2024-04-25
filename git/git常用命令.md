@@ -67,6 +67,7 @@
 7. `git merge <BranchName>`: 将 BranchName 合并到当前分支
 8. `git merge --abort`: 中断合并
 9. `git rebase <targetBranch> <sourceBranch>`: 它的原理是首先找到这两个分支(即源分支 sourceBranch 、变基操作的目标基底分支 targetBranch) 的最近共同祖先 C2，然后对比当前分支相对于该祖先的历次提交，提取相应的修改并存为临时文件，然后将当前分支指向目标基底 C3, 最后以此将之前另存为临时文件的修改依序应用。
+10. `git checkout develop_2.0_backup -- docker-compose-builder.yaml docker-compose.yaml`：将一个分支的文件拷贝到当前分支
 
 ### git远程命令
 1. `git clone`: 从远程库克隆

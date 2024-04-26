@@ -2,15 +2,15 @@
 {docsify-updated}
 
 - [k8s Deployment](#k8s-deployment)
-	- [Deployment](#deployment)
-	- [创建资源的方式](#创建资源的方式)
-	- [伸缩](#伸缩)
-	- [Failover](#failover)
-	- [用 label 控制pod的位置——指定节点部署](#用-label-控制pod的位置指定节点部署)
-	- [阿里云示例](#阿里云示例)
+    - [Deployment](#deployment)
+    - [创建资源的方式](#创建资源的方式)
+    - [伸缩](#伸缩)
+    - [Failover](#failover)
+    - [用 label 控制pod的位置——指定节点部署](#用-label-控制pod的位置指定节点部署)
+    - [阿里云示例](#阿里云示例)
 
 
-前面我们已经了解到，Kubernetes 通过各种 Controller 来管理 Pod 的生命周期。为了满足不同业务场景，Kubernetes 开发了 Deployment、ReplicaSet、DaemonSet、StatefuleSet、Job 等多种 Controller。
+前面我们已经了解到，Kubernetes 通过各种 Controller 来管理 Pod 的生命周期。为了满足不同业务场景，Kubernetes 开发了 Deployment、ReplicaSet、DaemonSet、StatefulSet、Job 等多种 Controller。
 
 ### Deployment
 Deployment 通过 ReplicaSet 来管理 Pod 的。

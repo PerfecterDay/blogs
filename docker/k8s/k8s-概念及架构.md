@@ -1,16 +1,7 @@
 # k8s 概念及架构
 {docsify-updated}
 
-- [k8s 概念及架构](#k8s-概念及架构)
-	- [重要概念](#重要概念)
-	- [k8s 架构](#k8s-架构)
-		- [Master 节点](#master-节点)
-		- [Node 节点](#node-节点)
-	- [K8S部署示意图](#k8s部署示意图)
-	- [Minikube安装运行k8s](#minikube安装运行k8s)
-
-
-### 重要概念
+## 重要概念
 1. **Cluster**  
 	Cluster 是计算、存储和网络资源的集合，Kubernetes 利用这些资源运行各种基于容器的应用。
 2. **Master**  
@@ -24,7 +15,7 @@
 	+ Deployment：可以管理 Pod 的多个副本并确保 Pod 按照期望的状态运行
 	+ ReplicaSet：实现了 Pod 的多副本管理。使用 Deployment 会自动创建 ReplicaSet，Deployment 通过 ReplicaSet 来管理 Pod 的多个副本，一般不直接使用 ReplicaSet。
 	+ DaemonSet：用于每隔 Node 最多只运行一个 Pod 副本的场景。DaemonSet 通常用于运行 daemon。
-	+ StatefuleSet：能够保证 Pod 的每个副本在整个生命周期中是不变的，而其他 Controller 不提供这个功能。当某个 Pod 发生故障需要删除并重新启动时，Pod 的名称会发生变化，同时 StatefuleSet 会保证副本按照固定顺序启动、更新或者删除。
+	+ StatefulSet：能够保证 Pod 的每个副本在整个生命周期中是不变的，而其他 Controller 不提供这个功能。当某个 Pod 发生故障需要删除并重新启动时，Pod 的名称会发生变化，同时 StatefulSet 会保证副本按照固定顺序启动、更新或者删除。
 	+ Job：用于运行结束就删除的应用，而其他 Controller 中的 Pod 通常是长期持续运行。
 6. **Service**  
 	Deployment 可以部署多个副本，每个Pod都有自己的IP，外界如何访问这些Pod的服务呢？通过IP吗？Pod会被频繁的重启和销毁重建，他们的IP会发生变化，用IP不能动态适应这种情形。  
@@ -36,12 +27,12 @@
 	+ kube-system：K8S 自己创建的系统资源将放到这个 Namespace 中
 
 
-### k8s 架构
+## k8s 架构
 <center><img src="pics/k8s-components.jpg" alt="" width="60%"></center>
 
 k8s 集群由 Masetr 和 Node 组成，节点上运行着若干 K8s 服务. Master 同时也是一个Node。
 
-#### Master 节点
+### Master 节点
 Master 是 K8s 的大脑，运行着的Daemon服务包括 kube-apiserver、kube-scheduler、kube-controller-manager、etcd 和 pod 网络。为了保证高可用，可以同时有多个master节点。
 
 1. Api Server(kube-apiserver)  
@@ -56,7 +47,7 @@ Master 是 K8s 的大脑，运行着的Daemon服务包括 kube-apiserver、kube-
 5. Pod 网络  
 	Pod要能够相互通信，K8s 集群必须部署 Pod 网络，flannel 是其中一个可选方案。
 
-#### Node 节点
+### Node 节点
 Node 是Pod 运行的地方，K8S 支持 Docker、rkt等容器 runtime。Node 上运行的 K8s 组件有 kubelet 、 kube-proxy 和 Pod 网络。
 1. kubelet  
 	kubelet 是节点上运行的代理。当 Scheduler确定在某个Node上运行 Pod 后，会将Pod的具体配置信息发送给该节点 kubelet，kubelet 根据这些信息创建和运行容器，并向Master报告运行状态。
@@ -69,10 +60,10 @@ Node 是Pod 运行的地方，K8S 支持 Docker、rkt等容器 runtime。Node �
 4. Pod 网络
 
 
-### K8S部署示意图
+## K8S部署示意图
 <center><img src="pics/k8s-demo.jpg" alt="" width="60%"></center>
 
-### Minikube安装运行k8s
+## Minikube安装运行k8s
 1. 安装 Kubectl: `brew install kubectl`
 2. 安装 Minikube: `brew install minikube`
 3. 执行下列语句以使用本地docker镜像：`eval $(minikube docker-env)`

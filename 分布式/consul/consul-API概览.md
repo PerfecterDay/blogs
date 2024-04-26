@@ -59,7 +59,7 @@ Consul HTTP API是一个RESTful接口，允许你在网络中利用Consul功能�
 
 #### 连接你的服务
 使用以下API端点来配置和连接你的服务。
-- [`/catalog`]（https://developer.hashicorp.com/consul/api-docs/catalog）：注册和取消注册节点、服务和健康检查。
+- [`/catalog`](https://developer.hashicorp.com/consul/api-docs/catalog)：注册和取消注册节点、服务和健康检查。
 - [`/health`](https://developer.hashicorp.com/consul/api-docs/health)：在启用健康检查时查询节点的健康状况。
 - [`/query`](https://developer.hashicorp.com/consul/api-docs/query)：在Consul中创建和管理预备查询。预备查询允许你注册一个复杂的服务查询，然后再发送。
 - [`/coordinate`](https://developer.hashicorp.com/consul/api-docs/coordinate)：查询本地数据中心的节点以及本地数据中心和远程数据中心的Consul服务器的网络坐标。

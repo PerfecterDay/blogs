@@ -1,4 +1,4 @@
-#  Spring IOC
+#  Spring IOC 扩展点
  {docsify-updated}
 > https://docs.spring.io/spring-framework/reference/core/beans.html
 

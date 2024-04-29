@@ -10,6 +10,13 @@ Spring容器最初提供了两种bean的scope类型：`singleton` 和 `prototype
 + `session` ：Spring容器会为每个独立的session创建属于它们自己的全新的bean对象实例。与request相比，除了可能更长的存活时间，其他方面真是没什么差别。
 + `global session`: 只有应用在基于portlet的Web应用程序中才有意义，它映射到portlet的global范围的 session。如果在普通的基于servlet的Web应用中使用了这个类型的scope，容器会将其作为普通的session类型的scope对待。
 
+## 懒加载
+默认情况下，ApplicationContext 实现会急切地创建和配置所有单例 Bean，作为初始化过程的一部分。一般来说，这种预实例化是可取的，因为配置中的错误会立即被发现，而不是几小时甚至几天后才被发现。如果这种行为不可取，您可以通过将 Bean 定义标记为懒初始化来阻止单例 Bean 的预初始化。懒初始化的 Bean 会告诉 IoC 容器在首次请求时创建 Bean 实例，而不是在启动时。
+```
+<bean id="lazy" class="com.something.ExpensiveToCreateBean" lazy-init="true"/>
+<bean name="not.lazy" class="com.something.AnotherBean"/>
+```
+但是，当一个懒初始化的 Bean 是一个未懒初始化的单例 Bean 的依赖关系时，ApplicationContext 会在启动时创建懒初始化的 Bean，因为它必须满足单例的依赖关系。懒初始化的 Bean 会被注入到其他地方未被懒初始化的单例 Bean 中。
 
 ### classpath和classpath*的区别
 

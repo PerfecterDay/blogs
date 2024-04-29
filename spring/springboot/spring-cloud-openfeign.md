@@ -4,13 +4,13 @@
 > https://docs.spring.io/spring-cloud-openfeign/docs/current/reference/html/
 
 - [spring-cloud-openfeign](#spring-cloud-openfeign)
-	- [简介](#简介)
-	- [集成步骤](#集成步骤)
-	- [配置](#配置)
-		- [自定义 Java 代码配置](#自定义-java-代码配置)
-		- [配置文件配置](#配置文件配置)
-		- [熔断降级](#熔断降级)
-		- [Interceptors](#interceptors)
+		- [简介](#简介)
+		- [集成步骤](#集成步骤)
+		- [配置](#配置)
+			- [自定义 Java 代码配置](#自定义-java-代码配置)
+			- [配置文件配置](#配置文件配置)
+			- [熔断降级](#熔断降级)
+			- [Interceptors](#interceptors)
 
 
 ### 简介
@@ -81,6 +81,7 @@ Feign.builder()
 .target(CmsService.class, "/monkeys");
 ```
 
+Spring-cloud-openfeign中的自动配置类： `FeignAutoConfiguration` 。
 
 #### 自定义 Java 代码配置
 如果我们想定制这些Bean中的一个或多个，我们可以通过创建一个配置类来覆盖它们，然后将其添加到 `FeignClient` 注解的 `configuration` 属性中。
@@ -106,7 +107,15 @@ public class ClientConfiguration {
 
 
 #### 配置文件配置
-也可以使用配置文件来配置Feign客户端，而不是使用配置类，如这个application.yaml例子：
+也可以使用配置文件来配置Feign客户端，而不是使用配置类。
+
+老版本的超时配置：
+```
+feign.httpclient.connection-timeout=2000
+feign.httpclient.ok-http.read-timeout=6000
+```
+
+最新版本application.yaml例子：
 ```
 spring:
     cloud:
@@ -152,6 +161,19 @@ spring:
 **如果我们同时拥有 java 配置和配置文件配置，配置文件的属性将覆盖 java 配置的值。如果我们想要java配置覆盖配置文件的配置，可以设置`spring.cloud.openfeign.client.default-to-properties=false`**
 
 #### 熔断降级
+Spring Cloud CircuitBreaker 支持回退概念：当电路断开或出现错误时执行的默认代码路径。所以，
+第一步，需要添加依赖：
+```
+<dependency>
+	<groupId>org.springframework.cloud</groupId>
+	<artifactId>spring-cloud-starter-circuitbreaker-resilience4j</artifactId>
+	<version>2.1.8</version>
+</dependency>
+```
+
+第二步： 配置 `feign.circuitbreaker.enabled=true`，这个要根据使用的 openFeigin 版本来定，最新的版本是 `spring.cloud.openfeign.circuitbreaker.enabled=true`
+
+第三步：要为给定的 `@FeignClient` 启用回退，请将 `fallback` 属性设置为实现回退的类名。您还需要将您的实现声明为 Spring Bean。
 ```
 @FeignClient(name = "test", url = "http://localhost:${server.port}/", fallback = Fallback.class)
 protected interface TestClient {
@@ -200,6 +222,10 @@ static class Fallback implements TestClient {
    ```
 
 
-
 /Users/coder_wang/.sdkman/candidates/java/current/lib/src.zip!/java.base/sun/net/www/protocol/http/HttpURLConnection.java
 /Users/coder_wang/.sdkman/candidates/java/17.0.7-tem/lib/src.zip!/java.base/java/net/HttpURLConnection.java
+
+
+FeignCircuitBreakerInvocationHandler
+
+SynchronousMethodHandler

@@ -6,7 +6,7 @@
 	- [Springboot 的自动配置- WebMvcAutoConfiguration](#springboot-的自动配置--webmvcautoconfiguration)
 
 
-### WebMvcConfigurer
+## WebMvcConfigurer
 在Java配置中，可以使用 `@EnableWebMvc` 注解并实现 `WebMvcConfigurer` 接口来启用MVC配置，，如下例所示：
 
 ```
@@ -63,7 +63,7 @@ public class DelegatingWebMvcConfiguration extends WebMvcConfigurationSupport {
 + `default void configureHandlerExceptionResolvers(List<HandlerExceptionResolver> resolvers) {}` ：配置 HandlerExceptionResolver
 + `default void extendHandlerExceptionResolvers(List<HandlerExceptionResolver> resolvers) {}` ：
 
-### Springboot 的自动配置- WebMvcAutoConfiguration
+## Springboot 的自动配置- WebMvcAutoConfiguration
 Springboot 中使用 `WebMvcAutoConfiguration` 实现自动配置，在其中定义了 `EnableWebMvcConfiguration` 内部类，这个类实现了和 `@EnableWebMvc` 相同的功能。
 ```
 // Configuration equivalent to @EnableWebMvc.
@@ -72,3 +72,16 @@ Springboot 中使用 `WebMvcAutoConfiguration` 实现自动配置，在其中定
 public static class EnableWebMvcConfiguration extends DelegatingWebMvcConfiguration implements ResourceLoaderAware{...}
 ```
 这就是为什么在 Springboot 中没有使用 `@EnableWebMvc` 注解，依然能启用 mvc 功能的原因。
+
+
+替换掉默认的 tomcat 容器：
+```
+<dependency>
+	<groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-starter-jetty</artifactId>
+</dependency>
+```
+2024-04-29 13:41:25.078 [main] INFO  com.gtja.gjyw.UserCenterApp  - Started UserCenterApp in 50.119 seconds (JVM running for 51.346)
+
+2024-04-29 17:42:40.493 [main] INFO  com.gtja.gjyw.UserCenterApp  - Started UserCenterApp in 32.094 seconds (JVM running for 33.44) undertow
+2024-04-29 17:43:50.493 [main] INFO  com.gtja.gjyw.UserCenterApp  - Started UserCenterApp in 32.223 seconds (JVM running for 33.654) jetty

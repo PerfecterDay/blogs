@@ -1,14 +1,14 @@
 # Spring IoC Bean的定义
 {docsify-updated}
 
-
 ## Bean 的 scope
-Spring容器最初提供了两种bean的scope类型：`singleton` 和 `prototype` ，但发布2.0之后，又引入了另外三种scope类型，即 `request` 、 `session` 和 `global session` 类型。不过这三种类型有所限制，只能在Web应用中使用。
+Spring容器最初提供了两种bean的scope类型：`singleton` 和 `prototype` ，但发布2.0之后，又引入了另外三种scope类型，即 `request` 、 `session` 、 `application` 和 `websocket` 类型。不过这三种类型有所限制，只能在Web应用中使用。
 + `singleton`: 标记为拥有singleton scope的对象定义，在Spring的IoC容器中只存在一个实例，所有对该对象的引用将共享这个实例。该实例从容器启动，并因为第一次被请求而初始化之后，将一直存活到容器退出，也就是说，它与IoC容器“几乎”拥有相同的“寿命”。
 + `prototype` ：容器在接到该类型对象的请求的时候，会每次都重新生成一个新的对象实例给请求方。虽然这种类型的对象的实例化以及属性设置等工作都是由容器负责的，但是只要准备完毕，并且对象实例返回给请求方之后，容器就不再拥有当前返回对象的引用，请求方需要自己负责当前返回对象的后继生命周期的管理工作，包括该对象的销毁。也就是说，容器每次返回给请求方一个新的对象实例之后，就任由这个对象实例“自生自灭”了。
 + `request`: Spring容器的 XmlWebApplicationContext 会为每个HTTP请求创建一个全新的bean对象供当前请求使用，当请求结束后，该对象实例的生命周期即告结束。
 + `session` ：Spring容器会为每个独立的session创建属于它们自己的全新的bean对象实例。与request相比，除了可能更长的存活时间，其他方面真是没什么差别。
-+ `global session`: 只有应用在基于portlet的Web应用程序中才有意义，它映射到portlet的global范围的 session。如果在普通的基于servlet的Web应用中使用了这个类型的scope，容器会将其作为普通的session类型的scope对待。
++ `application`: 将单个 Bean 定义的作用域扩展到 ServletContext 的生命周期。仅在网络感知 Spring ApplicationContext 的上下文中有效。
++ `websocket`: 将单个 Bean 定义的作用域扩展到 WebSocket 的生命周期。仅在网络感知 Spring ApplicationContext 的上下文中有效。
 
 ## 懒加载
 默认情况下，ApplicationContext 实现会急切地创建和配置所有单例 Bean，作为初始化过程的一部分。一般来说，这种预实例化是可取的，因为配置中的错误会立即被发现，而不是几小时甚至几天后才被发现。如果这种行为不可取，您可以通过将 Bean 定义标记为懒初始化来阻止单例 Bean 的预初始化。懒初始化的 Bean 会告诉 IoC 容器在首次请求时创建 Bean 实例，而不是在启动时。
@@ -17,6 +17,71 @@ Spring容器最初提供了两种bean的scope类型：`singleton` 和 `prototype
 <bean name="not.lazy" class="com.something.AnotherBean"/>
 ```
 但是，当一个懒初始化的 Bean 是一个未懒初始化的单例 Bean 的依赖关系时，ApplicationContext 会在启动时创建懒初始化的 Bean，因为它必须满足单例的依赖关系。懒初始化的 Bean 会被注入到其他地方未被懒初始化的单例 Bean 中。
+
+
+## 回调接口
+要与容器的 Bean 生命周期管理交互，您可以实现 Spring `InitializingBean` 和 `DisposableBean` 接口。容器会调用前者的 `afterPropertiesSet()` 和后者的 `destroy()` 来让 Bean 在初始化和销毁 Bean 时执行某些操作。
+
+实现接口的方式会让代码与 Spring 耦合，JSR-250 `@PostConstruct` 和 `@PreDestroy` 注解通常被认为是在现代 Spring 应用程序中接收生命周期回调的最佳实践。使用这些注解意味着你的 Bean 与 Spring 特定的接口没有耦合。如果不想使用 JSR-250 注解，但仍想消除耦合，可以使用 `init-method` 和 `destroy-method` 定义元数据。
+
+在内部，Spring 框架使用 `BeanPostProcessor` 实现来处理它能找到的任何回调接口，并调用相应的方法。
+
+除了初始化和销毁回调外，Spring 管理的对象还可以实现 `Lifecycle` 接口，这样这些对象就能参与容器自身生命周期驱动的启动和关闭过程。
+
+### 初始化回调
+`org.springframework.beans.factory.InitializingBean` 接口可让 Bean 在容器设置了 Bean 的所有必要属性后执行初始化工作。等价于`@PostConstruct`、`init-method`和 `@Bean(initMethod="test")`。 请注意，`@PostConstruct` 和`init-method`一般是在容器的单例创建锁内执行的。只有从 `@PostConstruct` 方法返回后，Bean 实例才会被视为完全初始化并准备好向他人发布。
+
+请注意这种初始化方法应该仅用于验证配置状态，并可能根据给定的配置准备一些数据结构，但不能进一步进行复杂的外部 bean 访问活动。否则就有可能造成初始化死锁。对于需要触发昂贵的初始化后活动（例如异步数据库准备步骤）的场景，您的 Bean 应实现 `SmartInitializingSingleton.afterSingletonsInstantiated()` 或依赖上下文刷新事件：实现 `ApplicationListener<ContextRefreshedEvent>` 或声明其注解等价物 `@EventListener(ContextRefreshedEvent.class)`。这些变体在所有常规的单例初始化之后出现，因此在任何单例创建锁之外。
+
+Spring 容器确保在 Bean 与所有依赖关系一起提供后，立即调用配置的初始化回调。因此，初始化回调是在原始 Bean 引用上调用的，这意味着 AOP `interceptors`等尚未应用到 Bean 上。首先创建完整的目标 Bean，然后应用带有拦截器链的 AOP 代理。如果目标 Bean 和代理是分开定义的，您的代码甚至可以绕过代理与原始目标 Bean 进行交互。因此，在 init 方法中使用 `interceptors` 是有歧义的，因为这样做会将目标原始 Bean 的生命周期与AOP代理或 `interceptors` 联系起来，代码直接与原始目标 Bean 交互会留下奇怪的语义。
+
+### 销毁回调
+实现 `org.springframework.beans.factory.DisposableBean` 接口可让 Bean 在容器被销毁时获得回调。等价于`@PreDestroy`、`destroy-method`和 `@Bean(destroyMethod="test")`
+
+请注意，Spring 还支持销毁方法推理，如果检测到公共 `close` 或 `shutdown` 方法，会自动调用。这是 Java 配置类中 @Bean 方法的默认行为，会自动匹配 `java.lang.AutoCloseable` 或 `java.io.Closeable` 实现，也不会将销毁逻辑耦合到 Spring 中。
+
+### 多种配置方式结合使用时
+当使用不同的方式为同一个 Bean 配置回调时，调用方式如下：
++ 调用用 `@PostConstruct` 注释的方法
++ 初始化 Bean 回调接口定义的 `afterPropertiesSet()` 方法
++ 自定义配置的 `init()` 方法
+
+销毁方法的调用顺序相同：
++ 使用 `@PreDestroy` 注解的方法
++ 由 DisposableBean 回调接口定义的 `destroy()` 方法
++ 自定义配置的 `destroy()` 方法
+
+### Startup 和 Shutdown 回调
+`Lifecycle` 接口:
+```
+public interface Lifecycle {
+	void start();
+	void stop();
+	boolean isRunning();
+}
+```
+任何 Spring 管理的 Bean 都可以实现 `Lifecycle` 接口。然后，当 ApplicationContext 本身接收到启动和停止信号时（例如容器的停止/重启场景），它将委托给一个 `LifecycleProcessor` 将这些调用级联到该上下文中定义的所有 Lifecycle 实现。，如下图所示：
+```
+public interface LifecycleProcessor extends Lifecycle {
+	void onRefresh();
+	void onClose();
+}
+```
+
+## Aware 接口
++ `ApplicationContextAware` : 获取 `ApplicationContext` 。
++ `ApplicationEventPublisherAware` : 发布事件
++ `BeanClassLoaderAware` : 用于加载 bean 类的类加载器。
++ `BeanFactoryAware` : 获取 BeanFactory
++ `BeanNameAware` : 获取 BeanName 
++ `LoadTimeWeaverAware` : Defined weaver for processing class definition at load time.
++ `MessageSourceAware` : Configured strategy for resolving messages (with support for parameterization and internationalization).
++ `NotificationPublisherAware` : Spring JMX 通知发布器。
++ `ResourceLoaderAware` : 为低级访问资源配置加载器。
++ `ServletConfigAware` : 容器运行时的当前 `ServletConfig` 。仅在网络感知的 Spring ApplicationContext 中有效。
++ `ServletContextAware` : 容器运行的当前 `ServletContext` 。仅在网络感知的 Spring ApplicationContext 中有效。
+
+使用这些接口会将您的代码与 Spring API 联系在一起，并且不遵循反转控制风格。因此建议只在需要以编程方式访问容器的基础架构 Bean 时使用这些接口。
 
 ### classpath和classpath*的区别
 

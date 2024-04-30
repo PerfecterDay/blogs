@@ -1,23 +1,15 @@
-#  Spring IOC 注解
+#  Spring IOC 基于注解的配置
  {docsify-updated}
-> https://docs.spring.io/spring-framework/reference/core/beans.html
+> https://docs.spring.io/spring-framework/reference/core/beans/annotation-config.html
 
-- [Spring IOC 注解](#spring-ioc-注解)
-	- [声明 bean 相关的注解](#声明-bean-相关的注解)
-		- [`@Component, @Repository, @Service, @Controller, @Configuration, @Named(JSR)`](#component-repository-service-controller-configuration-namedjsr)
-		- [`@ComponentScan`](#componentscan)
-		- [`@Bean`](#bean)
-		- [`@Scope`](#scope)
-	- [依赖注入的注解](#依赖注入的注解)
-		- [`@Inject (JSR 330)/@Autowired`](#inject-jsr-330autowired)
-		- [`@Primary`](#primary)
-		- [`@Qualifier/@Named (JSR 330)`](#qualifiernamed-jsr-330)
-		- [`@Resource(JSR-250)`](#resourcejsr-250)
-		- [`@PostConstruct` 和 `@PreDestroy`](#postconstruct-和-predestroy)
-	- [属性资源文件相关](#属性资源文件相关)
-		- [`@PropertySource`](#propertysource)
-		- [`@Value`](#value)
+基于注解的注入在 XML 注入之前执行。因此，XML 配置会覆盖通过这两种方法注入的属性。
 
+基于注解配置功能主要依赖 `BeanPostProcessor` 扩展来实现的，一些典型的 `BeanPostProcessor` 如下：
++ ConfigurationClassPostProcessor
++ AutowiredAnnotationBeanPostProcessor
++ CommonAnnotationBeanPostProcessor
++ PersistenceAnnotationBeanPostProcessor
++ EventListenerMethodProcessor
 
 大致上有两类注解：
 1. 一种是声明 bean 的注解，这种注解是用来配置 bean 的元数据，用于在容器中定义一个 bean
@@ -56,7 +48,9 @@ public class AppConfig {
 <center><img src="pics/bean-scope.png" width="60%" ></center>
 
 
-## 依赖注入的注解
+## 声明依赖关系的注解
++ `@Autowired`
+
 
 <center><img src="pics/spring-ioc.png" width="60%" ></center>
 

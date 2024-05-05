@@ -48,3 +48,4 @@ PowerShell requires an execution policy in [Unrestricted, RemoteSigned, ByPass] 
 ### 常用命令
 1. `scoop search program-name` : 查找软件
 2. `scoop install program-name` : 安装软件
+3. `scoop config aria2-options --check-certificate=false` ： 解决“由于吊销服务器已脱机，吊销功能无法检查”错误

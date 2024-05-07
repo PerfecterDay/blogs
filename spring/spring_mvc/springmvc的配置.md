@@ -42,7 +42,7 @@ public class DelegatingWebMvcConfiguration extends WebMvcConfigurationSupport {
 ....
 }
 ```
-在 `WebMvcConfigurationSupport` 中声明了很多 MVC 相关的 bean，这些声明 bean 的方法中会调用相应的 `configureXXX` 方法，这些方法又会去调用注入的 `WebMvcConfigurer` 相关的方法。这就是为什么我们只要写一个实现 `WebMvcConfigurer` 接口的类并注入到容器中，就能起作用的原因。
+在 `WebMvcConfigurationSupport` 中有很多声明了 MVC 相关的 bean 的 `@Bean` 方法 ，这些声明 bean 的方法中会调用相应的 `configureXXX`/`addXXX` 方法，这些方法最终会去调用注入的 `WebMvcConfigurer` 相关的方法。这就是为什么我们只要写一个实现 `WebMvcConfigurer` 接口的类并注入到容器中，就能起作用的原因。
 
 `WebMvcConfigurer` 接口中的一些方法：
 

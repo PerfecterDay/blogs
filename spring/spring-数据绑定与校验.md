@@ -3,7 +3,7 @@
 
 > https://docs.spring.io/spring-framework/reference/core/validation/beans-beans.html#beans-constructor-binding
 
-## Validator 接口篇
+## Validator 接口
 Spring 提供了一个 `Validator` 接口，可用于验证对象。 `Validator` 接口可以向 `Errors` 对象报告验证失败。
 ```
 public interface Validator {
@@ -64,7 +64,7 @@ public class CustomerValidator implements Validator {
 ```
 
 ## 数据绑定
-数据绑定可用于将用户输入绑定到目标对象，其中用户输入是一个以**属性路径(如account.name)**为 key 的 map。 `DataBinder` 是支持该功能的主类，它提供了两种绑定用户输入的方法：
+数据绑定可用于将用户输入绑定到目标对象，其中用户输入是一个以 **属性路径(如account.name)** 为 key 的 map。 `DataBinder` 是支持该功能的主类，它提供了两种绑定用户输入的方法：
 + 构造函数绑定: 将用户输入绑定到公共构造函数，将用户输入的参数绑定到构造函数的对应参数中。（只有高版本才支持）
 + 属性绑定：将用户输入与 `Setter` 绑定，将用户输入的键与目标对象结构的对象属性相匹配。
 
@@ -110,3 +110,36 @@ company.setPropertyValue("managingDirector", jim.getWrappedInstance());
 // retrieving the salary of the managingDirector through the company
 Float salary = (Float) company.getPropertyValue("managingDirector.salary");
 ```
+
+### Spring MVC中的数据校验
+默认情况下，如果类路径上存在 Bean Validation（例如 Hibernate Validator），则 `LocalValidatorFactoryBean` 会注册为全局 `Validator` ，以便在控制器方法参数上与 `@Valid` 和 `@Validated` 配合使用。
+也可以自定义注入 `Validator` ：
+```
+@Configuration
+@EnableWebMvc
+public class WebConfig implements WebMvcConfigurer {
+
+	@Override
+	public Validator getValidator() {
+		// ...
+	}
+}
+```
+
+如果只想要在一个 controller 中使用某个特定的 `Validator` ，而不是全局注册，则可以使用如下：
+```
+@Controller
+public class MyController {
+
+	@InitBinder
+	protected void initBinder(WebDataBinder binder) {
+		binder.addValidators(new FooValidator());
+	}
+}
+```
+
+@InitBinder是Spring MVC中的一个注解，用于在控制器中自定义数据绑定初始化的方法。它的作用主要是在处理请求之前，对请求中的数据进行初始化绑定，可以用于以下几个方面：
+1. 数据预处理：通过@InitBinder注解的方法可以对表单提交的数据进行预处理，比如将日期字符串转换为Date对象、将字符串中的空格去除等。这可以确保请求数据在进入控制器方法之前已经被正确处理和转换，避免了在业务方法中重复处理数据的逻辑。
+2. 数据校验：@InitBinder可以用于注册校验器（Validator），对请求中的数据进行校验。通过在@InitBinder方法中注册校验器，可以在数据绑定时对请求参数进行校验，确保数据的有效性。
+3. 自定义数据绑定：有时候，Spring MVC默认的数据绑定规则可能无法满足业务需求，需要自定义数据绑定规则。通过在@InitBinder方法中注册自定义的属性编辑器（PropertyEditor），可以实现对特定类型数据的自定义绑定，比如将字符串转换为自定义对象。
+4. 全局数据绑定配置：@InitBinder方法可以在控制器内部或者全局配置中使用。如果在控制器内部使用，它只对该控制器的处理方法有效；如果在全局配置中使用，则对所有的控制器都有效。

@@ -215,9 +215,38 @@ public A a(){
 ```
 
 ## @Configuration 注解
+```
+@Configuration
+public class AppConfig {
 
+	@Bean
+	public ClientService clientService1() {
+		ClientServiceImpl clientService = new ClientServiceImpl();
+		clientService.setClientDao(clientDao());
+		return clientService;
+	}
+
+	@Bean
+	public ClientService clientService2() {
+		ClientServiceImpl clientService = new ClientServiceImpl();
+		clientService.setClientDao(clientDao());
+		return clientService;
+	}
+
+	@Bean
+	public ClientDao clientDao() {
+		return new ClientDaoImpl();
+	}
+}
+```
+在 `clientService1()` 和 `clientService2()` 中各调用了一次 `clientDao()` 。由于该方法会创建一个新的 `ClientDaoImpl` 实例并返回，因此通常会有两个实例（每个服务一个）。这肯定会有问题：在 Spring 中，实例化的 Bean 默认具有单例作用域。这就是神奇之处：**所有 `@Configuration` 类在启动时都会使用 CGLIB 进行子类强化。在子类中，子方法在调用父方法并创建新实例之前，会首先检查容器中是否有任何缓存的（作用域）Bean**。因此上例中实际上只会有一个 `ClientDao` 实例。 根据 bean 的作用域，行为可能会有所不同。这里讨论的是单子。
+
+由于 CGLIB 会在启动时动态添加功能，因此有一些限制。特别是，配置类不能是最终类。不过，允许在配置类上使用任何构造函数，包括使用 @Autowired 或单个非默认构造函数声明进行默认注入。
+
+如果您希望避免任何 CGLIB 施加的限制，请考虑在非 @Configuration 类（例如，在纯 @Component 类）上声明您的 @Bean 方法，或使用 @Configuration(proxyBeanMethods = false) 注释您的配置类。这样，@Bean 方法之间的跨方法调用就不会被拦截，因此您必须完全依赖构造函数或方法级别的依赖注入。
 
 ## @Import注解
+`@Import` 注解允许从另一个配置类中加载 @Bean 定义
 ```
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

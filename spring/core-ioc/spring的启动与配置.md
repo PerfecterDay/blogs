@@ -2,16 +2,16 @@
 {docsify-updated}
 
 - [Spring 的启动与配置](#spring-的启动与配置)
-	- [Spring Framework 的启动](#spring-framework-的启动)
-		- [JavaEE 环境下的启动](#javaee-环境下的启动)
-			- [部署描述符启动](#部署描述符启动)
-			- [初始化器中使用编程的方式启动 Spring](#初始化器中使用编程的方式启动-spring)
-	- [Spring Framework 的配置方式](#spring-framework-的配置方式)
-		- [创建 XML 配置](#创建-xml-配置)
-		- [创建混合配置](#创建混合配置)
-			- [组件扫描的开启](#组件扫描的开启)
-			- [扫描注解配置](#扫描注解配置)
-		- [使用 @Configuration 配置](#使用-configuration-配置)
+  - [Spring Framework 的启动](#spring-framework-的启动)
+    - [JavaEE 环境下的启动](#javaee-环境下的启动)
+      - [部署描述符启动](#部署描述符启动)
+      - [初始化器中使用编程的方式启动 Spring](#初始化器中使用编程的方式启动-spring)
+  - [Spring Framework 的配置方式](#spring-framework-的配置方式)
+    - [创建 XML 配置](#创建-xml-配置)
+    - [创建混合配置](#创建混合配置)
+      - [组件扫描的开启](#组件扫描的开启)
+      - [扫描注解配置](#扫描注解配置)
+    - [使用 @Configuration 配置](#使用-configuration-配置)
 
 
 ## Spring Framework 的启动

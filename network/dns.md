@@ -87,8 +87,12 @@ example.net:53 {
 }
 ```
 
-### MacOS 设置DNS服务器
+### MacOS DNS配置查看
 ```
+查看
+scutil --dns
+
+配置
 networksetup -getdnsservers Wi-Fi
 networksetup -setdnsservers Wi-Fi 10.176.161.63 127.0.0.1 8.8.8.8
 ```

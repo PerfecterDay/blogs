@@ -12,7 +12,7 @@
   * [Spring IOC-基于Java的配置](/spring/spring-ioc-基于Java的配置.md)
   * [Spring IOC-Environment抽象](/spring/spring-ioc-environment抽象.md)
   * [Spring 数据绑定与校验](/spring/spring-数据绑定与校验.md)
-  * [Spring 类型转换与格式化](/spring/spring-类型转换与格式化.md)
+  * [Spring 类型转换与格式化](/spring/spring-数据类型转换与格式化.md)
   * [Spring 国际化](/spring/spring-国际化.md)
   * [Spring AOP](/spring/spring-AOP知识.md)
   * [Spring SpEL](/spring/spring-spel表达式.md)

@@ -2,17 +2,17 @@
 {docsify-updated}
 
 - [SpringMvc 的处理方法参数绑定与校验](#springmvc-的处理方法参数绑定与校验)
-	- [本文解决的核心问题](#本文解决的核心问题)
-	- [参数绑定- HandlerMethodArgumentResolver 及 HttpMessageConverter](#参数绑定--handlermethodargumentresolver-及-httpmessageconverter)
-	- [HandlerMethodArgumentResolver 和 HttpMessageConverter 的关系](#handlermethodargumentresolver-和-httpmessageconverter-的关系)
-	- [数据绑定流程剖析](#数据绑定流程剖析)
-- [请求参数验证](#请求参数验证)
-	- [Spring 参数校验的原理](#spring-参数校验的原理)
-	- [JSR-303](#jsr-303)
-	- [Spring 使用  validation 的步骤](#spring-使用--validation-的步骤)
-	- [常见的校验注解](#常见的校验注解)
-	- [自定义校验注解](#自定义校验注解)
-	- [@InitBinder](#initbinder)
+    - [本文解决的核心问题](#本文解决的核心问题)
+    - [参数绑定- HandlerMethodArgumentResolver 及 HttpMessageConverter](#参数绑定--handlermethodargumentresolver-及-httpmessageconverter)
+    - [HandlerMethodArgumentResolver 和 HttpMessageConverter 的关系](#handlermethodargumentresolver-和-httpmessageconverter-的关系)
+    - [数据绑定流程剖析](#数据绑定流程剖析)
+  - [请求参数验证](#请求参数验证)
+    - [Spring 参数校验的原理](#spring-参数校验的原理)
+    - [JSR-303](#jsr-303)
+    - [Spring 使用  validation 的步骤](#spring-使用--validation-的步骤)
+    - [常见的校验注解](#常见的校验注解)
+    - [自定义校验注解](#自定义校验注解)
+    - [@InitBinder](#initbinder)
 
 <center><img src="pics/spring-http-journey.webp"></center>
 

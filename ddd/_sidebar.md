@@ -8,3 +8,4 @@
 * [聚合](./聚合.md)
 * [COLA](./cola架构规范.md)
 * [阿里技术专家详解DDD系列](https://juejin.cn/post/7052522854218367006)
+* [info 博文](https://www.infoq.cn/article/wdlpjosudoga34jutys9)

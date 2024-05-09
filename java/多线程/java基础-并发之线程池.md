@@ -146,7 +146,7 @@ void execute(Runnable command);
 4. 最后线程池判断线程池是否已达最大线程数（maximumPoolSize）？没满，则创建一个新的工作线程来执行任务，满了，则交给饱和策略来处理这个任务。
 如下图所示：
 
-<center><img src="pics/Java线程池主要工作流程.jpg" alt=""></center>
+<center><img src="pics/Java线程池主要工作流程.jpg" width="50%"></center>
 
 注意：上述第二步 --> 看看是否有空闲线程可用，有空闲线程则使用空闲线程执行任务；若无空闲线程，则进入下个流程。没有在图中体现出来。
 

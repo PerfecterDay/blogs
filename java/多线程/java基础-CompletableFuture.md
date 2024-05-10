@@ -4,15 +4,16 @@
 >https://tech.meituan.com/2022/05/12/principles-and-practices-of-completablefuture.html
 
 - [Future/FutureTask 与 CompletableFuture](#futurefuturetask-与-completablefuture)
-  - [Future](#future)
-  - [CompletableFuture](#completablefuture)
-    - [将 CompletableFuture 当作简单Future来用](#将-completablefuture-当作简单future来用)
-  - [相继执行多个任务](#相继执行多个任务)
-  - [编排任务](#编排任务)
-    - [零依赖：CompletableFuture的创建](#零依赖completablefuture的创建)
-    - [一元依赖：依赖一个CF](#一元依赖依赖一个cf)
-    - [二元依赖：依赖两个CF](#二元依赖依赖两个cf)
-    - [多元依赖：依赖多个CF](#多元依赖依赖多个cf)
+    - [Future](#future)
+    - [CompletableFuture](#completablefuture)
+      - [将 CompletableFuture 当作简单Future来用](#将-completablefuture-当作简单future来用)
+    - [相继执行多个任务](#相继执行多个任务)
+    - [等待异步任务的完成](#等待异步任务的完成)
+    - [编排任务](#编排任务)
+      - [零依赖：CompletableFuture的创建](#零依赖completablefuture的创建)
+      - [一元依赖：依赖一个CF](#一元依赖依赖一个cf)
+      - [二元依赖：依赖两个CF](#二元依赖依赖两个cf)
+      - [多元依赖：依赖多个CF](#多元依赖依赖多个cf)
 
 
 异步计算很难推理。通常，我们希望将任何计算视为一系列步骤，但在异步计算中，表示为回调的操作往往分散在代码中，或者相互嵌套。当我们需要处理某个步骤中可能出现的错误时，情况就会变得更糟。
@@ -89,6 +90,31 @@ class Demo {
     )
     .thenApply(firstApiResult -> secondApiCall(firstApiResult));
 
+	doOtherThings();
+  }
+}
+```
+
+### 等待异步任务的完成
+```java
+class Demo {
+  public static void main(String[] args) {
+
+  CompletableFuture cf1 = CompletableFuture.supplyAsync(
+         () -> firstApiCall(someValue)
+    ).thenApply(firstApiResult -> secondApiCall(firstApiResult));
+
+  CompletableFuture cf2 = CompletableFuture.supplyAsync(
+         () -> firstApiCall(someValue)
+    ).thenApply(firstApiResult -> secondApiCall(firstApiResult)); 
+
+  // cf3....
+  cf1.join();
+  cf2.join();
+  ...
+
+  CompletableFuture.allOf(cf1,cf2..).join(); //等待所有 CompletableFuture 完成
+  CompletableFuture.anyOf(cf1,cf2..).join(); //等待任意一个 CompletableFuture 完成
 	doOtherThings();
   }
 }

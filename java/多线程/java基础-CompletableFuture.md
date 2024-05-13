@@ -14,6 +14,7 @@
       - [一元依赖：依赖一个CF](#一元依赖依赖一个cf)
       - [二元依赖：依赖两个CF](#二元依赖依赖两个cf)
       - [多元依赖：依赖多个CF](#多元依赖依赖多个cf)
+  - [注意的问题](#注意的问题)
 
 
 异步计算很难推理。通常，我们希望将任何计算视为一系列步骤，但在异步计算中，表示为回调的操作往往分散在代码中，或者相互嵌套。当我们需要处理某个步骤中可能出现的错误时，情况就会变得更糟。
@@ -187,4 +188,11 @@ CompletableFuture<String> result = cf6.thenApply(v -> {
   //根据result3、result4、result5组装最终result;
   return "result";
 });
+```
+
+## 注意的问题
+如果不手动 complete 一个 CompletableFuture ，那么它会一直在运行
+```
+CompletableFuture<String> cf = new CompletableFuture<>();
+cf.join();
 ```

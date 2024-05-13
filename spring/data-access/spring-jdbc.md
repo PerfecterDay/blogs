@@ -57,6 +57,85 @@ this.jdbcTemplate.update(
 		Long.valueOf(actorId));
 ```
 
+### 批量插入
+
+```
+public class JdbcActorDao implements ActorDao {
+
+	private JdbcTemplate jdbcTemplate;
+
+	public void setDataSource(DataSource dataSource) {
+		this.jdbcTemplate = new JdbcTemplate(dataSource);
+	}
+
+	public int[] batchUpdate(final List<Actor> actors) {
+		return this.jdbcTemplate.batchUpdate(
+				"update t_actor set first_name = ?, last_name = ? where id = ?",
+				new BatchPreparedStatementSetter() {
+					public void setValues(PreparedStatement ps, int i) throws SQLException {
+						Actor actor = actors.get(i);
+						ps.setString(1, actor.getFirstName());
+						ps.setString(2, actor.getLastName());
+						ps.setLong(3, actor.getId().longValue());
+					}
+					public int getBatchSize() {
+						return actors.size();
+					}
+				});
+	}
+}
+
+public class JdbcActorDao implements ActorDao {
+
+	private JdbcTemplate jdbcTemplate;
+
+	public void setDataSource(DataSource dataSource) {
+		this.jdbcTemplate = new JdbcTemplate(dataSource);
+	}
+
+	public int[] batchUpdate(final List<Actor> actors) {
+		List<Object[]> batch = new ArrayList<>();
+		for (Actor actor : actors) {
+			Object[] values = new Object[] {
+					actor.getFirstName(), actor.getLastName(), actor.getId()};
+			batch.add(values);
+		}
+		return this.jdbcTemplate.batchUpdate(
+				"update t_actor set first_name = ?, last_name = ? where id = ?",
+				batch);
+	}
+
+	// ... additional methods
+}
+```
+上述示例中的所有的 List 都会作为一批数据一次性插入数据库中，如果要插入的批数据特别大，可能会对数据库造成很大的压力。因此，我们可能需要分多批次的批处理插入数据。
+
+#### 多批次批处理插入
+```
+public class JdbcActorDao implements ActorDao {
+
+	private JdbcTemplate jdbcTemplate;
+
+	public void setDataSource(DataSource dataSource) {
+		this.jdbcTemplate = new JdbcTemplate(dataSource);
+	}
+
+	public int[][] batchUpdate(final Collection<Actor> actors) {
+		int[][] updateCounts = jdbcTemplate.batchUpdate(
+				"update t_actor set first_name = ?, last_name = ? where id = ?",
+				actors,
+				100,
+				(PreparedStatement ps, Actor actor) -> {
+					ps.setString(1, actor.getFirstName());
+					ps.setString(2, actor.getLastName());
+					ps.setLong(3, actor.getId().longValue());
+				});
+		return updateCounts;
+	}
+}
+```
+此调用的批次更新方法返回一个 int[][] 二维数组，其中包含每个批次的数组条目，以及每个更新的受影响行数数组。顶层数组的长度表示运行的批次数，第二层数组的长度表示该批次中的更新数。根据提供的更新对象总数，每个批次中的更新次数应是所有批次（最后一个批次除外，可能会少一些）的批次大小。每个更新语句的更新次数是 JDBC 驱动程序报告的次数。如果没有更新计数，JDBC 驱动程序会返回一个 -2 的值。
+
 ### JdbcTemplate建表和执行存储过程
 您可以使用 execute(..) 方法运行任意 SQL。因此，该方法经常用于 DDL 语句。该方法有很多重载变体，包括回调接口、绑定变量数组等。下面的示例创建了一个表：
 ```java

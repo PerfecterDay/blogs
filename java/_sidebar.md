@@ -73,3 +73,5 @@
   * [Jackson反序列化注解](/java/jackson/jackson-反序列化注解.md)
   * [Jackson通用注解](/java/jackson/jackson-通用注解.md)
 * [Mapstruct](/java/mapstruct.md)
+* [JPA](https://www.baeldung.com/learn-jpa-hibernate)
+  * [自动生成查询](https://www.baeldung.com/rest-search-language-spring-jpa-criteria)

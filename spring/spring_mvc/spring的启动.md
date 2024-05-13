@@ -19,26 +19,34 @@ Spring Framework 是另一个容器，它可以运行在任何 Java SE和 Java E
 
 ### 部署描述符启动
 传统的 Spring Framework 应用程序总是使用 Java EE 的部署描述符启动。配置文件中至少包含一个 `DispatcherServlet` 的实例，然后以 `contextConfigLocation` 初始化参数的形式为它提供配置文件。也可以包含多个 `DispatcherServlet` 实例。另外，一般还会配置 `ContextLoaderListener` 实例加上 `contextConfigLocation`的上下文参数。其典型的配置如下：
-```
-<context-param>
-    <param-name>contextConfigLocation</param-name>
-    <param-value>WEB-INF/rootContext.xml</param-value>
-</context-param>>
-<listener>
-    <listener-class>
-org.springframework.web.context.ContextLoaderListener
-    <listener-class>
-</listener>
-<servlet>
-    <servlet-name>dispatcher</servlet-name>
-    <servlet-class>org.sringframework.web.servlet.DispatcherServlet</servlet-class>
-    <init-param>contextConfigLocation</init-param>
-    <param-value>WEB-INF/servletContext.xml</param-value>
-<servlet>
-<servlet-mapping>
-    <servlet-name>dispatcher</servlet-name>
-    <url-pattern>/</url-pattern>
-</servlet-mapping>
+```xml
+<web-app>
+
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>/WEB-INF/app-context.xml</param-value>
+	</context-param>
+
+	<servlet>
+		<servlet-name>app</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value></param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>app</servlet-name>
+		<url-pattern>/app/*</url-pattern>
+	</servlet-mapping>
+
+</web-app>
 ```
 `ContextLoaderListener` 将在 WEB 应用程序启动时被初始化（因为它实现了 `ServletContextListener`)，然后从 `contextConfigLocation` 上下文初始化参数指定的配置文件中加载根应用上下文，并启动根应用上下文。
 
@@ -50,6 +58,24 @@ org.springframework.web.context.ContextLoaderListener
 这种方式不利的一面在于文件不能直接存在于应用程序的 WAR 文件或解压后的目录中——不能将文件放在 Web 应用程序的 `/META-INF/services` 目录中。它必须在 JAR 文件的 `/META-INF/services` 目录中，并且需要将该JAR文件包含在应用程序WAR的 `WEB-INF/lib` 目录中。     
 
 Spring Framework 提供了一个桥接口，是这种方式更容易实现。 `org.springframework.web.SpringServletContainerInitializer` 实现了 `ServletContainerInitializer` 接口，而且包含该类的 JAR 中包含了一个服务提供文件，列出了 `SpringServletContainerInitializer` 类的名字，所以应用程序会在启动时调用它的 `onStartup` 方法。然后，该类将在此方法中扫描应用程序以寻找实现了 `org.springframework.web.WebApplicationInitializer` 接口的实现类，并调用所有找到类的 `onStartup` 方法。在 `WebApplicationInitializer` 实现类中可以配置 `Servlet` 、 `Filter` 和 `Listener` ，更重要的是，可以在该方法中启动 Spring 。
+```java
+public class MyWebApplicationInitializer implements WebApplicationInitializer {
+
+	@Override
+	public void onStartup(ServletContext servletContext) {
+
+		// Load Spring web application configuration
+		AnnotationConfigWebApplicationContext context = new AnnotationConfigWebApplicationContext();
+		context.register(AppConfig.class);
+
+		// Create and register the DispatcherServlet
+		DispatcherServlet servlet = new DispatcherServlet(context);
+		ServletRegistration.Dynamic registration = servletContext.addServlet("app", servlet);
+		registration.setLoadOnStartup(1);
+		registration.addMapping("/app/*");
+	}
+}
+```
 
 ### Springboot中的内置容器启动
 Sprinboot 使用代码编程的方式启动内置的 Servlet 容器，通过 `TomcatServletWebServerFactory/JettyServletWebServerFactory/UndertowServletWebServerFactory` 等类实现。Springboot 启动内置 Servlet 的具体过程如下：
@@ -59,7 +85,11 @@ Sprinboot 使用代码编程的方式启动内置的 Servlet 容器，通过 `To
 
     <img src="pics/springboot-embed.png" alt="" />
 
-	```
+	```java
+	private org.springframework.boot.web.servlet.ServletContextInitializer getSelfInitializer() {
+		return this::selfInitialize;
+	}
+
 	private void selfInitialize(ServletContext servletContext) throws ServletException {
 		prepareWebApplicationContext(servletContext);
 		registerApplicationScope(servletContext);

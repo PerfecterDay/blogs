@@ -5,6 +5,7 @@
 	- [WebMvcConfigurer](#webmvcconfigurer)
 	- [Springboot 的自动配置- WebMvcAutoConfiguration](#springboot-的自动配置--webmvcautoconfiguration)
 
+应用程序可以声明处理请求所需的特殊 Bean 类型（`HandlerMapping、HandlerAdapter、HandlerExceptionResolver、ViewResolver`等）。 `DispatcherServlet` 会在 `WebApplicationContext` 中检查每个特殊 Bean。如果没有匹配的 Bean 类型，它就会使用classpath下的 `DispatcherServlet.properties` 中列出的默认类型配置。
 
 ## WebMvcConfigurer
 在Java配置中，可以使用 `@EnableWebMvc` 注解并实现 `WebMvcConfigurer` 接口来启用MVC配置，，如下例所示：

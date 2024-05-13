@@ -5,11 +5,11 @@
 > https://www.baeldung.com/hexagonal-architecture-ddd-spring
 
 - [COLA 架构规范](#cola-架构规范)
-  - [分层架构](#分层架构)
-  - [定义](#定义)
-  - [组件](#组件)
-  - [archetype](#archetype)
-  - [依赖关系](#依赖关系)
+    - [分层架构](#分层架构)
+    - [定义](#定义)
+    - [组件](#组件)
+    - [archetype](#archetype)
+    - [依赖关系](#依赖关系)
 
 [Github链接](https://github.com/alibaba/COLA)
 
@@ -62,6 +62,6 @@ mvn archetype:generate \
     -DarchetypeVersion=4.3.2
 ```
 
-
 ### 依赖关系
 start -> adapter -> app -> client, infrastructure -> domain
+<center><img src="pics/cola-pom.png" alt=""></center>

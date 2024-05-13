@@ -5,7 +5,7 @@
 	- [Spring Framework 的启动](#spring-framework-的启动)
 		- [部署描述符启动](#部署描述符启动)
 		- [初始化器中使用编程的方式启动 Spring](#初始化器中使用编程的方式启动-spring)
-		- [Springboot中的内置容器启动](#springboot中的内置容器启动)
+		- [Springboot中的内置容器启动与配置](#springboot中的内置容器启动与配置)
 
 
 ## Spring Framework 的启动
@@ -77,7 +77,7 @@ public class MyWebApplicationInitializer implements WebApplicationInitializer {
 }
 ```
 
-### Springboot中的内置容器启动
+### Springboot中的内置容器启动与配置
 Sprinboot 使用代码编程的方式启动内置的 Servlet 容器，通过 `TomcatServletWebServerFactory/JettyServletWebServerFactory/UndertowServletWebServerFactory` 等类实现。Springboot 启动内置 Servlet 的具体过程如下：
 1. 创建一个继承自 `ServletWebServerApplicationContext` 的 `AnnotationConfigServletWebServerApplicationContext` 
 2. 在 `ServletWebServerApplicationContext#createWebServer()` 方法中创建内置的 servlet 容器，使用 `ServletWebServerFactory#getWebServer(ServletContextInitializer... initializers)` 工厂接口方法来创建，可以传入 `ServletContextInitializer` 来配置 servlet

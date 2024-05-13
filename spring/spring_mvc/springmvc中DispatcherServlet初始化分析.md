@@ -1,9 +1,7 @@
-# Spring MVC 中DispatcherServlet初始化分析
+# Spring MVC 中 DispatcherServlet 
 {docsify-updated}
 
-- [Spring MVC 中DispatcherServlet初始化分析](#spring-mvc-中dispatcherservlet初始化分析)
-
-
+## DispatcherServlet 的初始化
 首先看 `DispatcherServlet` 继承关系：
 `DispatcherServlet` -> `FrameworkServlet` --> `HttpServletBean` -> `HttpServlet`
 
@@ -141,7 +139,7 @@ private void initLocaleResolver(ApplicationContext context) {
 ```
 初始化的时候，首先会查找相应类型的 bean ，如果找不到就会使用默认的配置。
 
-默认的初始化会配置一些默认的 `LocaleResolver/ThemeResolver/HandlerMapping/HandlerAdapter` 等组件，由 `DEFAULT_STRATEGIES_PATH` 指定，默认在 DispatcherServlet.properties 文件中配置：
+默认的初始化会配置一些默认的 `LocaleResolver/ThemeResolver/HandlerMapping/HandlerAdapter` 等组件，由 `DEFAULT_STRATEGIES_PATH` 指定，默认在 `DispatcherServlet.properties` 文件中配置：
 ```
 private static final String DEFAULT_STRATEGIES_PATH = "DispatcherServlet.properties";
 
@@ -169,3 +167,77 @@ org.springframework.web.servlet.ViewResolver=org.springframework.web.servlet.vie
 org.springframework.web.servlet.FlashMapManager=org.springframework.web.servlet.support.SessionFlashMapManager
 ```
 
+## 上下文的继承关系及DispatcherServlet的配置
+<center><img src="pics/context-hierarchy.png" width="30%"></center>
+
+以下基于代码的配置和xml的配置是等价的：
+```java
+public class MyWebAppInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
+	//根上下文
+	@Override
+	protected Class<?>[] getRootConfigClasses() {
+		return new Class<?>[] { RootConfig.class };
+	}
+
+	// Web 配置上下文
+	@Override
+	protected Class<?>[] getServletConfigClasses() {
+		return new Class<?>[] { App1Config.class };
+	}
+
+	// url-mapping
+	@Override
+	protected String[] getServletMappings() {
+		return new String[] { "/app1/*" };
+	}
+
+	//注册自定义的 Filter
+	@Override
+	protected Filter[] getServletFilters() {
+		return new Filter[] {
+			new HiddenHttpMethodFilter(), new CharacterEncodingFilter() };
+	}
+}
+```
+
+```xml
+<web-app>
+
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>/WEB-INF/root-context.xml</param-value>
+	</context-param>
+
+	<servlet>
+		<servlet-name>app1</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>/WEB-INF/app1-context.xml</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>app1</servlet-name>
+		<url-pattern>/app1/*</url-pattern>
+	</servlet-mapping>
+
+</web-app>
+```
+
+## DispatcherServlet 的工作流程
+`DispatcherServlet` 处理请求的过程如下：
++ `WebApplicationContext` 会被搜索并绑定到 `HttpSerletRequest` 请求对象中的 `attributes`（`ConcurrentHashMap`类型） 属性中，作为流程中 controller 和其组件可以使用的属性。它默认绑定到 `DispatcherServlet.WEB_APPLICATION_CONTEXT_ATTRIBUTE` key 上。
++ locale resolver 绑定到请求中，以便在处理请求（渲染视图、准备数据等）时解析要使用的本地 locale 。如果不需要 locale 解析，就不需要 locale resolver。
++ theme resolver 绑定到请求中，以便让视图等组件决定使用。如果不使用 themes ，可以忽略它。
++ 如果指定了 multipart file resolver ，则会检查请求中是否有多部分文件。如果发现多部分文件，则会将请求封装为 `MultipartHttpServletRequest` ，以便后续处理。
++ 搜索匹配的 handler 。如果找到了 handler ，就会运行与 handler 相关的执行链（前置处理程序、后置处理程序和 handler ），为渲染准备模型。另外，对于注解 controller ，可以直接渲染响应，而不是返回视图。
++ 如果返回了模型，就会渲染视图。如果没有返回模型（可能是由于预处理器或后处理器拦截了请求，也可能是出于安全原因），则不会渲染视图。
+
+下图展示了 `DispatcherServlet` 绑定一些组件到 `HttpSerletRequest` 上：
+<center><img src="pics/request-attribute.png" width="50%"></center>

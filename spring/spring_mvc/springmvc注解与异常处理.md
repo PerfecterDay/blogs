@@ -2,79 +2,38 @@
 {docsify-updated}
 
 - [Spring MVC 的常见注解与异常处理](#spring-mvc-的常见注解与异常处理)
-  - [常用注解](#常用注解)
-    - [HTTP请求相关的注解](#http请求相关的注解)
-    - [HTTP 相应相关的注解](#http-相应相关的注解)
-    - [其他相关注解](#其他相关注解)
-  - [统一异常处理](#统一异常处理)
-    - [使用 @ExceptionHandler 注解](#使用-exceptionhandler-注解)
-    - [实现 HandlerExceptionResolver 接口并注册到 bean 容器](#实现-handlerexceptionresolver-接口并注册到-bean-容器)
-    - [使用 @ControllerAdvice+ @ExceptionHandler 注解](#使用-controlleradvice-exceptionhandler-注解)
+  - [异常处理](#异常处理)
+    - [统一异常处理](#统一异常处理)
+      - [使用 @ExceptionHandler 注解](#使用-exceptionhandler-注解)
+      - [实现 HandlerExceptionResolver 接口并注册到 bean 容器](#实现-handlerexceptionresolver-接口并注册到-bean-容器)
+      - [使用 @ControllerAdvice+ @ExceptionHandler 注解](#使用-controlleradvice-exceptionhandler-注解)
 
+## 异常处理
+如果在请求处理过程中抛出异常， `DispatcherServlet` 会委托一连串 `HandlerExceptionResolver` Bean 来解决异常并提供替代处理方法，通常是错误响应。
+下面列出了可用的 `HandlerExceptionResolver` 实现：
+1. `SimpleMappingExceptionResolver` : 异常类名称与错误视图名称之间的映射。可用于在浏览器应用程序中呈现错误页面。
+2. `DefaultHandlerExceptionResolver` : 解决 Spring MVC 引发的异常，并将它们映射到 HTTP 状态代码。
+3. `ResponseStatusExceptionResolver` : 使用 `@ResponseStatus` 注解解决异常，并根据注解中的值将异常映射为 HTTP 状态代码。
+4. `ExceptionHandlerExceptionResolver` : 通过调用 `@Controller` 或 `@ControllerAdvice` 类中的 `@ExceptionHandler` 方法来解决异常
 
+可以在 Spring 配置中声明多个 HandlerExceptionResolver Bean，并根据需要设置它们的 order 属性，从而形成一个异常解析器链。顺序属性越高，异常解析器的位置就越靠后。
 
-## 常用注解
-### HTTP请求相关的注解
-1. `@RequestMapping`   
+Spring MVC的 `DispatcherServlet.properties` 会自动为一些默认异常、`@ResponseStatus` 注释的异常以及 `@ExceptionHandler` 注释的方法配置内置解析器。我们可以自定义或替换该列表。
 
-	`@RequestMapping` 通常用在标注了 `@Controller` 的类或方法上，用来匹配处理的 URL ，该注解可以有以下属性:
-	1. `path`: 和 `name` 、 `value` 都是同样的，用来指定这个方法或类匹配处理哪个方法  
-	2. `method`: 匹配 HTTP 请求方法  
-	3. `params`: 可以根据指定的参数是否出现或者等于指定值来确定是否匹配这个URL
-	4. `headers`: 可以根据指定的HTTP 头是否出现或者等于指定值来确定是否匹配这个URL
-	5. `consumes`: 指定该方法可以处理的HTTP 的 media type
-	6. `produces`: 指定该方法生成的HTTP响应的 media type  
-	该注解如果用在类上，那么该类中的所有方法会“继承”它的属性，如果方法也加了该注解，那么两个注解的属性通常会叠加而不是覆盖（如果类上指定GET，方法指定POST则会覆盖）。
-	类似的 `@GetMapping` , `@PostMapping` , `@PutMapping` , `@DeleteMapping` 和 `@PatchMapping` 等同于 `@RequestMapping` 用于 method 指定的匹配的 HTTP method。
+```property
+org.springframework.web.servlet.HandlerExceptionResolver=org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver,\
+	org.springframework.web.servlet.mvc.annotation.ResponseStatusExceptionResolver,\
+	org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver
+```
 
-2. `@RequestBody`  
-	将HTTP请求的请求体映射到一个对象。
-	```
-	@PostMapping("/save")
-	void saveVehicle(@RequestBody Vehicle vehicle) {
-		// ...
-	}
-	```
-3. `@PathVariable`  
-	将URL中的路径参数绑定到一个方法参数上。路径参数是 Spring 实现的，官方名字就叫做 URI template variable。
-	它有 name 和 required（true/false） 两个属性。
-	```
-	如果路径是 /1234
-	@RequestMapping("/{id}")
-	Vehicle getVehicle(@PathVariable("id") long id) {
-		// ... id=1234
-	}
-	```
-4. `@RequestParam`  
-	该注解可以用来绑定HTTP的请求参数。可以使用 defaultValue 参数指定默认值，这样请求参数自动变成可选的。
-	```
-	@RequestMapping("/buy")
-	Car buyCar(@RequestParam(defaultValue = "5") int seatCount) {
-		// ...
-	}
-	```
-	与这个注解类似的还有 `@CookieValue` 和 `@RequestHeader`，分别用来绑定 Cookie 和请求头中的参数。
-
-### HTTP 相应相关的注解
-1. `@ResponseBody`  
-该注解会将方法的响应值作为HTTP 响应体发送给客户端。可以用在类上，那么类中所有方法的返回值将直接作为响应体返回。
-2. `@ResponseStatus`  
-指定返回的HTTP code  
-`@ResponseStatus(value = HttpStatus.FORBIDDEN, reason="To show an example of a custom message")`
-
-### 其他相关注解
-1. `@Controller`:指定一个处理 HTTP 请求的类
-2. `@RestControlle`: 相当于 `@Controller` + `@ResponseBody`
-3. `CrossOrigin`: 允许跨域
-
-## 统一异常处理
+### 统一异常处理
 Spring 统一异常处理有 3 种方式，分别为：
 
 1. 使用 @ ExceptionHandler 注解
 2. 实现 HandlerExceptionResolver 接口
 3. 使用 @controlleradvice 注解
 
-### 使用 @ExceptionHandler 注解
+#### 使用 @ExceptionHandler 注解
 使用该注解有一个不好的地方就是：进行异常处理的方法必须与出错的方法在同一个Controller里面。使用如下：
 ```
 @Controller      
@@ -98,7 +57,7 @@ public class GlobalController {
 ```
 这种方式最大的缺陷就是不能全局控制异常。每个类都要写一遍。但是这种方法对普通的 Controller 和 RestController 都可以使用。
 
-### 实现 HandlerExceptionResolver 接口并注册到 bean 容器
+#### 实现 HandlerExceptionResolver 接口并注册到 bean 容器
 这种方式可以进行全局的异常控制，但是只对普通的 Controller 有效，对于 RestController 无效。
 ```
 @Component
@@ -115,7 +74,7 @@ public class UnifiedExceptionResolver implements HandlerExceptionResolver {
 ```
 同时使用 HandlerExceptionResolver 和 @ExceptionHandler 注解时，@ExceptionHandler 会覆盖 HandlerExceptionResolver 。
 
-### 使用 @ControllerAdvice+ @ExceptionHandler 注解
+#### 使用 @ControllerAdvice+ @ExceptionHandler 注解
 上文说到 @ ExceptionHandler 需要进行异常处理的方法必须与出错的方法在同一个Controller里面。那么当代码加入了 @ControllerAdvice，则不需要必须在同一个 controller 中了。这也是 Spring 3.2 带来的新特性。从名字上可以看出大体意思是控制器增强。 也就是说，@controlleradvice + @ ExceptionHandler 也可以实现全局的异常捕捉，请确保此WebExceptionHandle 类能被扫描到并装载进 Spring 容器中。
 ```
 @ControllerAdvice
@@ -159,4 +118,4 @@ public class WebExceptionHandler {
     }
 }
 ```
-如果 @ExceptionHandler 注解中未声明要处理的异常类型，则默认为参数列表中的异常类型。参见上面的 405 异常处理。
+如果 `@ExceptionHandler` 注解中未声明要处理的异常类型，则默认为参数列表中的异常类型。参见上面的 405 异常处理。

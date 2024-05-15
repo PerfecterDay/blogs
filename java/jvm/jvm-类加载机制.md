@@ -3,6 +3,17 @@
 
 **对于任意一个类，都必须由加载它的类加载器和这个类本身一起共同确立其在Java虚拟机中的唯一性，每一个类加载器，都拥有一个独立的类名称空间。这句话可以表达得更通俗一些：比较两个类是否“相等”，只有在这两个类是由同一个类加载器加载的前提下才有意义，否则，即使这两个类来源于同一个Class文件，被同一个Java虚拟机加载，只要加载它们的类加载器不同，那这两个类就必定不相等。**
 
+每个 Class 对象的内部都有一个 classLoader 字段来标识自己是由哪个 ClassLoader 加载的。ClassLoader 就像一个容器，里面装了很多已经加载的 Class 对象。
+
+```java
+class Class<T> {
+  ...
+  private final ClassLoader classLoader;
+  ...
+}
+```
+ClassLoader 相当于类的命名空间，起到了类隔离的作用。位于同一个 ClassLoader 里面的类名是唯一的，不同的 ClassLoader 可以持有同名的类。ClassLoader 是类名称的容器，是类的沙箱。
+
 这里所指的“相等”，包括代表类的Class对象的equals()方法、isAssignableFrom()方法、isInstance()方法的返回结果，也包括了使用instanceof关键字做对象所属关系判定等各种情况。
 
 ```
@@ -374,3 +385,117 @@ if (parent != null) {
 
 上述任何一条检查没有通过，类就不会被加载。
 为什么要有一个专门的校验器来检查这些呢？毕竟编译器自身也会进行这些检查？实际上，如果正常用 java 编译器编译出来的字节码总是可以通过这些检查的。但是，除了编译器之外，也可以使用二进制编辑的方式按照字节码规范生成字节码，恶意程序很可能这样做，对于这种字节码文件，校验器就能很好的防范，阻止这些类的加载运行。
+
+## 线程与加载器
+```java
+class Thread {
+  ...
+  private ClassLoader contextClassLoader;
+
+  public ClassLoader getContextClassLoader() {
+    return contextClassLoader;
+  }
+
+  public void setContextClassLoader(ClassLoader cl) {
+    this.contextClassLoader = cl;
+  }
+  ...
+}
+```
+其次线程的 contextClassLoader 是从父线程那里继承过来的，所谓父线程就是创建了当前线程的线程。程序启动时的 main 线程的 contextClassLoader 就是 AppClassLoader。这意味着如果没有人工去设置，那么所有的线程的 contextClassLoader 都是 AppClassLoader。
+
+每个类都将使用自己的类加载器加载其他类。因此，如果 ClassA.class 引用 ClassB.class，那么 ClassB 必须位于 ClassA 或其父类的类加载器的类路径上。
+
+线程上下文类加载器是当前线程的当前类加载器。对象可以从 ClassLoaderC 中的类创建，然后传递给 ClassLoaderD 所拥有的线程。在这种情况下，如果对象想加载自身类加载器中没有的资源，就需要直接使用 `Thread.currentThread().getContextClassLoader()` 来加载。
+
+## 加载器问题实例
+
+使用了 `CompletableFuture` 来执行一个异步任务，异步任务中使用了 jaxb xml 相关的包来解析 xml：
+```java
+
+CompletableFuture.supplyAsync(() -> {doSomeThing()});
+doSomeThing(){
+    JAXBContext context = JAXBContext.newInstance(t.getClass());
+}
+```
+线上报错异常栈如下：
+```
+javax.xml.bind.JAXBException: Implementation of JAXB-API has not been found on module path or classpath.
+	at javax.xml.bind.ContextFinder.newInstance(ContextFinder.java:278)
+	at javax.xml.bind.ContextFinder.find(ContextFinder.java:421)
+	at javax.xml.bind.JAXBContext.newInstance(JAXBContext.java:721)
+	at javax.xml.bind.JAXBContext.newInstance(JAXBContext.java:662)
+	at com.gtja.gjyw.utils.XmlUtils.beanToXml(XmlUtils.java:39)
+	at com.gtja.gjyw.service.impl.CmsSendBoServiceImpl.sendBoCms(CmsSendBoServiceImpl.java:30)
+	at com.gtja.gjyw.business.login.TradeLoginServiceV2.getCmsAccountInfo(TradeLoginServiceV2.java:144)
+	at com.gtja.gjyw.business.login.TradeLoginServiceV2.findUserTradeAcctType(TradeLoginServiceV2.java:179)
+	at com.gtja.gjyw.business.UserService.lambda$getUserInfoV2$1(UserService.java:117)
+	at java.base/java.util.concurrent.CompletableFuture$AsyncSupply.run(CompletableFuture.java:1700)
+	at java.base/java.util.concurrent.CompletableFuture$AsyncSupply.exec(CompletableFuture.java:1692)
+	at java.base/java.util.concurrent.ForkJoinTask.doExec(ForkJoinTask.java:290)
+	at java.base/java.util.concurrent.ForkJoinPool$WorkQueue.topLevelExec(ForkJoinPool.java:1020)
+	at java.base/java.util.concurrent.ForkJoinPool.scan(ForkJoinPool.java:1656)
+	at java.base/java.util.concurrent.ForkJoinPool.runWorker(ForkJoinPool.java:1594)
+	at java.base/java.util.concurrent.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:177)
+Caused by: java.lang.ClassNotFoundException: com.sun.xml.internal.bind.v2.ContextFactory
+	at java.base/jdk.internal.loader.BuiltinClassLoader.loadClass(BuiltinClassLoader.java:582)
+	at java.base/jdk.internal.loader.ClassLoaders$AppClassLoader.loadClass(ClassLoaders.java:178)
+	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:521)
+	at javax.xml.bind.ServiceLoaderUtil.nullSafeLoadClass(ServiceLoaderUtil.java:122)
+	at javax.xml.bind.ServiceLoaderUtil.safeLoadClass(ServiceLoaderUtil.java:155)
+	at javax.xml.bind.ContextFinder.newInstance(ContextFinder.java:276)
+	... 15 common frames omitted"
+```
+从中可以看出来是类加载不到错误： `Caused by: java.lang.ClassNotFoundException: com.sun.xml.internal.bind.v2.ContextFactory`
+
+跟踪了一些代码发现：jaxb-xml 在内部使用了很多 SPI 机制：
+```
+@Deprecated
+static String firstByServiceLoaderDeprecated(Class spiClass,
+                                                ClassLoader classLoader) throws JAXBException {
+
+    final String jaxbContextFQCN = spiClass.getName();
+
+    logger.fine("Searching META-INF/services");
+
+    // search META-INF services next
+    BufferedReader r = null;
+    final String resource = "META-INF/services/" + jaxbContextFQCN;
+    final InputStream resourceStream =
+                (classLoader == null) ?
+                        ClassLoader.getSystemResourceAsStream(resource) :
+                        classLoader.getResourceAsStream(resource);
+    if (resourceStream != null) {
+        r = new BufferedReader(new InputStreamReader(resourceStream, "UTF-8"));
+        String factoryClassName = r.readLine();
+        if (factoryClassName != null) {
+            factoryClassName = factoryClassName.trim();
+        }
+        r.close();
+        logger.log(Level.FINE, "Configured factorty class:{0}", factoryClassName);
+        return factoryClassName;
+    } 
+}
+```
+尽管在 pom 中依赖了 jaxb-runtime:2.3.6 包，也没有加载到。正常情况下应该是SPI去加载 `META-INF/services/javax.xml.bind.JAXBContext` 下的服务。
+<center><img src="pics/classloader-issue1.png" width="40%"></center>
+
+加了日志，打印请求处理线程和 `CompletableFuture` 线程中的 Classloader 信息如下：
+
+```text
+10.4.152.170
+iZj6c5i921jg0zpxwdm52oZ
+/home/logs/user-cent...e.log
+content: 2024-05-15 11:51:56.543 [http-nio-8913-exec-9] INFO  com.gtja.gjyw.business.UserService  b761d28c-fb26-4e8b-a9cd-aab4c3b56fc6 - Classloader:TomcatEmbeddedWebappClassLoader
+  context: user
+  delegate: true
+----------> Parent Classloader:
+org.springframework.boot.loader.LaunchedURLClassLoader@1a86f2f1
+
+
+2024-05-15 11:51:56.543 [ForkJoinPool.commonPool-worker-19] INFO  com.gtja.gjyw.business.UserService   - Classloader:jdk.internal.loader.ClassLoaders$AppClassLoader@1affbebc
+```
+
+确实是使用了不同的 Classloader ，因为我们使用了 `CompletableFuture` ，并且没有使用自定义的线程池，所以 `CompletableFuture` 会使用默认的 fork-join pool 去执行任务，并且 jaxb 会使用线程的 Classloader 去加载类：`Thread.currentThread().getContextClassLoader();`
+
+网上有相似的问题：https://juejin.cn/post/6909445190642040846

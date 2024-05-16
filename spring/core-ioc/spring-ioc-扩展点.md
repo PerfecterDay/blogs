@@ -253,7 +253,7 @@ public AbstractAutowireCapableBeanFactory() {
 		}
 	}
 ```
-3. `registerListeners`:
+3. 事件相关的监听器注册： `registerListeners`:
 ```
     protected void registerListeners() {
 		// Register statically specified listeners first.

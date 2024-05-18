@@ -1,7 +1,6 @@
 # Spring-MVC 中的请求处理方法
 {docsify-updated}
 
-
 ## 方法参数
 使用Springmvc 提供的注解可以直接为请求处理方法获取一些请求中的相应内容。
 
@@ -12,7 +11,7 @@ SpringMvc 会将请求进行处理并包装成对应的对象，这些对象可�
 + jakarta.servlet.ServletRequest, jakarta.servlet.ServletResponse
 + java.io.InputStream, java.io.Reader
 + java.io.OutputStream, java.io.Writer
-+ HttpEntity<B>
++ HttpEntity
 
 + jakarta.servlet.http.HttpSession
 + jakarta.servlet.http.PushBuilder
@@ -41,6 +40,7 @@ public void handle(HttpEntity<Account> entity) {
 ```
 
 ### 使用注解获取相应参数值
+SpringMvc 还提供了很多注解用来获取请求中的内容。
 
 #### 获取矩阵变量 @PathVariable和@MatrixVariable
 [RFC 3986](https://tools.ietf.org/html/rfc3986#section-3.3) 讨论了路径段中的名-值对。在Spring MVC中，将其称为 "矩阵变量"，但它们也可以被称为URI路径参数。  
@@ -139,3 +139,32 @@ public void handle(@Valid @RequestBody Account account, BindingResult result) {
 	// ...
 }
 ```
+
+## 方法返回值
+@ResponseBody
+
+HttpEntity<B>, ResponseEntity<B>
+
+HttpHeaders
+
+ErrorResponse
+
+ProblemDetail
+
+String
+View
+
+java.util.Map, org.springframework.ui.Model
+ModelAndView
+void
+
+DeferredResult<V>
+Callable<V>
+
+ListenableFuture<V>, java.util.concurrent.CompletionStage<V>, java.util.concurrent.CompletableFuture<V>
+
+ResponseBodyEmitter, SseEmitter
+
+StreamingResponseBody
+
+如果返回值不是以上任何情况，它将被视为模型属性。除非它是由 `BeanUtils#isSimpleProperty` 决定的简单类型，在这种情况下，它会被直接返回而不会解析。

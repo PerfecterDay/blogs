@@ -4,6 +4,8 @@
 - [Spring MVC 配置](#spring-mvc-配置)
 	- [WebMvcConfigurer](#webmvcconfigurer)
 	- [Springboot 的自动配置- WebMvcAutoConfiguration](#springboot-的自动配置--webmvcautoconfiguration)
+	- [替换掉默认的 tomcat 容器](#替换掉默认的-tomcat-容器)
+	- [Springboot 内置容器配置](#springboot-内置容器配置)
 
 应用程序可以声明处理请求所需的特殊 Bean 类型（`HandlerMapping、HandlerAdapter、HandlerExceptionResolver、ViewResolver`等）。 `DispatcherServlet` 会在 `WebApplicationContext` 中检查每个特殊 Bean。如果没有匹配的 Bean 类型，它就会使用classpath下的 `DispatcherServlet.properties` 中列出的默认类型配置。
 
@@ -75,14 +77,28 @@ public static class EnableWebMvcConfiguration extends DelegatingWebMvcConfigurat
 这就是为什么在 Springboot 中没有使用 `@EnableWebMvc` 注解，依然能启用 mvc 功能的原因。
 
 
-替换掉默认的 tomcat 容器：
+## 替换掉默认的 tomcat 容器
 ```
+<dependency>
+	<groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-starter-web</artifactId>
+	<exclusions>
+		<!-- Exclude the Tomcat dependency -->
+		<exclusion>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-tomcat</artifactId>
+		</exclusion>
+	</exclusions>
+</dependency>
+<!-- Use Jetty instead -->
 <dependency>
 	<groupId>org.springframework.boot</groupId>
 	<artifactId>spring-boot-starter-jetty</artifactId>
 </dependency>
 ```
 2024-04-29 13:41:25.078 [main] INFO  com.gtja.gjyw.UserCenterApp  - Started UserCenterApp in 50.119 seconds (JVM running for 51.346)
-
 2024-04-29 17:42:40.493 [main] INFO  com.gtja.gjyw.UserCenterApp  - Started UserCenterApp in 32.094 seconds (JVM running for 33.44) undertow
 2024-04-29 17:43:50.493 [main] INFO  com.gtja.gjyw.UserCenterApp  - Started UserCenterApp in 32.223 seconds (JVM running for 33.654) jetty
+
+## Springboot 内置容器配置
+> https://docs.spring.io/spring-boot/docs/2.0.9.RELEASE/reference/html/howto-embedded-web-servers.html

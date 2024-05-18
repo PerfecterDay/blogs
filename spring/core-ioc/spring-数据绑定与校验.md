@@ -291,22 +291,37 @@ public class MyController {
 2. 将 targetType 设置为目标类。
 3. 调用 `construct` 方法
 ```
-DataBinder dataBinder = new WebDataBinder(null);
-dataBinder.setTargetType(ResolvableType.forClass(A.class));
-dataBinder.construct(new DataBinder.ValueResolver() {
-    @Override
-    public Object resolveValue(String name, Class<?> type) {
-        if (name.equals("name")) return "hello";
-        if (name.equals("age")) return  12;
-        return null;
+class A{
+    String name;
+    String age;
+
+    @ConstructorProperties({"name","age"})
+    public A(String name, String age) {
+        this.name = name;
+        this.age = age;
     }
 
-    @Override
-    public Set<String> getNames() {
-        return Set.of("name","age");
+    public static void main(String[] args) {
+        DataBinder dataBinder = new WebDataBinder(null);
+        dataBinder.setTargetType(ResolvableType.forClass(A.class));
+        dataBinder.construct(new DataBinder.ValueResolver() {
+            @Override
+            public Object resolveValue(String name, Class<?> type) {
+                if (name.equals("name")) return "hello";
+                if (name.equals("age")) return  12;
+                return null;
+            }
+
+            @Override
+            public Set<String> getNames() {
+                return Set.of("name","age");
+            }
+        });
+        A a = (A)dataBinder.getTarget();
+        System.out.println(a.name+";"+a.age);
+//        SpringApplication.run(Application.class, args);
     }
-});
-A a = (A)dataBinder.getTarget();
+}
 ```
 
 ### 使用 BeanWrapper 进行属性绑定

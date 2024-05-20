@@ -1,33 +1,29 @@
 # Spring-MVC 中的请求处理方法
 {docsify-updated}
+> https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-controller/ann-methods.html
 
 ## 方法参数
 使用Springmvc 提供的注解可以直接为请求处理方法获取一些请求中的相应内容。
 
 ### 直接使用的参数
 SpringMvc 会将请求进行处理并包装成对应的对象，这些对象可以直接作为映射方法的实参注入，映射方法可以使用这些对象获取请求相关的信息进行处理。
-
-+ WebRequest, NativeWebRequest
-+ jakarta.servlet.ServletRequest, jakarta.servlet.ServletResponse
-+ java.io.InputStream, java.io.Reader
-+ java.io.OutputStream, java.io.Writer
-+ HttpEntity
-
-+ jakarta.servlet.http.HttpSession
-+ jakarta.servlet.http.PushBuilder
-
-+ java.security.Principal
-
-+ HttpMethod
-
-+ java.util.Locale
-+ java.util.TimeZone + java.time.ZoneId
-
-+ java.util.Map, org.springframework.ui.Model, org.springframework.ui.ModelMap
-+ RedirectAttributes
-+ Errors, BindingResult
-+ UriComponentsBuilder
-
+```
+WebRequest, NativeWebRequest
+jakarta.servlet.ServletRequest, jakarta.servlet.ServletResponse
+java.io.InputStream, java.io.Reader
+java.io.OutputStream, java.io.Writer
+HttpEntity
+jakarta.servlet.http.HttpSession
+jakarta.servlet.http.PushBuilder
+java.security.Principal
+HttpMethod
+java.util.Locale
+java.util.TimeZone + java.time.ZoneId
+java.util.Map, org.springframework.ui.Model, org.springframework.ui.ModelMap
+RedirectAttributes
+Errors, BindingResult
+UriComponentsBuilder
+```
 如果方法参数类型不属于上述类型，并且是简单类型（由 `BeanUtils#isSimpleProperty` 决定），则将其看作是请求参数，用 `@RequestParam` 解析。否则，将作为 `@ModelAttribute` 的模型参数。
 
 #### HttpEntity
@@ -141,9 +137,10 @@ public void handle(@Valid @RequestBody Account account, BindingResult result) {
 ```
 
 ## 方法返回值
+```
 @ResponseBody
 
-HttpEntity<B>, ResponseEntity<B>
+HttpEntity<T>, ResponseEntity<T>
 
 HttpHeaders
 
@@ -166,5 +163,5 @@ ListenableFuture<V>, java.util.concurrent.CompletionStage<V>, java.util.concurre
 ResponseBodyEmitter, SseEmitter
 
 StreamingResponseBody
-
+```
 如果返回值不是以上任何情况，它将被视为模型属性。除非它是由 `BeanUtils#isSimpleProperty` 决定的简单类型，在这种情况下，它会被直接返回而不会解析。

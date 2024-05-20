@@ -6,6 +6,7 @@
 	- [Springboot 的自动配置- WebMvcAutoConfiguration](#springboot-的自动配置--webmvcautoconfiguration)
 	- [替换掉默认的 tomcat 容器](#替换掉默认的-tomcat-容器)
 	- [Springboot 内置容器配置](#springboot-内置容器配置)
+		- [Springboot中的内置容器启动与配置](#springboot中的内置容器启动与配置)
 
 应用程序可以声明处理请求所需的特殊 Bean 类型（`HandlerMapping、HandlerAdapter、HandlerExceptionResolver、ViewResolver`等）。 `DispatcherServlet` 会在 `WebApplicationContext` 中检查每个特殊 Bean。如果没有匹配的 Bean 类型，它就会使用classpath下的 `DispatcherServlet.properties` 中列出的默认类型配置。
 
@@ -102,3 +103,31 @@ public static class EnableWebMvcConfiguration extends DelegatingWebMvcConfigurat
 
 ## Springboot 内置容器配置
 > https://docs.spring.io/spring-boot/docs/2.0.9.RELEASE/reference/html/howto-embedded-web-servers.html
+
+### Springboot中的内置容器启动与配置
+Sprinboot 使用代码编程的方式启动内置的 Servlet 容器，通过 `TomcatServletWebServerFactory/JettyServletWebServerFactory/UndertowServletWebServerFactory` 等类实现。Springboot 启动内置 Servlet 的具体过程如下：
+1. 创建一个继承自 `ServletWebServerApplicationContext` 的 `AnnotationConfigServletWebServerApplicationContext` 
+2. 在 `ServletWebServerApplicationContext#createWebServer()` 方法中创建内置的 servlet 容器，使用 `ServletWebServerFactory#getWebServer(ServletContextInitializer... initializers)` 工厂接口方法来创建，可以传入 `ServletContextInitializer` 来配置 servlet
+3. `ServletWebServerApplicationContext#createWebServer()` 在调用 `ServletWebServerFactory#getWebServer(ServletContextInitializer... initializers)` 方法时，传入了自定义的 `ServletContextInitializer`  
+
+    <img src="pics/springboot-embed.png" alt="" />
+
+	```java
+	private org.springframework.boot.web.servlet.ServletContextInitializer getSelfInitializer() {
+		return this::selfInitialize;
+	}
+
+	private void selfInitialize(ServletContext servletContext) throws ServletException {
+		prepareWebApplicationContext(servletContext);
+		registerApplicationScope(servletContext);
+		WebApplicationContextUtils.registerEnvironmentBeans(getBeanFactory(), servletContext);
+		for (ServletContextInitializer beans : getServletContextInitializerBeans()) {
+			beans.onStartup(servletContext);
+		}
+	}
+	```
+	在 `selfInitialize` 方法中，会去遍历调用 `ServletContextInitializer#onStartup(ServletContext servletContext)` 方法。
+4. 在 `ServletContextInitializer` <- `RegistrationBean`<-`DynamicRegistrationBean`<-`ServletRegistrationBean`<-`DispatcherServletRegistrationBean` 的体系下，只要我们声明 `DispatcherServletRegistrationBean` 或者 其他的 `RegistrationBean` 类型，springboot 就会帮我们注册到 servlet 容器。
+5. springboot 的 `DispatcherServletAutoConfiguration#DispatcherServletRegistrationConfiguration#dispatcherServletRegistration(DispatcherServlet dispatcherServlet,WebMvcProperties webMvcProperties, ObjectProvider<MultipartConfigElement> multipartConfig)`方法就声明了`DispatcherServletRegistrationBean`，这就是为什么Springboot能自动帮我们配置好 DispatcherServlet 的原因。
+
+通过以上分析，如果我们想注册除了 `DispatcherServlet` 以外的自定义 servlet ，只要声明一个 `ServletRegistrationBean` 的 bean 即可。类似的，`FilterRegistrationBean` 可以注册自定义的 `Filter` 。 如果自己实现 `Filetr` 接口又想使用 Spring 容器功能，springboot 提供了方便的 `DelegatingFilterProxyRegistrationBean` 类型，我们只要自定义一个 `DelegatingFilterProxyRegistrationBean` 类型的 bean 即可。

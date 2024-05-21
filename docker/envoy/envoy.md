@@ -3,16 +3,16 @@
 > https://github.com/envoyproxy/envoy
 
 - [Envoy](#envoy)
-  - [请求的生命周期](#请求的生命周期)
-  - [线程模型](#线程模型)
-  - [监听器](#监听器)
-  - [外部授权（Http 过滤器）](#外部授权http-过滤器)
-  - [路由匹配](#路由匹配)
-  - [Access Log](#access-log)
-  - [配置输出日志](#配置输出日志)
-  - [配置websocket](#配置websocket)
-  - [问题列表](#问题列表)
-  - [重写请求路径，禁用三防](#重写请求路径禁用三防)
+    - [请求的生命周期](#请求的生命周期)
+    - [线程模型](#线程模型)
+    - [监听器](#监听器)
+    - [外部授权（Http 过滤器）](#外部授权http-过滤器)
+    - [路由匹配](#路由匹配)
+    - [Access Log](#access-log)
+    - [配置输出日志](#配置输出日志)
+    - [配置websocket](#配置websocket)
+    - [问题列表](#问题列表)
+    - [路由的配置](#路由的配置)
 
 <center><img src="pics/envoy-architecture.webp" width="60%"></center>
 
@@ -169,7 +169,8 @@ logs 文件夹报 permission denied 错误 -> 必须进入容器内部后使用 
 (access_log)[https://www.envoyproxy.io/docs/envoy/latest/configuration/observability/access_log/usage#config-access-log]
 
 
-### 重写请求路径，禁用三防
+### 路由的配置
+重写请求路径/对特定路由禁用三防插件/转发时增加请求头
 ```
  - match:
         prefix: "/h5/fund"
@@ -185,4 +186,11 @@ logs 文件夹报 permission denied 错误 -> 必须进入容器内部后使用 
         "@type": type.googleapis.com/envoy.extensions.filters.http.ext_authz.v3.ExtAuthzPerRoute
         disabled: true
     route: { cluster: kefu-cluster, timeout: { seconds: 10 } }
+    - match:
+        safe_regex: { google_re2: {}, regex: "^/gtjaiback.*" }
+      route: { cluster: bpm-cluster, timeout: { seconds: 10 } }
+      request_headers_to_add: 
+      - header:
+          key: "appId"
+          value: "1e6c3a95-552a-5d04-38ad-2f4e238236b6"
 ```

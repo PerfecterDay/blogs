@@ -17,6 +17,7 @@
   * [Spring 国际化](/spring/core-ioc/spring-国际化.md)
   * [Spring 事件机制](/spring/core-ioc/spring-事件机制.md)
 * [Spring AOP](#)
+  * [AOP 核心概念](/spring/aop/spring-aop核心概念.md)
   * [Spring AOP简介](/spring/aop/spring-AOP知识.md)
 * [Spring 数据访问](#)
   * [Spring 事务管理简介](/spring/data-access/spring-事务管理简介.md)

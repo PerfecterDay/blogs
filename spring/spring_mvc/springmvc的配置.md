@@ -8,7 +8,7 @@
 	- [Springboot 内置容器配置](#springboot-内置容器配置)
 		- [Springboot中的内置容器启动与配置](#springboot中的内置容器启动与配置)
 
-应用程序可以声明处理请求所需的特殊 Bean 类型（`HandlerMapping、HandlerAdapter、HandlerExceptionResolver、ViewResolver`等）。 `DispatcherServlet` 会在 `WebApplicationContext` 中检查每个特殊 Bean。如果没有匹配的 Bean 类型，它就会使用classpath下的 `DispatcherServlet.properties` 中列出的默认类型配置。
+应用程序可以声明处理请求所需的特殊 Bean 类型（`HandlerMapping、HandlerAdapter、HandlerExceptionResolver、ViewResolver`等）。 `DispatcherServlet` 会在 `WebApplicationContext` 中检查这些特殊的 Bean。如果有就会将其配置到相应的属性中，如果没有匹配的 Bean 类型，它就会使用classpath下的 `DispatcherServlet.properties` 中列出的默认类型配置。
 
 ## WebMvcConfigurer
 在Java配置中，可以使用 `@EnableWebMvc` 注解并实现 `WebMvcConfigurer` 接口来启用MVC配置，，如下例所示：
@@ -53,19 +53,20 @@ public class DelegatingWebMvcConfiguration extends WebMvcConfigurationSupport {
 + `default void configurePathMatch(PathMatchConfigurer configurer) {} ` ：自定义Path匹配逻辑
 + `default void configureContentNegotiation(ContentNegotiationConfigurer configurer) {}` ：自定义内容协商
 + `default void configureAsyncSupport(AsyncSupportConfigurer configurer) {}` ：自定义异步支持配置
-+ `default void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {}` ：
++ `default void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {}`: 
 + `default void addFormatters(FormatterRegistry registry) {}` ：添加自定义格式化器
 + `default void addInterceptors(InterceptorRegistry registry) {}` ：添加 Interceptor
-+ `default void addResourceHandlers(ResourceHandlerRegistry registry) {}` ：
++ `default void addResourceHandlers(ResourceHandlerRegistry registry) {}` ：配置静态资源处理器
 + `default void addCorsMappings(CorsRegistry registry) {}` ：添加 CORS 跨域配置
-+ `default void addViewControllers(ViewControllerRegistry registry) {}` ：
-+ `default void configureViewResolvers(ViewResolverRegistry registry) {}` ：配置 ViewResolver 
-+ `default void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {}` ：配置 HandlerMethodArgumentResolver
-+ `default void addReturnValueHandlers(List<HandlerMethodReturnValueHandler> handlers) {}` ：
++ `default void addViewControllers(ViewControllerRegistry registry) {}` ：配置视图控制器
++ `default void configureViewResolvers(ViewResolverRegistry registry) {}` ：配置视图解析器 ViewResolver 
++ `default void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {}` ：配置HandlerMethodArgumentResolver
++ `default void addReturnValueHandlers(List<HandlerMethodReturnValueHandler> handlers) {}` ：配置返回值处理器
 + `default void configureMessageConverters(List<HttpMessageConverter<?>> converters) {}` ：配置 HttpMessageConverter
-+ `default void extendMessageConverters(List<HttpMessageConverter<?>> converters) {}` ：
++ `default void extendMessageConverters(List<HttpMessageConverter<?>> converters) {}` ：配置扩展 HttpMessageConverter
 + `default void configureHandlerExceptionResolvers(List<HandlerExceptionResolver> resolvers) {}` ：配置 HandlerExceptionResolver
-+ `default void extendHandlerExceptionResolvers(List<HandlerExceptionResolver> resolvers) {}` ：
++ `default void extendHandlerExceptionResolvers(List<HandlerExceptionResolver> resolvers) {}` ：配置扩展异常解析器
++ `Validator getValidator()`: 配置验证器
 
 ## Springboot 的自动配置- WebMvcAutoConfiguration
 Springboot 中使用 `WebMvcAutoConfiguration` 实现自动配置，在其中定义了 `EnableWebMvcConfiguration` 内部类，这个类实现了和 `@EnableWebMvc` 相同的功能。
@@ -103,6 +104,13 @@ public static class EnableWebMvcConfiguration extends DelegatingWebMvcConfigurat
 
 ## Springboot 内置容器配置
 > https://docs.spring.io/spring-boot/docs/2.0.9.RELEASE/reference/html/howto-embedded-web-servers.html
+
+```
+server.tomcat.max-connections=10000
+server.tomcat.accept-count=1
+server.tomcat.threads.max=2
+```
+
 
 ### Springboot中的内置容器启动与配置
 Sprinboot 使用代码编程的方式启动内置的 Servlet 容器，通过 `TomcatServletWebServerFactory/JettyServletWebServerFactory/UndertowServletWebServerFactory` 等类实现。Springboot 启动内置 Servlet 的具体过程如下：

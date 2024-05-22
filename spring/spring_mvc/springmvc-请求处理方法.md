@@ -165,3 +165,31 @@ ResponseBodyEmitter, SseEmitter
 StreamingResponseBody
 ```
 如果返回值不是以上任何情况，它将被视为模型属性。除非它是由 `BeanUtils#isSimpleProperty` 决定的简单类型，在这种情况下，它会被直接返回而不会解析。
+
+
+### 响应相关的注解
+
+#### @ResponseBody
+可以在方法上使用 `@ResponseBody` 注解，通过 `HttpMessageConverter` 将返回序列化为响应体:
+```
+@GetMapping("/accounts/{id}")
+@ResponseBody
+public Account handle() {
+}
+```
+`@ResponseBody` 在类级别也被支持，在这种情况下，它被所有控制器方法继承。这就是 `@RestController` 的效果，它只不过是一个标有 `@Controller` 和 `@ResponseBody` 的元注解。
+
+#### ResponseEntity
+`ResponseEntity` 类似于 `@ResponseBody` ，但带有状态和头信息。
+```
+@GetMapping("/something")
+public ResponseEntity<String> handle() {
+	String body = ... ;
+	String etag = ... ;
+	return ResponseEntity.ok().eTag(etag).body(body);
+}
+```
+
+Spring MVC支持异步生成ResponseEntity，或为主体使用单值和多值反应类型。这允许以下类型的异步响应：
++ `ResponseEntity<Mono<T>>` 或 `ResponseEntity<Flux<T>>` 可立即知道响应状态和标头，而正文则在稍后异步提供。如果正文由 0...1 个值组成，请使用 Mono；如果可以产生多个值，请使用 Flux。
++ `Mono<ResponseEntity<T>>` 可在稍后异步提供所有三项内容--响应状态、头信息和正文。这允许响应状态和头信息根据异步请求处理的结果而变化。

@@ -1,8 +1,20 @@
-# AOP 核心概念
+# AOP 核心概念和 AOP API
 {docsify-updated}
 
 ## 连接点(join point)
 程序运行中的一些时间点, 例如一个方法的执行，构造方法的调用，属性设置及获取，或者是一个异常的处理等.但是在 Spring AOP 中, `join point` 总是方法的执行点, 即只支持方法连接点,不可以在类上增强。
+```java
+public interface Joinpoint {
+	@Nullable
+	Object proceed() throws Throwable;
+
+	@Nullable
+	Object getThis();
+
+	@Nonnull
+	AccessibleObject getStaticPart();
+}
+```
 
 ## 切点(point cut)
 匹配 `join point` 的谓词(a predicate that matches join points).
@@ -12,11 +24,9 @@
 简而言之，切点就是用来筛选哪些连接点需要织入增强代码的。  
 Pointcut接口的声明如下：
 ```java
-public interface  {
+public interface Pointcut{
     Pointcut TRUE = TruePointcut.INSTANCE;
-
     ClassFilter getClassFilter();
-
     MethodMatcher getMethodMatcher();
 }
 ```
@@ -29,21 +39,21 @@ ClassFilter 和 MethodMatcher 分别用于匹配将被织入横切逻辑的对�
 3. `AnnotationMatchingPointcut`
 4. `ComposablePointcut`
 
-## 关于 join point 和 point cut 的区别
+### 关于 join point 和 point cut 的区别
 在 Spring AOP 中, 所有的方法执行都是 `join point`. 而 `point cut` 是一个描述信息, 它修饰的是 `join point`, 通过 `point cut`, 我们就可以确定哪些 `join point` 可以被织入 Advice. 因此 `join point` 相当于数据库中的记录， 而 `point cut` 相当于带有查询条件查询出来的记录。
 `advice` 是在 `join point `上执行的, 而 `point cut` 规定了哪些 `join point` 可以执行那些 `advice`.
 
 ## 增强-Advice
+切面指定的在特定连接点采取的增强行为。具有 "around", "before", and "after" 类型。包括 Spring 在内的许多 AOP 框架都将 Advice 建模为拦截器 interceptor ，并围绕连接点维护一连串的拦截器链。
+
 按照`Advice`实例能否在目标对象类的所有实例间共享这一标准，可以将`Advice`分为 `per-class` 和 `per-instance `类型：
 + per-class 类型的 Advice，可以在所有目标类对象之间共享，不会保存任何目标对象的状态或者添加新特性。
 
   1. `Before Advice`: 在连接点指定位置之前执行的增强类型。
-
   2. `After Advice`: 在连接点指定位置之后执行的增强类型，该类型还有三种子类型：
-     1. After returning advice: 只有切点处执行流程正常完成后，才会执行
-     2. After throwing advice: 只有切点处执行流程抛出异常的情况下，才会执行
-     3. After advice: 不管切点是正常执行还是异常了都会执行，相当于 finally 块一样。
-     
+     1. `After returning advice`: 只有切点处执行流程正常完成后，才会执行
+     2. `After throwing advice`: 只有切点处执行流程抛出异常的情况下，才会执行
+     3. `After (finally) advice`: 不管切点是正常执行还是异常了都会执行，相当于 finally 块一样。
   3. `Around Advice（Interceptor）`: 可以在切点之前和之后都指定相应的逻辑，甚至于中断或者忽略切点原来的程序流程的执行。Spring中没有直接定义对应的 Around Advice 的实现接口，而是直接采用 AOP Alliance的标准接口 `org.aopalliance.intercept.MethodInterceptor` , 这个接口只有一个 `invoke` 方法：
 
     ```java
@@ -57,6 +67,9 @@ ClassFilter 和 MethodMatcher 分别用于匹配将被织入横切逻辑的对�
 
   `Introduction`: 可以在不改动目标类定义的情况下，为原有的对象添加新的特性或者行为。在Spring中，为目标对象添加新的属性和行为必须声明相应的接口以及相应的实现。这样，再通过特定的拦截器将新的接口定义及实现类中的逻辑附加到目标对象上，目标对象就拥有了新的状态和行为。Spring中这个拦截器就是 ` IntroductionInterceptor` 接口来实现。
   <center><img src="/pics/aop-introduction.png" width=60% alt=""></center>
+
+### Advice API
+
 
 ## 切面 (aspect)
 `aspect` 由 `pointcut` 和 `advice` 组成, 它既包含了横切逻辑(增强)的定义, 也包括了切点的定义. Spring AOP就是负责实施切面的框架, 它将切面所定义的横切逻辑织入到切面所指定的连接点中.
@@ -84,3 +97,6 @@ Spring 中使用 `org.springframework.aop.Advisor` 接口表示切面。可以�
 Spring 采用动态代理织入, 而AspectJ采用编译器织入和类装载期织入。
 上述所有的概念可以由下面这张图大致概括：
 <center><img src="pics/spring-aop.png" alt="" height=60% width=60%></center>
+
+## AOP 代理
+AOP 框架为实现切面（Advice增强方法执行等），会创建代理对象。在 Spring 框架中，AOP 代理是 JDK 动态代理或 CGLIB 代理。

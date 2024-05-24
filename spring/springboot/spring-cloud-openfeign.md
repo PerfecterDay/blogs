@@ -212,6 +212,45 @@ static class Fallback implements TestClient {
    ```
 
 
+## 工作原理
+```
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+@Documented
+@Import(FeignClientsRegistrar.class)
+public @interface EnableFeignClients{}
+```
+
+`FeignClientsRegistrar` 实现了 `ImportBeanDefinitionRegistrar` 接口。
+由源码可以看出， `ImportBeanDefinitionRegistrar` 本质上是一个接口。在 `ImportBeanDefinitionRegistrar` 接口中，有一个 `registerBeanDefinitions()` 方法，通过 `registerBeanDefinitions()` 方法，我们可以向Spring容器中注册bean实例。
+
+Spring官方在动态注册bean时(大多数时候是为一些特殊注解生成代理 bean)，大部分套路其实是使用 `ImportBeanDefinitionRegistrar` 接口。
+
+所有实现了该接口的类都会被 `ConfigurationClassPostProcessor` 处理， `ConfigurationClassPostProcessor` 实现了 `BeanFactoryPostProcessor` 接口，所以 `ImportBeanDefinitionRegistrar` 中动态注册的bean是优先于依赖其的bean初始化的，也能被aop、validator等机制处理。
+
+`FeignClientFactoryBean`
+
+`ReflectiveFeign` 的 `newInstance()` 方法
+```
+public <T> T newInstance(Target<T> target, C requestContext) {
+	ReflectiveFeign.TargetSpecificationVerifier.verify(target);
+	Map<Method, InvocationHandlerFactory.MethodHandler> methodToHandler = this.targetToHandlersByName.apply(target, requestContext);
+	InvocationHandler handler = this.factory.create(target, methodToHandler);
+	T proxy = Proxy.newProxyInstance(target.type().getClassLoader(), new Class[]{target.type()}, handler);
+	Iterator var6 = methodToHandler.values().iterator();
+
+	while(var6.hasNext()) {
+		InvocationHandlerFactory.MethodHandler methodHandler = (InvocationHandlerFactory.MethodHandler)var6.next();
+		if (methodHandler instanceof DefaultMethodHandler) {
+			((DefaultMethodHandler)methodHandler).bindTo(proxy);
+		}
+	}
+
+	return proxy;
+}
+``` 
+最终返回的是一个 Proxy 对象。
+
 /Users/coder_wang/.sdkman/candidates/java/current/lib/src.zip!/java.base/sun/net/www/protocol/http/HttpURLConnection.java
 /Users/coder_wang/.sdkman/candidates/java/17.0.7-tem/lib/src.zip!/java.base/java/net/HttpURLConnection.java
 

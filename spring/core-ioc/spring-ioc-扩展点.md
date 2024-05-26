@@ -79,22 +79,22 @@ ApplicationContext 和 BeanFactory 的一个重大区别在于：前者会利用
 ```
 	public void refresh() throws BeansException, IllegalStateException {
 		synchronized (this.startupShutdownMonitor) {
-			// Prepare this context for refreshing.
+			// 准备从context
 			prepareRefresh();
 
 			// 获取beanFactory，此时会解析加载xml中的beanDefinition，但是并没有注册 bean 对象
 			ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
 
-            // 注册一些 BeanPostProcessor bean，开始生成 bean
+            // 准备 beanFactory
 			prepareBeanFactory(beanFactory);
 
-            // Allows post-processing of the bean factory in context subclasses.
+            // 调用子类（实现ApplicationContext接口的子类）postProcessBeanFactory 复写的方法，允许实现类处理 beanfactory
             postProcessBeanFactory(beanFactory);
 
-            // 注册并调用BeanFactoryPostProcessor的postProcessBeanFactory方法
+            // 注册并调用BeanFactoryPostProcessor的postProcessBeanFactory方法，第一扩展点
             invokeBeanFactoryPostProcessors(beanFactory);
 
-            // 注册 BeanPostProcessor 类型的bean，自动实现 BeanPostProcessor 注册
+            // 注册 BeanPostProcessor 类型的bean，自动实现 BeanPostProcessor 注册，第二扩展点注册
             registerBeanPostProcessors(beanFactory);
 
             // Initialize message source for this context.
@@ -109,7 +109,7 @@ ApplicationContext 和 BeanFactory 的一个重大区别在于：前者会利用
             // Check for listener beans and register them.
             registerListeners();
 
-            // Instantiate all remaining (non-lazy-init) singletons.
+            // 实例化所有 bean，在这里边会去调用 BeanPostProcessor 第二扩展点接口对生成的 bean 实例进行处理
             finishBeanFactoryInitialization(beanFactory);
 
             // Last step: publish corresponding event.

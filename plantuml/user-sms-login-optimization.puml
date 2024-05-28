@@ -1,6 +1,0 @@
-@startuml
-' user_com_gmas -> Bob: Another authentication Request
-user_com_gmas -> user_center_service: 获取登录token （/login/sms/smsVerify）
-
-user_com_gmas <-- user_center_service: 返回 token
-@enduml

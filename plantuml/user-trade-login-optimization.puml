@@ -1,8 +1,0 @@
-@startuml
-' user_com_gmas -> Bob: Another authentication Request
-user_com_gmas -> NRTS: 登录（1605）
-NRTS -> user_com_gmas : 登录响应
-user_com_gmas -> user_center_service: 获取登录token （user/tradeLogin/login）
-
-user_com_gmas <-- user_center_service: 返回 token
-@enduml

@@ -106,11 +106,19 @@ public static class EnableWebMvcConfiguration extends DelegatingWebMvcConfigurat
 > https://docs.spring.io/spring-boot/docs/2.0.9.RELEASE/reference/html/howto-embedded-web-servers.html
 
 ```
-server.tomcat.max-connections=10000
-server.tomcat.accept-count=1
-server.tomcat.threads.max=2
-```
+server.tomcat.max-connections=10000 //最大连接数
+server.tomcat.accept-count=1 // backlog 数
+server.tomcat.threads.max=2 //最大线程数
 
+server.http2.enabled //启用 http2
+
+// 配置https
+server.ssl.key-store=classpath:spring.keystore
+server.ssl.key-store-password=123456
+```
+如果希望使用编程式的方式对Web服务器进行配置，Spring Boot则 提供了如下两种方式:
++ 定义一个实现 `WebServerFactoryCustomizer` 接口的Bean实例。
++ 直接在容器中配置一个自定义的 `ConfigurableServletWebServerFactory` ，它负责创建Web服务器。
 
 ### Springboot中的内置容器启动与配置
 Sprinboot 使用代码编程的方式启动内置的 Servlet 容器，通过 `TomcatServletWebServerFactory/JettyServletWebServerFactory/UndertowServletWebServerFactory` 等类实现。Springboot 启动内置 Servlet 的具体过程如下：

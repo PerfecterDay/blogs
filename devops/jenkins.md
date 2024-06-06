@@ -3,9 +3,9 @@
 > https://www.jenkins.io/zh/doc/book/pipeline/syntax/
 
 - [Jenkins 语法](#jenkins-语法)
-  - [安装](#安装)
-  - [Pipeline](#pipeline)
-  - [问题](#问题)
+    - [安装](#安装)
+    - [Pipeline](#pipeline)
+    - [问题](#问题)
 
 
 Jenkins是一款开源 CI&CD 软件，用于自动化各种任务，包括构建、测试和部署软件。

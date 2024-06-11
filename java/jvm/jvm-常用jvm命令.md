@@ -1,14 +1,7 @@
 # java基础-常用jvm命令
 {docsify-updated}
-- [java基础-常用jvm命令](#java基础-常用jvm命令)
-	- [jps](#jps)
-	- [jstat](#jstat)
-	- [jmap](#jmap)
-	- [jhat](#jhat)
-	- [jstack](#jstack)
-	- [jinfo](#jinfo)
 
-### jps
+## jps
 JVM Process Status Tool,显示指定系统内所有的HotSpot虚拟机进程。
 
 **常用参数：**
@@ -17,7 +10,7 @@ JVM Process Status Tool,显示指定系统内所有的HotSpot虚拟机进程。
 + `-m` : 输出JVM启动时传递给main()的参数
 + `-v` : 输出JVM启动时显示指定的JVM参数
 
-### jstat
+## jstat
 jstat(JVM statistics Monitoring)是用于监视虚拟机运行时状态信息的命令，它可以显示出虚拟机进程中的类装载、内存、垃圾收集、JIT编译等运行数据。
 
 **命令格式：**
@@ -66,7 +59,7 @@ jstat(JVM statistics Monitoring)是用于监视虚拟机运行时状态信息的
 + `CCSU` : 压缩类空间使用大小
 + `GCT` : 垃圾回收总消耗时间
 
-### jmap
+## jmap
 jmap(JVM Memory Map)命令用于生成 heap dump 文件，如果不使用这个命令，还阔以使用 `-XX:+HeapDumpOnOutOfMemoryError` 参数来让虚拟机出现OOM的时候自动生成dump文件。 jmap不仅能生成dump文件，还可以查询finalize执行队列、Java堆和永久代的详细信息，如当前使用率、当前使用的是哪种收集器等。
 
 **命令格式：**
@@ -84,7 +77,7 @@ jmap(JVM Memory Map)命令用于生成 heap dump 文件，如果不使用这个�
 关于如何dump heap，参考：
 > https://www.baeldung.com/java-heap-dump-capture
 
-### jhat
+## jhat
 jhat(JVM Heap Analysis Tool)命令是与jmap搭配使用，用来分析jmap生成的dump，jhat内置了一个微型的HTTP/HTML服务器，默认端口7000，生成dump的分析结果后，可以在浏览器中查看。在此要注意，一般不会直接在服务器上进行分析，因为jhat是一个耗时并且耗费硬件资源的过程，一般把服务器生成的dump文件复制到本地或其他机器上进行分析。
 
 **命令格式：**
@@ -100,7 +93,7 @@ jhat(JVM Heap Analysis Tool)命令是与jmap搭配使用，用来分析jmap生�
 + `-version` 启动后只显示版本信息就退出>
 + `-J flag` 因为 jhat 命令实际上会启动一个JVM来执行, 通过 -J 可以在启动JVM时传入一些启动参数. 例如, -J-Xmx512m 则指定运行 jhat 的Java虚拟机使用的最大堆内存为 512 MB. 如果需要使用多个JVM启动参数,则传入多个 -Jxxxxxx.
 
-### jstack
+## jstack
 jstack用于生成java虚拟机当前时刻的线程快照。线程快照是当前java虚拟机内每一条线程正在执行的方法堆栈的集合，生成线程快照的主要目的是定位线程出现长时间停顿的原因，如线程间死锁、死循环、请求外部资源导致的长时间等待等。 线程出现停顿的时候通过jstack来查看各个线程的调用堆栈，就可以知道没有响应的线程到底在后台做什么事情，或者等待什么资源。 如果java程序崩溃生成core文件，jstack工具可以用来获得core文件的java stack和native stack的信息，从而可以轻松地知道java程序是如何崩溃和在程序何处发生问题。另外，jstack工具还可以附属到正在运行的java程序中，看到当时运行的java程序的java stack和native stack的信息, 如果现在运行的java程序呈现hung的状态，jstack是非常有用的。
 
 **命令格式：**
@@ -111,7 +104,7 @@ jstack用于生成java虚拟机当前时刻的线程快照。线程快照是当�
 + `-l` : 除堆栈外，显示关于锁的附加信息
 + `-m` : 如果调用到本地方法的话，可以显示C/C++的堆栈
 
-### jinfo
+## jinfo
 jinfo(JVM Configuration info)这个命令作用是实时查看和调整虚拟机运行参数。 之前的jps -v口令只能查看到显示指定的参数，如果想要查看未被显示指定的参数的值就要使用jinfo口令
 
 **命令格式：**
@@ -122,5 +115,42 @@ jinfo(JVM Configuration info)这个命令作用是实时查看和调整虚拟机
 + `-flags` : 不需要args参数，输出所有JVM参数的值
 + `-sysprops` : 输出系统属性，等同于System.getProperties()
 
+`jinfo 8 | grep GC`: 查看jvm使用的是什么垃圾收集器
+`jinfo 8`: 查看jvm的信息
+
 
 jhsdb jmap --heap --pid 8560
+
+## JVM 启动参数
+
+### 开启GC日志
+```
+# 打印基本 GC 信息
+-XX:+PrintGCDetails 
+-XX:+PrintGCDateStamps 
+
+# 打印对象分布
+-XX:+PrintTenuringDistribution 
+
+# 打印堆数据
+-XX:+PrintHeapAtGC 
+
+# 打印Reference处理信息
+-XX:+PrintReferenceGC 
+
+# 打印STW时间
+-XX:+PrintGCApplicationStoppedTime
+
+# 打印safepoint信息
+-XX:+PrintSafepointStatistics 
+-XX:PrintSafepointStatisticsCount=1
+
+# GC日志输出的文件路径
+-Xloggc:/path/to/gc-%t.log
+# 开启日志文件分割
+-XX:+UseGCLogFileRotation 
+# 最多分割几个文件，超过之后从头文件开始写
+-XX:NumberOfGCLogFiles=14
+# 每个文件上限大小，超过就触发分割
+-XX:GCLogFileSize=100M
+```

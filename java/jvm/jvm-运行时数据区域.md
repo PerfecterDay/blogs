@@ -2,20 +2,10 @@
 {docsify-updated}
 > https://mp.weixin.qq.com/s/fg2Dy0Dbhcrn5QaNydp1WQ
 
-- [java基础-JVM数据区域及参数设置](#java基础-jvm数据区域及参数设置)
-	- [PC程序计数器](#pc程序计数器)
-	- [JVM 栈](#jvm-栈)
-	- [本地方法栈](#本地方法栈)
-	- [Java 堆](#java-堆)
-	- [方法区(元数据区)](#方法区元数据区)
-		- [运行时常量池](#运行时常量池)
-	- [直接内存](#直接内存)
-	- [代码缓存区](#代码缓存区)
-	- [垃圾收集器](#垃圾收集器)
-	- [JIT 编译器](#jit-编译器)
 
 <center>
-<img src="pics/jvm运行时数据区.png" alt="JVM运行时数据区" width="50%" height="50%" >
+<img src="pics/jvm运行时数据区.png" alt="JVM运行时数据区" width="40%" >
+<img src="pics/java-memory-model.png" alt="JVM运行时数据区" width="55%" >
 </center>
 
 JVM主要可以分为两大部分：

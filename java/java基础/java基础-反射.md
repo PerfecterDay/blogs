@@ -2,12 +2,16 @@
 {docsify-updated}
 
 - [反射](#反射)
-	- [Class对象](#class对象)
-	- [java.lang.Class类](#javalangclass类)
-	- [获取 Class 对象的三种方式](#获取-class-对象的三种方式)
-	- [Class 类的方法](#class-类的方法)
-		- [获取成员变量并使用](#获取成员变量并使用)
-			- [属性赋值](#属性赋值)
+  - [Class对象](#class对象)
+  - [java.lang.Class类](#javalangclass类)
+  - [获取 Class 对象的三种方式](#获取-class-对象的三种方式)
+  - [Class 类的方法](#class-类的方法)
+    - [获取类的方法](#获取类的方法)
+      - [构造方法](#构造方法)
+      - [普通方法](#普通方法)
+    - [获取成员变量并使用](#获取成员变量并使用)
+      - [属性赋值](#属性赋值)
+  - [性能](#性能)
 
 
 JAVA反射机制是在运行状态中，对于任意一个类，都能够知道这个类的所有属性和方法；对于任意一个对象，都能够调用它的任意一个方法和属性；这种动态获取类的信息以及动态调用对象的方法的功能称为java语言的反射机制。
@@ -40,6 +44,10 @@ Class没有公共构造方法。Class对象是在加载类时由Java虚拟机以
 + Class类的静态方法：`forName(String className)`。
 
 ## Class 类的方法
+
+### 获取类的方法
+
+#### 构造方法
 1. 获取公有访问级别构造方法的方法
    + `getgetConstructors()`: 可以获取到该类的所有公有构造方法构造方法组成的数组：`Constructor[]` 。
    + `getConstructor(Class<?>... parameterTypes)`: 可以获取到参数类型为 `parameterTypes` 指定的公有构造方法的 `Constructor` 实例对象。
@@ -51,6 +59,12 @@ Class没有公共构造方法。Class对象是在加载类时由Java虚拟机以
 3. 调用构造方法
 通过上述方法获取 `Constructor`对象后，可以 调用 `Constructor` 对象的 `newInstance(Object... initargs)` 方法来创建类的新实例，并用指定的初始化参数（可以不传）初始化该实例。
 
+#### 普通方法
+
++ `public Method[] getMethods() throws SecurityException` : `getMethods` 方法返回一个数组，其中包含类和超类的所有**公共方法**。
++ `public Method[] getDeclaredMethods() throws SecurityException` : 返回声明的所有方法，包括公共、保护、私有的方法。
+
+获取到 Method 对象后，可以调用它的 `public Object invoke(Object obj, Object... args)` 对方法进行调用。
 
 ### 获取成员变量并使用
 1. 获取公有访问级别的属性
@@ -62,4 +76,10 @@ Class没有公共构造方法。Class对象是在加载类时由Java虚拟机以
    + `getDeclaredField(String name)`: 方法获取名字为name的所有的属性(包括：私有、受保护、默认、公有)，返回属性对象：`Field`。
 
 #### 属性赋值
-通过上述方法获取 `Field`对象后，可以调用 `Field` 类的 `set(Object object,Object value)` 方法，可以为object对象的对应属性设置为value值。
+通过上述方法获取 `Field`对象后，可以调用 `Field` 类的 `set(Object object,Object value)` 方法，可以为object对象的对应属性设置为value值。不过在调用之前必须先调用`void setAccessible(true)` 设置允许访问。
+
+## 性能
+https://docs.oracle.com/javase/tutorial/reflect/index.html
+```
+Because reflection involves types that are dynamically resolved, certain Java virtual machine optimizations can not be performed. Consequently, reflective operations have slower performance than their non-reflective counterparts, and should be avoided in sections of code which are called frequently in performance-sensitive applications.
+```

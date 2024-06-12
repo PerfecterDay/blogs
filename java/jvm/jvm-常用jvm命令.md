@@ -115,42 +115,9 @@ jinfo(JVM Configuration info)这个命令作用是实时查看和调整虚拟机
 + `-flags` : 不需要args参数，输出所有JVM参数的值
 + `-sysprops` : 输出系统属性，等同于System.getProperties()
 
-`jinfo 8 | grep GC`: 查看jvm使用的是什么垃圾收集器
-`jinfo 8`: 查看jvm的信息
++ `jinfo 8 | grep GC`: 查看jvm使用的是什么垃圾收集器
++ `jinfo 8`: 查看jvm的信息
++ ```jinfo -flag  +PrintGC `pgrep -f tomcat` ```: 动态开启VM参数
 
 
 jhsdb jmap --heap --pid 8560
-
-## JVM 启动参数
-
-### 开启GC日志
-```
-# 打印基本 GC 信息
--XX:+PrintGCDetails 
--XX:+PrintGCDateStamps 
-
-# 打印对象分布
--XX:+PrintTenuringDistribution 
-
-# 打印堆数据
--XX:+PrintHeapAtGC 
-
-# 打印Reference处理信息
--XX:+PrintReferenceGC 
-
-# 打印STW时间
--XX:+PrintGCApplicationStoppedTime
-
-# 打印safepoint信息
--XX:+PrintSafepointStatistics 
--XX:PrintSafepointStatisticsCount=1
-
-# GC日志输出的文件路径
--Xloggc:/path/to/gc-%t.log
-# 开启日志文件分割
--XX:+UseGCLogFileRotation 
-# 最多分割几个文件，超过之后从头文件开始写
--XX:NumberOfGCLogFiles=14
-# 每个文件上限大小，超过就触发分割
--XX:GCLogFileSize=100M
-```

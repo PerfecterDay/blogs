@@ -117,6 +117,7 @@ Removing unused plist /Users/gabe/Library/LaunchAgents/homebrew.mxcl.mysql.plist
 4. jenv versions 显示可用的 JDK 版本，如果没有的话，需要使用 `jenv add [pathToJDK]` 添加安装的JDK
 5. `jenv local [javaversion]` 切换 JDK 版本
 
+`sudo update-alternatives --config java`
 
 ### 常用命令
 ```

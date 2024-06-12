@@ -2,12 +2,12 @@
 {docsify-updated}
 
 - [范型](#范型)
-	- [范型类](#范型类)
-	- [类型变量的限定与范型通配符](#类型变量的限定与范型通配符)
-	- [范型方法](#范型方法)
-	- [泛型擦除](#泛型擦除)
-	- [范型的约束与局限性](#范型的约束与局限性)
-	- [泛型与继承](#泛型与继承)
+		- [范型类](#范型类)
+		- [类型变量的限定与范型通配符](#类型变量的限定与范型通配符)
+		- [范型方法](#范型方法)
+		- [泛型擦除](#泛型擦除)
+		- [范型的约束与局限性](#范型的约束与局限性)
+		- [泛型与继承](#泛型与继承)
 
 
 ### 范型类
@@ -102,3 +102,49 @@ ArrayList类实现了List接口。这意味着，一个`ArrayList<Manager>`可�
 
 <center><img src="pics/generics-2.png" alt=""></center>
 
+
+### 桥方法
+```
+public class UserCenterApp<T> {
+    public static void main(String[] args) {
+        A a = new A();
+        Method[] declaredMethods = A.class.getDeclaredMethods();
+        for (int i = 0; i < declaredMethods.length; i++) {
+            System.out.println(declaredMethods[i].toGenericString()+":"+declaredMethods[i].isBridge());
+        }
+    }
+
+    public void draw(T  shape) {
+        System.out.println("Drawing shape: " + shape);
+    }
+}
+
+class A extends UserCenterApp<String>{
+    @Override
+    public void draw(String shape) {
+        System.out.println("Drawing A: " + shape);
+    }
+}
+```
+
+输出为：
+```
+public void com.gtja.gjyw.A.draw(java.lang.String):false
+public void com.gtja.gjyw.A.draw(java.lang.Object):true
+```
+
+如果改一下代码：
+```
+class A extends UserCenterApp<Object>{
+    @Override
+    public void draw(Object shape) {
+        System.out.println("Drawing A: " + shape);
+    }
+}
+```
+输出为：
+```
+public void com.gtja.gjyw.A.draw(java.lang.Object):false
+```
+
+这时候，不需要生成桥方法了。

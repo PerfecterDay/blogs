@@ -79,26 +79,6 @@ JDK 1.4 中引入了 NIO 类，引入了一种基于通道与缓冲区的 I/O �
 
 显然，直接内存不会受到 Java 堆大小的限制，但是，既然是内存，肯定还是会受到本机总内存大小及处理器寻址空间的限制。配置虚拟机参数时，不能忽略直接内存，此区域也可能会导致 OOM 异常。
 
-```
--XX:MaxDirectmemorySize :设置直接内存容量，如果不指定，默认64M。
--XX:CICompilerCount=3 
--XX:ConcGCThreads=1 
--XX:G1ConcRefinementThreads=4 
--XX:G1HeapRegionSize=1048576 
--XX:GCDrainStackTargetSize=64 
--XX:InitialHeapSize=130023424 
--XX:MarkStackSize=4194304 
--XX:MaxHeapSize=2051014656 
--XX:MaxNewSize=1229979648 
--XX:MinHeapDeltaBytes=1048576 
--XX:NonNMethodCodeHeapSize=5830092 
--XX:NonProfiledCodeHeapSize=122914074 
--XX:ProfiledCodeHeapSize=122914074 
--XX:ReservedCodeCacheSize=251658240 
--XX:+SegmentedCodeCache 
--XX:+UseCompressedClassPointers 
--XX:+UseCompressedOops -XX:+UseG1GC
-```
 
 ### 代码缓存区
 Java Code Cache 是啥： 如果 Java 每次都需要即时编译成机器码，再执行，效率太慢了。那么是不是对于某些热点代码，编译后的机器码，缓存起来，这样下次就不用重新即时编译了，多快乐。Java Code Cache 就是用来干这个的。但是编译后的机器码太大了，Java Code Cache 的空间是有限的，也不能将所有的代码都编译成机器码缓存起来。所以就需要一些优化与清理策略。

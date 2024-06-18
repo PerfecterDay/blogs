@@ -15,3 +15,4 @@
 * [vim手册](/linux/vim手册.md)
 * [openssl](/linux/openssl.md)
 * [strace-跟踪系统调用](/linux/strace.md)
+* [CPU利用率100%排查](/linux/CPU-100.md)

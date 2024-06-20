@@ -1,7 +1,7 @@
 # nginx基本配置、负载均衡与反向代理
 {docsify-updated}
 
-### nginx基本配置
+## nginx基本配置
 通常来说，nginx配置文件包含若干个server上下文，不同的server上下文通过监听的端口和名字来区分。一旦nginx决定了用哪个server上下文来处理请求，nginx就会用请求URI与server块指令中配置的location指令的参数相比较，一旦匹配到某个location的参数，URI就会被添加到location块内的root指令参数后边，构成请求的静态内容的访问路径。如果有多个location匹配，nginx选取最长的匹配。
 
 基本配置：
@@ -61,7 +61,7 @@ http{
 2. max_fails
 	`max_fails` 指令设置在 `fail_timeout` 时间内，通讯失败的次数。如果被设置为0，表示关闭健康检查功能，默认值是1。如果设置为2，则表示在 `fail_timeout`时间内，2次没有与服务器正常通信，则标记该服务器为非正常服务器。然后每隔 `fail_timeout` 时间就检测一次服务器状态，如果能正常通信，则标记为存活服务器。
 
-### Nginx 负载均衡
+## Nginx 负载均衡
 Nginx 负载均衡使用 upstream 指令来配置，支持以下几种负载均衡算法：  
 + round-robin :轮询算法——轮流将请求发送至各个服务器，nginx的默认算法
 + least-connected :最少连接算法——将请求转发至活动连接最少的服务器
@@ -136,7 +136,7 @@ http{
 }
 ```
 
-### Nginx 反向代理
+## Nginx 反向代理
 
 nginx一个最常用的功能就是作为一个反向代理服务器，即收到客户端的请求后，将请求转发到被代理的服务器上，收到被代理的服务器响应后，将其发送到客户端。 反向代理一般**只会代理集群内部的一些服务器，而正向代理则可以代替客户端去请求各个互联完资源（VPN翻墙），它没有配置请求转发到一组特定的服务器上。** 
 nginx转发指令是 `proxy_pass` ，参数转发的完整地址，包括协议、url和端口号。
@@ -167,7 +167,7 @@ location /app1 {
 1. 反向向代理通常只能代理若干服务器的服务，nginx 配置中配置了多个 location -> proxy_pass，用户到特定服务的访问会被反向代理代理掉。但是正向代理往往并不限制用户对服务的访问（或者说能代理用户所有的访问流量），然后代替用户去访问目标服务器。
 
 
-### nginx 自定义错误页面隐藏版本信息
+## nginx 自定义错误页面隐藏版本信息
 ```
 http {
     server_tokens off;
@@ -180,3 +180,26 @@ server{
 	}
 }
 ```
+
+## 添加响应头
+```
+# 路径匹配
+location /app1 {
+	proxy_pass https://backend1;
+	add_header Access-Control-Allow-Origin *;
+	add_header Access-Control-Allow-Headers X-Requested-With;
+	add_header Access-Control-Allow-Methods PUT,POST,GET,DELETE,OPTIONS;
+}
+```
+add_header 只对 200,201，204,206,301,302,303,304,307 这些状态码生效，对于 401 405 403 这些状态码是不生效的。
+解决办法:
+```
+# 路径匹配
+location /app1 {
+	proxy_pass https://backend1;
+	add_header Access-Control-Allow-Origin * always;
+	add_header Access-Control-Allow-Headers X-Requested-With always;
+	add_header Access-Control-Allow-Methods PUT,POST,GET,DELETE,OPTIONS always;
+}
+```
+

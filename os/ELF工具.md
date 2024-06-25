@@ -65,33 +65,16 @@
 	+ /usr/bin/prelink – remaps/relocates calls in ELF files, to speed up the process
    
 ### objdump 和 readelf 的区别
-/* The difference between readelf and objdump:
+BFD库（Binary File Descriptor library）就是这样的一个GNU项目，它的目标就是希望通过一种统一的接口来处理不同的目标文件格式。BFD这个项目本身是binutils项目的一个子项目。BFD把目标文件抽象成一个统一的模型，比如在这个抽象的目标文件模型中，最开始有一个描述整个目标文件总体信息的“文件头”，就跟我们实际的ELF文一样，文件头后面是一系列的段，每个段都有名字、属性和段的内容，同时还抽象了符号表、重定位表、字符串表等类似的概念，使得BFD库的程序只要通过操作这个抽象的目标文件模型就可以实现操作所有BFD支持的目标文件格式。
 
-   Both programs are capabale of displaying the contents of ELF format files,
-   so why does the binutils project have two file dumpers ?
+在我的ubuntu下，包含BFD开发库的软件包的名字叫 `binutils-dev ` 。
 
-   The reason is that objdump sees an ELF file through a BFD filter of the
-   world; if BFD has a bug where, say, it disagrees about a machine constant
-   in e_flags, then the odds are good that it will remain internally
-   consistent.  The linker sees it the BFD way, objdump sees it the BFD way,
-   GAS sees it the BFD way.  There was need for a tool to go find out what
-   the file actually says.
-
-   This is why the readelf program does not link against the BFD library - it
-   exists as an independent program to help verify the correct working of BFD.
-
-   There is also the case that readelf can provide more information about an
-   ELF file than is provided by objdump.  In particular it can display DWARF
-   debugging information which (at the moment) objdump cannot.  */
-
-BFD（Binary File Descriptor）过滤器是 GNU Binutils 项目中的一个库，用于统一处理不同二进制文件格式（如 ELF、COFF、a.out 等）的抽象层。BFD 提供了一套通用接口，使得工具如链接器、反汇编器和调试器可以通过这个统一接口处理各种格式的二进制文件，而不必关心底层文件格式的具体细节。
-
-通过 BFD 过滤器，工具可以：
+通过 BFD，工具可以：
 + 读取和写入不同格式的二进制文件：BFD 使得工具可以透明地处理不同格式的二进制文件，隐藏了文件格式的复杂性。
 + 转换和处理目标文件：BFD 可以处理各种目标文件的细节，包括符号表、重定位信息、调试信息等。
 + 保持内部一致性：所有通过 BFD 库处理的工具（如 objdump、链接器、汇编器）都使用相同的内部表示和常量，这确保了这些工具之间的行为一致。
-由于 BFD 层的抽象和一致性处理，可能会出现一些情况下，实际的文件内容与通过 BFD 接口看到的内容存在差异。这就是为什么需要一个独立的工具如 readelf，它直接读取并显示 ELF 文件的实际内容，不经过 BFD 的处理，以便于验证和调试 BFD 库的正确性。  
-总之，BFD 过滤器在处理二进制文件格式时提供了统一的抽象接口和一致性处理，但有时也需要像 `readelf` 这样的工具来验证其输出的准确性。
+
+因为 objdump/gcc/ld 等这些编译工具都是用了BFD库做文件解析，所以如果BFD出错，objdump 不一定能检测出来，这就是为什么需要一个独立的工具如 readelf，它直接读取并显示 ELF 文件的实际内容，不经过 BFD 的处理，以便于验证和调试 BFD 库的正确性。 
 
 一般C语言的编译后执行语句都编译成机器代码，保存在.text段；已初始化的全局变量和局部静态变量都保存在.data段；未初始化的全局变量和局部静态变量一般放在一个叫“.bss”的段里.
 

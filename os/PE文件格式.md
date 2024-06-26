@@ -1,4 +1,4 @@
-## Windows PE（Portable-Executable）[文件格式](https://bbs.pediy.com/thread-270210.htm)
+# Windows PE（Portable-Executable）[文件格式](https://bbs.pediy.com/thread-270210.htm)
 PE文件的结构如下:
 <center><img src="pics/pe-file.png" width=30% ></center>
 

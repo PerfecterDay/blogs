@@ -56,6 +56,7 @@ Envoy 使用单进程-多线程架构。一个 primary 线程处理各种轻量�
 
 
 ### Access Log
+> https://cloudnative.to/envoy/configuration/observability/access_log/usage.html#config-access-log-format-dictionaries
 
 1. `%RESPONSE_FLAGS%`
 如果有的话，表示响应或者连接的附加详情。 对于 TCP 连接，说明中提到的响应码不适用。 可能的值如下：

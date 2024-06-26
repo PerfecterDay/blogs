@@ -4,6 +4,7 @@
 - [Ingress 和 gateway api](#ingress-和-gateway-api)
   - [Ingress 和 Service 的区别](#ingress-和-service-的区别)
   - [gateway api](#gateway-api)
+    - [与 Ingress的区别](#与-ingress的区别)
 
 
 Ingress 公开从集群外部到集群内服务的 HTTP 和 HTTPS 路由。 流量路由由 Ingress 资源上定义的规则控制。
@@ -37,4 +38,7 @@ spec:
 
 ## gateway api
 Gateway API 是 Ingress API 的后续版本。不过，它不包括 Ingress 类型。
+
+### 与 Ingress的区别
+> https://gateway-api.sigs.k8s.io/guides/migrating-from-ingress/
 

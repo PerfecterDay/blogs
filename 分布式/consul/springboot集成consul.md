@@ -15,6 +15,7 @@
       - [ConsulAutoServiceRegistrationListener](#consulautoserviceregistrationlistener)
     - [服务发现](#服务发现)
     - [自定义注册-使用tcp health check](#自定义注册-使用tcp-health-check)
+    - [重启consul 后，服务不能重新注册：](#重启consul-后服务不能重新注册)
     - [问题](#问题)
 
 consul提供的各种语言的SDK/开发库： https://developer.hashicorp.com/consul/api-docs/libraries-and-sdks  
@@ -305,63 +306,86 @@ public class ConsulRegister implements ConsulRegistrationCustomizer{
 }
 ```
 
-### 问题
-1. preferIpAddress ： 测试环境需要IP访问，主机名不通
-2. 重启consul 后，服务不能重新注册：
-      https://github.com/spring-cloud/spring-cloud-consul/issues/197  
-      https://github.com/spring-cloud/spring-cloud-consul/pull/691  
-      https://github.com/spring-cloud/spring-cloud-consul/issues/727  
+### 重启consul 后，服务不能重新注册：
+https://github.com/spring-cloud/spring-cloud-consul/issues/197  
+https://github.com/spring-cloud/spring-cloud-consul/pull/691  
+https://github.com/spring-cloud/spring-cloud-consul/issues/727  
 
-      ```
-      Resolved.
-      need to add the below 2 properties:
-      spring.cloud.consul.discovery.heartbeat.enabled= true
-      spring.cloud.consul.discovery.heartbeat.reregister-service-on-failure=true
-      ```
+```
+Resolved.
+need to add the below 2 properties:
+spring.cloud.consul.discovery.heartbeat.enabled= true
+spring.cloud.consul.discovery.heartbeat.reregister-service-on-failure=true
+```
 
-      原理： `ConsulHeartbeatAutoConfiguration` 会启动一个 `TtlScheduler` -> `ConsulHeartbeatTask`
-      ```
-      @Override
-		public void run() {
-			try {
-				this.ttlScheduler.client.agentCheckPass(this.checkId);
-				if (log.isDebugEnabled()) {
-					log.debug("Sending consul heartbeat for: " + this.checkId);
-				}
-			}
-			catch (OperationException e) {
-				if (this.ttlScheduler.heartbeatProperties.isReregisterServiceOnFailure()
-						&& this.ttlScheduler.reregistrationPredicate.isEligible(e)) {
-					log.warn(e.getMessage());
-					NewService registeredService = this.ttlScheduler.registeredServices.get(this.serviceId);
-					if (registeredService != null) {
-						if (log.isInfoEnabled()) {
-							log.info("Re-register " + registeredService);
-						}
-						this.ttlScheduler.client.agentServiceRegister(registeredService,
-								this.ttlScheduler.discoveryProperties.getAclToken());
-					}
-					else {
-						log.warn("The service to re-register is not found.");
-					}
-				}
-				else {
-					throw e;
-				}
-			}
-		}
-      ```
-      注意：以上解决方案只有在 consul 集群支持持久化存储状态的时候生效。当以 -dev 模式运行时，会产生 checkId 不存在的 404 错误，因为consul重启后所有的checks数据丢失，所以`this.ttlScheduler.client.agentCheckPass(this.checkId);`会报错。这种情况下，除了配置`spring.cloud.consul.discovery.heartbeat.reregister-service-on-failure=true`外，还要注册以下bean:
-      ```java
-      @Configuration
-      public class ConsulConfiguration {
-            @Bean
-            public ReregistrationPredicate test(){
-                  return e-> Objects.nonNull(e);
+原理： `ConsulHeartbeatAutoConfiguration` 会启动一个 `TtlScheduler` -> `ConsulHeartbeatTask`
+```
+@Override
+public void run() {
+      try {
+            this.ttlScheduler.client.agentCheckPass(this.checkId);
+            if (log.isDebugEnabled()) {
+                  log.debug("Sending consul heartbeat for: " + this.checkId);
             }
       }
-      ```
-      这样才会使服务重新注册service。
+      catch (OperationException e) {
+            if (this.ttlScheduler.heartbeatProperties.isReregisterServiceOnFailure()
+                        && this.ttlScheduler.reregistrationPredicate.isEligible(e)) {
+                  log.warn(e.getMessage());
+                  NewService registeredService = this.ttlScheduler.registeredServices.get(this.serviceId);
+                  if (registeredService != null) {
+                        if (log.isInfoEnabled()) {
+                              log.info("Re-register " + registeredService);
+                        }
+                        this.ttlScheduler.client.agentServiceRegister(registeredService,
+                                    this.ttlScheduler.discoveryProperties.getAclToken());
+                  }
+                  else {
+                        log.warn("The service to re-register is not found.");
+                  }
+            }
+            else {
+                  throw e;
+            }
+      }
+}
+```
+注意：以上解决方案只有在 consul 集群支持持久化存储状态的时候生效。当以 -dev 模式运行时，会产生 checkId 不存在的 404 错误，因为consul重启后所有的checks数据丢失，所以`this.ttlScheduler.client.agentCheckPass(this.checkId);`会报错。这种情况下，除了配置`spring.cloud.consul.discovery.heartbeat.reregister-service-on-failure=true`外，还要注册以下bean:
+```java
+@Configuration
+public class ConsulConfiguration {
+      @Bean
+      public ReregistrationPredicate test(){
+            return e-> Objects.nonNull(e);
+      }
+}
+```
+这样才会使服务重新注册service。
+默认注册的 `ReregistrationPredicate` 只有在 500 返回码时才会激活重新注册：
+```
+@Bean
+@ConditionalOnMissingBean
+public ReregistrationPredicate reRegistrationPredicate() {
+      return ReregistrationPredicate.DEFAULT;
+}
 
+public interface ReregistrationPredicate {
+
+/**
+      * test if the exception is eligible for re-registration.
+      * @param e OperationException
+      * @return if the exception is eligible for re-registration
+      */
+boolean isEligible(OperationException e);
+
+/**
+      * Default implementation that performs re-registration when the status code is 500.
+      */
+ReregistrationPredicate DEFAULT = e -> e.getStatusCode() == 500;
+}
+```
+
+### 问题
+1. preferIpAddress ： 测试环境需要IP访问，主机名不通
 2. critical状态的service 不会自动取消注册：
       `spring.cloud.consul.discovery.health-check-critical-timeout: 1m` - Timeout to deregister services critical for longer than timeout。

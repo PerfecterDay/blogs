@@ -82,3 +82,9 @@ BFD库（Binary File Descriptor library）就是这样的一个GNU项目，它�
 
 ## dd
 dd if=/proc/self/mem of=linux-gate.dso bs=4096 skip=1048574 count=1
+
+dd if=core.675 of=linux-gate.dso bs=4096 skip=558,016 count=2
+
+
+objdump -d --start-address=0xffffe400 --stop-address=0xffffe408 linux-gate.dso
+objdump -d --start-address=0x0bf0 --stop-address=0x0bf8 linux-gate.dso

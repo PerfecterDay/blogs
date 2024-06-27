@@ -2,9 +2,9 @@
 {docsify-updated}
 
 - [Mysql 常用函数](#mysql-常用函数)
-	- [字符串函数](#字符串函数)
-	- [日期和时间函数](#日期和时间函数)
-	- [数值处理函数](#数值处理函数)
+		- [字符串函数](#字符串函数)
+		- [日期和时间函数](#日期和时间函数)
+		- [数值处理函数](#数值处理函数)
 
 
 ### 字符串函数
@@ -30,6 +30,11 @@
 + `SPACE(N)` :　返回一个由N 空隔符号组成的字符串。
 + `SUBSTRING(str,pos) , SUBSTRING(str FROM pos) SUBSTRING(str,pos,len) , SUBSTRING(str FROM pos FOR len)`: 不带有len 参数的格式从字符串str返回一个**子字符串**，起始于位置 pos。带有len参数的格式从字符串str返回一个长度同len字符相同的子字符串，起始于位置 pos。`SUBSTR()` 是 `SUBSTRING()`的同义词。
 + `UPPER(str)` ：转大写
++ `REPLACE(field,src,to)`: 字符串替换
+	```
+	update info_content2 set `explain_content`=REPLACE(explain_content,"~nn",'') WHERE `explain_content` LIKE '%~nn%';
+	update info_content2 set `cont`=REPLACE(cont,"~nn",'') WHERE `cont` LIKE '%~nn%';
+	```
 
 ### 日期和时间函数
 + `ADDDATE(date,INTERVAL expr type) ADDDATE(expr,days)`: 返回日期相加后的日期，当被第二个参数的INTERVAL格式激活后， ADDDATE()就是DATE_ADD()的同义词。相关函数SUBDATE() 则是DATE_SUB()的同义词。

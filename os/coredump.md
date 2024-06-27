@@ -48,6 +48,7 @@
 					0x0000000000002000 0x0000000000002000  R E    0x1
    ```
 5. `dd if=core.675 of=linux-vdso.dso bs=1 skip=558016 count=8192` - 0x883c0=558016,0x2000=8192
+6. `objdump -d --start-address=0xffffe400 --stop-address=0xffffe408 linux-gate.dso`
 
 ## vdso
 > https://man7.org/linux/man-pages/man7/vdso.7.html

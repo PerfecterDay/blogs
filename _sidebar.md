@@ -29,4 +29,4 @@
 * [开发工具与其他](/other/_sidebar.md)
 * [Gtja](/gtja/_sidebar.md)
 * [AI](/AI/_sidebar.md)
-* [Rust](https://kaisery.github.io/trpl-zh-cn/ch01-02-hello-world.html)
+* [Rust](/rust/_sidebar.md)

@@ -1,7 +1,7 @@
 # MIME 类型
-{docisfy-updated}
+{docsify-updated}
 
-媒体类型（也通常称为多用途互联网邮件扩展或 MIME 类型）是一种标准，用来表示文档、文件或一组数据的性质和格式。它在 IETF 的 RFC 6838 中进行了定义和标准化。  
+媒体类型（也通常称为多用途互联网邮件扩展或 MIME 类型）是一种标准，用来表示文档、文件或一组数据的性质和格式。它在 IETF 的 RFC 6838 中进行了定义和标准化。
 互联网号码分配局（IANA）负责跟踪所有官方 MIME 类型，你可以在媒体类型页面中找到最新的完整列表。
 
 ## MIME 类型的结构
@@ -9,8 +9,8 @@ MIME 类型通常仅包含两个部分：类型（type）和子类型（subtype�
 ```
 type/subtype[;parameter=value]
 ```
-类型代表数据类型所属的大致分类，例如 video 或 text。  
-子类型标识了 MIME 类型所代表的指定类型的确切数据类型。以 text 类型为例，它的子类型包括：plain（纯文本）、html（HTML 源代码）、calender（iCalendar/.ics 文件）。  
+类型代表数据类型所属的大致分类，例如 video 或 text。
+子类型标识了 MIME 类型所代表的指定类型的确切数据类型。以 text 类型为例，它的子类型包括：plain（纯文本）、html（HTML 源代码）、calender（iCalendar/.ics 文件）。
 每种类型都有自己的一组可能的子类型。一个 MIME 类型总是包含类型与子类型这两部分，且二者必需成对出现。
 
 MIME 类型对大小写不敏感，但是传统写法都是小写。参数值可以是大小写敏感的。
@@ -19,9 +19,9 @@ MIME 类型对大小写不敏感，但是传统写法都是小写。参数值可
 类型可分为两类：
 + 独立的（discrete）
 + 多部分的（multipart）。
-  
+
 ### 独立类型
-独立类型代表单一文件或媒介，比如一段文字、一个音乐文件、一个视频文件等。  
+独立类型代表单一文件或媒介，比如一段文字、一个音乐文件、一个视频文件等。
 而多部份类型，可以代表由多个部件组合成的文档，其中每个部分都可能有各自的 MIME 类型；此外，也可以代表多个文件被封装在单次事务中一同发送。多部分 MIME 类型的一个例子是，在电子邮件中附加多个文件。
 
 多部分类型指的是一类可分成不同部分的文件，其各部分通常是不同的 MIME 类型；也可用于——尤其在电子邮件中——表示属于同一事务的多个独立文件。它们代表一个复合文档。
@@ -57,28 +57,38 @@ HTTP 不会特殊处理多部分文档：信息会被传输到浏览器（如果
 发送的HTTP报文：
 ```
 POST / HTTP/1.1
-Host: localhost:8000
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:50.0) Gecko/20100101 Firefox/50.0
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
+Host: localhost:9999
 Connection: keep-alive
+Content-Length: 386
+Cache-Control: max-age=0
+sec-ch-ua: "Not/A)Brand";v="8", "Chromium";v="126", "Google Chrome";v="126"
+sec-ch-ua-mobile: ?0
+sec-ch-ua-platform: "macOS"
 Upgrade-Insecure-Requests: 1
-Content-Type: multipart/form-data; boundary=---------------------------8721656041911415653955004498
-Content-Length: 465
+Origin: null
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryBzBehasJKoeCVU5z
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+Sec-Fetch-Site: cross-site
+Sec-Fetch-Mode: navigate
+Sec-Fetch-User: ?1
+Sec-Fetch-Dest: document
+Accept-Encoding: gzip, deflate, br, zstd
+Accept-Language: zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7
 
------------------------------8721656041911415653955004498
+------WebKitFormBoundaryBzBehasJKoeCVU5z
 Content-Disposition: form-data; name="myTextField"
 
 Test
------------------------------8721656041911415653955004498
+------WebKitFormBoundaryBzBehasJKoeCVU5z
 Content-Disposition: form-data; name="myCheckBox"
 
 on
------------------------------8721656041911415653955004498
-Content-Disposition: form-data; name="myFile"; filename="test.txt"
+------WebKitFormBoundaryBzBehasJKoeCVU5z
+Content-Disposition: form-data; name="myFile"; filename="a.txt"
 Content-Type: text/plain
 
-Simple file.
------------------------------8721656041911415653955004498--
+123
+
+------WebKitFormBoundaryBzBehasJKoeCVU5z--
 ```

@@ -11,3 +11,4 @@
   * [Spring cloud open feign](/spring/springboot/spring-cloud-openfeign.md)
   * [Spring email 发送邮件](/spring/springboot/spring-email.md)
   * [Springboot 集成 Jasypt](/spring/springboot/jasypt.md)
+  * [Springboot 优雅停机](/spring/springboot/优雅停机.md)

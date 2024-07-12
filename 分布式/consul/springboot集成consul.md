@@ -1,7 +1,7 @@
 #  Springboot 集成 Consul
 {docsify-updated}
 
-> https://cloud.spring.io/spring-cloud-static/Greenwich.M3/multi/multi_spring-cloud-consul-discovery.html
+> https://docs.spring.io/spring-cloud-consul/docs/current/reference/html/
 
 - [Springboot 集成 Consul](#springboot-集成-consul)
     - [自动配置类](#自动配置类)
@@ -19,41 +19,41 @@
     - [问题](#问题)
 
 consul提供的各种语言的SDK/开发库： https://developer.hashicorp.com/consul/api-docs/libraries-and-sdks  
-spring-cloud-starter-consul-discovery 使用的是  [consul-api](https://github.com/Ecwid/consul-api) ,依赖其底层的 `ConsulClient` 与 Consul 交互。
+`spring-cloud-starter-consul-discovery` 使用的是  [consul-api](https://github.com/Ecwid/consul-api) ,依赖其底层的 `ConsulClient` 与 Consul 交互。
 
 ### 自动配置类
 ```java
-public class ConsulAutoServiceRegistrationAutoConfiguration {  
-  
-    @Autowired  
-    AutoServiceRegistrationProperties autoServiceRegistrationProperties;  
-  
-    @Bean  
-    @ConditionalOnMissingBean    
-    public ConsulAutoServiceRegistration consulAutoServiceRegistration(ConsulServiceRegistry registry,  
-          AutoServiceRegistrationProperties autoServiceRegistrationProperties, ConsulDiscoveryProperties properties,  
-          ConsulAutoRegistration consulRegistration) {  
-       return new ConsulAutoServiceRegistration(registry, autoServiceRegistrationProperties, properties,  
-             consulRegistration);  
-    }  
-  
-    @Bean  
-    public ConsulAutoServiceRegistrationListener consulAutoServiceRegistrationListener(  
-          ConsulAutoServiceRegistration registration) {  
-       return new ConsulAutoServiceRegistrationListener(registration);  
-    }  
-  
-    @Bean  
-    @ConditionalOnMissingBean    
-    public ConsulAutoRegistration consulRegistration(  
-          AutoServiceRegistrationProperties autoServiceRegistrationProperties, ConsulDiscoveryProperties properties,  
-          ApplicationContext applicationContext,  
-          ObjectProvider<List<ConsulRegistrationCustomizer>> registrationCustomizers,  
-          ObjectProvider<List<ConsulManagementRegistrationCustomizer>> managementRegistrationCustomizers,  
-          HeartbeatProperties heartbeatProperties) {  
-       return ConsulAutoRegistration.registration(autoServiceRegistrationProperties, properties, applicationContext,  
-             registrationCustomizers.getIfAvailable(), managementRegistrationCustomizers.getIfAvailable(),  
-             heartbeatProperties);  
+public class ConsulAutoServiceRegistrationAutoConfiguration {
+
+    @Autowired
+    AutoServiceRegistrationProperties autoServiceRegistrationProperties;
+
+    @Bean
+    @ConditionalOnMissingBean
+    public ConsulAutoServiceRegistration consulAutoServiceRegistration(ConsulServiceRegistry registry,
+          AutoServiceRegistrationProperties autoServiceRegistrationProperties, ConsulDiscoveryProperties properties,
+          ConsulAutoRegistration consulRegistration) {
+       return new ConsulAutoServiceRegistration(registry, autoServiceRegistrationProperties, properties,
+             consulRegistration);
+    }
+
+    @Bean
+    public ConsulAutoServiceRegistrationListener consulAutoServiceRegistrationListener(
+          ConsulAutoServiceRegistration registration) {
+       return new ConsulAutoServiceRegistrationListener(registration);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public ConsulAutoRegistration consulRegistration(
+          AutoServiceRegistrationProperties autoServiceRegistrationProperties, ConsulDiscoveryProperties properties,
+          ApplicationContext applicationContext,
+          ObjectProvider<List<ConsulRegistrationCustomizer>> registrationCustomizers,
+          ObjectProvider<List<ConsulManagementRegistrationCustomizer>> managementRegistrationCustomizers,
+          HeartbeatProperties heartbeatProperties) {
+       return ConsulAutoRegistration.registration(autoServiceRegistrationProperties, properties, applicationContext,
+             registrationCustomizers.getIfAvailable(), managementRegistrationCustomizers.getIfAvailable(),
+             heartbeatProperties);
     }
 ```
 
@@ -97,12 +97,12 @@ spring:
 
 ### 服务注册过程
 
-#### 相关配置 
+#### 相关配置
 `ConsulDiscoveryProperties`: springboot配置属性加载类,加载`spring.cloud.consul.discovery`前缀的配置，用于配置Consul服务发现与注册的配置
 
 #### ConsulAutoRegistration
 `ConsulAutoRegistration`: 封装需要注册的服务的信息，例如服务名、服务端口、健康检查、心跳等，它的 `registration` 方法会生成需要向 consul 注册的服务的信息（ `NewService` ）。
-      
+
 ```java
 public static ConsulAutoRegistration registration(
             AutoServiceRegistrationProperties autoServiceRegistrationProperties, ConsulDiscoveryProperties properties,
@@ -187,7 +187,8 @@ public class ConsulServiceRegistry implements ServiceRegistry<ConsulRegistration
 }
 ```
 ConsulServiceRegistry 注册服务时使用的 endpoint：
-http://consul:8500/v1/agent/service/register?token=
+http://consul:8500/v1/agent/service/register?token=xxx
+
 body:
 ```json
 {
@@ -243,7 +244,7 @@ Spring Cloud 支持 Feign（REST 客户端构建器）和 Spring RestTemplate，
    ```
    @Autowired
    private DiscoveryClient discoveryClient;
-   
+
    public String serviceUrl() {
        List<ServiceInstance> list = discoveryClient.getInstances("STORES");
        if (list != null && list.size() > 0 ) {
@@ -254,6 +255,11 @@ Spring Cloud 支持 Feign（REST 客户端构建器）和 Spring RestTemplate，
    ```
 
 ### 自定义注册-使用tcp health check
+
+以下类可以实现两个功能：
+1. 服务端不启用 Http 服务也能进行服务注册：通过监听`ApplicationStartedEvent`触发注册
+2. 使用 tcp 作为健康检查
+
 ```
 @Configuration
 public class ConsulRegister implements ConsulRegistrationCustomizer{

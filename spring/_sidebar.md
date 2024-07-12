@@ -61,6 +61,8 @@
   * [Spring cloud open feign](/spring/springboot/spring-cloud-openfeign.md)
   * [Spring email 发送邮件](/spring/springboot/spring-email.md)
   * [Springboot 集成 Jasypt](/spring/springboot/jasypt集成.md)
+  * [Springboot 优雅停机](/spring/springboot/优雅停机.md)
+  * [Springboot 集成 consul](/分布式/consul/springboot集成consul.md)
 * [Spring 日志配置](/spring/spring-日志配置.md)
 * [Spring SpEL](/spring/spring-spel表达式.md)
 * [Spring JMS集成](/spring/spring-JMS集成.md)

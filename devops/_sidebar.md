@@ -3,4 +3,6 @@
 * [Jenkins简介](/devops/jenkins.md)
 * [Pipeline语法](/devops/pipeline语法.md)
 * [Promethues](#)
-  * [简介](/devops/promethues/简介.md)
+  * [安装与启动](/devops/promethues/安装与启动.md)
+  * [核心概念](/devops/promethues/核心概念.md)
+  * [PromQL](/devops/promethues/promql.md)

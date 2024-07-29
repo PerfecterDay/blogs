@@ -15,3 +15,6 @@
 [root@LXUATGMAA2 ~]# cat ~/.ssh/authorized_keys 
 ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC7f4fSmAsItzNsYlVbuyqkKOV2K2Qx/v0gZEmlirmuR0umUi24Y2bpXpeKODQTvP8uM+WUmgeJUEPH1XFV26wcwXAhDBcCmxBL/aSBAIDcHccSM26qPlqltIf8N2gPAAx/7uhrEziOxmJB2TElpnKzo3GMLPt/v8gBBiAARO8LVGPo8KODoAWv9z/nXYlS1wk+9UnlomGsseEciQUOro/SgmMRynFvfA0MdfV3CCfA+/ziQHp0HQvbeeFl6MY260dOJ5D/cwmXxlYWpab+3lMwk/D18GJ0IzvpRyhLEUzUoxbtjkFr7HAkCXWdJmLkv3IRWYSB5E0EbPy4JhhRyEUCpHH2zYm4kdJ2RPFDtUjpB0KF0jQq+j4bvwBLypQg6rGmD14jzLjuVm4T8uSs0JKYO3Dx2Xc9AZMo2/M+Nam9Tk5q5PBzlsiMOKRs2LbIOlLimZ7gxYjxbmkCWHgnuN/EDBf8G+SQiMkrP242NR9qeswe2zRxdU6ZCXmuxqgYgS0= root@LXUATGMAA3.GTJA.COM.UAT
 ```
+
+### ssh 配置文件
+> https://daemon369.github.io/ssh/2015/03/21/using-ssh-config-file

@@ -6,5 +6,5 @@
 * [vscode快捷键](/other/vscode%20快捷键.md)
 * [powershell与cmd](/other/powershell与cmd.md)
 * [scoop](/other/scoop.md)
-* [proxychains](/other/proxychains.md)
+* [proxychains](/other/proxychains和netcat.md)
 * [coredns](/other/coredns.md)

@@ -17,4 +17,32 @@ ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC7f4fSmAsItzNsYlVbuyqkKOV2K2Qx/v0gZEmlirmu
 ```
 
 ### ssh 配置文件
+ssh程序可以从以下途径获取配置参数：
+
++ 命令行选项
++ 用户配置文件 (~/.ssh/config)
++ 系统配置文件 (/etc/ssh/ssh_config)
+
 > https://daemon369.github.io/ssh/2015/03/21/using-ssh-config-file
+
+
+### .netrc 配置文件
+用于配置网络登录帐号信息的 ~/.netrc 文件,保存用户名密码，减少输用户名密码。
+
+文件 ~/.netrc 用于设置自动登录时所需要的帐号信息。
+```
+machine  your-git-server
+login   your-username
+password   your-password
+```
+如果有多个 server 就重复上面的三行， 分别输入对应的服务器、 用户名和密码即可.
+```
+machine kekxv.github.io login username password passwd
+machine kekxv2.github.io login username2 password passwd2
+default login username password passwd
+```
+
+netrc 文件可以用于下列程序：
++ curl
++ ftp
++ git

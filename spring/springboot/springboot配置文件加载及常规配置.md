@@ -4,10 +4,10 @@
 > https://blog.csdn.net/u013217730/article/details/116716418
 
 - [Springboot 配置文件加载及常见配置](#springboot-配置文件加载及常见配置)
-  - [加载配置文件及使用](#加载配置文件及使用)
-  - [数据库连接池配置](#数据库连接池配置)
-  - [配置加密-Vault](#配置加密-vault)
-  - [常用配置](#常用配置)
+    - [加载配置文件及使用](#加载配置文件及使用)
+    - [数据库连接池配置](#数据库连接池配置)
+    - [配置加密-Vault](#配置加密-vault)
+    - [常用配置](#常用配置)
 
 ### 加载配置文件及使用
 
@@ -222,3 +222,33 @@ export VAULT_TOKEN="hvs.qbUz87luxIjXMeMl83OEwt3c"
 8. 配置静态文件的目录： `spring.resources.static-locations=classpath:/mystatic`
 9. 关闭 banner :`spring.main.banner-mode=off`
 10. 启用 http2 :`server.http2.enabled=true`
+
+
+## Springboot环境配置加载原理
+```java
+private ConfigurableEnvironment prepareEnvironment(SpringApplicationRunListeners listeners,
+        DefaultBootstrapContext bootstrapContext, ApplicationArguments applicationArguments) {
+    // Create and configure the environment
+    ConfigurableEnvironment environment = getOrCreateEnvironment();
+    configureEnvironment(environment, applicationArguments.getSourceArgs());
+    ConfigurationPropertySources.attach(environment);
+    listeners.environmentPrepared(bootstrapContext, environment);
+    DefaultPropertiesPropertySource.moveToEnd(environment);
+    Assert.state(!environment.containsProperty("spring.main.environment-prefix"),
+            "Environment prefix cannot be set via properties.");
+    bindToSpringApplication(environment);
+    if (!this.isCustomEnvironment) {
+        EnvironmentConverter environmentConverter = new EnvironmentConverter(getClassLoader());
+        environment = environmentConverter.convertEnvironmentIfNecessary(environment, deduceEnvironmentClass());
+    }
+    ConfigurationPropertySources.attach(environment);
+    return environment;
+}
+```
+
+在 `getOrCreateEnvironment()` 方法中会生成一个 `ApplicationServletEnvironment` 类型的代表环境的实例对象， `ApplicationServletEnvironment` 派生自 `AbstractEnvironment` 类，`AbstractEnvironment` 类在初始化的时候会调用 `customizePropertySources(MutablePropertySources propertySources)` 方法， `StandardEnvironment` 中会在该方法中加载系统属性和系统环境变量到 `MutablePropertySources` 中。
+
+然后调用了 `configureEnvironment(environment, applicationArguments.getSourceArgs())` 方法，该方法首先会为 environment 对象配置一个`ApplicationConversionService`类型的 `ConversionService`, `ApplicationConversionService` 会注册一堆 `Convertor` 和 `Formatter` 。
+
+
+最终在 `this.invokeBeanFactoryPostProcessors(beanFactory);` 中会加载配置文件路径到 environment 的 propertySources 属性中。

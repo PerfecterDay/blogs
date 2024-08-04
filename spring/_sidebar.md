@@ -52,6 +52,7 @@
     * [Spring-MVC线程安全](/spring/spring_mvc/springmvc线程安全相关.md)
     * [Spring-MVC的Websocket](/spring/spring_mvc/springmvc-websocket.md)
 * [Springboot](#)
+  * [Springboot 启动原理-SpringApplication实例化](/spring/springboot/springboot启动原理-SpringApplication.md)
   * [Springboot 启动过程及扩展点](/spring/springboot/springboot启动原理分析.md)
   * [Springboot 自动配置原理](/spring/springboot/springboot自动配置原理.md)
   * [Springboot 配置文件加载及常用配置](/spring/springboot/springboot配置文件加载及常规配置.md)

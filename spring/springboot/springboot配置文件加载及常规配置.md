@@ -252,3 +252,8 @@ private ConfigurableEnvironment prepareEnvironment(SpringApplicationRunListeners
 
 
 最终在 `this.invokeBeanFactoryPostProcessors(beanFactory);` 中会加载配置文件路径到 environment 的 propertySources 属性中。
+
+`ConfigurationClassPostProcessor` 的 `processConfigBeanDefinitions(registry)` 会加载配置文件到 environment 中。
+
+`ConfigurationClassParser` 的 `parse(Set<BeanDefinitionHolder> configCandidates)`
+`ConfigurationClassParser` 的 `doProcessConfigurationClass()`方法中会

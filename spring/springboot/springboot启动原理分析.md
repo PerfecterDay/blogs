@@ -2,7 +2,7 @@
 {docsify-updated}
 
 - [Springboot 启动原理-run方法](#springboot-启动原理-run方法)
-	- [通过 SpringApplication 的 setXXX() 方法自定义 SpringApplication](#通过-springapplication-的-setxxx-方法自定义-springapplication)
+	- [Headless 模式](#headless-模式)
 	- [扩展点](#扩展点)
 		- [SpringApplicationRunListener](#springapplicationrunlistener)
 		- [ApplicationContextInitializer](#applicationcontextinitializer)
@@ -11,46 +11,18 @@
 			- [CommandLineRunner](#commandlinerunner)
 			- [自定义添加 Runner](#自定义添加-runner)
 		- [测试代码](#测试代码)
+	- [通过 SpringApplication 的 setXXX() 方法自定义 SpringApplication](#通过-springapplication-的-setxxx-方法自定义-springapplication)
 
 实例化了了 `SpringApplication` 对象之后，紧接着就是调用了 `run()` 方法：
-```
-public ConfigurableApplicationContext run(String... args) {
-	long startTime = System.nanoTime();
-	DefaultBootstrapContext bootstrapContext = createBootstrapContext();
-	ConfigurableApplicationContext context = null;
-	configureHeadlessProperty();
-	SpringApplicationRunListeners listeners = getRunListeners(args);
-	listeners.starting(bootstrapContext, this.mainApplicationClass);
-	try {
-		ApplicationArguments applicationArguments = new DefaultApplicationArguments(args);
-		ConfigurableEnvironment environment = prepareEnvironment(listeners, bootstrapContext, applicationArguments);
-		configureIgnoreBeanInfo(environment);
-		Banner printedBanner = printBanner(environment);
-		context = createApplicationContext();
-		context.setApplicationStartup(this.applicationStartup);
-		prepareContext(bootstrapContext, context, environment, listeners, applicationArguments, printedBanner);
-		refreshContext(context);
-		afterRefresh(context, applicationArguments);
-		Duration timeTakenToStartup = Duration.ofNanos(System.nanoTime() - startTime);
-		if (this.logStartupInfo) {
-			new StartupInfoLogger(this.mainApplicationClass).logStarted(getApplicationLog(), timeTakenToStartup);
-		}
-		listeners.started(context, timeTakenToStartup);
-		callRunners(context, applicationArguments);
-	}
-	....
-	}
-```
+<center><img src="pics/springapplication-run.png" alt=""></center>
 
-## 通过 SpringApplication 的 setXXX() 方法自定义 SpringApplication
-1. `setBeanNameGenerator(BeanNameGenerator beanNameGenerator)` ：设置自定义的 beanName 生成器
-2. `setBannerMode(Banner.Mode bannerMode)`：设置启动 Banner 的模式：OFF、CONSOLE、LOG
-3. `setBanner(Banner banner)`: 设置自定义 banner
+## Headless 模式
+如果您的 Java 应用程序不与用户直接交互，则可以使用无头模式。 这意味着您的 Java 应用程序不显示窗口或对话框，不接受键盘或鼠标输入，也不使用任何重量级 AWT 组件。 在 Java 调用中指定 Java 属性 `java.awt.headless=true` 即可选择该模式。 通过使用无头模式，可以避免使用 VNC/X 服务器。
 
 ## 扩展点
 
 ### SpringApplicationRunListener
-`SpringApplicationRunListener` 是 `SpringApplication run()` 方法的侦听器。 与 spring events 机制不同，它是专门用来监控 `run()` 方法的，但是 spring events 可以在各个业务逻辑中随时使用。创建自定义 `SpringApplicationRunListener` 一般要两个步骤：
+`SpringApplicationRunListener` 是 `SpringApplication run()` 方法的侦听器。 与 spring events(`ApplicationListener`) 机制不同，它是专门用来监控 `run()` 方法的，而 spring events 可以在各个业务逻辑中随时使用。创建并使用自定义 `SpringApplicationRunListener` 一般要两个步骤：
 1. `SpringApplicationRunListener` 是通过 `SpringFactoriesLoader` 加载的，所以必须在 `META-INF/spring.factories`中声明：
    ```
 	org.springframework.boot.SpringApplicationRunListener=\
@@ -90,17 +62,8 @@ public class MyRunnerListener implements SpringApplicationRunListener {
     }
 
     @Override
-    public void started(ConfigurableApplicationContext context) {
-        System.out.println(">>>>>>>>> started -----------");
-    }
-
-    @Override
     public void ready(ConfigurableApplicationContext context, Duration timeTaken) {
         System.out.println(">>>>>>>>> ready");
-    }
-    @Override
-    public void running(ConfigurableApplicationContext context) {
-        System.out.println(">>>>>>>>> running");
     }
     
     @Override
@@ -221,3 +184,9 @@ public class App {
 ```
 除此之外还有上面自定义的 `SpringApplicationRunListener`，运行截图：
 <center><img src="pics/springboot-run.png" alt=""></center>
+
+
+## 通过 SpringApplication 的 setXXX() 方法自定义 SpringApplication
+1. `setBeanNameGenerator(BeanNameGenerator beanNameGenerator)` ：设置自定义的 beanName 生成器
+2. `setBannerMode(Banner.Mode bannerMode)`：设置启动 Banner 的模式：OFF、CONSOLE、LOG
+3. `setBanner(Banner banner)`: 设置自定义 banner

@@ -41,12 +41,12 @@ Compose 项目由 Python 编写，实现上调用了 Docker 服务提供的 API 
 ```
 identidock: ➊  
   build: .  ➋ 
-ports:    ➌ 
- - "5000:5000"  
-environment: ➍ 
-  ENV: DEV  
-volumes: ➎ 
-  - ./app:/app
+  ports:    ➌ 
+  - "5000:5000"  
+  environment: ➍ 
+    ENV: DEV  
+  volumes: ➎ 
+    - ./app:/app
 ```
 
 + ➊ 第一行声明构建的容器名称。一个 YAML 文件中可以定义多个容器（在 Compose 的术语中称为服务）。
@@ -103,7 +103,7 @@ docker compose -f docker-compose-builder.yaml run --rm compile
 #### rm
 删除已停止的容器。不要忘记使用 -v 参数来删除任何由 Docker 管理的数据卷。
 
-一个普通的工作流程以 `docker compose up -d` 命令启动应用程序开始。`docker compose logs` 和 `ps` 命令可以用来验证应用程序的状态，还能帮助调试。修改代码后，先执行 `docker compose build` 构建新的镜像，然后执行 `docker compose up -d` 取代运行中的容器。注意，Compose 会保留原来容器中所有旧的数据卷，这意味着即使容器更新后，数据库和缓存也依旧在容器内（这很可能会造成混淆，因此要特别小心）。如果你修改了 Compose 的 YAML 文件，但不需要构建新镜像，可以通过 `up -d` 参数使Compose 以新的配置替换容器。如果想要强制停止 Compose 并重新创建所有容器，可以使用 `--force-recreate` 选项来达到目的。
+一个普通的工作流程以 `docker compose up -d` 命令启动应用程序开始。`docker compose logs` 和 `ps` 命令可以用来验证应用程序的状态，还能帮助调试。修改代码后，先执行 `docker compose build` 构建新的镜像，然后执行 `docker compose up -d` 取代运行中的容器。注意，Compose 会保留原来容器中所有旧的数据卷，这意味着即使容器更新后，数据库和缓存也依旧在容器内（这很可能会造成混淆，因此要特别小心）。如果你修改了 Compose 的 YAML 文件，但不需要构建新镜像，可以通过 `up -d` 参数使Compose 以新的配置替换容器。如果想要强制停止 Compose 并重新创建所有容器，可以使用 `--force-recreate/-f` 选项来达到目的。
 
 当你不再需要使用该应用时，可以执行 `docker compose stop` 来停止应用程序。假设代码没有变更，可以通过 `docker compose start` 或 `up` 来重启相同的容器。使用 `docker compose rm` 彻底把容器删除。
 

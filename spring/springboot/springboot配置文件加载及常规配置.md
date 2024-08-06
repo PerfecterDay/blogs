@@ -251,9 +251,18 @@ private ConfigurableEnvironment prepareEnvironment(SpringApplicationRunListeners
 然后调用了 `configureEnvironment(environment, applicationArguments.getSourceArgs())` 方法，该方法首先会为 environment 对象配置一个`ApplicationConversionService`类型的 `ConversionService`, `ApplicationConversionService` 会注册一堆 `Convertor` 和 `Formatter` 。
 
 
-最终在 `this.invokeBeanFactoryPostProcessors(beanFactory);` 中会加载配置文件路径到 environment 的 propertySources 属性中。
+最终在 `invokeBeanFactoryPostProcessors(beanFactory);` 中会加载配置文件路径到 environment 的 propertySources 属性中。
 
 `ConfigurationClassPostProcessor` 的 `processConfigBeanDefinitions(registry)` 会加载配置文件到 environment 中。
 
-`ConfigurationClassParser` 的 `parse(Set<BeanDefinitionHolder> configCandidates)`
-`ConfigurationClassParser` 的 `doProcessConfigurationClass()`方法中会
+`ConfigurationClassPostProcessor` 实现了 `BeanDefinitionRegistryPostProcessor` 接口
+
+`ConfigurationClassParser`
+			parser.parse(candidates);
+            `ConfigurationClassParser` 的 `processPropertySource`
+
+            ConfigurationPropertySourcesPropertyResolver 解析占位符
+
+            PropertiesPropertySource
+
+`ComponentScanAnnotationParser`

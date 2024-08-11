@@ -253,6 +253,10 @@ private ConfigurableEnvironment prepareEnvironment(SpringApplicationRunListeners
 
 最终在 `invokeBeanFactoryPostProcessors(beanFactory);` 中会加载配置文件路径到 environment 的 propertySources 属性中。
 
+1. `ConfigurationClassPostProcessor` 是如何加载执行的 ？
+`PostProcessorRegistrationDelegate` 的 `invokeBeanFactoryPostProcessors()` 方法执行时会加载 `ConfigurationClassPostProcessor`类型的 Bean 并执行。
+<center><img src="pics/ConfigurationClassPostProcessor.png" alt=""></center>
+
 `ConfigurationClassPostProcessor` 的 `processConfigBeanDefinitions(registry)` 会加载配置文件到 environment 中。
 
 `ConfigurationClassPostProcessor` 实现了 `BeanDefinitionRegistryPostProcessor` 接口

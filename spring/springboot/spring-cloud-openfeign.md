@@ -221,6 +221,8 @@ static class Fallback implements TestClient {
 public @interface EnableFeignClients{}
 ```
 
+<center><img src="pics/feign-process-imports.png" width="60%"></center>
+
 `FeignClientsRegistrar` 实现了 `ImportBeanDefinitionRegistrar` 接口。
 由源码可以看出， `ImportBeanDefinitionRegistrar` 本质上是一个接口。在 `ImportBeanDefinitionRegistrar` 接口中，有一个 `registerBeanDefinitions()` 方法，通过 `registerBeanDefinitions()` 方法，我们可以向Spring容器中注册bean实例。
 

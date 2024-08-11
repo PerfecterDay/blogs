@@ -13,8 +13,8 @@
     - [测试代码](#测试代码)
   - [通过 SpringApplication 的 setXXX() 方法自定义 SpringApplication](#通过-springapplication-的-setxxx-方法自定义-springapplication)
 
-实例化了了 `SpringApplication` 对象之后，紧接着就是调用了 `run()` 方法：
-<center><img src="pics/springapplication-run.png" alt=""></center>
+实例化了 `SpringApplication` 对象之后，紧接着就是调用了 `run()` 方法：
+<center><img src="pics/springapplication-run.png" width="70%"></center>
 
 ## Headless 模式
 如果您的 Java 应用程序不与用户直接交互，则可以使用无头模式。 这意味着您的 Java 应用程序不显示窗口或对话框，不接受键盘或鼠标输入，也不使用任何重量级 AWT 组件。 在 Java 调用中指定 Java 属性 `java.awt.headless=true` 即可选择该模式。 通过使用无头模式，可以避免使用 VNC/X 服务器。
@@ -22,7 +22,7 @@
 ## 扩展点
 
 ### SpringApplicationRunListener
-`SpringApplicationRunListener` 是 `SpringApplication run()` 方法的侦听器。 与 spring events(`ApplicationListener`) 机制不同，它是专门用来监控 `run()` 方法的，而 spring events 可以在各个业务逻辑中随时使用。创建并使用自定义 `SpringApplicationRunListener` 一般要两个步骤：
+`SpringApplicationRunListener` 是 `SpringApplication run()` 方法的侦听器。 与 spring events(`ApplicationListener`) 机制不同，它是专门用来监控 `run()` 方法的，只在 `run()` 方法作用域内有效， 而 sring events 中的 listeners 是长期存在与容器中，可以在各个业务逻辑中随时使用监听特定事件发生的。创建并使用自定义 `SpringApplicationRunListener` 一般要两个步骤：
 1. `SpringApplicationRunListener` 是通过 `SpringFactoriesLoader` 加载的，所以必须在 `META-INF/spring.factories`中声明：
    ```
 	org.springframework.boot.SpringApplicationRunListener=\
@@ -76,9 +76,9 @@ public class MyRunnerListener implements SpringApplicationRunListener {
 ### ApplicationContextInitializer
 回调接口，**用于在刷新 Spring ConfigurableApplicationContext 之前对其进行初始化**。
 通常用于需要对应用上下文进行编程初始化的网络应用程序中。例如，针对上下文环境注册属性源或激活配置文件。请参阅 `ContextLoader` 和 `FrameworkServlet` 支持，分别用于声明 `contextInitializerClasses` 上下文参数和初始参数。
-我们鼓励 `ApplicationContextInitializer` 处理程序检测 Spring 的 Ordered 接口是否已实现或 @Order 注解是否存在，并在调用前对实例进行相应排序。
+我们鼓励 `ApplicationContextInitializer` 处理程序检测 Spring 的 `Ordered` 接口是否已实现或 `@Order` 注解是否存在，并在调用前对实例进行相应排序。
 
-`ApplicationContextInitializer` 是在springboot启动过程(refresh方法前)调用,主要是在 `ApplicationContextInitializer` 中 `initialize` 方法中拉起了 `ConfigurationClassPostProcessor` 这个类(我在springboot启动流程中有描述)，通过这个 processor 实现了 beandefinition 。言归正传， 自定义 `ApplicationContextInitializer` 主要有3种方式：
+`ApplicationContextInitializer` 是在springboot启动过程(refresh方法前)中调用,主要是在 `ApplicationContextInitializer` 中 `initialize` 方法中拉起了 `ConfigurationClassPostProcessor` 这个类(我在springboot启动流程中有描述)，通过这个 processor 实现了 beandefinition 的扫描与加载。言归正传， 自定义 `ApplicationContextInitializer` 主要有3种方式：
 1. **使用spring.factories方式**
 
 	首先我们自定义个类实现了 `ApplicationContextInitializer` ,然后在resource下面新建 `META-INF/spring.factories` 文件。然后在文件中加入：
@@ -120,8 +120,8 @@ public class MyRunnerListener implements SpringApplicationRunListener {
 如果指定了加载顺序 @Order,则按照 @Order 的顺序进行执行。
 说明：数字越小，优先级越高，也就是@Order(1)注解的类会在@Order(2)注解的类之前执行。
 
-Sprinboot 在程序启动之后（ApplicationContext创建、refresh 之后）调用这些接口方法。
-<center><img src="pics/springboot-runner.png" width="50%"></center>
+Springboot 在程序启动之后（ApplicationContext创建、refresh 之后）调用这些接口方法。
+<!-- <center><img src="pics/springboot-runner.png" width="50%"></center> -->
 
 #### ApplicationRunner
 ```

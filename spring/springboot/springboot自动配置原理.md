@@ -1,8 +1,6 @@
 #  Springboot 自动配置原理
 {docsify-updated}
 
-
-## 自动配置原理
 Springboot（通常是各种starter） 实际上就是为我们写好了很多 @Configuration 注解的配置类，这些类中大量使用了基于 @Conditional 注解的配置，以在满足一些条件时自动为我们注入一些 Bean 。那么还有一个问题，我们知道，要使 @Configuration 注解的配置类生效，主要有三种方式：
 1. 它处于自动扫描的包下，会被自动扫描
 2. 被其他配置类用 @Import 引用
@@ -11,9 +9,65 @@ Springboot（通常是各种starter） 实际上就是为我们写好了很多 @
    AnnotationConfigWebApplicationContext context = new AnnotationConfigWebApplicationContext();
    context.register(ExampleConfiguration.class);
    ```
-这些方式都必须要求使用者（写代码）手写相关的代码才能完成。Springboot 使用了另一种方式来保证了这些预定义的配置类被加载。
+这些方式都必须要求使用者（写代码）手写相关的代码才能完成。
 
-Spring Boot 会检查发布的 jar 中是否存在 `META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports` 文件(Springboot 中的`AutoConfigurationMetadata`类实现)。该文件应列出配置类，每行一个类名，如下例所示：
+Springboot 是如何加载这些配置类的呢？
+
+## @Import 注解
++ 导入组件：@Import 注解允许你导入一个或多个组件类，通常是 @Configuration 配置类，到你的 Spring 应用上下文中。
++ 功能性：它提供了与 Spring XML 配置中的 <import/> 元素类似的功能，使配置模块化和易于管理。
++ 用法：你可以使用它导入：
++ `@Configuration` 配置类，这些类定义了 bean 和配置设置。
++ `ImportSelector` 实现，可以根据某些条件有选择地导入配置。
++ `ImportBeanDefinitionRegistrar` 实现，可以通过编程方式注册 beanDefinition 定义。
+
+下图展示了Spring/Springboot 是如何处理 `@Import` 注解的：
+<center><img src="pics/import.svg" alt=""></center>
+
+## 自动配置原理
+
+```Java
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Inherited
+@SpringBootConfiguration
+@EnableAutoConfiguration
+@ComponentScan(excludeFilters = { @Filter(type = FilterType.CUSTOM, classes = TypeExcludeFilter.class),
+		@Filter(type = FilterType.CUSTOM, classes = AutoConfigurationExcludeFilter.class) })
+public @interface SpringBootApplication {
+    ....
+}
+
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Inherited
+@AutoConfigurationPackage
+@Import(AutoConfigurationImportSelector.class)
+public @interface EnableAutoConfiguration {
+    ...
+}
+
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Inherited
+@Import(AutoConfigurationPackages.Registrar.class)
+public @interface AutoConfigurationPackage {
+    ....
+}
+```
+
+<center><img src="pics/process-imports.png" width="60%"></center>
+
+通过 `@SpringBootApplication`注解， `AutoConfigurationImportSelector` 和 `AutoConfigurationPackages.Registrar` 被 `@Import` 导入。
+
+Springboot 中的`AutoConfigurationImportSelector`（委托 `ImportCandidates` 真正实现）会检查发布的 jar 中的 `META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports` 文件。
+
+<center><img src="pics/auto-config.png" alt=""></center>
+
+该文件应列出配置类，每行一个类名，如下例所示：
 ```
 com.mycorp.libx.autoconfigure.LibXAutoConfiguration
 com.mycorp.libx.autoconfigure.LibXWebAutoConfiguration
@@ -22,10 +76,10 @@ com.mycorp.libx.autoconfigure.LibXWebAutoConfiguration
 
 自动配置必须通过在导入文件中命名的方式加载。确保它们被定义在特定的包空间中，并且永远不会成为组件扫描的目标。此外，自动配置类不应允许组件扫描查找其他组件,应使用特定的 `@Import` 注解来代替。
 
-### @Configuration 注解
+## @Configuration 注解
 使用 @Configuration 注解的类，可以在其内定义用 @Bean 注解的方法，方法的返回对象将注入到 Spring bean 容器中 。
 
-### @Conditional 注解
+## @Conditional 注解
 `@Conditional` 是最基础的注解，许多其他注解都是扩展自该注解。
 
 ```

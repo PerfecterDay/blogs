@@ -131,4 +131,6 @@ shared before the {@link ApplicationContext} is available.
 从注释及源码中可以看出 `BootstrapContext` 主要在 `ApplicationContext` 准备好之前充当容器功能使用。
 
 ### ApplicationContextInitializer和ApplicationListener
-`ApplicationContextInitializer` 和 `ApplicationListener` 在后文会介绍。
+`ApplicationContextInitializer` 和 `ApplicationListener` 在后文会介绍。下边是 SpringApplication 实例化后加载到的实例：
+
+<center><img src="/pics/springApplication.png" alt=""></center>

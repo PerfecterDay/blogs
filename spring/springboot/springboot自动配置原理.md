@@ -1,9 +1,25 @@
 #  Springboot 自动配置原理
 {docsify-updated}
 
-Springboot（通常是各种starter） 实际上就是为我们写好了很多 @Configuration 注解的配置类，这些类中大量使用了基于 @Conditional 注解的配置，以在满足一些条件时自动为我们注入一些 Bean 。那么还有一个问题，我们知道，要使 @Configuration 注解的配置类生效，主要有三种方式：
-1. 它处于自动扫描的包下，会被自动扫描
-2. 被其他配置类用 @Import 引用
+## 注解扫描的实现机制
+自动配置的本质还是Spring扫描配置类/配置文件，加载基于注解或者xml配置的 bean。那么首先，依然是要扫描配置类。
+
+Spring基于注解配置功能主要依赖 `BeanPostProcessor/BeanFactoryPostProcessor` 扩展来实现的，一些典型的 `BeanPostProcessor/BeanFactoryPostProcessor` 如下：
++ `ConfigurationClassPostProcessor` 
++ `AutowiredAnnotationBeanPostProcessor`
++ `CommonAnnotationBeanPostProcessor`
++ `PersistenceAnnotationBeanPostProcessor`
++ `EventListenerMethodProcessor`
+
+其中某些 `xxxProcessor` 的加载过程如下：
+<center><img src="pics/create_context.svg" width=""></center>
+
+加载了这些 `xxxProcessor` 后，就能扫描配置类了。自动配置类与普通配置类有一些些差别。
+
+## 自动配置类
+Springboot（通常是各种starter） 的自动配置实际上就是为我们写好了很多 `@Configuration` 注解的配置类，这些类中大量使用了基于 `@Conditional` 注解的配置，以在满足一些条件时自动为我们注入一些 Bean 。那么还有一个问题，我们知道，要使 `@Configuration` 注解的配置类生效，主要有三种方式：
+1. 它处于自动扫描的包下，会被自动扫描(上文讲述了)
+2. 被其他配置类用 `@Import` 引用
 3. 采用编程的方式手动注册到应用上下文
    ```
    AnnotationConfigWebApplicationContext context = new AnnotationConfigWebApplicationContext();
@@ -24,7 +40,7 @@ Springboot 是如何加载这些配置类的呢？
 下图展示了Spring/Springboot 是如何处理 `@Import` 注解的：
 <center><img src="pics/import.svg" alt=""></center>
 
-## 自动配置原理
+## Springboot自动配置原理
 
 ```Java
 @Target(ElementType.TYPE)

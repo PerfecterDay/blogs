@@ -4,7 +4,7 @@
 
 基于注解的注入在 XML 注入之前执行。因此，XML 配置会覆盖通过这两种方法注入的属性。
 
-基于注解配置功能主要依赖 `BeanPostProcessor` 扩展来实现的，一些典型的 `BeanPostProcessor` 如下：
+基于注解配置功能主要依赖 `BeanPostProcessor/BeanFactoryPostProcessor` 扩展来实现的，一些典型的 `BeanPostProcessor/BeanFactoryPostProcessor` 如下：
 + ConfigurationClassPostProcessor
 + AutowiredAnnotationBeanPostProcessor
 + CommonAnnotationBeanPostProcessor

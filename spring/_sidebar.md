@@ -8,7 +8,7 @@
   * [Spring IOC-概览](/spring/core-ioc/spring-ioc-概览.md)
   * [Spring IOC-bean的定义](/spring/core-ioc/spring-ioc-bean的定义.md)
   * [Spring IOC-依赖注入](/spring/core-ioc/spring-ioc-依赖注入.md)
-  * [Spring IOC-扩展点](/spring/core-ioc/spring-ioc-扩展点.md)
+  * [Spring IOC-核心原理](/spring/core-ioc/spring-ioc-核心原理.md)
   * [动态注册 Bean-ImportBeanDefinitionRegistrar](/spring/core-ioc/spring-ioc-ImportBeanDefinitionRegistrar.md)
   * [Spring IOC-基于注解的配置](/spring/core-ioc/spring-ioc-基于注解的配置.md)
   * [Spring IOC-基于Java的配置](/spring/core-ioc/spring-ioc-基于Java的配置.md)

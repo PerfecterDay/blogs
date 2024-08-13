@@ -1,4 +1,4 @@
-#  Spring IOC 扩展点
+#  Spring IOC 核心原理
  {docsify-updated}
 > https://docs.spring.io/spring-framework/reference/core/beans.html
 
@@ -74,6 +74,8 @@ BeanFactory 实例化一个 `bean` 的步骤：
 Bean 在应用上下文中的生命周期与在 BeanFactory 中的类似，实际上，应用上下文在初始化时，会向容器中注册一个 `ApplicationContextAwareProcessor` 类型的 `BeanPostProcessor` 实现类，并实现 `postProcessBeforeInitialization` 方法，这样的话，调用 `getBean`方法时， `ApplicationContextAwareProcessor` 就会生效， `postProcessBeforeInitialization` 判断如果 Bean 实现了 `EnvironmentAware` , `EmbeddedValueResolverAware` , `ResourceLoaderAware` , `ApplicationEventPublisherAware` , `MessageSourceAware` , `ApplicationContextAware` 接口，则会分别调用它们。
 
 ApplicationContext 和 BeanFactory 的一个重大区别在于：前者会利用java反射机制自动识别出注册的 `BeanPostProcessor`, `BeanFactoryPostProcessor` , `InstantiationAwareBeanPostProcessor` ,并自动将它们注册到容器中；而后者需要手工调用 `addBeanPostProcessor` 方法注册它们。
+
+<center><img src="pics/bean-postprocessors.png" alt=""></center>
 
 `ApplicationContext` 的 `refresh` 方法，会在 `ApplicationContext` 初始化时调用：
 ```

@@ -2,7 +2,6 @@
 {docsify-updated}
 
 - [Springboot 启动原理-run方法](#springboot-启动原理-run方法)
-  - [Headless 模式](#headless-模式)
   - [扩展点](#扩展点)
     - [SpringApplicationRunListener](#springapplicationrunlistener)
     - [ApplicationContextInitializer](#applicationcontextinitializer)
@@ -12,12 +11,12 @@
       - [自定义添加 Runner](#自定义添加-runner)
     - [测试代码](#测试代码)
   - [通过 SpringApplication 的 setXXX() 方法自定义 SpringApplication](#通过-springapplication-的-setxxx-方法自定义-springapplication)
+  - [Headless 模式](#headless-模式)
 
 实例化了 `SpringApplication` 对象之后，紧接着就是调用了 `run()` 方法：
 <center><img src="pics/springapplication-run.png" width="70%"></center>
 
-## Headless 模式
-如果您的 Java 应用程序不与用户直接交互，则可以使用无头模式。 这意味着您的 Java 应用程序不显示窗口或对话框，不接受键盘或鼠标输入，也不使用任何重量级 AWT 组件。 在 Java 调用中指定 Java 属性 `java.awt.headless=true` 即可选择该模式。 通过使用无头模式，可以避免使用 VNC/X 服务器。
+运行到 `refresh(context)` 将会调用 `applicationContext` 的核心 `refresh()` 方法，就是 [spring 的核心启动过程](../core-ioc/spring-ioc-核心原理.md)
 
 ## 扩展点
 
@@ -190,3 +189,6 @@ public class App {
 1. `setBeanNameGenerator(BeanNameGenerator beanNameGenerator)` ：设置自定义的 beanName 生成器
 2. `setBannerMode(Banner.Mode bannerMode)`：设置启动 Banner 的模式：OFF、CONSOLE、LOG
 3. `setBanner(Banner banner)`: 设置自定义 banner
+
+## Headless 模式
+如果您的 Java 应用程序不与用户直接交互，则可以使用无头模式。 这意味着您的 Java 应用程序不显示窗口或对话框，不接受键盘或鼠标输入，也不使用任何重量级 AWT 组件。 在 Java 调用中指定 Java 属性 `java.awt.headless=true` 即可选择该模式。 通过使用无头模式，可以避免使用 VNC/X 服务器。

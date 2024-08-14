@@ -36,6 +36,7 @@
     * [Servlet](/spring/spring_mvc/javaee/javaEE基础之Servlet.md)
     * [Servlet 异步请求](/spring/spring_mvc/javaee/javaEE之异步请求.md)
   * [Spring MVC](#)
+    * [Spring-MVC 的启动与配置原理](/spring/spring_mvc/springmvc的配置.md)
     * [Spring-MVC的启动](/spring/spring_mvc/spring的启动.md)
     * [Spring-MVC整体运行流程和架构](/spring/spring_mvc/springmvc整体运行流程和架构.md)
     * [Spring-MVC的 HandlerMapping 配置](/spring/spring_mvc/springmvc-HandlerMapping配置.md)
@@ -46,7 +47,6 @@
     * [Spring-MVC中 DispatcherServlet](/spring/spring_mvc/springmvc中DispatcherServlet初始化分析.md)
     * [Spring-MVC中 RequestMappingHandlerAdapter](/spring/spring_mvc/springmvc中RequestMappingHandlerAdapter分析.md)
     <!-- * [Spring-MVC中的注解](/spring/spring_mvc/springmvc-注解.md) -->
-    * [Spring-MVC 的配置](/spring/spring_mvc/springmvc的配置.md)
     * [Spring-MVC中 参数绑定与校验](/spring/spring_mvc/springmvc-处理方法的参数解析转换与校验.md)
     * [Spring-MVC异常处理](/spring/spring_mvc/springmvc异常处理.md)
     * [Spring-MVC线程安全](/spring/spring_mvc/springmvc线程安全相关.md)

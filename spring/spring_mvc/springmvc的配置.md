@@ -1,14 +1,21 @@
-#  Spring MVC 配置
+#  Spring MVC 的启动与配置原理
 {docsify-updated}
 
-- [Spring MVC 配置](#spring-mvc-配置)
+- [Spring MVC 的启动与配置原理](#spring-mvc-的启动与配置原理)
 	- [WebMvcConfigurer](#webmvcconfigurer)
-	- [Springboot 的自动配置- WebMvcAutoConfiguration](#springboot-的自动配置--webmvcautoconfiguration)
+	- [Springboot 的自动配置](#springboot-的自动配置)
+		- [Springboot中的内置容器启动与配置](#springboot中的内置容器启动与配置)
+		- [Spring MVC配置](#spring-mvc配置)
 	- [替换掉默认的 tomcat 容器](#替换掉默认的-tomcat-容器)
 	- [Springboot 内置容器配置](#springboot-内置容器配置)
-		- [Springboot中的内置容器启动与配置](#springboot中的内置容器启动与配置)
 
-应用程序可以声明处理请求所需的特殊 Bean 类型（`HandlerMapping、HandlerAdapter、HandlerExceptionResolver、ViewResolver`等）。 `DispatcherServlet` 会在 `WebApplicationContext` 中检查这些特殊的 Bean。如果有就会将其配置到相应的属性中，如果没有匹配的 Bean 类型，它就会使用classpath下的 `DispatcherServlet.properties` 中列出的默认类型配置。
+SpringMVC 的启动与配置根本上包括两个部分：
+1. 将 `DispatcherServlet` 注册、配置到 Servlet 容器中
+2. 配置 MVC 本身（ `HanMadlerpping、HandlerAdapter、HandlerExceptionResolver、ViewResolver`等）
+
+在第二步中，使用Spring MVC，应用程序可以声明处理请求所需的特殊 Bean 类型（`HanMadlerpping、HandlerAdapter、HandlerExceptionResolver、ViewResolver`等）。 `DispatcherServlet` 在初始化时（Servlet 的 init()方法调用时），会在 `WebApplicationContext` 中检查这些特殊的 Bean。如果有就会将其配置到相应的属性中，如果没有匹配的 Bean 类型，它就会使用classpath下的 `DispatcherServlet.properties` 中列出的默认类型配置。
+
+如果只使用 SpringMVC + 独立Servlet容器部署的方式，启动原理[见此](spring的启动.md)，这种模式需要将代码部署到容器中才能工作，并且需要编写代码启用 `DispatcherServlet` 。
 
 ## WebMvcConfigurer
 在Java配置中，可以使用 `@EnableWebMvc` 注解并实现 `WebMvcConfigurer` 接口来启用MVC配置，，如下例所示：
@@ -46,7 +53,7 @@ public class DelegatingWebMvcConfiguration extends WebMvcConfigurationSupport {
 ....
 }
 ```
-在 `WebMvcConfigurationSupport` 中有很多声明了 MVC 相关的 bean 的 `@Bean` 方法 ，这些声明 bean 的方法中会调用相应的 `configureXXX`/`addXXX` 方法，这些方法最终会去调用注入的 `WebMvcConfigurer` 相关的方法。这就是为什么我们只要写一个实现 `WebMvcConfigurer` 接口的类并注入到容器中，就能起作用的原因。
+在父类 `WebMvcConfigurationSupport` 中有很多声明了 MVC 相关的 bean 的 `@Bean` 方法 ，这些 bean 会注入到 `DispatcherServlet` 以配置 MVC 相关的功能。这些声明Bean的方法中都留了扩展点方法，子类重写这些方法就可以自定义地配置相关 bean 的属性和行为。 `DelegatingWebMvcConfiguration` 就是重写了这些 `configureXXX`/`addXXX` 的扩展方法，这些方法最终会去调用注入的 `WebMvcConfigurer` 相关的方法。这就是为什么我们只要写一个实现 `WebMvcConfigurer` 接口的类并注入到容器中，就能起到配置作用的原因。
 
 `WebMvcConfigurer` 接口中的一些方法：
 
@@ -68,57 +75,8 @@ public class DelegatingWebMvcConfiguration extends WebMvcConfigurationSupport {
 + `default void extendHandlerExceptionResolvers(List<HandlerExceptionResolver> resolvers) {}` ：配置扩展异常解析器
 + `Validator getValidator()`: 配置验证器
 
-## Springboot 的自动配置- WebMvcAutoConfiguration
-Springboot 中使用 `WebMvcAutoConfiguration` 实现自动配置，在其中定义了 `EnableWebMvcConfiguration` 内部类，这个类实现了和 `@EnableWebMvc` 相同的功能。
-```
-// Configuration equivalent to @EnableWebMvc.
-@Configuration(proxyBeanMethods = false)
-@EnableConfigurationProperties(WebProperties.class)
-public static class EnableWebMvcConfiguration extends DelegatingWebMvcConfiguration implements ResourceLoaderAware{...}
-```
-这就是为什么在 Springboot 中没有使用 `@EnableWebMvc` 注解，依然能启用 mvc 功能的原因。
-
-
-## 替换掉默认的 tomcat 容器
-```
-<dependency>
-	<groupId>org.springframework.boot</groupId>
-	<artifactId>spring-boot-starter-web</artifactId>
-	<exclusions>
-		<!-- Exclude the Tomcat dependency -->
-		<exclusion>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-tomcat</artifactId>
-		</exclusion>
-	</exclusions>
-</dependency>
-<!-- Use Jetty instead -->
-<dependency>
-	<groupId>org.springframework.boot</groupId>
-	<artifactId>spring-boot-starter-jetty</artifactId>
-</dependency>
-```
-2024-04-29 13:41:25.078 [main] INFO  com.gtja.gjyw.UserCenterApp  - Started UserCenterApp in 50.119 seconds (JVM running for 51.346)
-2024-04-29 17:42:40.493 [main] INFO  com.gtja.gjyw.UserCenterApp  - Started UserCenterApp in 32.094 seconds (JVM running for 33.44) undertow
-2024-04-29 17:43:50.493 [main] INFO  com.gtja.gjyw.UserCenterApp  - Started UserCenterApp in 32.223 seconds (JVM running for 33.654) jetty
-
-## Springboot 内置容器配置
-> https://docs.spring.io/spring-boot/docs/2.0.9.RELEASE/reference/html/howto-embedded-web-servers.html
-
-```
-server.tomcat.max-connections=10000 //最大连接数
-server.tomcat.accept-count=1 // backlog 数
-server.tomcat.threads.max=2 //最大线程数
-
-server.http2.enabled //启用 http2
-
-// 配置https
-server.ssl.key-store=classpath:spring.keystore
-server.ssl.key-store-password=123456
-```
-如果希望使用编程式的方式对Web服务器进行配置，Spring Boot则 提供了如下两种方式:
-+ 定义一个实现 `WebServerFactoryCustomizer` 接口的Bean实例。
-+ 直接在容器中配置一个自定义的 `ConfigurableServletWebServerFactory` ，它负责创建Web服务器。
+## Springboot 的自动配置
+Springboot 则使用内置Servlet容器的方式全自动的配置好了 MVC。  
 
 ### Springboot中的内置容器启动与配置
 Sprinboot 使用代码编程的方式启动内置的 Servlet 容器，通过 `TomcatServletWebServerFactory/JettyServletWebServerFactory/UndertowServletWebServerFactory` 等类实现。Springboot 启动内置 Servlet 的具体过程如下：
@@ -143,7 +101,78 @@ Sprinboot 使用代码编程的方式启动内置的 Servlet 容器，通过 `To
 	}
 	```
 	在 `selfInitialize` 方法中，会去遍历调用 `ServletContextInitializer#onStartup(ServletContext servletContext)` 方法。
-4. 在 `ServletContextInitializer` <- `RegistrationBean`<-`DynamicRegistrationBean`<-`ServletRegistrationBean`<-`DispatcherServletRegistrationBean` 的体系下，只要我们声明 `DispatcherServletRegistrationBean` 或者 其他的 `RegistrationBean` 类型，springboot 就会帮我们注册到 servlet 容器。
-5. springboot 的 `DispatcherServletAutoConfiguration#DispatcherServletRegistrationConfiguration#dispatcherServletRegistration(DispatcherServlet dispatcherServlet,WebMvcProperties webMvcProperties, ObjectProvider<MultipartConfigElement> multipartConfig)`方法就声明了`DispatcherServletRegistrationBean`，这就是为什么Springboot能自动帮我们配置好 DispatcherServlet 的原因。
+4. 在 `ServletContextInitializer` <- `RegistrationBean`<-`DynamicRegistrationBean`<-`ServletRegistrationBean`<-`DispatcherServletRegistrationBean` 的继承体系下，只要我们声明 `DispatcherServletRegistrationBean` 或者 其他的 `RegistrationBean` 类型，springboot 就会帮我们注册到 servlet 容器。
+5. springboot 的 `DispatcherServletAutoConfiguration#DispatcherServletRegistrationConfiguration#dispatcherServletRegistration(DispatcherServlet dispatcherServlet,WebMvcProperties webMvcProperties, ObjectProvider<MultipartConfigElement> multipartConfig)`方法就声明了`DispatcherServletRegistrationBean`，springboot 正是用这种方法实现了 `DispatcherServlet` 在容器中的注册的。
 
 通过以上分析，如果我们想注册除了 `DispatcherServlet` 以外的自定义 servlet ，只要声明一个 `ServletRegistrationBean` 的 bean 即可。类似的，`FilterRegistrationBean` 可以注册自定义的 `Filter` 。 如果自己实现 `Filetr` 接口又想使用 Spring 容器功能，springboot 提供了方便的 `DelegatingFilterProxyRegistrationBean` 类型，我们只要自定义一个 `DelegatingFilterProxyRegistrationBean` 类型的 bean 即可。
+
+### Spring MVC配置
+Springboot 中使用 `ServletWebServerFactoryAutoConfiguration/DispatcherServletAutoConfiguration/WebMvcAutoConfiguration` 等共同实现了全自动化的配置。
+
+1. `ServletWebServerFactoryAutoConfiguration`  
+   引入了创建Servlet容器的工厂bean。
+
+2. `DispatcherServletAutoConfiguration`  
+   实现了 `DispatcherServlet` 的在Servlet容器中的注册与简单配置。
+
+3. `WebMvcAutoConfiguration`  
+   	实现了 MVC 的配置。
+	在 `WebMvcAutoConfiguration` 中定义了 `EnableWebMvcConfiguration` 内部类，这个类实现了和 `@EnableWebMvc` 相同的功能。
+	```
+	@AutoConfiguration(after = { DispatcherServletAutoConfiguration.class, TaskExecutionAutoConfiguration.class,
+			ValidationAutoConfiguration.class })
+	@ConditionalOnWebApplication(type = Type.SERVLET)
+	@ConditionalOnClass({ Servlet.class, DispatcherServlet.class, WebMvcConfigurer.class })
+	@ConditionalOnMissingBean(WebMvcConfigurationSupport.class)
+	@AutoConfigureOrder(Ordered.HIGHEST_PRECEDENCE + 10)
+	public class WebMvcAutoConfiguration{
+		....
+
+		// Configuration equivalent to @EnableWebMvc.
+		@Configuration(proxyBeanMethods = false)
+		@EnableConfigurationProperties(WebProperties.class)
+		public static class EnableWebMvcConfiguration extends DelegatingWebMvcConfiguration implements ResourceLoaderAware{...}
+	}
+	```
+	这就是为什么在 Springboot 中没有使用 `@EnableWebMvc` 注解，依然能启用 mvc 功能的原因。
+
+## 替换掉默认的 tomcat 容器
+```
+<dependency>
+	<groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-starter-web</artifactId>
+	<exclusions>
+		<!-- Exclude the Tomcat dependency -->
+		<exclusion>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-tomcat</artifactId>
+		</exclusion>
+	</exclusions>
+</dependency>
+<!-- Use Jetty instead -->
+<dependency>
+	<groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-starter-jetty</artifactId>
+</dependency>
+```
+2024-04-29 13:41:25.078 [main] INFO  com.gtja.gjyw.UserCenterApp  - Started UserCenterApp in 50.119 seconds (JVM running for 51.346)
+2024-04-29 17:42:40.493 [main] INFO  com.gtja.gjyw.UserCenterApp  - Started UserCenterApp in 32.094 seconds (JVM running for 33.4) un4dertow
+2024-04-29 17:43:50.493 [main] INFO  com.gtja.gjyw.UserCenterApp  - Started UserCenterApp in 32.223 seconds (JVM running for 33.654) jetty
+
+## Springboot 内置容器配置
+> https://docs.spring.io/spring-boot/docs/2.0.9.RELEASE/reference/html/howto-embedded-web-servers.html
+
+```
+server.tomcat.max-connections=10000 //最大连接数
+server.tomcat.accept-count=1 // backlog 数
+server.tomcat.threads.max=2 //最大线程数
+
+server.http2.enabled //启用 http2
+
+// 配置https
+server.ssl.key-store=classpath:spring.keystore
+server.ssl.key-store-password=123456
+```
+如果希望使用编程式的方式对Web服务器进行配置，Spring Boot则 提供了如下两种方式:
++ 定义一个实现 `WebServerFactoryCustomizer` 接口的Bean实例。
++ 直接在容器中配置一个自定义的 `ConfigurableServletWebServerFactory` ，它负责创建Web服务器。

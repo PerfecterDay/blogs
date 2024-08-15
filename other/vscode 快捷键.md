@@ -4,7 +4,7 @@
 
 + 上一行或下一行添加光标（多行编辑）：`Ctrl+Alt+DownArrow/UpArrow`
 + 任意处添加光标：`Alt+Click`
-+ 选中所有当前选中的文本：`Ctrl+Shift+L`
++ 选中所有当前查找到的文本：`Ctrl+Shift+L`
 + 复制行：`Shift+Alt+DownArrow/UpArrow`
 + 移动行：`Alt+UpArrow/DownArrow`
 + 删除行：`Ctrl+Shift+K`

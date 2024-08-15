@@ -86,8 +86,7 @@ The above list only includes SpringApplicationEvents that are tied to a SpringAp
 ## 手动实现自己的业务事件发布与监听
 1. 定义业务事件，继承自 `ApplicationEvent` 
 2. 发布者（需要发布自定义业务事件的业务Bean）实现 `ApplicationEventPublisherAware`,`ApplicationContextAware` 接口，利用 `ApplicationContext` 对象就可以发布自定义的事件
-3. 实现 `ApplicationListener` 接口并注册到容器中，实现监听自定义事件逻辑
-4. 或者使用 `@EventListener` 注解：
+3. 监听者实现 `ApplicationListener` 接口并注册到容器中，实现监听自定义事件逻辑，或者也使用 `@EventListener` 注解：
    ```
 	@Component
 	public class AnnotationDrivenEventListener {

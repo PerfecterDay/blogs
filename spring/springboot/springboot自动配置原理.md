@@ -40,6 +40,9 @@ Springboot 是如何加载这些配置类的呢？
 下图展示了Spring/Springboot 是如何处理 `@Import` 注解的：
 <center><img src="pics/import.svg" alt=""></center>
 
+
+**`ConfigurationClassParser.doProcessConfigurationClass(...)` 方法中可以看到很多处理各种注解（`@PropertySource/@ComponentScan/@Import/@ImportResource/@Bean`）的代码。如果想了解Springboot中各个注解是如何工作的，可以参照这个类中的代码。**
+
 ## Springboot自动配置原理
 
 ```Java

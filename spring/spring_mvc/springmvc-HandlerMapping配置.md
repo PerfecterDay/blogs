@@ -114,7 +114,7 @@ protected void registerHandlerMethod(Object handler, Method method, T mapping) {
 	this.mappingRegistry.register(mapping, handler, method);
 }
 ```
-在回调中会去扫描所有的 bean ，然后通过 `isHandler()` 方法判断是否是请求处理器，如果是的话就将其注册到请求映射中去。 `RequestMappingHandlerMapping` 重写了 `isHandler()` 方法：
+在回调中会去扫描所有的 bean ，然后通过 `isHandler()` 方法判断是否是请求处理器，如果是的话就将其中的处理方法注册到请求映射中去。 `RequestMappingHandlerMapping` 重写了 `isHandler()` 方法：
 ```java
 @Override
 protected boolean isHandler(Class<?> beanType) {

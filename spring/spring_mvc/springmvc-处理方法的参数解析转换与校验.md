@@ -83,12 +83,12 @@ public Response test(User user){
 	return Response.buildSuccess();
 }
 ```
-Spring处理参数绑定时首先会根据参数信息寻找合适的 `HandlerMethodArgumentResolver`(比如参数用 @RequestBody 注解修饰，就会用内置 `RequestResponseBodyMethodProcessor` 的解析器)，上例中没有用 `@RequestBody` 注解，就会使用我们自定义的参数解析器解析参数。通常在解析器内部会根据 MediaType 不同使用不同 `HttpMessageConverter` 转换 Http 请求。
 
+### 参数绑定- HandlerMethodArgumentResolver 及 HttpMessageConverter
+Spring处理参数绑定时首先会根据参数信息寻找合适的 `HandlerMethodArgumentResolver`(比如参数用 @RequestBody 注解修饰，就会用内置 `RequestResponseBodyMethodProcessor` 的解析器)，上例中没有用 `@RequestBody` 注解，就会使用我们自定义的参数解析器解析参数。通常在解析器内部会根据 MediaType 不同使用不同 `HttpMessageConverter` 转换 Http 请求。
 
 Spring 会根据请求方法签名的不同，将请求消息中的信息 以一定的方式转换并绑定到请求方法的入参中。当请求消息到达真正需要调用的方法时(如指定的业务方法)，Spring MVC 还有很多工作要做，包括数据转换、数据格式化及数据校验等。
 
-### 参数绑定- HandlerMethodArgumentResolver 及 HttpMessageConverter
 常见的参数解析器： `PathVariableMethodArgumentResolver` , `RequestResponseBodyMethodProcessor`, `RequestHeaderMethodArgumentResolver`，
 会用到很多 `HttpMessageConverter`
 

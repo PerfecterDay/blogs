@@ -1,6 +1,14 @@
 #  Springboot 自动配置原理
 {docsify-updated}
 
+大体的步骤是：
+1. springboot 官方提供了很多有自动配置功能的配置类。这些配置类如何被扫描加载呢？
+2. `AutoConfigurationImportSelector` 这个类会扫描特定目录下的文件来加载一些配置类或者接口实现类，springboot官方的自动配置类就在这些扫描目录下
+3. `@EnableAutoConfiguration` 使用 `@Import(AutoConfigurationImportSelector)` 导入了 `AutoConfigurationImportSelector` 从而会导入自动配置类，`@EnableAutoConfiguration` 又由 `@SpringBootApplication` 导入。为什么`@Import` 能实现这个导入功能呢？由 `ConfigurationClassParser` 类实现一些注解的导入功能
+4. `ConfigurationClassParser` 又是如何被引入的呢？ `ConfigurationClassPostProcessor` 在加载读取配置类的时候会实例化 `ConfigurationClassParser`
+5. `ConfigurationClassPostProcessor` 本身在 springboot 创建 applicationContext 会在容器中注册 `ConfigurationClassPostProcessor` 类型的 bean
+6. `ConfigurationClassPostProcessor <-- BeanDefinitionRegistryPostProcessor <-- BeanFactoryPostProcessor`，所以会在容器启动阶段被调用（ `invokeBeanFactoryPostProcessors(beanFactory)` ）
+
 ## 注解扫描的实现机制
 自动配置的本质还是Spring扫描配置类/配置文件，加载基于注解或者xml配置的 bean。那么首先，依然是要扫描配置类。
 

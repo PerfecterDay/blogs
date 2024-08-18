@@ -116,7 +116,7 @@ Springboot 中使用 `ServletWebServerFactoryAutoConfiguration/DispatcherServlet
    实现了 `DispatcherServlet` 的在Servlet容器中的注册与简单配置。
 
 3. `WebMvcAutoConfiguration`  
-   	实现了 MVC 的配置。
+   	实现了 MVC 的各个组件的配置。并且也是导入上述两个配置的导入入口类。  
 	在 `WebMvcAutoConfiguration` 中定义了 `EnableWebMvcConfiguration` 内部类，这个类实现了和 `@EnableWebMvc` 相同的功能。
 	```
 	@AutoConfiguration(after = { DispatcherServletAutoConfiguration.class, TaskExecutionAutoConfiguration.class,

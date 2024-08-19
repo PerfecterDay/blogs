@@ -31,7 +31,7 @@ Envoy 使用单进程-多线程架构。一个 primary 线程处理各种轻量�
 
 <center><img src="pics/envoy-filter.png" width="80%"></center>
 
-### 外部授权（Http 过滤器）
+#### 外部授权（Http 过滤器）
 外部授权服务群集可以是静态配置的，也可以是通过 集群服务发现 配置的。如果在请求到达时外部服务不可用，则该请求是否被授权由 网络层过滤器 或 HTTP 过滤器 中的 failure_mode_allow 配置项的设置决定。如果将其设置为 true，则该请求将被放行（故障打开），否则将被拒绝。 默认设置为 false。
 
 

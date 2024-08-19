@@ -1,7 +1,7 @@
 # PromQL 函数
 {docsify-updated}
 
-rate(v range-vector) calculates the per-second average rate of increase of the time series in the range vecto∏worr. Breaks in monotonicity (such as counter resets due to target restarts) are automatically adjusted for. Also, the calculation extrapolates to the ends of the time range, allowing for missed scrapes or imperfect alignment of scrape cycles with the range's time period.
+rate(v range-vector) calculates the per-second average rate of increase of the time series in the range vecto. Breaks in monotonicity (such as counter resets due to target restarts) are automatically adjusted for. Also, the calculation extrapolates to the ends of the time range, allowing for missed scrapes or imperfect alignment of scrape cycles with the range's time period.
 
 irate(v range-vector) calculates the per-second instant rate of increase of the time series in the range vector. This is based on the last two data points. Breaks in monotonicity (such as counter resets due to target restarts) are automatically adjusted for.
 

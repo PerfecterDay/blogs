@@ -1,15 +1,6 @@
-#  grpc入门
+# grpc入门
 {docsify-updated}
 
-- [grpc入门](#grpc入门)
-		- [gRpc 简介](#grpc-简介)
-		- [gRpc实现的一般步骤](#grpc实现的一般步骤)
-			- [服务端实现与启动](#服务端实现与启动)
-			- [客户端实现](#客户端实现)
-		- [grpc-spring-boot-starter 配置](#grpc-spring-boot-starter-配置)
-		- [grpcurl工具](#grpcurl工具)
-		- [grpc注册consul](#grpc注册consul)
-		- [常见错误](#常见错误)
 
 ### gRpc 简介
 RPC 只是一种方法调用模型，只要我们能从本地调用远程服务，就可以说这是某种类型的 RPC。  

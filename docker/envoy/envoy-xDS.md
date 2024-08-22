@@ -79,7 +79,6 @@
         #   typed_config:
         #     "@type": type.googleapis.com/envoy.extensions.transport_sockets.tls.v3.UpstreamTlsContext
         #     sni: www.envoyproxy.io
-
     node:
     cluster: test-cluster
     id: test-id

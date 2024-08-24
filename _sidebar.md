@@ -18,7 +18,6 @@
 * [nginx](/nginx/_sidebar.md)
 * [设计模式](/设计模式/_sidebar.md)
 * [领域驱动设计DDD](/ddd/_sidebar.md)
-* [windows工具程序](/windows/_sidebar.md)
 * [resilence4j](/resilence4j/_sidebar.md)
 * [netty](/netty/_sidebar.md)
 * [quatrz](/quartz/_sidebar.md)

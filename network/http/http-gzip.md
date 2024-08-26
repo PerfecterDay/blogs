@@ -2,9 +2,9 @@
 {docsify-updated}
 
 - [Http gzip 压缩](#http-gzip-压缩)
-  - [Http压缩](#http压缩)
-  - [压缩试验](#压缩试验)
-  - [自己写的 Proxy 服务](#自己写的-proxy-服务)
+    - [Http压缩](#http压缩)
+    - [压缩试验](#压缩试验)
+    - [自己写的 Proxy 服务](#自己写的-proxy-服务)
 
 
 ### Http压缩

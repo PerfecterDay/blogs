@@ -4,3 +4,4 @@
 * [vue]()
 * [js](/web/js/_sidebar.md)
 * [nextjs](/web/nextjs/_sidebar.md)
+* [浏览器原理](/web/浏览器原理.md)

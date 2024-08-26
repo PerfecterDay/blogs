@@ -81,6 +81,11 @@ Docker 通过扩展现有镜像，创建新的镜像。特殊情况下，基于�
 11. `RUN` : 用来执行命令行命令的。由于命令行的强大能力，RUN 指令在定制镜像时是最常用的指令之一。
 12. `EXPOSE <端口1> [<端口2>...]` : 仅仅是声明容器打算使用什么端口而已，并不会自动在宿主机进行端口映射。
 
+变量用 `$variable_name` 或者 `${variable_name}` 表示:
++ `${variable:-word}`表示如果 `variable` 设置，则结果将是该值。如果 `variable` 未设置，word 则将是结果。
++ `${variable:+word}`表示如果 `variable` 设置则为word结果，否则为空字符串。
+变量前加 `\` 可以转义成普通字符串：`\$foo` or `\${foo}` ，表示转换为 `$foo` 和 `${foo}` 文字
+
 ##### 多阶段构建
 ```
 FROM --platform=linux/amd64 golang:alpine AS builder

@@ -203,3 +203,7 @@ location /app1 {
 }
 ```
 
+## 跟踪重定向
+```
+proxy_redirect    http://upstream:port/    http://$http_host/;
+```

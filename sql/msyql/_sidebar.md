@@ -1,5 +1,5 @@
 * [Home](/)
-* [..](../_sidebar.md)\
+* [..](../_sidebar.md)
 * [精品教程](https://planetscale.com/learn/courses/mysql-for-developers)
 * [Mysql安装与启动](/sql/msyql/mysql安装及启动.md)
 * [Mysql用户和权限管理](/sql/msyql/mysql用户及权限管理.md)

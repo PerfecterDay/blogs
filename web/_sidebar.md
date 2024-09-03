@@ -5,3 +5,5 @@
 * [js](/web/js/_sidebar.md)
 * [nextjs](/web/nextjs/_sidebar.md)
 * [浏览器原理](/web/浏览器原理.md)
+* [开发工具](/web/开发工具.md)
+* [软件包管理](/web/软件包管理.md)

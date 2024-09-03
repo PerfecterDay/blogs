@@ -28,6 +28,11 @@ SQL标准包括 select、insert、update、delete以及all权限。
     ```
     public代表系统中所有的当前用户和将来的用户。
 
+    ```
+    GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER, SHOW DATABASES, CREATE TEMPORARY TABLES, LOCK TABLES, CREATE VIEW, SHOW VIEW, CREATE ROUTINE, ALTER ROUTINE, EVENT, TRIGGER ON *.* TO `testuser`@`%` WITH GRANT OPTION
+    ```
+    `WITH GRANT OPTION` 代表是使得该用户可以拥有权限和回收权限给其他用户。
+
 2. 收回权限语句：
     ```
     revoke <权限列表>
@@ -36,4 +41,6 @@ SQL标准包括 select、insert、update、delete以及all权限。
 
     revoke select on department from Amy,Simith
 	revoke select,insert,update,create on user.user from 'app'@'%';
+
+    revoke grant option on *.* from testuser@'%';
     ```

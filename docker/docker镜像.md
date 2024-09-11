@@ -160,6 +160,7 @@ docker build --target builder -t hello .
     + 删除镜像：`docker image rm [选项] <镜像1< [<镜像2< ...]` 或者更短的 `docker rmi <imgid>`
     + 删除虚悬镜像(dangling image): `docker image prune`
     + 删除所有镜像： `docker rmi -f $(docker images -aq)`
+    + 删除特定的镜像： `docker rmi -f $(docker images -a | grep gtja | awk '{print $3}')`
 4. 上传镜像 
     + 上传到 Registry ，默认dockerHub：`docker push user_name/<repository>:tag`
 5. 导入/导出镜像  

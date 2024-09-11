@@ -1,13 +1,6 @@
 # go 与 GRPC 集成
 {docsify-updated}
 
-- [go 与 GRPC 集成](#go-与-grpc-集成)
-		- [环境配置](#环境配置)
-		- [编译](#编译)
-		- [代码示例](#代码示例)
-		- [问题](#问题)
-		- [原理](#原理)
-
 ### 环境配置
 
 1. 安装 Protocol Buffer Compiler： `brew install protobuf`

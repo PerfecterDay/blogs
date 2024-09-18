@@ -25,6 +25,7 @@
   * [grpc入门](/分布式/grpc/grpc入门.md)
   * [Protobuf集成](/分布式/grpc/protobuf.md)
   * [grpc API](/分布式/grpc/grpc-API.md)
+  * [go-grpc](/分布式/grpc/go-grpc.md)
 * [Nacos入门](/分布式/nacos.md)
 * [Consul](#)
   * [Consul安装与启动](/分布式/consul/consul安装运行.md)

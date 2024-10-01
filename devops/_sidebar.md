@@ -9,3 +9,6 @@
 * [Jenkins](#)
   * [Jenkins简介](/devops/jenkins/jenkins.md)
   * [Pipeline语法](/devops/jenkins/pipeline语法.md)
+* [Micrometer](#)
+  * [核心概念](/devops/micrometer/核心概念.md)
+  * [Meters种类](/devops/micrometer/Meters.md)

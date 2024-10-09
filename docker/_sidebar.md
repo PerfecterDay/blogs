@@ -16,7 +16,7 @@
   * [k8s-Job](/docker/k8s/k8s-Job.md)
   * [k8s-Sevice](/docker/k8s/k8s-Service.md)
   * [k8s-secret和configMap](/docker/k8s/k8s-secret和configMap.md)
-  * [k8s-数据管理](/docker/k8s/k8s-数据管理volume.md)
+  * [k8s-数据管理volume](/docker/k8s/k8s-数据管理volume.md)
   * [k8s-ingress和gateway api](/docker/k8s/k8s-ingress和gatewayapi.md)
   * [k8s-亲和性](/docker/k8s/k8s-亲和性设置.md)
 * [helm](#)

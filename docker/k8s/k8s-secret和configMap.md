@@ -2,18 +2,19 @@
 {docsify-updated}
 
 - [k8s-secret和configMap](#k8s-secret和configmap)
-  - [Secret](#secret)
-    - [创建 secret](#创建-secret)
-    - [查看 secret](#查看-secret)
-    - [pod 中使用 secret](#pod-中使用-secret)
-      - [Volume 方式](#volume-方式)
-      - [环境变量方式](#环境变量方式)
-  - [ConfigMap](#configmap)
+    - [Secret](#secret)
+      - [创建 secret](#创建-secret)
+      - [查看 secret](#查看-secret)
+      - [pod 中使用 secret](#pod-中使用-secret)
+        - [Volume 方式](#volume-方式)
+        - [环境变量方式](#环境变量方式)
+    - [ConfigMap](#configmap)
+      - [阿里云 ConfigMap 实战](#阿里云-configmap-实战)
 
 
 ### Secret
 应用启动过程中可能需要一些敏感信息，比如访问数据库的用户名、密码或者密钥。将这 些信息直接保存在容器镜像中显然不妥，Kubernetes 提供的解决方案是Secret。
-Secret 会以密文的方式存储数据，避免了直接在配置文件中保存敏感信息。Secret 会以 Volume 的形式被 mount 到Pod，容器可通过文件的方式使用 Secret 中的敏感数据;此外，容器也可以以环境变量的方式使用这些数据。
+Secret 会以密文的方式存储数据，避免了直接在配置文件中保存敏感信息。Secret 会以 Volume 的形式被 mount 到Pod，会以文件的形式存在于挂载的容器的挂载路径中，容器应用可以以**访问文件**的方式使用 Secret 中的敏感数据;此外，容器也可以以环境变量的方式使用这些数据。
 Secret 可通过命令行或 YAML 创建。
 
 #### 创建 secret
@@ -186,3 +187,16 @@ spec:
             name: myConfigMap
             key: password
 ```
+
+#### 阿里云 ConfigMap 实战
+1. 新建 configMap，名称(key) 为配置文件名，后续deployment 挂载的时候，会以key 的名字在挂载路径下生成配置文件
+<center><img src="pics/ali-configmap-1.png" width="40%"></center>
+
+2. 部署deployment 的时候，挂载 configmap 到指定路径
+<center><img src="pics/ali-configmap-2.png" width="40%"></center>
+
+3. 修改代码加载配置文件的路径到挂载的路径
+<center><img src="pics/ali-configmap-3.png" width="40%"></center>
+
+可以看到部署的容器内部，会在挂载路径下生成 configMap 中的文件
+<center><img src="pics/ali-configmap-4.png" width="40%"></center>

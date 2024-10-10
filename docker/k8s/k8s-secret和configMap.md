@@ -200,3 +200,5 @@ spec:
 
 可以看到部署的容器内部，会在挂载路径下生成 configMap 中的文件
 <center><img src="pics/ali-configmap-4.png" width="40%"></center>
+
+configMap 的配置在 K8S 中更新后会实时反映在挂载的 deployment 中，也就是说相应 pod 中挂载的文件会实时更新反映 configMap 的更新，而不需要重新部署 deployment。

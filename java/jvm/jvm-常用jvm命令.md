@@ -105,7 +105,7 @@ jstack用于生成java虚拟机当前时刻的线程快照。线程快照是当�
 + `-m` : 如果调用到本地方法的话，可以显示C/C++的堆栈
 
 ## jinfo
-jinfo(JVM Configuration info)这个命令作用是实时查看和调整虚拟机运行参数。 之前的jps -v口令只能查看到显示指定的参数，如果想要查看未被显示指定的参数的值就要使用jinfo口令
+jinfo(JVM Configuration info)这个命令作用是实时查看和调整虚拟机运行参数。 之前的`jps -v`口令只能查看到显示指定的参数，如果想要查看未被显示指定的参数的值就要使用jinfo口令
 
 **命令格式：**
 `jinfo [option] [args] LVMID`
@@ -114,10 +114,6 @@ jinfo(JVM Configuration info)这个命令作用是实时查看和调整虚拟机
 + `-flag` : 输出指定args参数的值
 + `-flags` : 不需要args参数，输出所有JVM参数的值
 + `-sysprops` : 输出系统属性，等同于System.getProperties()
-
 + `jinfo 8 | grep GC`: 查看jvm使用的是什么垃圾收集器
 + `jinfo 8`: 查看jvm的信息
 + ```jinfo -flag  +PrintGC `pgrep -f tomcat` ```: 动态开启VM参数
-
-
-jhsdb jmap --heap --pid 8560

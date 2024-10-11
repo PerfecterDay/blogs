@@ -134,6 +134,8 @@ DistributionSummary summary = DistributionSummary
     .tags("region", "test") // optional
     .scale(100) // optional
     .register(registry);
+
+summary.record(responseSize);
 ```
 
 可以选择提供一个缩放因子(scale)，在记录每个样本时将其乘以该因子。
@@ -163,6 +165,10 @@ LongTaskTimer longTaskTimer = LongTaskTimer
     .register(registry);
 ```
 ## Histograms and Percentiles
+计时器和分布汇总支持收集数据以观察其百分位数分布(95线/99线/中位数...)。 查看百分位数主要有两种方法：
++ 百分位数直方图： Micrometer 将数值累加到底层直方图中，并将一组预定的桶发送到监控系统。 监控系统的查询语言负责根据该直方图计算百分位数。 目前，只有 Prometheus、Atlas 和 Wavefront 分别通过 `histogram_quantile` 、`:percentile` 和 `hs()` 支持基于直方图的百分位数近似值。 如果您的目标是 Prometheus、Atlas 或 Wavefront，请优先选择这种方法，因为您可以跨维度汇总直方图（通过汇总一组维度的桶值），并从直方图中得出可汇总的百分位数。
++ 客户端百分位数： Micrometer 会计算每个仪表 ID（名称和标签集）的百分位近似值，并将百分位值发送到监控系统。 这种方法不如百分位数直方图灵活，因为它无法汇总各标签的百分位数近似值。 尽管如此，对于不支持基于直方图的服务器端百分位数计算的监控系统来说，它还是能在一定程度上提供对百分位数分布的了解。
+
 ```
 Timer.builder("my.timer")
    .publishPercentiles(0.5, 0.95) // median and 95th percentile
@@ -171,4 +177,10 @@ Timer.builder("my.timer")
    .minimumExpectedValue(Duration.ofMillis(1))
    .maximumExpectedValue(Duration.ofSeconds(10))
 ```
++ `publishPercentiles()` ： 用于发布应用程序中计算的百分位数值。 这些值不可跨维度聚合。
++ `publishPercentileHistogram()` ： 用于发布适合在 Prometheus（通过使用 `histogram_quantile`）、Atlas（通过使用 `:percentile`）和 Wavefront（通过使用 `hs()`）中计算可聚合（跨维度）百分位数近似值的直方图。 对于 Prometheus 和 Atlas，Micrometer 会根据 Netflix 根据经验确定的生成器预设直方图结果中的桶数，该生成器能产生大多数实际计时器和分布汇总的合理误差范围。 默认情况下，生成器会生成 276 个桶，但 Micrometer 只包含那些在 `minimumExpectedValue` 和 `maximumExpectedValue` （包括在内）所设范围内的桶。 Micrometer 默认将计时器箝位在 1 毫秒到 1 分钟的范围内，因此每个计时器维度会产生 73 个直方图桶。 `publishPercentileHistogram` 对不支持可聚合百分位数近似值的系统没有影响。 这些系统不会发布直方图。
++ `serviceLevelObjectives()` : 用于发布累积直方图，其中的桶由 SLO 定义。 在支持可汇总百分位数的监控系统上与 `publishPercentileHistogram` 配合使用时，此设置会在发布的直方图中添加额外的桶。 在不支持可聚合百分位数的系统上使用时，此设置会导致发布的直方图仅包含这些数据桶。这个选项用来统计特定桶范围的样本数据。
++ `minimumExpectedValue/maximumExpectedValue` ： 控制 `publishPercentileHistogram` 发送的数据桶数量，并控制底层 HdrHistogram 结构的准确性和内存占用。
+
+
 

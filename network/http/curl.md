@@ -68,7 +68,7 @@ curl https://www.baidu.com/ --silent -H "Accept-Encoding: gzip,deflate" --write-
 ```
 
 ### 网站测速
--w 参数的一些字段的意思：
+`-w` 参数的一些字段的意思：
 + `time_namelookup`: DNS 解析时间，可以与 --resolve 选项配合寻找最快的DNS
 + `time_connect`: 与服务端创建好 TCP 连接的时间，严格来说是客户端回复 ACK 的时间。我们可以通过 time_connect - time_namelookup 来大致推断网络延时。
 + `time_appconnect`: 完成 SSL/TLS 设置的时间，此时客户端与服务端完成密钥交换，客户端准备发起请求
@@ -76,6 +76,8 @@ curl https://www.baidu.com/ --silent -H "Accept-Encoding: gzip,deflate" --write-
 + `time_starttransfer`: 服务端准备好回应内容的时间。
 + `time_total`: 完成整个请求的所有时间
 + `time_redirect`: 若请求经过多次重定向，那么这个包含直到最后一次请求开始所耗的时间。
+
+这些机时的单位都是秒s 。
 
 ```
 curl -so /dev/null -w "dnslookup: %{time_namelookup} | connect: %{time_connect} | appconnect: %{time_appconnect} | pretransfer: %{time_pretransfer} | starttransfer: %{time_starttransfer} | total: %{time_total} | size: %{size_download}\n" 'https://appapi-uat-mo.gtjaidemo.com'
@@ -85,4 +87,4 @@ curl -so /dev/null -w "dnslookup: %{time_namelookup} | connect: %{time_connect} 
 dnslookup: 1.510 | connect: 1.757 | appconnect: 2.256 | pretransfer: 2.259 | starttransfer: 2.506 | total: 3.001 | size: 53107
 ```
 
-<center><img src="pics/timingOfHTTPS.png"></center>
+<center><img src="pics/timingOfHTTPS.png" width="60%"></center>

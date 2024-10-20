@@ -2,11 +2,7 @@
 # HTML中的 Javascript
 {docsify-updated}
 
-
-
-
-Js最常用的就是 Javascript 标签，然而许多 web开发者并不全都知道下面这些知识。
-
+Js最常用的就是 Javascript 标签 `<script>`，然而许多 web开发者并不全都知道下面这些知识。
 
 ## Javascript 标签的6个属性
 1. async: 可选，只对外部文件有效，表示应该立即下载脚本，但不应该妨碍页面的其他操作，比如下载其他资源或等待加载其它脚本。

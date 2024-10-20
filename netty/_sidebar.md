@@ -3,7 +3,6 @@
 * [入门](/netty/入门.md)
 * [Netty组件和设计](/netty/netty-组件和设计.md)
 * [服务端与客户端引导](/netty/引导.md)
-* [客户端引导的详细过程](/netty/bootstrap引导过程.md)
+* [引导的详细过程](/netty/bootstrap引导过程.md)
 * [ChannelHandler](/netty/channelhandler.md)
 * [编解码器](/netty/编解码器.md)
-* [dasdaskl](https://www.cnblogs.com/bytesfly/p/the-truth-of-netty.html)

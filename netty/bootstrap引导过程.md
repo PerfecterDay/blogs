@@ -1,4 +1,9 @@
-# BootStrap 引导 Channel 的过程
+# 引导的详细过程
+
+> https://www.cnblogs.com/bytesfly/p/the-truth-of-netty.html  
+> https://www.yuque.com/bytesfly/backend/ig71cd
+
+## BootStrap 引导 Channel 的过程
 
 ```
 Bootstrap b = new Bootstrap().group(group)

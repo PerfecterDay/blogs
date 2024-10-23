@@ -110,11 +110,13 @@ protected void detectHandlerMethods(Object handler) {
 		registerHandlerMethod(handler, invocableMethod, mapping);
 	});
 }
+
+// 注册映射信息， 简单理解就是注册 url 和 处理方法的对应关系，详细的看 RequestMappingInfo
 protected void registerHandlerMethod(Object handler, Method method, T mapping) {
 	this.mappingRegistry.register(mapping, handler, method);
 }
 ```
-在回调中会去扫描所有的 bean ，然后通过 `isHandler()` 方法判断是否是请求处理器，如果是的话就将其中的处理方法注册到请求映射中去。 `RequestMappingHandlerMapping` 重写了 `isHandler()` 方法：
+在回调中会去扫描所有的 bean （这是在实例化阶段，元数据解析阶段已经收集到所有 bean 的信息了，所以这时可以扫描所有 bean），然后通过 `isHandler()` 方法判断是否是请求处理器，如果是的话就将其中的处理方法注册到请求映射中去。 `RequestMappingHandlerMapping` 重写了 `isHandler()` 方法：
 ```java
 @Override
 protected boolean isHandler(Class<?> beanType) {
@@ -123,3 +125,37 @@ protected boolean isHandler(Class<?> beanType) {
 }
 ```
 如果bean 用了 `@Controller/@RequestMapping` 注解，则将其视为请求处理器。从以上代码中可以看出，Spring MVC 会使用AOP对映射的处理方法进行AOP代理。
+
+### 查询 URL 匹配
+```
+RequestMappingInfoHandlerMapping 的
+
+@Override
+@Nullable
+protected HandlerMethod getHandlerInternal(HttpServletRequest request) throws Exception {
+	request.removeAttribute(PRODUCIBLE_MEDIA_TYPES_ATTRIBUTE);
+	try {
+		return super.getHandlerInternal(request);
+	}
+	finally {
+		ProducesRequestCondition.clearMediaTypesAttribute(request);
+	}
+}
+
+
+AbstractHandlerMethodMapping
+
+@Override
+@Nullable
+protected HandlerMethod getHandlerInternal(HttpServletRequest request) throws Exception {
+	String lookupPath = initLookupPath(request);
+	this.mappingRegistry.acquireReadLock();
+	try {
+		HandlerMethod handlerMethod = lookupHandlerMethod(lookupPath, request);
+		return (handlerMethod != null ? handlerMethod.createWithResolvedBean() : null);
+	}
+	finally {
+		this.mappingRegistry.releaseReadLock();
+	}
+}
+```

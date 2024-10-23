@@ -1,32 +1,13 @@
 #  maven 核心概念
 {docsify-updated}
 
-- [maven 核心概念](#maven-核心概念)
-	- [Maven 坐标与依赖配置](#maven-坐标与依赖配置)
-		- [依赖范围](#依赖范围)
-		- [依赖范围与传递性依赖的依赖范围](#依赖范围与传递性依赖的依赖范围)
-		- [依赖调解](#依赖调解)
-		- [可选依赖](#可选依赖)
-		- [排除依赖](#排除依赖)
-	- [仓库与镜像](#仓库与镜像)
-		- [部署jar包到私服仓库](#部署jar包到私服仓库)
-		- [镜像](#镜像)
-		- [从仓库解析依赖的机制](#从仓库解析依赖的机制)
-		- [镜像](#镜像-1)
-	- [聚合与继承](#聚合与继承)
-		- [聚合(多模块)](#聚合多模块)
-		- [继承](#继承)
-			- [继承下的依赖](#继承下的依赖)
-		- [聚合与继承的关系](#聚合与继承的关系)
-	- [Maven 测试](#maven-测试)
-
 Maven 是一套项目管理该工具，用于管理项目的开发、测试、打包、部署等。  
 Maven 约定项目的主代码位于 src/main/java 目录，测试代码位于 src/test/java 目录；测试代码只会在运行测试时才会用到，打包时不会打包。
 
-### Maven 坐标与依赖配置
+## Maven 坐标与依赖配置
 Maven定义了一组规则：任何一个构件都可以使用Maven坐标唯一标识，Maven坐标的元素包括：（groupId、artifactId、version，必须定义）、packaging（可选）、classifier（不能直接定义，由插件帮助生成）。
 
-#### 依赖范围
+### 依赖范围
 Maven 在编译主代码时会使用一套 classpath1 ，在编译和运行测试代码时，会用到另外一套 classpath2 ，最后，打包（运行）Maven 项目时又是另外一套classpath3 。 实际上 Maven 依赖的 scope 就是用来控制 Maven 依赖与这三种 classpath 的关系的，Scope可以取如下值：
 + compile : 默认值，会把依赖加入到上述三种 classpath 中
 + test : 只在编译、执行测试代码时有效，即上述第二种 classpath2
@@ -87,6 +68,8 @@ exclusion 中只需要指出 groupId 和 artifactId 。
 <center>
 <img src="pics/maven-repo.png" alt="" width=40%>
 </center>
+
+Maven 会去仓库中查找依赖，优先从本地库查找，本地库找不到就会去远程仓库查找，Maven 在 super pom 中为我们配置了 `central` 库，我们也可以配置自定义的远程仓库。仓库通过 id 来标识，我们配置镜像、服务器认证时都通过 id 关联到对应的仓库。
 
 在 pom 文件中，使用 `repositories > repository` 元素配置远程仓库，id为 `central` 是中央仓库；如果仓库需要认证，使用 `server` 元素配置认证信息， `repository` 与 `server` 之间通过id关联，即 `server` 配置的是 id 相同的 `repository` 的认证信息。另外认证信息不能配置在 pom 文件中，必须在 settings 文件中配置。
 
@@ -161,9 +144,6 @@ settings.xml:
 4. 如果依赖的版本是 RELEASE 或者 LATEST，则基于更新策略读取所有远程仓库的元数据 `groupid/artifactid/maven-metadata.xml`，将其与本地仓库的对应元数据合并后，计算出 RELEASE 或者 LATEST 真实的值，然后基于这个真实的值检查本地和远程仓库。
 5. 如果依赖版本是 SNAPSHOT ，则基于更新策略(总是更新、每日更新、每周更新)读取所有远程仓库的元数据 `groupid/artifactid/maven-metadata.xml`，将其与本地仓库的对应元数据合并后，得到**最新快照**版本的值，然后基于该值检查本地仓库，或者从远程仓库下载。
 6. 如果解析得到的构件版本是时间戳格式的快照，如1.4.1-20201103.132350-123，则复制其时间戳格式的文件至非时间戳格式，如 SNAPSHOT，并使用该非时间戳格式的构件。
-
-#### 镜像
-如果仓库X可以提供仓库Y存储的所有内容，那么就可以认为X是Y的一个镜像。如果在 seetings 中用 mirror 配置X是Y的镜像，那么所有到Y的请求都会转至该镜像仓库。镜像仓库会完全屏蔽被镜像的仓库，如果镜像仓库停止服务，Maven仍然无法访问被镜像仓库。
 
 ### 聚合与继承
 

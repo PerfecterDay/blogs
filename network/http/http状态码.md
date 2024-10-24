@@ -1,6 +1,8 @@
 # Http 状态码
 {docsify-updated}
 
+<center><img src="pics/http-status-code.png" width="50%"></center>
+
 + 100 Continue
 + 101 Switching Protocol
 + 102 Processing

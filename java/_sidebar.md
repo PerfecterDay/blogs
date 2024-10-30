@@ -4,7 +4,7 @@
   * [JVM、JRE及JDK的区别](/java/jvm/jvm-JVM、JRE及JDK的区别.md)
   * [运行时数据区域](/java/jvm/jvm-运行时数据区域.md)
   * [类加载机制](/java/jvm/jvm-类加载机制.md)
-  * [类和对象初始化](/java/jvm/jvm-类和对象的初始化.md)
+  * [类和对象](/java/jvm/jvm-类和对象.md)
   * [GC](https://www.baeldung.com/tag/garbage-collection)
     * [垃圾收集算法](/java/jvm/gc/jvm-垃圾收集算法.md)
     * [经典垃圾收集器](/java/jvm/gc/jvm-经典的垃圾收集器.md)

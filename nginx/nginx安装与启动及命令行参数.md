@@ -19,6 +19,8 @@ signal可以是以下参数：
 * *reload* — 重新加载配置文件
 * *reopen* — 重新打开日志文件
 
+mac homebrew 安装的 html 存放路径在： `/opt/homebrew/var/www/demo.html`
+
 ## Nginx命令行参数
 
 * *-h* 显示命令行参数帮助信息

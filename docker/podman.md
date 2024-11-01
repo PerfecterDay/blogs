@@ -1,4 +1,4 @@
-# Podman
+# 容器工具
 {docsify-updated}
 
 podman 安装：
@@ -13,3 +13,12 @@ podman 安装：
 
 `podman machine ssh`;
 `sudo sysctl -w vm.max_map_count=262144`
+
+
+## Orbstack
+```
+Start: orb start k8s
+Stop: orb stop k8s
+Restart: orb restart k8s
+Delete: orb delete k8s
+```

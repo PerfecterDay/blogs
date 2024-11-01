@@ -13,7 +13,7 @@
 		- [2MSL（TIME\_WAIT）等待状态](#2msltime_wait等待状态)
 	- [复位报文段](#复位报文段)
 	- [TCP的服务器设计](#tcp的服务器设计)
-		- [连接队列](#连接队列)
+		- [连接队列 （https://www.alibabacloud.com/blog/tcp-syn-queue-and-accept-queue-overflow-explained\_599203）](#连接队列-httpswwwalibabacloudcomblogtcp-syn-queue-and-accept-queue-overflow-explained_599203)
 	- [延迟确认与Nagle算法](#延迟确认与nagle算法)
 	- [TCP超时重传](#tcp超时重传)
 
@@ -108,7 +108,7 @@ TCP首部中的RST比特是用于“复位”的。一般说来，无论何时�
 
 TCP使用由本地地址和远端地址组成的4元组:**目的IP地址、目的端口号、源IP地址和源端口号来处理传入的多个请求。TCP仅通过目的端口号无法确定哪个进程应该处理一个TCP请求。**另外，在三个使用端口23的进程中，只有处于LISTEN的进程能够接收新的连接请求（SYN）。处于ESTABLISHED的进程将不能接收SYN报文段，而处于LISTEN的进程将不能接收数据报文段。
 
-### 连接队列
+### 连接队列 （https://www.alibabacloud.com/blog/tcp-syn-queue-and-accept-queue-overflow-explained_599203）
 当服务器正处于忙时，TCP是如何处理这些呼入的连接请求?
 <center><img src="pics/tcp-queue.png" width="50%"></center>
 

@@ -1,6 +1,8 @@
 # 亲和性
 {docsify-updated}
 
+> https://kubernetes.io/zh-cn/docs/concepts/scheduling-eviction/assign-pod-node/#inter-pod-affinity-and-anti-affinity
+
 亲和性功能由两种类型的亲和性组成：
 
 + 节点亲和性功能类似于 nodeSelector 字段，但它的表达能力更强，并且允许你指定软规则。
@@ -9,8 +11,8 @@
 ## 节点亲和性 
 节点亲和性概念上类似于 nodeSelector， 它使你可以根据节点上的标签来约束 Pod 可以调度到哪些节点上。 节点亲和性有两种：
 
-+ `requiredDuringSchedulingIgnoredDuringExecution` ： 调度器只有在规则被满足的时候才能执行调度。此功能类似于 nodeSelector， 但其语法表达能力更强。
-+ `preferredDuringSchedulingIgnoredDuringExecution` ： 调度器会尝试寻找满足对应规则的节点。如果找不到匹配的节点，调度器仍然会调度该 Pod。
++ `requiredDuringSchedulingIgnoredDuringExecution` ： 调度器只有在规则被满足的时候才能执行调度。此功能类似于 `nodeSelector` ， 但其语法表达能力更强。
++ `preferredDuringSchedulingIgnoredDuringExecution` ： 调度器会尝试寻找满足对应规则的节点。如果找不到匹配的节点，调度器仍然会调度该 Pod。(软设置)
 
 可以使用 Pod 规约中的 .spec.affinity.nodeAffinity 字段来设置节点亲和性。 例如，考虑下面的 Pod 规约：
 ```

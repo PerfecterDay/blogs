@@ -12,3 +12,6 @@
 * [Micrometer](#)
   * [核心概念](/devops/micrometer/核心概念.md)
   * [Meters种类](/devops/micrometer/Meters.md)
+* [OpenTelemetry](#)
+  * [入门](/devops/opentelemetry/入门简介.md)
+  * [安装搭建体验](/devops/opentelemetry/安装搭建.md)

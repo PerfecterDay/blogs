@@ -119,3 +119,20 @@
 	Hostname ssh.github.com
 	Port 443
 	```
+
+### 恢复
+```
+git reflog --date=iso
+
+b4f3446 (HEAD -> develop_h5, wzz/develop_h5, new-branch-for-feature) HEAD@{2024-11-08 16:22:46 +0800}: checkout: moving from new-branch-for-feature to develop_h5
+b4f3446 (HEAD -> develop_h5, wzz/develop_h5, new-branch-for-feature) HEAD@{2024-11-08 16:21:12 +0800}: checkout: moving from develop_h5 to new-branch-for-feature
+
+<commit hash> HEAD@{7}: checkout: moving from main to new-feature
+```
+`commit hash` 就是你执行这个操作后所处的 commitId, 所以找到要恢复的执行操作的位置，然后记下 `commit hash`，然后：
+
+```
+git checkout -b new-branch-for-feature <commit hash>
+git branch -f new-feature <commit hash>
+```
+

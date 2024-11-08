@@ -1,6 +1,9 @@
 #  TCP 协议
 {docsify-updated}
 
+> https://mp.weixin.qq.com/s/cOXUH8knOomVLGE6YWs9Mg
+> https://xiaodongq.github.io/2024/05/18/tcp_connect/
+
 - [TCP 协议](#tcp-协议)
 	- [TCP服务概述](#tcp服务概述)
 	- [最大报文段长度](#最大报文段长度)

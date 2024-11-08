@@ -1,11 +1,11 @@
 # k8s 数据管理-volume
 {docsify-updated}
 - [k8s 数据管理-volume](#k8s-数据管理-volume)
-  - [emptyDir](#emptydir)
-  - [hostPath](#hostpath)
-  - [外部Storage Provider](#外部storage-provider)
-  - [PersistentVolume 和 PersistentVolumeClaim](#persistentvolume-和-persistentvolumeclaim)
-    - [PV示例](#pv示例)
+    - [emptyDir](#emptydir)
+    - [hostPath](#hostpath)
+    - [外部Storage Provider](#外部storage-provider)
+    - [PersistentVolume 和 PersistentVolumeClaim](#persistentvolume-和-persistentvolumeclaim)
+      - [PV示例](#pv示例)
 
 
 容器和Pod是短暂的。其含义是它们的生命周期可能很短，会被频繁地销毁和创建。容器销毁时，保存在容器内部文件系统中的数据都会被清除。为了持久化保存容器的数据，可以使用KubernetesVolume。

@@ -136,3 +136,13 @@ git checkout -b new-branch-for-feature <commit hash>
 git branch -f new-feature <commit hash>
 ```
 
+## 删除某个 commit
+Once you push to the repo, you really don't want to go about changing history. However, if you are absolutely sure that nobody has pulled/fetched from the repo since your offending commit, you have 2 options.
+
+If you want to remove the "bad" commit altogether (and every commit that came after that), do a git reset --hard ABC (assuming ABC is the hash of the "bad" commit's elder sibling — the one you want to see as the new head commit of that branch). Then do a git push --force (or git push -f).
+
+If you just want to edit that commit, and preserve the commits that came after it, do a git rebase -i ABC~. This will launch your editor, showing the list of your commits, starting with the offending one. Change the flag from "pick" to "e", save the file and close the editor. 
+In the editor that opens, find the line with the commit you want to delete, change pick to drop, or simply delete the line.
+Then make the necessary changes to the files, and do a git commit -a --amend, then do git rebase --continue. Follow it all up with a git push -f.
+
+I want to repeat, these options are only available to you if nobody has done a pull or fetch that contains your offending commit. If they have, doing these steps will just make matters worse.

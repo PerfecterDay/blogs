@@ -13,5 +13,6 @@
 * [Shell 条件判断](/linux/shell-条件判断.md)
 * [SSH简介](/linux/ssh.md)
 * [vim手册](/linux/vim手册.md)
+* [服务自启动-Systemd](/linux/systemd.md)
 * [strace-跟踪系统调用](/linux/strace.md)
 * [CPU利用率100%排查](/linux/CPU-100.md)

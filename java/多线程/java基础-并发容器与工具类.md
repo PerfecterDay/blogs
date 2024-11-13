@@ -2,13 +2,13 @@
 {docsify-updated}
 
 - [Java 提供的并发容器与工具类](#java-提供的并发容器与工具类)
-	- [并发容器](#并发容器)
-	- [并发工具类](#并发工具类)
-		- [CountDownLatch](#countdownlatch)
-		- [循环同步屏障 CyclicBarrier](#循环同步屏障-cyclicbarrier)
-		- [CountdownLatch 和 CyclicBarrier 的区别](#countdownlatch-和-cyclicbarrier-的区别)
-		- [Semaphore](#semaphore)
-		- [线程间交换数据的 Exchanger](#线程间交换数据的-exchanger)
+  - [并发容器](#并发容器)
+  - [并发工具类](#并发工具类)
+    - [CountDownLatch](#countdownlatch)
+    - [循环同步屏障 CyclicBarrier](#循环同步屏障-cyclicbarrier)
+    - [CountdownLatch 和 CyclicBarrier 的区别](#countdownlatch-和-cyclicbarrier-的区别)
+    - [Semaphore](#semaphore)
+    - [线程间交换数据的 Exchanger](#线程间交换数据的-exchanger)
 
 
 ## 并发容器
@@ -122,6 +122,7 @@ public class CyclicBarrierTest {
 1. `CountDownLatch` 的计数器只能使用一次，而 `CyclicBarrier` 的计数器可以使用 `reset()` 方法重置。所以 `CyclicBarrier` 能处理更为复杂的业务场景。例如，如果计算发生错误，可以重置计数
 器，并让线程重新执行一次。
 
+<center><img src="pics/cdl-cyc.png" alt=""></center>
 
 ### Semaphore  
 `Semaphore` （信号量）是用来控制同时访问特定资源的线程数量，它通过协调各个线程，以保证合理的使用公共资源。 `Semaphore` 的用法也很简单，首先线程使用 `Semaphore` 的 `acquire()` 方法获取一个许可证，使用完之后调用 `release()` 方法归还许可证。还可以用 `tryAcquire()` 方法尝试获取许可证。

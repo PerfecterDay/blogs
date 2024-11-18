@@ -240,7 +240,7 @@ public class ConsulAutoServiceRegistrationListener implements SmartApplicationLi
 
 1. 使用 `Spring Cloud LoadBalancer`
 Spring Cloud 支持 Feign（REST 客户端构建器）和 Spring RestTemplate，以便使用逻辑服务名称/ID 而不是物理 URL 查找服务。Feign 和具有 RestTemplate 都利用 Spring Cloud LoadBalancer 实现客户端负载平衡。
-2. 使用 `DiscoveryClient`
+1. 使用 `DiscoveryClient`
    ```
    @Autowired
    private DiscoveryClient discoveryClient;
@@ -253,6 +253,22 @@ Spring Cloud 支持 Feign（REST 客户端构建器）和 Spring RestTemplate，
        return null;
    }
    ```
+
+服务发现使用的 `HealthConsulClient` 的方法：
+```java
+public Response<List<HealthService>> getHealthServices(String serviceName, HealthServicesRequest healthServicesRequest) {
+      HttpResponse httpResponse = this.rawClient.makeGetRequest("/v1/health/service/" + serviceName, healthServicesRequest.asUrlParameters());
+      if (httpResponse.getStatusCode() == 200) {
+      List<HealthService> value = (List)GsonFactory.getGson().fromJson(httpResponse.getContent(), (new TypeToken<List<HealthService>>() {
+      }).getType());
+      return new Response(value, httpResponse);
+      } else {
+      throw new OperationException(httpResponse);
+      }
+}
+```
+
+调用的 API 是 `/v1/health/service/` .
 
 ### 自定义注册-使用tcp health check
 

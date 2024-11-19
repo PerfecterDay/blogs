@@ -6,11 +6,9 @@
 		- [Checks 相关](#checks-相关)
 		- [Service 相关](#service-相关)
 
-`/agent`端点用于与本地Consul代理进行交互。通常，服务和检查是在代理处注册的，然后由代理承担起保持该数据与集群同步的责任。例如，代理向目录注册服务和检查，并执行反熵以从中断中恢复。
+`/agent`端点用于与**本地Consul代理**进行交互。通常，服务和检查是在代理处注册的，然后由代理承担起保持该数据与集群同步的责任。例如，代理向目录注册服务和检查，并执行反熵以从中断中恢复。
 
-除了这些端点之外，其他的端点也分组在检查和服务的导航中
-
-### 概览
+## 概览
 1. 检索主机信息
 ```
 curl -XGET http://consul-cluster-server.consul.svc.cluster.local:8500/v1/agent/host
@@ -59,13 +57,13 @@ curl -XGET http://consul-cluster-server.consul.svc.cluster.local:8500/v1/agent/m
 curl -XPUT http://consul-cluster-server.consul.svc.cluster.local:8500/v1/agent/leave
 ```
 
-### Checks 相关
+## Checks 相关
 1. 列出注册的检查：`curl -XGET http://consul-cluster-server.consul.svc.cluster.local:8500/v1/agent/checks`
 2. 注册检查：`curl -XPUT http://consul-cluster-server.consul.svc.cluster.local:8500/v1/agent/check/register`
 3. 注销检查：`curl -XPUT http://consul-cluster-server.consul.svc.cluster.local:8500/v1/agent/check/deregister/{check_id}` check_id是路径参数
 4. `curl -XPUT http://consul-cluster-server.consul.svc.cluster.local:8500/v1//agent/check/pass/{check_id}`
 
-### Service 相关
+## Service 相关
 1. 列出注册的服务：`curl -XGET http://consul-cluster-server.consul.svc.cluster.local:8500/v1/agent/services`
 2. 查看服务配置：`curl -XGET http://consul-cluster-server.consul.svc.cluster.local:8500/v1/agent/service/{service_id}` service_id是路径参数
 3. 根据**服务名**查询本地服务的健康状况：`curl -XGET http://consul-cluster-server.consul.svc.cluster.local:8500/v1/agent/health/service/name/{service_name}`
@@ -95,3 +93,13 @@ curl -XPUT http://consul-cluster-server.consul.svc.cluster.local:8500/v1/agent/l
 	}'
 	```
 6. 取消服务注册： `curl -XPUT http://consul-cluster-server.consul.svc.cluster.local:8500/v1/agent/service/deregister/{service_id}`
+
+
+## 注意事项
+请注意因为是与本地 agent 交互的 API，有些查询的API并不能保证一致性（本地agent与 consul 集群信息不一致）:
+<center>
+	<img src="pics/agent-0.png" alt="">
+	<img src="pics/agent-1.png" alt="">
+</center>
+
+所以如果是服务注册信息查询相关的功能不能使用 agent API，应使用 catalog/health API 来使用服务发现。

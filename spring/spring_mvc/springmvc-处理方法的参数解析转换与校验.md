@@ -5,6 +5,7 @@
     - [本文解决的核心问题](#本文解决的核心问题)
     - [参数绑定- HandlerMethodArgumentResolver 及 HttpMessageConverter](#参数绑定--handlermethodargumentresolver-及-httpmessageconverter)
     - [HandlerMethodArgumentResolver 和 HttpMessageConverter 的关系](#handlermethodargumentresolver-和-httpmessageconverter-的关系)
+    - [常见的 HandlerMethodArgumentResolver](#常见的-handlermethodargumentresolver)
     - [数据绑定流程剖析](#数据绑定流程剖析)
   - [请求参数验证](#请求参数验证)
     - [Spring 参数校验的原理](#spring-参数校验的原理)
@@ -159,6 +160,16 @@ public interface HttpMessageConverter<T> {
     void write(T t, @Nullable MediaType contentType, HttpOutputMessage outputMessage) throws IOException, HttpMessageNotWritableException;
 }
 ```
+
+### 常见的 HandlerMethodArgumentResolver
++ `RequestResponseBodyMethodProcessor` ： 用 `@RequestBody` 注解的参数会用这个解析
++ `RequestHeaderMethodArgumentResolver` ： 用 `@RequestHeader("xxxx") String var` 注解的参数会用这个解析
++ `RequestParamMethodArgumentResolver` ： 用 `@RequestParam("xxxx") String var` 注解的参数会用这个解析
++ `PathVariableMethodArgumentResolver` : 用 `@PathVariable("xxx") String var` 注解的参数会用这个解析
++ `PathVariableMapMethodArgumentResolver` : 用 `@PathVariable Map map` 注解且没有指定路径参数名的 Map 类型参数会用这个解析
++ `MatrixVariableMethodArgumentResolver` : 用 `@MatrixVariable("xxx") String var` 注解且没有指定矩阵参数名的参数会用这个解析
++ `MatrixVariableMapMethodArgumentResolver` : 用 `@MatrixVariable Map map` 注解且没有指定矩阵参数名的 Map 类型参数会用这个解析
++ `ServletModelAttributeMethodProcessor`：用 `@ModelAttribute` 注解或者没有注解的自定义类型的参数会用这个解析
 
 
 ### 数据绑定流程剖析

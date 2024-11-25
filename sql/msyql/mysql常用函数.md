@@ -1,12 +1,6 @@
 #  Mysql 常用函数
 {docsify-updated}
 
-- [Mysql 常用函数](#mysql-常用函数)
-		- [字符串函数](#字符串函数)
-		- [日期和时间函数](#日期和时间函数)
-		- [数值处理函数](#数值处理函数)
-
-
 ### 字符串函数
 
 + `ASCII(str)` : 返回值为字符串str 的**最左字符的数值**。假如str为空字符串，则返回值为 0 。假如str 为NULL，则返回值为NULL。 ASCII()用于带有从 0到255的数值的字符。
@@ -43,7 +37,7 @@
 + `CURTIME()` :　将当前时间以'HH:MM:SS'或 HHMMSS 的格式返回， 具体格式根据函数用在字符串或是数字语境中而定。`CURRENT_TIME` 和`CURRENT_TIME()` 是`CURTIME()`的同义词。
 + `CURRENT_TIMESTAMP` : 返回当前时间，和`CURRENT_TIMESTAMP()` 、`NOW()`是同义词。
 + `DATE(expr)/YEAR(expr)/TIME(expr)` : 提取日期或时间日期表达式expr中的日期/年份/时间部分。 `SELECT DATE('2003-12-31 01:02:03');->  '2003-12-31'`
-+ `DATEDIFF(expr,expr2)` : `DATEDIFF()` 返回起始时间 expr和结束时间expr2之间的天数。Expr和expr2 为日期或 d ate-and-time 表达式。计算中只用到这些值的日期部分。
++ `DATEDIFF(expr,expr2)` : `DATEDIFF()` 返回起始时间 expr和结束时间expr2之间的天数。Expr和expr2 为日期或 date-and-time 表达式。计算中只用到这些值的日期部分。
 + `DATE_ADD(date,INTERVAL expr type) DATE_SUB(date,INTERVAL expr type)`: 这些函数执行日期运算。 date 是一个 DATETIME 或DATE值，用来指定起始时间。 expr 是一个表达式，用来指定从起始日期添加或减去的时间间隔值。  Expr是一个字符串;对于负值的时间间隔，它可以以一个 ‘-’开头。type 为关键词，它指示了表达式被解释的方式。 
 + `FROM_UNIXTIME(unix_timestamp) , FROM_UNIXTIME(unix_timestamp,format)`: 返回'YYYY-MM-DD HH:MM:SS'或YYYYMMDDHHMMSS 格式值的unix_timestamp参数表示，具体格式取决于该函数是否用在字符串中或是数字语境中。
 + `LAST_DAY(date)`: 获取一个日期或日期时间值，返回该月最后一天对应的值。若参数无效，则返回NULL。

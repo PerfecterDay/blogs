@@ -136,7 +136,7 @@ git checkout -b new-branch-for-feature <commit hash>
 git branch -f new-feature <commit hash>
 ```
 
-## 删除某个 commit
+## 删除某个历史commit
 Once you push to the repo, you really don't want to go about changing history. However, if you are absolutely sure that nobody has pulled/fetched from the repo since your offending commit, you have 2 options.
 
 If you want to remove the "bad" commit altogether (and every commit that came after that), do a git reset --hard ABC (assuming ABC is the hash of the "bad" commit's elder sibling — the one you want to see as the new head commit of that branch). Then do a git push --force (or git push -f).
@@ -146,3 +146,15 @@ In the editor that opens, find the line with the commit you want to delete, chan
 Then make the necessary changes to the files, and do a git commit -a --amend, then do git rebase --continue. Follow it all up with a git push -f.
 
 I want to repeat, these options are only available to you if nobody has done a pull or fetch that contains your offending commit. If they have, doing these steps will just make matters worse.
+
+## 提交一个change 到历史commit 中
+1. Use git stash to store the changes you want to add.
+2. Use git rebase -i HEAD~10 (or however many commits back you want to see).
+3. Mark the commit in question (a0865...) for edit by changing the word pick at the start of the line into edit. Don't delete the other lines as that would delete the commits.[^vimnote]
+4. Save the rebase file, and git will drop back to the shell and wait for you to fix that commit.
+5. Pop the stash by using `git stash pop`.
+6. Add your file with `git add <file>`.
+7. Amend the commit with `git commit --amend --no-edit`.
+8. Do a `git rebase --continue` which will rewrite the rest of your commits against the new one.
+9. Repeat from step 2 onwards if you have marked more than one commit for edit.
+10. If you have previously pushed the modified commits anywhere else, then you will have to push --force again to update them on the remote. However, the usual warnings about using --force apply, and you can easily lose other people's work if you are not careful and coordinate with them beforehand.

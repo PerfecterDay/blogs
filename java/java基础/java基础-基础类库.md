@@ -40,18 +40,21 @@ Runtime 类代表 Java 运行时环境，可以访问 JVM 的相关信息，如�
 + `public Process exec(String command)` :运行指定命令单独启动一个进程，返回启动进程的引用
 + `public void addShutdownHook(Thread hook)` : 注册一个新的 virtual-machine shutdown hook.
 
+JVM虚拟机会在以下两种情况下关闭：
+1. 程序运行完毕，所有的非 daemon 线程都退出执行或者 `System.exit()` 方法执行
+2. JVM接收到一些中断信号，比如 `^C`，或者一些系统事件，比如用户退出登录或者系统关机
 
-The Java virtual machine shuts down in response to two kinds of events:
-The program exits normally, when the last non-daemon thread exits or when the exit (equivalently, System. exit) method is invoked, or
-The virtual machine is terminated in response to a user interrupt, such as typing ^C, or a system-wide event, such as user logoff or system shutdown.
-A shutdown hook is simply an initialized but unstarted thread. When the virtual machine begins its shutdown sequence it will start all registered shutdown hooks in some unspecified order and let them run concurrently. When all the hooks have finished it will then halt. Note that daemon threads will continue to run during the shutdown sequence, as will non-daemon threads if shutdown was initiated by invoking the exit method.
-Once the shutdown sequence has begun it can be stopped only by invoking the halt method, which forcibly terminates the virtual machine.
-Once the shutdown sequence has begun it is impossible to register a new shutdown hook or de-register a previously-registered hook. Attempting either of these operations will cause an IllegalStateException to be thrown.
-Shutdown hooks run at a delicate time in the life cycle of a virtual machine and should therefore be coded defensively. They should, in particular, be written to be thread-safe and to avoid deadlocks insofar as possible. They should also not rely blindly upon services that may have registered their own shutdown hooks and therefore may themselves in the process of shutting down. Attempts to use other thread-based services such as the AWT event-dispatch thread, for example, may lead to deadlocks.
-Shutdown hooks should also finish their work quickly. When a program invokes exit the expectation is that the virtual machine will promptly shut down and exit. When the virtual machine is terminated due to user logoff or system shutdown the underlying operating system may only allow a fixed amount of time in which to shut down and exit. It is therefore inadvisable to attempt any user interaction or to perform a long-running computation in a shutdown hook.
-Uncaught exceptions are handled in shutdown hooks just as in any other thread, by invoking the uncaughtException method of the thread's ThreadGroup object. The default implementation of this method prints the exception's stack trace to System. err and terminates the thread; it does not cause the virtual machine to exit or halt.
-In rare circumstances the virtual machine may abort, that is, stop running without shutting down cleanly. This occurs when the virtual machine is terminated externally, for example with the SIGKILL signal on Unix or the TerminateProcess call on Microsoft Windows. The virtual machine may also abort if a native method goes awry by, for example, corrupting internal data structures or attempting to access nonexistent memory. If the virtual machine aborts then no guarantee can be made about whether or not any shutdown hooks will be run.
+shutdown hook 就是一个初始化好的但是没有启动的线程。当JVM虚拟机开始关闭时，它会启动所有的注册过的 shutdown hook 线程，它们会以不确定的顺序并发地执行。当所有的 hooks 执行完毕，JVM虚拟机就会关闭。请注意：在关闭期间，守护线程将继续运行，而如果关闭是通过调用 `exit()` 方法启动的，则非守护线程也会继续运行。
 
+一旦关闭序列开始，只有通过调用 `halt()` 方法才能停止，该方法会强制终止虚拟机。此外，一旦关闭序列开始，就无法注册新的关闭钩子或取消注册已注册的钩子。尝试执行这些操作中的任意一个都会导致抛出 `IllegalStateException` 异常。
+
+关闭钩子在虚拟机生命周期的一个关键时刻运行，因此应该以防御性方式进行编码。特别是，它们应该是线程安全的，并尽可能避免死锁。此外，关闭钩子不应盲目依赖可能已注册其自身关闭钩子并因此可能正在关闭的服务。例如，尝试使用基于线程的其他服务（如 AWT 事件分派线程）可能会导致死锁。
+
+关闭钩子还应尽快完成其工作。当程序调用 `exit()` 时，期望虚拟机能迅速关闭并退出。当虚拟机因用户注销或系统关闭而终止时，底层操作系统可能仅允许固定时间来关闭和退出。因此，不建议在关闭钩子中尝试与用户交互或执行长时间运行的计算。
+
+未捕获的异常在关闭钩子中与其他线程一样被处理，方法是调用线程的 `ThreadGroup` 对象的 `uncaughtException()` 方法。该方法的默认实现会将异常的堆栈跟踪打印到 `System.err`，然后终止线程；它不会导致虚拟机退出或停止。
+
+在极少数情况下，虚拟机可能会中止运行，即在未正常关闭的情况下停止运行。这种情况发生在虚拟机被外部强制终止时，例如在 Unix 系统中收到 `SIGKILL` 信号或在 Microsoft Windows 中调用 `TerminateProcess` 。如果本地方法出现问题，例如破坏了内部数据结构或尝试访问不存在的内存，虚拟机也可能中止。如果虚拟机中止，则无法保证是否会运行任何关闭钩子。
 
 ## 常用类
 

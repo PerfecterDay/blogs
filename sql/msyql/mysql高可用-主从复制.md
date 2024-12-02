@@ -5,6 +5,7 @@
     - [复制原理](#复制原理)
     - [一般步骤](#一般步骤)
     - [Docker主从复制实战](#docker主从复制实战)
+  - [问题](#问题)
 
 ### 复制原理
 复制是 mysql 数据库提供的一种高可用高性能解决方案，分为3个步骤：
@@ -87,3 +88,22 @@ CHANGE MASTER TO MASTER_HOST='10.4.153.131', MASTER_USER='repl', MASTER_PASSWORD
     + 配置同步账号信息：`CHANGE MASTER TO MASTER_HOST='172.17.0.2', MASTER_USER='repl', MASTER_PASSWORD='repl';`
     + 启动同步：`start slave;`
     + 查看同步状态：`show slave status\G;`
+
+
+## 问题
+主从复制出错时
+```
+SHOW BINLOG EVENTS IN 'mysql-bin.000XXX' LIMIT 200;
+
+STOP SLAVE;
+START SLAVE UNTIL MASTER_LOG_FILE='mysql-bin.000XXX', MASTER_LOG_POS=99;
+
+CHANGE MASTER TO MASTER_LOG_FILE='mysql-bin.000XXX', MASTER_LOG_POS=101;
+START SLAVE;
+
+-------------
+
+STOP SLAVE;
+SET GLOBAL sql_slave_skip_counter = 1;
+START SLAVE;
+```

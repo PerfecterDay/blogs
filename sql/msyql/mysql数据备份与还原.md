@@ -2,15 +2,15 @@
 {docsify-updated}
 
 - [mysql数据备份与还原](#mysql数据备份与还原)
-	- [备份概述](#备份概述)
-	- [冷备](#冷备)
-	- [逻辑备份](#逻辑备份)
-		- [mysqldump 备份](#mysqldump-备份)
-		- [mysqldump 恢复](#mysqldump-恢复)
-		- [SELECT...INTO OUTFILE 备份](#selectinto-outfile-备份)
-		- [SELECT...INTO OUTFILE 恢复](#selectinto-outfile-恢复)
-		- [二进制日志备份与恢复](#二进制日志备份与恢复)
-		- [Mysql 数据恢复](#mysql-数据恢复)
+		- [备份概述](#备份概述)
+		- [冷备](#冷备)
+		- [逻辑备份](#逻辑备份)
+			- [mysqldump 备份](#mysqldump-备份)
+			- [mysqldump 恢复](#mysqldump-恢复)
+			- [SELECT...INTO OUTFILE 备份](#selectinto-outfile-备份)
+			- [SELECT...INTO OUTFILE 恢复](#selectinto-outfile-恢复)
+			- [二进制日志备份与恢复](#二进制日志备份与恢复)
+			- [Mysql 数据恢复](#mysql-数据恢复)
 
 ### 备份概述
 根据备份方法不同，可以分为三类：
@@ -50,7 +50,7 @@ rsync ./nrng.sql 10.4.153.130:/root/mysql
 mysqldump -uroot -p nrng < nrng.sql
 ```
 
-重要参数：
+重要参数：  
 0. `--all-databases`: 备份所有数据库。
 1. `--databases db_name1 db_name1 db_name1`: 备份指定数据库
 2. `--single-transaction` : 在备份开始时，先执行 `start transaction` 语句开启事务，保证数据一致性，但是不能执行DDL语句，不能隔离DDL操作。且只对 Innodb 引擎有效

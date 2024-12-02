@@ -8,6 +8,6 @@
 * [Mysql中InnoDB存储引擎](/sql/msyql/Innodb存储引擎.md)
 * [Mysql数据备份与还原](/sql/msyql/mysql数据备份与还原.md)
 * [Mysql高可用](/sql/msyql/mysql高可用-主从复制.md)
-* [Mysql执行计划](/sql/msyql/读懂mysql执行计划.md)
+* [Mysql执行计划](/sql/msyql/mysql执行计划.md)
 * [Mysql常用函数](/sql/msyql/mysql常用函数.md)
 * [Mysql存储过程](/sql/msyql/存储过程.md)

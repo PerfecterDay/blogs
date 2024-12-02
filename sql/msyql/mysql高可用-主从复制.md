@@ -2,12 +2,12 @@
 {docsify-updated}
 
 - [mysql高可用-主从复制](#mysql高可用-主从复制)
-    - [复制原理](#复制原理)
+  - [复制原理](#复制原理)
     - [一般步骤](#一般步骤)
     - [Docker主从复制实战](#docker主从复制实战)
-  - [问题](#问题)
+  - [问题排查](#问题排查)
 
-### 复制原理
+## 复制原理
 复制是 mysql 数据库提供的一种高可用高性能解决方案，分为3个步骤：
 1. 主服务器把数据更改（写）记录到二进制日志文件中，
 2. 从服务器把主服务器的二进制日志复制到自己的中继日志中（slave IO 线程）
@@ -89,10 +89,16 @@ CHANGE MASTER TO MASTER_HOST='10.4.153.131', MASTER_USER='repl', MASTER_PASSWORD
     + 启动同步：`start slave;`
     + 查看同步状态：`show slave status\G;`
 
+## 问题排查
+主从复制出错时，使用下述语句查看报错原因：
 
-## 问题
-主从复制出错时
+```sql
+select * from performance_schema.replication_applier_status_by_worker;
 ```
+
+使用下述语句可以跳过报错语句：
+
+```sql
 SHOW BINLOG EVENTS IN 'mysql-bin.000XXX' LIMIT 200;
 
 STOP SLAVE;

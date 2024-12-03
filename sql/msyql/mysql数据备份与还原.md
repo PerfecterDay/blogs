@@ -50,7 +50,8 @@ rsync ./nrng.sql 10.4.153.130:/root/mysql
 mysqldump -uroot -p nrng < nrng.sql
 ```
 
-重要参数：  
+重要参数：
+
 0. `--all-databases`: 备份所有数据库。
 1. `--databases db_name1 db_name1 db_name1`: 备份指定数据库
 2. `--single-transaction` : 在备份开始时，先执行 `start transaction` 语句开启事务，保证数据一致性，但是不能执行DDL语句，不能隔离DDL操作。且只对 Innodb 引擎有效

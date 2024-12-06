@@ -34,6 +34,7 @@
   * [envoy配置](/docker/envoy/envoy配置.md)
   * [envoy xDS配置](/docker/envoy/envoy-xDS.md)
   * [envoy go插件开发](/docker/envoy/envoy集成go插件.md)
+  * [envoy 集成JWT校验](/docker/envoy/envoy-jwt.md)
 * [Darp](#)
   * [Darp简介](/docker/darp/darp简介.md)
 * [阿里云运维](/gtja/uat.md)

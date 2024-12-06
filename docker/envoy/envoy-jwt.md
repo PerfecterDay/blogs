@@ -1,11 +1,9 @@
 # Envoy 集成 JWT token 验证
 {docsify-updated}
 
-```
-https://mkjwk.org/
-https://jwt.io/
-https://github.com/jwtk/jjwt
-```
+> https://mkjwk.org/  
+> https://jwt.io/  
+> https://github.com/jwtk/jjwt  
 
 Envoy 使用 HTTP 过滤器来实现 JWT token 的验证。 它将验证其 signature 、 audiences 和 issuer 。 它还将检查其时间限制，如过期时间和 nbf（非之前）时间。 如果 JWT 验证失败，其请求将被拒绝。 如果 JWT 验证成功，其有效载荷可以转发给上游，以便根据需要进一步授权。
 

@@ -1,7 +1,7 @@
 # mysql 用户及权限管理
 {docsify-updated}
 
-### 用户管理
+## 用户管理
 mysql 用户信息存储在 mysql.user 表中。
 1. 创建用户： `CREATE USER 'username'@'ip' IDENTIFIED WITH mysql_native_password BY 'passowrd'`;
 2. 允许用户从任意IP登录：`update mysql.user set host='%' where user='root';`
@@ -11,7 +11,7 @@ mysql 用户信息存储在 mysql.user 表中。
 4. 刷新用户权限：`flush privileges`
 5. 查看当前登录的用户：`select user();` 或 `SELECT CURRENT_USER();`
 
-### 授权与收回
+## 授权与收回
 SQL标准包括 select、insert、update、delete以及all权限。
 
 0. 查看用户的权限：`show grants for <user>@<host>`

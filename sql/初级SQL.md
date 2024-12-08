@@ -69,8 +69,11 @@ creaet table [db-name].table-name(
     ...,
     ...,
     primary key(column-name...)
-) ENGINE=innodb 
+) ENGINE=<engine-name> 
 ```
+
+修改表的存储引擎： `ALTER TABLE 表名 ENGINE = 存储引擎名称;`
+
 2. 从其他表中创建表并导入数据：
 ```
 creaet table [db-name].table-name as select col1,col2... from table2

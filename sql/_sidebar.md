@@ -7,7 +7,7 @@
   * [数据库并发控制-锁](/sql/数据库并发控制-基于锁的协议.md)
   * [数据库事务](/sql/数据库事务.md)
   * [数据库事务实战](/sql/数据库事务实战.md)
-* [Mysql](#)
+* [Mysql](/sql/msyql/_sidebar.md)
   * [精品教程](https://planetscale.com/learn/courses/mysql-for-developers)
   * [Mysql安装与启动](/sql/msyql/mysql安装及启动.md)
   * [Mysql用户和权限管理](/sql/msyql/mysql用户及权限管理.md)

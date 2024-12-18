@@ -6,6 +6,7 @@
 
 - [COLA 架构规范](#cola-架构规范)
     - [分层架构](#分层架构)
+    - [POJO 定义规范](#pojo-定义规范)
     - [定义](#定义)
     - [组件](#组件)
     - [archetype](#archetype)
@@ -24,6 +25,14 @@
 + Infrastructure 为基础实施层，提供公共的基础设施组件，如持久化机制、消息管道的读取写入、文件服务的读取写入、调用邮件服务、对外部系统的调用等等。
 
 <center><img src="pics/cola-ac.png" width="60%"></center>
+
+### POJO 定义规范
++ `DO（Data Object)`：此对象与数据库表结构一一对应，通过 DAO层向上传输数据源对象。
++ `DTO（Data Transfer Object）`：数据传输对象，Service或 Manager向外传输的对象。
++ `BO（Business Object）`：业务对象，由 Service层输出的封装业务逻辑的对象。
++ `AO（Application Object）`： 应用对象， 在Web层与Service层之间抽象的复用对象模型，极为贴近展示层，复用度不高。
++ `VO（View Object）`：显示层对象，通常是 Web向模板渲染引擎层传输的对象。
++ `Query`：数据查询对象，各层接收上层的查询请求。注意超过2个参数的查询封装，禁止使用Map类来传输。
 
 ### 定义
 1. 实体（ENTITY）  

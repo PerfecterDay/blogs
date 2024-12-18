@@ -2,7 +2,6 @@
 * [..](../_sidebar.md)
 * [精品教程](https://planetscale.com/learn/courses/mysql-for-developers)
 * [Mysql安装与启动](/sql/msyql/mysql安装及启动.md)
-* [Mysql配置与状态查看](/sql/msyql/mysql配置与状态查看.md)
 * [Mysql的配置与状态查看](/sql/msyql/mysql配置与状态查看.md)
 * [Mysql用户和权限管理](/sql/msyql/mysql用户及权限管理.md)
 * [Mysql查询历史sql记录](/sql/msyql/mysql查询历史sql记录.md)

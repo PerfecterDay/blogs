@@ -1,10 +1,6 @@
 #  Jmeter 入门
 {docsify-updated}
 
-- [Jmeter 入门](#jmeter-入门)
-		- [安装遇到的问题](#安装遇到的问题)
-		- [命令行参数](#命令行参数)
-
 > https://www.elibaron.com/develop/test/dev-y-pu-jmeter-install.html
 
 ### 安装遇到的问题

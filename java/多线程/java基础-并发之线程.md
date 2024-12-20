@@ -2,17 +2,17 @@
 {docsify-updated}
 
 - [java线程](#java线程)
-	- [线程的三种创建方式](#线程的三种创建方式)
-	- [线程的一些属性](#线程的一些属性)
-	- [线程的状态](#线程的状态)
-		- [BLOCKED 和 WAITING 区别](#blocked-和-waiting-区别)
-		- [wait 和 sleep 的区别](#wait-和-sleep-的区别)
-		- [interrupt](#interrupt)
-- [线程之间的通信及同步](#线程之间的通信及同步)
-	- [volatile](#volatile)
-	- [ThreadLocal](#threadlocal)
-	- [等待通知机制](#等待通知机制)
-	- [等待/通知的经典范式](#等待通知的经典范式)
+		- [线程的三种创建方式](#线程的三种创建方式)
+		- [线程的一些属性](#线程的一些属性)
+		- [线程的状态](#线程的状态)
+			- [BLOCKED 和 WAITING 区别](#blocked-和-waiting-区别)
+			- [wait 和 sleep 的区别](#wait-和-sleep-的区别)
+			- [interrupt](#interrupt)
+	- [线程之间的通信及同步](#线程之间的通信及同步)
+		- [volatile](#volatile)
+		- [ThreadLocal](#threadlocal)
+		- [等待通知机制](#等待通知机制)
+		- [等待/通知的经典范式](#等待通知的经典范式)
 
 
 ### 线程的三种创建方式
@@ -160,7 +160,7 @@ class Thread4 extends Thread{
 关键字 volatile 可以用来修饰字段（成员变量），就是告知程序**任何对该变量的访问均需要从共享内存中获取，而对它的改变必须同步刷新回共享内存，它能保证所有线程对变量访问的可见性。**
 
 ### ThreadLocal
-[ThreadLocal](./java基础-线程安全的实现方法.md#threadlocal)
+[ThreadLocal](./java基础-线程安全的实现方法.md#线程本地存储-threadlocal)
 
 ### 等待通知机制
 <center><img src="pics/wait-notify.jpg" width=50% heght=50%></center>

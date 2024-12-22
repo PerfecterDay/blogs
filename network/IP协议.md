@@ -17,14 +17,17 @@ IP是TCP/IP协议族中最为核心的协议。所有的TCP、UDP、ICMP及IGMP�
 **无连接(connectionless)** 这个术语的意思是IP并不维护任何关于后续数据报的状态信息。每个数据报的处理是相互独立的。这也说明，IP数据报可以不按发送顺序接收。如果一信源向相同的信宿发送两个连续的数据报(先是A，然后是B)，每个数据报都是独立地进行路由选择，可能选择不同的路线，因此B可能在A到达之前先到达。
 
 ### IP地址
-<center><img src="pics/ip-address.png" alt="" width="40%"></center>
+<center><img src="pics/ip-address.png" alt="" width="50%"></center>
 
 全0和全1的主机号都是无效的。  
 子网划分：将主机号范围内部分比特作为子网号来划分子网。
 
 #### 特殊IP地址
 下图中0表示所有比特全为0；-1表示所有比特全为1；netid/subnetid/hostid代表不全为0或全为1的对应字段；子网号栏为空表示没有子网划分。
-<center><img src="pics/special-ip.png" alt="" width="60%"></center>
+<center>
+<img src="pics/special-ip.png" alt="" width="60%">
+<img src="pics/special-ip2.png" alt="" width="60%">
+</center>
 
 表的头两项是特殊的源地址，中间项是特殊换回地址，最后四项是广播地址。
 

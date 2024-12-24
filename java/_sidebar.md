@@ -42,6 +42,7 @@
   * [注解](/java/java基础/java基础-注解.md)
   * [流](/java/java基础/java基础-流.md)
   * [安全](/java/java基础/java基础-安全.md)
+  * [加密](/java/java基础/java基础-加密.md)
   * [Java应用程序的打包](/java/java基础/java基础-jar文件.md)
   * [JDBC访问数据库](/java/java基础/java基础-JDBC访问数据库.md)
   * [Optional判空](/java/java基础/java基础-Optional判空.md)

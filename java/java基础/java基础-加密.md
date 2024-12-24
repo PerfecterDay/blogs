@@ -21,58 +21,149 @@
 信息验证码 (Message Authentication Code-MAC) 提供了一种基于密钥检查通过不可靠介质传输或存储的信息完整性的方法。 通常，信息验证码用于共享密钥的双方之间，以验证双方之间传输的信息。  
 基于加密散列函数的 MAC 机制称为 HMAC。 HMAC 可与任何加密散列函数（如 MD5 或 SHA-1）和共享密钥结合使用。 HMAC 由 RFC 2104 规定。
 
-### 消息摘要-防篡改
 
-消息摘要是数据块的指纹。可以基于任意长的数据块计算出一个定长的不可逆的数字序列，通常称为指纹。人们希望，任何两个不同的输入数据，计算得到的指纹也不一样。当然这是不可能的，因为输入的数据有无数种可能，而定长的指纹序列是可数的，与长度有关。但是，通过设计合适的算法，人们可以使得伪造一个具有相同指纹得数据块在计算复杂度上是不可能。
+## Cipher
+**第一步**：`Cipher` 对象使用 `getInstance` 工厂方法创建：
+```
+public static Cipher getInstance(String transformation);
+public static Cipher getInstance(String transformation,String provider);
+```
+`transformation` 是一个字符串，用于描述对给定输入执行的操作（或操作集），以产生某些输出。 转换总是包括加密算法的名称（如 AES/DES），后面还可以加上模式和填充方案，如下形式：
++ `algorithm/mode/padding`, 如 "DES/CBC/PKCS5Padding"
++ `algorithm` ， 如 "AES"
 
-Java实现了
-+ MD5
-+ SHA-1
-+ SHA-256
-+ SHA-384
-+ SHA-512
+Algorithm:
++ `AES`: 支持 128, 192, 和 256 bits.
++ `Blowfish`: The block cipher designed by Bruce Schneier.
++ `DES`
++ `DESede`: Triple DES Encryption (DES-EDE).
++ `ElGamal`: Asymmetric key encryption based on Diffie–Hellman key exchange.
++ `MARS`: A shared-key (symmetric) block cipher, supporting 128-bit blocks and variable key size created by IBM.
++ `PBEWith<digest>And<encryption>`
++ `RC2` and `RC4`: Variable-key-size encryption algorithms developed by Ron Rivest for RSA Data Security, Inc.
++ `RSA`: The RSA encryption algorithm as defined in PKCS #1.
++ `Seal`: A software-efficient stream cipher by Phil Rogaway, IBM.
 
-等摘要算法。 总结来说，消息摘要就是能提取出一个数据块的指纹，任何对数据块的篡改都能导致指纹的不匹配，所以消息摘要具有**防篡改**功能。
+Mode:
++ `ECB`: Electronic Codebook Mode, as defined in: The National Institute of Standards and Technology (NIST) Federal Information Processing Standard (FIPS) PUB 81, DES Modes of Operation,U.S. + Department of Commerce, Dec 1980.
++ `CBC`: Cipher Block Chaining Mode, as defined in FIPS PUB 81.
++ `CFB`: Cipher Feedback Mode, as defined in FIPS PUB 81.
++ `CTR`: Counter Mode, as defined in NIST SP 800-38A.
++ `OFB`: Output Feedback Mode, as defined in FIPS PUB 81.
++ `PCBC`: Plaintext Cipher Block Chaining, as defined by Kerberos.
++ `CTS`: Cipher Text Stealing Mode, as defined in RFC 2040.
 
-#### MessageDigest
-`MessageDigest` 类是创建封装了指纹算法得对象的工厂，它的静态方法 `getInstance(String algorithm)` 返回继承自 `MessageDigest` 的一个算法对象。 `MessageDigest`既是一个工厂，也是消息摘要算法的超类。
+Padding:
++ `NoPadding`: No padding.
++ `PKCS5Padding`: The padding scheme described in: RSA Laboratories, PKCS #5: Password-Based Encryption Standard, version 1.5, November 1993.
++ `ISO10126Padding`: The padding scheme required by JSR 105 & JSR 106.
 
-#### 消息签名-防伪造
+**第二步**：使用 `getInstance` 获取的密码对象必须针对四种模式之一进行初始化，这四种模式在密码类中定义为最终整数常量：
+1. `Cipher.ENCRYPT_MODE`-加密模式
+2. `Cipher.DECRYPT_MODE`-解密模式
+3. `Cipher.WRAP_MODE`-将密钥封装成字节，以便安全地传输密钥。
+4. `Cipher.UNWRAP_MODE`-将先前封装的密钥解包为 `java.security.Key` 对象。
 
-假如要传送的消息被截获，并且攻击者篡改了内容后又重新生成了指纹（重放攻击），接收者是无法识别出这条消息被篡改了的。基于这点，发送者可以用自己的私钥对消息和指纹进行签名，然后将公钥告知接收方，接收方收到消息后，用公钥进行验签。如果验签成功，就能说明这条消息确实是由发送者发送的，因为没有人可以伪造发送方的私钥。但是，在这里有一个很重要的环节是你必须确保你得到的公钥确实是发送者自己的公钥。因为任何人都可以自己生成一对公私钥对。一个可用的方案是我们找一个权威机构来对公钥进行认证，对真实可信的公钥就用权威机构的私钥进行签名，并且权威机构将自己的公钥公布在网上。这样接收方在确认收到的公钥是否可信时，就能直接用权威机构的公钥去验签，验签成功的公钥就是可信的公钥。
-常用的数字签名算法包括:
-+ DSA
-+ RSA
-+ HMAC-SHA
+每个密码初始化方法都需要一个模式参数（opmode），并根据该模式初始化密码对象。 其他参数还包括密钥（key）或包含密钥的证书（certificate）、算法参数（params）和随机性来源（random）：
+```
+public void init(int opmode, Key key);
+public void init(int opmode, Certificate certificate)
+public void init(int opmode, Key key, SecureRandom random);
+public void init(int opmode, Certificate certificate, SecureRandom random)
+public void init(int opmode, Key key,AlgorithmParameterSpec params);
+public void init(int opmode, Key key,AlgorithmParameterSpec params,SecureRandom random);
+public void init(int opmode, Key key,AlgorithmParameters params)
+public void init(int opmode, Key key,AlgorithmParameters params,SecureRandom random)
+```
 
-SHA-256 和 HMAC-SHA256 都是加密散列函数，但它们的用途不同。 SHA-256 是一个单向函数，它接收输入信息并产生一个固定大小的输出（称为散列），该输出对输入信息是唯一的。 另一方面，HMAC-SHA256 是一种密钥散列函数，它在应用 SHA-256 散列函数之前将密钥与输入信息结合在一起。 这就提供了一个额外的安全层，确保只有获得秘钥的人才能验证信息的完整性和真实性。 HMAC-SHA256 常用于各种协议和应用中的信息验证和完整性检查，包括数字签名、VPN 和安全信息传送。
+**第三步**：加密或解密数据，数据加密或解密可以一步完成（单部分操作），也可以多步完成（多部分操作）。 如果事先不知道数据有多长，或者数据太长无法一次性存储在内存中，多部分操作就很有用。
+单步操作：
+```
+public byte[] doFinal(byte[] input);
+public byte[] doFinal(byte[] input, int inputOffset,int inputLen);
+public int doFinal(byte[] input, int inputOffset, int inputLen, byte[] output);
+public int doFinal(byte[] input, int inputOffset, int inputLen, byte[] output, int outputOffset)
+```
 
-#### 对称加密
+多步操作：
+```
+public byte[] update(byte[] input);
+public byte[] update(byte[] input, int inputOffset, int inputLen);
+public int update(byte[] input, int inputOffset, int inputLen,byte[] output);
+public int update(byte[] input, int inputOffset, int inputLen,byte[] output, int outputOffset)
+```
+多部分操作必须由前面的 `doFinal` 方法之一（如果最后一步仍有剩余输入数据）或下面的 `doFinal` 方法之一（如果最后一步没有剩余输入数据）终止：
+```
+public byte[] doFinal();
+public int doFinal(byte[] output, int outputOffset);
+```
+`Cipher` 的某些 `update` 和 `doFinal` 方法允许调用者指定用于加密或解密数据的输出缓冲区。 在这些情况下，必须传递一个足够大的缓冲区，以容纳加密或解密操作的结果。
+Cipher 中的以下方法可用于确定输出缓冲区的大小： `public int outOutputSize(int inputLen)` 。
 
-上述摘要、签名算法只能确认消息来源的可靠性，具体的说，他们能保证消息是特定的发送者发出的而且没有被篡改。但是，消息的内容本身没有被加密（当然如果使用公钥加密传送内容也是可以的）。通常使用对称加密来加密传送的消息。
+调用 `doFinal` 会将 `Cipher` 对象重置为通过调用 `init` 初始化时的状态。 也就是说， `Cipher` 对象被重置后，可以继续加密或解密（取决于调用 `init` 时指定的操作模式）更多数据。
 
-算法名称是一个字符串，比如“ AES ”或者“ DES/CBC/PKCS5Padding ” 。DES ，即数据加密标准，是一个密钥长度为 56 位的古老的分组密码 。 DES 加密算法在现在看来已经是过时了，因为可以用穷举法将它破译（[参见该网页中的例子](http://w2.eff.org/Privacy/Crypto/Crypto_misc/DESCracker) ） 。 更好的选择是采用它的后续版本，即高级加密标准AES。
+除了加密与解密之外， `Cipher` 还可以对密钥进行 `wrap/unwrap` 以实现密钥从一个地方到另一个地方的安全传输。由于 `wrap/unwrap` 应用程序接口可直接处理密钥对象，因此编写代码更加方便。 这些方法还可以安全地传输基于硬件的密钥。
 
-AES目前支持三种模式：AES-128 (128 bits), AES-192 (192 bits), and AES-256 (256 bits)。
+要对密钥进行 `wrap` ，首先要初始化 `Cipher` 对象为 `WRAP_MODE` 模式，然后调用下面方法：
+```
+public final byte[] wrap(Key key);
+```
+如果您要将已封装的密钥字节（调用 `wrap` 的结果）提供给其他人，由其进行 `unwrap` ，请务必同时发送接收者进行解包所需的附加信息：
++ 密钥使用的算法 ， `Key` 接口的 `public String getAlgorithm();` 方法可以获取 `Key` 使用的算法
++ 密钥的类型(SECRET_KEY, PRIVATE_KEY,  PUBLIC_KEY)
 
-Java种的 `Cipher` 类是所有加密算法的超类，通过调用 `getInstance(String algorithm)` 或者 `getInstance(String algorithm,String provider)` 来获得一个加密算法对象。一个`Cipher`可以有多种使用方式，比如加密、解密等，Java中定义了4种模式：
+有了以上信息，接受者首先要为 `UNWRAP_MODE` 初始化一个 `Cipher` 对象，然后调用下面的方法：
+```
+public final Key unwrap(byte[] wrappedKey,String wrappedKeyAlgorithm,int wrappedKeyType);
+```
+`wrappedKeyType` 是 `SECRET_KEY/PRIVATE_KEY/PUBLIC_KEY`中的一种。
 
-1. Cipher.ENCRYPT_MODE
-2. Cipher.DECRYPT_MODE
-3. Cipher.WRAP_MODE
-4. Cipher.UNWRAP_MODE
+## KeyGenerator
+`KeyGenerator` 用于生成对称算法的密钥。使用下述方法获取 `KeyGenerator` 对象：
+```
+public static KeyGenerator getInstance(String algorithm);
+public static KeyGenerator getInstance(String algorithm,String provider);
+```
 
-在使用 Cipher 之前必须调用它的
+`algorithm` 可以使用以下列表中的值：
++ `AES`
++ `Blowfish`
++ `DES`
++ `DESede`
++ `HmacMD2`
++ `HmacMD5`
++ `HmacSHA1`
++ `HmacSHA224`
++ `HmacSHA256`
++ `HmacSHA384`
++ `HmacSHA512`
++ `MARS`
++ `RC2`
++ `RC4`
++ `Seal`
 
-1. `init(...)` 方法初始化设置好密钥（ `Key` 类来表示）和模式或者其它参数，不同的加密算法要求初始化的参数不同
-2. 调用`update()`方法将要加密的数据传递给 Cipher
-3. 最后调用 `doFinal()`方法完成加密并返回加密后的字节数据。
+生成密钥有两种方式：一种是独立于算法的方式，另一种是特定于算法的方式。 两者唯一的区别在于 `KeyGenerator` 的初始化。
+1. Algorithm-Independent Initialization
+```
+public void init(SecureRandom random);
+public void init(int keysize);
+public void init(int keysize, SecureRandom random);
+```
 
-生成密钥：
+2. Algorithm-Specific Initialization
+```
+public void init(AlgorithmParameterSpec params);
+public void init(AlgorithmParameterSpec params,SecureRandom random);
+```
 
-1. 为加密算法获取 `KeyGenerator`，通过`KeyGenerator.getInstance("AES")`来获得。
-2. 用随机源或指定长度来初始化 `KeyGenerator`。
-3. 调用 `KeyGenerator` 的 `generateKey()` 生成密钥
+最后一步，生成 `Key` :
+```
+public SecretKey generateKey();
+```
+
+## SecretKeyFactory
+
+
 
 ```java
 KeyGenerator keyGenerator = KeyGenerator.getInstance(cipher);
@@ -163,32 +254,3 @@ JCE API 要求并使用一套算法、算法模式和填充方案的标准名称
 
 ### Cipher
 
-Algorithm
-The following names can be specified as the algorithm component in a transformation when requesting an instance of Cipher:
-+ AES: 支持 128, 192, 和 256 bits.
-+ Blowfish: The block cipher designed by Bruce Schneier.
-+ DES
-+ DESede: Triple DES Encryption (DES-EDE).
-+ ElGamal: Asymmetric key encryption based on Diffie–Hellman key exchange.
-+ MARS: A shared-key (symmetric) block cipher, supporting 128-bit blocks and variable key size created by IBM.
-+ PBEWith<digest>And<encryption>
-+ RC2 and RC4: Variable-key-size encryption algorithms developed by Ron Rivest for RSA Data Security, Inc.
-+ RSA: The RSA encryption algorithm as defined in PKCS #1.
-+ Seal: A software-efficient stream cipher by Phil Rogaway, IBM.
-
-Mode
-+ The following names can be specified as the mode component in a transformation when requesting an instance of Cipher:
-+ ECB: Electronic Codebook Mode, as defined in: The National Institute of Standards and Technology (NIST) Federal Information Processing Standard (FIPS) PUB 81, DES Modes of Operation,U.S. + Department of Commerce, Dec 1980.
-+ CBC: Cipher Block Chaining Mode, as defined in FIPS PUB 81.
-+ CFB: Cipher Feedback Mode, as defined in FIPS PUB 81.
-+ CTR: Counter Mode, as defined in NIST SP 800-38A.
-+ OFB: Output Feedback Mode, as defined in FIPS PUB 81.
-+ PCBC: Plaintext Cipher Block Chaining, as defined by Kerberos.
-+ CTS: Cipher Text Stealing Mode, as defined in RFC 2040.
-
-
-Padding
-The following names can be specified as the padding component in a transformation when requesting an instance of Cipher:
-+ NoPadding: No padding.
-+ PKCS5Padding: The padding scheme described in: RSA Laboratories, PKCS #5: Password-Based Encryption Standard, version 1.5, November 1993.
-+ ISO10126Padding: The padding scheme required by JSR 105 & JSR 106.

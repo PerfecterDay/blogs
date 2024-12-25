@@ -142,7 +142,7 @@ public static KeyGenerator getInstance(String algorithm,String provider);
 + `RC4`
 + `Seal`
 
-生成密钥有两种方式：一种是独立于算法的方式，另一种是特定于算法的方式。 两者唯一的区别在于 `KeyGenerator` 的初始化。
+生成密钥有两种方式：一种是独立于算法的方式，另一种是特定于算法的方式。 两者唯一的区别在于 `KeyGenerator` 的初始化方式。
 1. Algorithm-Independent Initialization
 ```
 public void init(SecureRandom random);
@@ -161,10 +161,7 @@ public void init(AlgorithmParameterSpec params,SecureRandom random);
 public SecretKey generateKey();
 ```
 
-## SecretKeyFactory
-
-
-
+示例：
 ```java
 KeyGenerator keyGenerator = KeyGenerator.getInstance(cipher);
 keyGenerator.init(keySize);
@@ -174,6 +171,84 @@ Cipher cipher = Cipher.getInstance("AES");
 cipher.init(Cipher.ENCRYPT_MODE, key);
 return new String(Base64.getEncoder().encode(cipher.doFinal(val.getBytes())));
 ```
+
+## SecretKeyFactory
+Key Factory 用于将密钥（java.security.Key 类型的不透明加密密钥）转换为密钥规范（以合适的格式对底层密钥材料进行透明表示，比如以证书表示），反之亦然（密钥<->证书或其他形式）。 `javax.crypto.SecretKeyFactory` 对象只处理秘密（对称）密钥，而 `java.security.KeyFactory` 对象则处理非对称算法密钥对中的公钥和私钥。
+
+`java.security.Key`（其中 `java.security.PublicKey` 、`java.security.PrivateKey` 和 `javax.crypto.SecretKey` 都是子类）类型的对象是不透明密钥对象，因为你无法知道它们是如何实现的。 底层实现取决于提供商，可以是基于软件的，也可以是基于硬件的。 Key Factory 允许提供商提供自己的加密密钥实现。
+
+例如，如果你有一个 Diffie Hellman 公钥的密钥规范，其中包括公开值 y、质数模 p 和基数 g，而你把相同的规范材料输入到不同提供商的 Diffie-Hellman 密钥工厂，那么得到的 PublicKey 对象很可能会有不同的底层实现。
+
+```
+byte[] desKeyData = { (byte)0x01, (byte)0x02, (byte)0x03, (byte)0x04, (byte)0x05, (byte)0x06, (byte)0x07, (byte)0x08 };
+DESKeySpec desKeySpec = new DESKeySpec(desKeyData);
+SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES");
+SecretKey secretKey = keyFactory.generateSecret(desKeySpec);
+```
+在上面这种情况下， secretKey 的底层实现基于 keyFactory provider。 使用实现了 `javax.crypto.SecretKey` 接口的 `javax.crypto.spec.SecretKeySpec` 类，是利用相同的密钥材料创建功能等同的 `SecretKey` 对象的另一种独立于提供商的方法：
+```
+byte[] desKeyData = { (byte)0x01, (byte)0x02, ...};
+SecretKeySpec secretKey = new SecretKeySpec(desKeyData, "DES");
+```
+
+
+
+## SealedObject
+对于任何实现了 `java.io.Serializable` 接口的对象，您都可以创建一个 `SealedObject` ，以序列化格式（即 "深度拷贝"）封装原始对象，并使用 DES 等加密算法密封（加密）其序列化内容，以保护其机密性。 加密后的内容随后可以解密（使用正确的解密密钥通过相应的算法进行解密）和去序列化，从而得到原始对象。
+
+```
+Cipher c = Cipher.getInstance("DES");
+c.init(Cipher.ENCRYPT_MODE, sKey);
+
+// do the sealing
+SealedObject so = new SealedObject("This is a secret", c);
+
+c.init(Cipher.DECRYPT_MODE, sKey);
+try {
+	String s = (String)so.getObject(c);
+} catch (Exception e) {
+	// do something
+};
+```
+
+## KeyAgreement
+`KeyAgreement` 类提供了密钥协商协议的功能。 建立通信的双方进行秘密通信时需要密钥， 密钥通常情况下由密钥生成器（ `KeyPairGenerator` 或 `KeyGenerator` 、密钥工厂（ `KeyFactory` ）来生成。但是 `KeyAgreement` 可以允许通信双方在不交换密钥的情况下协商出一个密钥。
+
+**第一步**，创建 `KeyAgreement` 对象：
+```
+public static KeyAgreement getInstance(String algorithm);
+public static KeyAgreement getInstance(String algorithm,String provider);
+```
+algorithm 可以使用下述值：
++ `DiffieHellman`: Diffie-Hellman Key Agreement as defined in PKCS #3: Diffie-Hellman Key-Agreement Standard, RSA Laboratories, version 1.4, November 1993.
++ `ECDH`: Elliptic curve Diffie–Hellman.
+
+**第二步**，初始化：
+```
+public void init(Key key);
+public void init(Key key, SecureRandom random);
+public void init(Key key, AlgorithmParameterSpec params);
+public void init(Key key, AlgorithmParameterSpec params,SecureRandom random);
+```
+
+**第三步**，进行协商：
+```
+public Key doPhase(Key key, boolean lastPhase);
+```
+`key` 参数包含该阶段要处理的密钥。 在大多数情况下，这是参与密钥协议的其他各方的公钥，或者是前一阶段生成的中间密钥。 `doPhase` 可能会返回一个中间密钥，你可能需要把它发送给参与密钥协议的其他各方，以便他们在后续阶段进行处理。  
+`lastPhase` 参数指定要执行的阶段是否是密钥协议的最后一个阶段： 如果值为 FALSE，则表示这不是密钥协议的最后一个阶段（后面还有更多阶段）；如果值为 TRUE，则表示这是密钥协议的最后一个阶段，密钥协议已完成，即可以调用 `generateSecret` 。
+
+**最后一步**，生成共享密钥：
+```
+public byte[] generateSecret();
+public int generateSecret(byte[] sharedSecret, int offset);
+public SecretKey generateSecret(String algorithm);
+```
+
+示例：
+```
+```
+
 
 #### 非对称加密
 

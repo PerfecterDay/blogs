@@ -1,7 +1,10 @@
 # Java 加密
 {docsify-updated}
 
-> https://www.ibm.com/docs/en/sdk-java-technology/8?topic=class-creating-cipher-object
+> https://www.ibm.com/docs/en/sdk-java-technology/8?topic=class-creating-cipher-object  
+> https://docs.oracle.com/en/java/javase/17/security/terms-and-definitions.html
+
+<center><img src="jce.png" width="40%"></center>
 
 ## 加密相关的概念
 
@@ -118,8 +121,8 @@ public final Key unwrap(byte[] wrappedKey,String wrappedKeyAlgorithm,int wrapped
 ```
 `wrappedKeyType` 是 `SECRET_KEY/PRIVATE_KEY/PUBLIC_KEY`中的一种。
 
-## KeyGenerator
-`KeyGenerator` 用于生成对称算法的密钥。使用下述方法获取 `KeyGenerator` 对象：
+## KeyGenerator/KeyPairGenerator
+`KeyGenerator` 用于生成对称算法的密钥， `KeyPairGenerator` 用于生成公私钥对 。使用下述方法获取 `KeyGenerator` 对象：
 ```
 public static KeyGenerator getInstance(String algorithm);
 public static KeyGenerator getInstance(String algorithm,String provider);

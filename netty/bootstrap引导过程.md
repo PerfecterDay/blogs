@@ -1,9 +1,5 @@
-# 引导的详细过程
-
-> https://www.cnblogs.com/bytesfly/p/the-truth-of-netty.html  
-> https://www.yuque.com/bytesfly/backend/ig71cd
-
-## BootStrap 引导 Channel 的过程
+# Bootstrap客户端引导
+{docsify-updated}
 
 ```
 Bootstrap b = new Bootstrap().group(group)
@@ -23,6 +19,19 @@ Bootstrap b = new Bootstrap().group(group)
 
  // Start the client.
 ChannelFuture f = b.connect(HOST, PORT).sync();
+```
+
+```
+public class MyChannelFactoryImpl implements ChannelFactory {
+    public MyChannelFactoryImpl(EventLoopGroup eventLoopGroup) {
+    }
+
+    @Override
+    public Channel newChannel() {
+        NioSocketChannel channel = new NioSocketChannel();
+        return channel;
+    }
+}
 ```
 
 调用栈如下：
@@ -49,7 +58,17 @@ final ChannelFuture initAndRegister() {
 ```
 
 首先会调用 `ChannelFactory` 的 `public Channel newChannel()` 方法获取到一个 channel 实例。  
-其次，`init(channel)` 方法根据 Bootstrap 的配置，初始化 channel 实例。
+其次，`init(channel)` 方法根据 Bootstrap 的配置，初始化 `channel` 实例，会把 `Bootstrap.handler(ChannelHandler handler)`中的 `handler` 添加到 `channel` 的 `ChannelPipeline` 中，然后分别设置 `options` 和 `attributes`。
+```
+@Override
+void init(Channel channel) {
+    ChannelPipeline p = channel.pipeline();
+    p.addLast(config.handler()); // 添加 bootstrap.handler(handler) 中的handler
+
+    setChannelOptions(channel, newOptionsArray(), logger); //将 bootstrap.option(xxx) 设置到 channel 的 option
+    setAttributes(channel, newAttributesArray());  //将 bootstrap.attr(AttributeKey<T> key, T value)设置到 channel 的 attr
+}
+```
 最后，会调用 `EventLoopGroup` 的 `ChannelFuture register(Channel channel)` 将 channel 注册到 `EventLoop` 。在这个过程中会调用注册到 `Bootstrap` 的 `ChannelHandler` 。
 
 

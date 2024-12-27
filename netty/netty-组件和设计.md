@@ -1,19 +1,19 @@
 #  Netty的组件和设计
 {docsify-updated}
 
-+ Channel—Socket;
-+ EventLoop—控制流、多线程处理、并发;
-+ PipelineLine-对网络IO的处理器链（容器）
-+ ChannelHandler-IO处理器，处理Socket收发的数据
-+ ChannelFuture—Channel完成一些动作后的异步通知
++ `Channel` —Socket的抽象对象;
++ `EventLoop` —控制流、多线程处理、并发;
++ `PipelineLine` -对网络IO的处理器链（容器）
++ `ChannelHandler` -IO处理器，处理Socket收发的数据
++ `ChannelFuture` —Channel完成一些动作后的异步通知
 
 ## Channel 接口
-基本的 I/O 操作（`bind()、connect()、read()和 write()`）依赖于底层网络传输所提供的原语。在基于 Java 的网络编程中，其底层基本的构造是 `Socket` 。Netty 的 Channel 接口所提供的 API，大大地降低了直接使用 Socket 类的复杂性。Channel 是 Socket 在 netty 中的高层抽象。Netty 提供了一些与定义的类：
-+ EmbeddedChannel
-+ LocalServerChannel
-+ NioDatagramChannel
-+ NioSctpChannel
-+ NioSocketChannel
+基本的 I/O 操作（`bind()、connect()、read()和 write()`）依赖于底层网络传输所提供的原语。在基于 Java 的网络编程中，其底层基本的构造是 `Socket` 。Netty 的 Channel 接口所提供的 API，大大地降低了直接使用 Socket 类的复杂性。 `Channel` 是 Socket 在 netty 中的高层抽象。Netty 提供了一些与定义的类：
++ `EmbeddedChannel`
++ `LocalServerChannel`
++ `NioDatagramChannel`
++ `NioSctpChannel`
++ `NioSocketChannel`
 
 Netty 的 Channel 实现是**线程安全**的，因此你可以存储一个到 Channel 的引用，并且每当你需要向远程节点写数据时，都可以使用它，即使当时许多线程都在使用它。
 
@@ -85,7 +85,7 @@ Netty 以适配器类的形式提供了大量默认的 `ChannelHandler` 实现�
 ## ChannelPipeline 接口
 
 `ChannelPipeline` 提供了 `ChannelHandler` 链的容器，并定义了用于在该链上传播入站和出站事件流的 API。当 `Channel` 被创建时，它会被自动地分配到它专属的 `ChannelPipeline`， `ChannelHandler` 安装到 `ChannelPipeline` 中的过程如下所示：
-1. 一个 `ChannelInitializer` 的实现被注册到了ServerBootstrap中
+1. 一个 `ChannelInitializer` 的实现被注册到了 `ServerBootstrap` 中
 2. 当 `ChannelInitializer.initChannel()` 方法被调用时， `ChannelInitializer` 将在 `ChannelPipeline` 中安装一组自定义的 `ChannelHandler`
 3. `ChannelInitializer` 将它自己从 `ChannelPipeline` 中移除。
 
@@ -93,10 +93,21 @@ Netty 以适配器类的形式提供了大量默认的 `ChannelHandler` 实现�
 <center><img src="pics/channel-pipeline.jpg" width="50%" ></center>
 
 如果一个消息或者任何其他的入站事件被读取，那么它会从 `ChannelPipeline` 的头部开始流动，并被传递给第一个 `ChannelInboundHandler` 。这个 `ChannelHandler` 不一定会实际地修改数据，具体取决于它的具体功能，在这之后，数据将会被传递给链中的下一个 `ChannelInboundHandler` 。最终，数据将会到达 `ChannelPipeline` 的尾端，届时，所有处理就都结束了。  
-数据的出站运动(即正在被写的数据)在概念上也是一样的。在这种情况下，数据将从 ChannelOutboundHandler 链的尾端开始流动，直到它到达链的头部为止。在这之后，出站数据将会到达网络传输层，这里显示为 Socket。通常情况下，这将触发 `socket` 一个写操作。
+数据的出站运动(即正在被写的数据)在概念上也是一样的。在这种情况下，数据将从 `ChannelOutboundHandler` 链的尾端开始流动，直到它到达链的头部为止。在这之后，出站数据将会到达网络传输层，这里显示为 Socket。通常情况下，这将触发 `socket` 一个写操作。
 
 在Netty中，有两种发送消息的方式。你可以直接写到 `Channel` 中，也可以 写到和 `ChannelHandler` 相关联的 `ChannelHandlerContext` 对象中。前一种方式将会导致消息从 `ChannelPipeline` 的尾端开始流动，而后者将导致消息从 `ChannelPipeline` 中的下一个 `ChannelHandler` 开始流动。
 
-## 线程模型
+如果 `ChannelHandler` 是一个耗时很长的任务，因为一个 `EventLoop` 可能会绑定很多 `Channel`，那么这个长时间处理的任务可能会阻塞后续的 `Channel` 事件的处理。如下图所示：
+<center><img src="pics/netty_thread_model2.png" width="80%"></center>
 
-<center><img src="pics/netty_thread_model.png" alt=""></center>
+用户在向 `ChannelPipeline` 添加处理程序时，可以指定一个 `EventExecutor/EventExecutorGroup` 。 如果指定， `ChannelHandler` 的处理程序方法将始终由指定的 `EventExecutor/EventExecutorGroup` 中的线程调用。 如果未指定，处理程序方法将始终由其关联 `Channel` 注册的 `EventLoop` 调用。
+
+为了不阻塞其它 `Channel` 事件的处理，我们需要指定 `EventExecutorGroup/EventExecutor`。 这种情况下，同一个 `ChannelHandler` 始终由同一线程调用，如果指定了多线程的 `EventExecutorGroup` ，则会首先选择其中一个线程将 `ChannelHandler` 与其绑定，然后一直使用所选线程执行直至注销。 如果同一 `Channel` 中的两个 `ChannelHandler` 分配给不同的 `EventExecutorGroup`，那么他们会并发调用。 需要注意并发安全问题。
+
+## 线程模型
+> https://stackoverflow.com/questions/65345371/netty-thread-model-vs-long-running-taks
+
+<center>
+<img src="pics/netty_thread_model.png" alt="">
+
+</center>

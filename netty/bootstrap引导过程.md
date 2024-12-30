@@ -1,6 +1,14 @@
 # Bootstrap客户端引导
 {docsify-updated}
 
+## BootStrap类
+Bootstrap 类被用于客户端或者使用了无连接协议的应用程序中。
+
+<center>
+<img src="pics/bootstrap-1.png" width="50%">
+<img src="pics/bootstrap-2.png" width="50%">
+</center>
+
 ```
 Bootstrap b = new Bootstrap().group(group)
         .option(ChannelOption.TCP_NODELAY, true)
@@ -58,7 +66,7 @@ final ChannelFuture initAndRegister() {
 ```
 
 首先会调用 `ChannelFactory` 的 `public Channel newChannel()` 方法获取到一个 channel 实例。  
-其次，`init(channel)` 方法根据 Bootstrap 的配置，初始化 `channel` 实例，会把 `Bootstrap.handler(ChannelHandler handler)`中的 `handler` 添加到 `channel` 的 `ChannelPipeline` 中，然后分别设置 `options` 和 `attributes`。
+其次，`init(channel)` 方法根据 Bootstrap 的配置，初始化 `channel` 实例，会把 `Bootstrap.handler(ChannelHandler handler)`中的 `handler` 添加到 `channel` 的 `ChannelPipeline` 中，然后分别设置 `options` 和 `attributes`：
 ```
 @Override
 void init(Channel channel) {

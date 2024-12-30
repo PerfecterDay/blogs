@@ -62,6 +62,36 @@ Libevent 库就是这样一个软件层，它提供了检查文件描述符 I/O 
 
 
 ## poll 与 select 
+```
+int select(int nfds, fd_set *_Nullable restrict readfds,
+                  fd_set *_Nullable restrict writefds,
+                  fd_set *_Nullable restrict exceptfds,
+                  struct timeval *_Nullable restrict timeout);
+
+void FD_CLR(int fd, fd_set *set);
+int  FD_ISSET(int fd, fd_set *set);
+void FD_SET(int fd, fd_set *set);
+void FD_ZERO(fd_set *set);
+```
++ `nfds` : 最大文件描述符值 + 1
++ `readfds` : 监听可读事件的文件描述符集合
++ `writefds` : 监听可写事件的文件描述符集合
++ `exceptfds` : 监听异常事件的文件描述符集合
++ `timeout` : 超时时间
+
+```
+int poll(struct pollfd *fds, nfds_t nfds, int timeout);
+
+struct pollfd {
+    int   fd;         /* file descriptor */
+    short events;     /* requested events */
+    short revents;    /* returned events */
+};
+```
++ `fds` : 指向一个 `pollfd` 数组的指针
++ `nfds` : 指明 `fds` 数组的长度
++ `timeout` : 超时时间
+
 以下是系统调用 `select()` 和 `poll()` 在 API 层面上的一些区别。
 + `select()` 所使用的数据类型 `fd_set` 对于被检查的文件描述符数量有一个上限限制（ `FD_SETSIZE` ） 。在 Linux 下，这个上限值默认为 1024，修改这个上限需要重新编译应用程序。与之相反， `poll()` 对于被检查的文件描述符数量本质上是没有限制的。
 + 由于 `select()` 的参数 `fd_set` 同时也是保存调用结果的地方，如果要在循环中重复调用select()的话，我们必须每次都要重新初始化 `fd_set` 。而 `poll()` 通过独立的两个字段 `events`（针对输入）和 `revents` （针对输出）来处理，从而避免每次都要重新初始化参数。
@@ -79,3 +109,52 @@ Libevent 库就是这样一个软件层，它提供了检查文件描述符 I/O 
 + 每次调用 `select()` 或 `poll()` ，内核都必须检查所有被指定的文件描述符，看它们是否处于就绪态。当检查大量处于密集范围内的文件描述符时，该操作耗费的时间将大大超过接下来的操作。
 + 每次调用 `select()` 或 `poll()` 时，程序都必须传递一个表示所有需要被检查的文件描述符的数据结构到内核，内核检查过描述符后，修改这个数据结构并返回给程序。（此外，对于 `select()` 来说，我们还必须在每次调用前初始化这个数据结构。）对于 `poll()` 来说，随着待检查的文件描述符数量的增加，传递给内核的数据结构大小也会随之增加。当检查大量文件描述符时，从用户空间到内核空间来回拷贝这个数据结构将占用大量的 CPU 时间。对于 `select()` 来说，这个数据结构的大小固定为 `FD_SETSIZE` ，与待检查的文件描述符数量无关。
 + `select(` )或 `poll()` 调用完成后，程序必须检查返回的数据结构中的每个元素，以此查明哪个文件描述符处于就绪态了。
+
+
+## epoll
+epoll操作过程需要三个接口，分别如下：
+```
+int epoll_create(int size)；//创建一个epoll的句柄，size用来告诉内核这个监听的数目一共有多大
+int epoll_ctl(int epfd, int op, int fd, struct epoll_event *event)；
+int epoll_wait(int epfd, struct epoll_event * events, int maxevents, int timeout);
+```
+
+1. `int epoll_create(int size);` 
+    
+   创建一个epoll的句柄，size用来告诉内核这个监听的数目一共有多大，这个参数不同于select()中的第一个参数，给出最大监听的fd+1的值，参数size并不是限制了epoll所能监听的描述符最大个数，只是对内核初始分配内部数据结构的一个建议。 当创建好epoll句柄后，它就会占用一个fd值，在linux下如果查看/proc/进程id/fd/，是能够看到这个fd的，所以在使用完epoll后，必须调用close()关闭，否则可能导致fd被耗尽。
+
+2. `int epoll_ctl(int epfd, int op, int fd, struct epoll_event *event)；`  
+
+   函数是对指定描述符fd执行op操作:
+    + `epfd` ：是epoll_create()的返回值。
+    + `op` ：表示op操作，用三个宏来表示：添加EPOLL_CTL_ADD，删除EPOLL_CTL_DEL，修改EPOLL_CTL_MOD。分别添加、删除和修改对fd的监听事件。
+    + `fd` ：是需要监听的fd（文件描述符）
+    + `epoll_event` ：是告诉内核需要监听什么事，struct epoll_event结构如下：
+      ```
+      struct epoll_event {
+        __uint32_t events;  /* Epoll events */
+        epoll_data_t data;  /* User data variable */
+      };
+      ```
+      events可以是以下几个宏的集合：
+      + EPOLLIN ：表示对应的文件描述符可以读（包括对端SOCKET正常关闭）；
+      + EPOLLOUT：表示对应的文件描述符可以写；
+      + EPOLLPRI：表示对应的文件描述符有紧急的数据可读（这里应该表示有带外数据到来）；
+      + EPOLLERR：表示对应的文件描述符发生错误；
+      + EPOLLHUP：表示对应的文件描述符被挂断；
+      + EPOLLET： 将EPOLL设为边缘触发(Edge Triggered)模式，这是相对于水平触发(Level Triggered)来说的。
+      + EPOLLONESHOT：只监听一次事件，当监听完这次事件之后，如果还需要继续监听这个socket的话，需要再次把这个socket加入到EPOLL队列里
+
+3. `int epoll_wait(int epfd, struct epoll_event * events, int maxevents, int timeout);`  
+
+   等待epfd上的io事件，最多返回maxevents个事件。  
+   参数events用来从内核得到事件的集合，maxevents告之内核这个events有多大，这个maxevents的值不能大于创建epoll_create()时的size，参数timeout是超时时间（毫秒，0会立即返回，-1将不确定，也有说法说是永久阻塞）。该函数返回需要处理的事件数目，如返回0表示已超时。
+
+
+性能对照：
+<center><img src="pics/epoll.png" alt=""></center>
+
+### epoll 高性能的原因
+在我们看看为什么 epoll 的性能表现会更好:
++ 每次调用 `select()` 和 `poll()` 时，内核必须检查所有在调用中指定的文件描述符。与之相反，当通过 `epoll_ctl()` 指定了需要监视的文件描述符时，内核会在与打开的文件描述上下文相关联的列表中记录该描述符。之后每当执行 I/O 操作使得文件描述符成为就绪态时，内核就在 epoll 描述符的就绪列表中添加一个元素。（单个打开的文件描述上下文中的一次 I/O 事件可能导致与之相关的多个文件描述符成为就绪态。）之后的 `epoll_wait()` 调用从就绪列表中简单地取出这些元素。
++ 每次调用 `select()` 或 `poll()` 时，我们传递一个标记了所有待监视的文件描述符的数据结构给内核，调用返回时，内核将所有标记为就绪态的文件描述符的数据结构再传回给我们。与之相反，在 epoll 中我们使用 `epoll_ctl()` 在内核空间中建立一个数据结构，该数据结构会将待监视的文件描述符都记录下来。一旦这个数据结构建立完成，稍后每次调用 `epoll_wait()` 时就不需要再传递任何与文件描述符有关的信息给内核了，而调用返回的信息中只包含那些已经处于就绪态的描述符。

@@ -169,6 +169,34 @@ CRL： Certiﬁcate Revocation List (CRL)
 OSCP: Online Certiﬁcate Status Protocol 
 AIA: Authority Information Access
 
+#### 测试性能
+```
+＃ 只通过新会话获取远端test.html页面
+openssl s_time -connect remote.host:443 -www /test.html -new
+
+# 使用SSL v3和高级别加密算法
+openssl s_time \
+	-connect remote.hot:443 -www /test.html -new \
+	-ssl3 -cipher HIGH
+	
+# 测试不同加密算法的性能，每种算法测试10秒
+IFS=":"
+for c in $(openssl ciphers -ssl3 RSA); do
+	echo $C
+	openssl s_time -connect remote.host:443 \
+		-www / -new -time 10 -cipher $c 2>&1 | \
+		grep bytes
+	echo
+done
+
+
+＃ 在一台主机上创建服务端，默认使用4433端口
+openssl s_server -cert mycert.pem -www
+
+# 在另一台主机上(可以跟服务端同一台)，运行s_time
+openssl s_time -connect myhost:4433 -www / -new -ssl3
+```
+
 ### 实战
 其它openssl 命令：
 ```
@@ -180,4 +208,7 @@ openssl x509 -in cms_cert.pem -noout -text
 
 用CA证书验证某个证书的合法性：
 sudo openssl verify -CAfile ~/Desktop/ISRGRootX1.pem ~/Desktop/R3.cer
+
+测试 https 的性能：
+openssl s_time -time 60 -connect appapi.gtjai.com:443
 ```

@@ -121,7 +121,7 @@ int epoll_wait(int epfd, struct epoll_event * events, int maxevents, int timeout
 
 1. `int epoll_create(int size);` 
     
-   创建一个epoll的句柄，size用来告诉内核这个监听的数目一共有多大，这个参数不同于select()中的第一个参数，给出最大监听的fd+1的值，参数size并不是限制了epoll所能监听的描述符最大个数，只是对内核初始分配内部数据结构的一个建议。 当创建好epoll句柄后，它就会占用一个fd值，在linux下如果查看/proc/进程id/fd/，是能够看到这个fd的，所以在使用完epoll后，必须调用close()关闭，否则可能导致fd被耗尽。
+   创建一个epoll的句柄，size用来告诉内核这个监听的数目一共有多大，这个参数不同于`select()`中的第一个参数，给出最大监听的fd+1的值，参数size并不是限制了epoll所能监听的描述符最大个数，只是对内核初始分配内部数据结构的一个建议。 当创建好epoll句柄后，它就会占用一个fd值，在linux下如果查看`/proc/进程id/fd/`，是能够看到这个fd的，所以在使用完epoll后，必须调用`close()`关闭，否则可能导致fd被耗尽。
 
 2. `int epoll_ctl(int epfd, int op, int fd, struct epoll_event *event)；`  
 

@@ -1,5 +1,6 @@
 * [Home](/)
 * [..](../_sidebar.md)
+* [学习资料](./)
 * [汇编基础及Bochs调试](/os/汇编基础及Bochs调试.md)
 * [Gcc内联汇编](/os/gcc-内联汇编.md)
 * [Makefile简介](/os/Makefile简介.md)
@@ -17,6 +18,7 @@
 * [程序装载](/os/可执行文件的装载.md)
 * [动态链接](/os/动态链接.md)
 * [Coredump分析](/os/coredump.md)
-* [Unix的IO模型](/os/Unix的IO模型.md)
+<!-- * [Unix的IO模型](/os/Unix的IO模型.md) -->
+* [进程](./进程管理.md)
 * [线程](/os/线程.md)
 * [锁的实现](/os/锁的实现.md)

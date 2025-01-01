@@ -315,6 +315,8 @@ bximage -func=create -q -hd=10 -imgmode=flat ./target/hd60M.img
 dd if=./target\mbr.bin of=./target/hd60M.img bs=512 conv=notrunc
 ```
 
+启动bochs: `bochs -q -f bochsrc.txt`
+
 ### Bochs调试命令
 1. 调试控制：
     1. help

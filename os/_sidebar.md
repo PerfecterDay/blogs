@@ -1,6 +1,6 @@
 * [Home](/)
 * [..](../_sidebar.md)
-* [学习资料](./)
+* [学习资料](./学习资料.md)
 * [汇编基础及Bochs调试](/os/汇编基础及Bochs调试.md)
 * [Gcc内联汇编](/os/gcc-内联汇编.md)
 * [Makefile简介](/os/Makefile简介.md)

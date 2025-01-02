@@ -17,7 +17,7 @@
 * [分布式](/分布式/_sidebar.md)
 * [nginx](/nginx/_sidebar.md)
 * [架构](/架构/_sidebar.md)
-* [resilence4j](/resilence4j/_sidebar.md)
+* [resilience4j](/resilience4j/_sidebar.md)
 * [netty](/netty/_sidebar.md)
 * [sa-token](/sa-token/_sidebar.md)
 * [quatrz](/quartz/_sidebar.md)

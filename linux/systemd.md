@@ -23,6 +23,7 @@ WantedBy=multi-user.target
 4. `systemctl enable gtja-thrift-proxy`
 5. `systemctl start gtja-thrift-proxy`
 6. `systemctl status gtja-thrift-proxy`
+7. 修改了 service 文件之后，要重载： `systemctl daemon-reload`
 
 
 查看日志： `journalctl -xe`

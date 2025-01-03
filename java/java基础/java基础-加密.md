@@ -669,10 +669,3 @@ JKS是是基于二进制编码的证书格式，扩展名是jks。JKS证书通�
 ### Https 双向认证
 
 > https://help.aliyun.com/document_detail/160093.html
-
-
-
-JCE API 要求并使用一套算法、算法模式和填充方案的标准名称。 本规范将以下名称确定为标准名称。 它是对《Java Cryptography Architecture API Specification & Reference》附录 A 中定义的标准名称列表的补充。 请注意，算法名称不区分大小写。
-
-### Cipher
-

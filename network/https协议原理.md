@@ -3,17 +3,8 @@
 > https://help.aliyun.com/document_detail/160093.html  
 > https://stackoverflow.com/questions/27388583/relationship-between-key-store-trust-store-and-certificate
 
-- [HTTPS及Java支持](#https及java支持)
-	- [HTTPS协议原理](#https协议原理)
-	- [双向认证](#双向认证)
-	- [nginx使用自签名证书配https](#nginx使用自签名证书配https)
-	- [java 对 Https 的支持](#java-对-https-的支持)
-		- [KeyManager](#keymanager)
-		- [TrustManager](#trustmanager)
-		- [启用 Java SSL 调试日志](#启用-java-ssl-调试日志)
-	- [问题总结](#问题总结)
 
-### HTTPS协议原理
+## HTTPS协议原理
 
 思考一下通信过程应该要处理的问题：
 
@@ -40,7 +31,7 @@
 5. 服务端用自己的私钥（server.key）去解密这个密文，得到了密钥R
 6. 服务端和客户端在后续通讯过程中就使用这个密钥R进行通信了。
 
-### 双向认证
+## 双向认证
 <center><img src="pics/https-2.png" width="60%"></center>
 
 1. 客户端发起建立HTTPS连接请求，将SSL协议版本的信息发送给服务端；
@@ -55,7 +46,7 @@
 10. 服务端和客户端在后续通讯过程中就使用这个密钥R进行通信了。
 
 
-### nginx使用自签名证书配https
+## nginx使用自签名证书配https
 我们使用xca工具来制作证书，先下载安装xca工具，地址是http://xca.hohnstaedt.de/。
 首先要制作一张CA证书，然后用CA证书签发一张或多张证书，每张证书模拟每个网站下发的证书，里边存放的就是网站服务器端的公钥及网址等信息。制作每张证书的时候，都需要一对公私钥密码。下图是制作好的证书，其中一张是CA证书，用来签发其它证书：
 <center><img src="pics/cert_generation.png" width=60%></center>
@@ -92,7 +83,7 @@ nginx配置好后，将 ca_wang.crt 导入到 chrome 浏览器的信任根证书
 然后重启chrome以https方式访问 localhost，就会发现是信任的网站了：
 <center><img src="pics/chrome_https.png"></center>
 
-### java 对 Https 的支持
+## java 对 Https 的支持
 与浏览器和操作系统类似，JRE的安装目录下也保存了一份默认可信的CA证书列表，一般在 jre/lib/security/cacerts文件中，使用JDK自带的 keytool 工具可以查看其中的内容，默认密码为： changeit.
 + `keytool -import -alias ca_wang -keystore cacerts -file ca_wang.crt`:从ca_wang.crt的文件中导入证书到cacerts的 TrustStore ，别名为 ca_wang
 + `keytool -list -cacerts -alias ca_wang`:显示指定别名为 ca_wang 的 TrustStore 证书信息
@@ -104,12 +95,12 @@ Java 平台下，证书尝尝被存储为 keystore 文件中，上面的 cacerts
 keystore 只是一种文件格式而已，实际上在 Java 的世界里 KeyStore 文件分为两种： keystore 和 truststore， keystore 保存公私钥，用来解密或者签名； truststore 保存信任的证书列表，访问 https 时，对被访问者进行认证，确定它是可信任的。
 
 Java 使用以下主要类和接口来支持安全传输：
-<center><img src="pics/jsse.jpg" width="40%"/></center>
+<center><img src="pics/jsse.jpg" width="50%"/></center>
 
-#### KeyManager
-KeyManager 的主要职责是选择最终将被发送到远程主机的认证凭证。为了向远程对等体认证自己（本地安全套接字对等体），你必须用一个或多个KeyManager对象初始化一个SSLContext对象。你必须为每个将被支持的不同认证机制传递一个KeyManager。如果在SSLContext的初始化中传递了null，那么将创建一个空的KeyManager。如果使用内部默认上下文（例如，由SSLSocketFactory.getDefault()或SSLServerSocketFactory.getDefault()创建的SSLContext），那么将会创建一个默认的KeyManager
+### KeyManager
+`KeyManager` 的主要职责是选择最终将被发送到远程主机的认证凭证。为了向远程对等体认证自己（本地安全套接字对等体），你必须用一个或多个KeyManager对象初始化一个SSLContext对象。你必须为每个将被支持的不同认证机制传递一个KeyManager。如果在SSLContext的初始化中传递了null，那么将创建一个空的KeyManager。如果使用内部默认上下文（例如，由SSLSocketFactory.getDefault()或SSLServerSocketFactory.getDefault()创建的SSLContext），那么将会创建一个默认的KeyManager
 
-#### TrustManager
+### TrustManager
 TrustManager 的主要责任是确定所提交的认证凭证是否应该被信任。如果凭证不被信任，那么连接将被终止。为了验证安全套接字对等体的远程身份，你必须用一个或多个TrustManager对象初始化一个SSLContext对象。你必须为每个支持的认证机制传递一个TrustManager。如果在SSLContext的初始化中传递了null，那么将为你创建一个信任管理器。通常，一个信任管理器支持基于X.509公钥证书的认证（例如，X509TrustManager）。一些安全套接字的实现也可能支持基于共享秘钥、Kerberos或其他机制的认证。
 
 TrustManager对象可以由TrustManagerFactory创建，或者通过提供接口的具体实现来创建。
@@ -118,11 +109,11 @@ TrustManager 和 KeyManager 之间的关系
 + TrustManager决定远程认证凭证（以及连接）是否应该被信任(通常是认证通信的对方)。
 + KeyManager决定向远程主机发送哪些认证凭证（通常是提供让对方认证的凭证）。
 
-#### 启用 Java SSL 调试日志
+### 启用 Java SSL 调试日志
 + 命令行参数：`java -Djavax.net.debug=ssl -jar MyApp.jar`
 + 使用系统参数：`System.setProperty("javax.net.debug", "ssl");`
 
-### 问题总结
+## 问题总结
 当遇到 https 证书验证失败时，你需要选择下面三种方法中的一个来解决：
 + Configure SSLContext with a TrustManager that accepts any certificate (see below).  
 	```

@@ -1,4 +1,4 @@
-# 进程管理
+# CPU调度与进程管理
 {docsify-updated}
 
 > https://pravin-hub-rgb.github.io/BCA/resources/sem2/operating_sys/unit2/index.html
@@ -67,4 +67,4 @@
 
 然而，在多程序系统中，CPU 不会在进程等待期间一直闲置，而是会开始执行其他进程。 操作系统必须确定将哪个进程分配给 CPU。 在多程序系统中，操作系统会对 CPU 上的进程进行调度，以最大限度地利用 CPU，这一过程称为 CPU 调度。 操作系统使用各种调度算法来调度进程。 短期调度器的任务是根据就绪队列中的进程数量来调度 CPU。 每当运行中的进程请求进行某些 I/O 操作时，短期调度器就会保存进程的当前上下文（也称为 PCB），并将其状态从运行状态改为等待状态。 在进程处于等待状态期间，短期调度程序会从就绪队列中选择另一个进程，并将 CPU 分配给该进程。 这一过程称为上下文切换。
 
-<center><img src="pics/contextswitching.svg" width="60%"></center>
+<center><img src="pics/contextswitching.jpg" width="60%"></center>

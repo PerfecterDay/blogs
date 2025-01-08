@@ -26,7 +26,7 @@
    + `-x`:解压打包的文件 `ar -x libc.a`
 6. `file`-查看文件的简要信息，`apt install file`
 7. `hexdump -C -n 64 a.out` -观察二进制文件的二进制内容前64字节
-8. `ldd hello` - 查看一个程序主模块或一个共享库依赖于哪些共享库
+8. `ldd hello` - 查看一个程序主模块或一个共享库依赖于哪些共享库，`sudo apt-get install libc-bin` 安装
 9. pax-utils-`apt install pax-utils`
    + `/usr/bin/dumpelf` – dump internal ELF structure
    + `/usr/bin/lddtree` – like ldd, with levels to show dependencies
@@ -80,11 +80,13 @@ BFD库（Binary File Descriptor library）就是这样的一个GNU项目，它�
 
 最基本的代码段(.text)、数据段(.data)和BSS(.bss)段以外，还有3个段分别是只读数据段（.rodata）、注释信息段（.comment）和堆栈提示段（.note.GNU-stack），这3个额外的段的意义我们暂且不去细究。先来看看几个重要的段的属性，其中最容易理解的是段的长度（Size）和段所在的位置（File Offset），每个段的第2行中的“CONTENTS”、“ALLOC”等表示段的各种属性，“CONTENTS”表示该段在文件中存在。我们可以看到BSS段没有“CONTENTS”，表示它实际上在ELF文件中不存在内容。“.note.GNU-stack”段虽然有“CONTENTS”，但它的长度为0，这是个很古怪的段，我们暂且忽略它，认为它在ELF文件中也不存在
 
-## dd
-dd if=/proc/self/mem of=linux-gate.dso bs=4096 skip=1048574 count=1
-
-dd if=core.675 of=linux-gate.dso bs=4096 skip=558,016 count=2
-
-
+```
 objdump -d --start-address=0xffffe400 --stop-address=0xffffe408 linux-gate.dso
 objdump -d --start-address=0x0bf0 --stop-address=0x0bf8 linux-gate.dso
+```
+
+## dd
+```
+dd if=/proc/self/mem of=linux-gate.dso bs=4096 skip=1048574 count=1
+dd if=core.675 of=linux-gate.dso bs=4096 skip=558,016 count=2
+```

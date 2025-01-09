@@ -1,21 +1,7 @@
 # java线程
 {docsify-updated}
 
-- [java线程](#java线程)
-		- [线程的三种创建方式](#线程的三种创建方式)
-		- [线程的一些属性](#线程的一些属性)
-		- [线程的状态](#线程的状态)
-			- [BLOCKED 和 WAITING 区别](#blocked-和-waiting-区别)
-			- [wait 和 sleep 的区别](#wait-和-sleep-的区别)
-			- [interrupt](#interrupt)
-	- [线程之间的通信及同步](#线程之间的通信及同步)
-		- [volatile](#volatile)
-		- [ThreadLocal](#threadlocal)
-		- [等待通知机制](#等待通知机制)
-		- [等待/通知的经典范式](#等待通知的经典范式)
-
-
-### 线程的三种创建方式
+## 线程的三种创建方式
 1. 继承自 `Thread` 类，重写 `run()`方法，并调用 `start()` 方法启动线程
 2. 实现 `Runnable` 接口，并在实例化 `Thread` 对象时，将接口实现对象作为构造参数传递进去
 3. 创建 `Callable` 接口的实现类，实现 `call()` 方法，使用 `FutureTask` 对象来包装  `Callable` 对象，构造 `Thread` 时，将 `FutureTask`对象作为参数传递进去。`FutureTask` 实现了 `Runnable` 接口。
@@ -24,7 +10,7 @@
 1. 继承 `Thread` 类后无法继承其它类，实现 `Runnable` 或 `Callable` 还可以继承其它类
 2. `Callable` 接口与 `Runnable`接口相比，可以有返回值且可以抛出异常。
 
-### 线程的一些属性
+## 线程的一些属性
 线程的常见属性包括：**线程所属的线程组**、**线程优先级**、**是否是Daemon线程**等。  
 1. 优先级  
 	每个线程都有一个优先级，默认情况下，一个线程继承它的父线程的优先级。可以调用 `Thread.setPriority()` 方法为线程设置优先级。可以将优先级设置为 MIN_PRIORITY（1） 和 MAX_PRIORITY（10） 之间的
@@ -38,7 +24,7 @@
 	如果没有调用上述方法为线程安装异常处理器，此时的处理器就是线程所属的 `ThreadGroup` 对象。
 
 
-### 线程的状态
+## 线程的状态
 <center><img src="pics/thread-state.jpg" width=60% heght=60% /></center>
 
 1. 阻塞  
@@ -130,21 +116,21 @@ class Thread4 extends Thread{
 }
 ```
 
-#### BLOCKED 和 WAITING 区别
+### BLOCKED 和 WAITING 区别
 0. BLOCKED 的线程等待的是一个**锁**，往往是在请求锁的时候，因为锁已经被别的线程持有，而**被动**(一般是由调度器将其设置为BLOCKED)的进入 BLOCKED 状态。
 1. 线程通过调用`wait()`方法进入 WAITING 状态是一种主动行为，此时会释放持有的锁，一般是等待另一个线程的信号，用来完成线程的同步；而 BLOCKED 状态是被动的，线程希望继续执行，但是锁被别的线程获取，必须等待别的线程释放锁。
 2. 站在调度器的角度上，假如一个线程释放了锁，调度器调度是需要考虑 BLOCKED 队列中的线程让它们争用锁，但是不需要考虑 WAITING 队列中的线程。
 <center><img src="pics/wait-blocked.png" width=40% heght=40%></center>
 
-#### wait 和 sleep 的区别
-简单地说，wait() 是一个用于线程同步的实例方法。
+### wait 和 sleep 的区别
+简单地说， `wait()` 是一个用于线程同步的实例方法。
 它可以在任何对象上调用，因为它就定义在 `java.lang.Object` 中，但只能在**同步代码块中调用。它会释放对象上的锁**，以便另一个线程可以跳入并获取锁。
-另一方面，Thread.sleep() 是一个静态方法，可以在任何上下文中调用。`Thread.sleep()` 会暂停当前线程，**但不会释放任何锁**。
+另一方面， `Thread.sleep()` 是一个静态方法，可以在任何上下文中调用。`Thread.sleep()` 会暂停当前线程，**但不会释放任何锁**。
 
-#### interrupt
-中断标志或中断状态是线程的内部标志，在线程被中断时被设置。要设置它，只需在线程对象上调用 thread.interrupt()。
+### interrupt
+中断标志或中断状态是线程的内部标志，在线程被中断时被设置。要设置它，只需在线程对象上调用 `thread.interrupt()`。
 
-具体来说，当对一个线程，调用 interrupt() 时，
+具体来说，当对一个线程，调用 `interrupt()` 时，
 + 如果线程处于被阻塞状态（例如处于sleep, wait, join 等状态），那么线程将立即退出被阻塞状态，并抛出一个InterruptedException异常。仅此而已。
 + 如果线程处于正常活动状态，那么会将该线程的中断标志设置为 true，仅此而已。被设置中断标志的线程将继续正常运行，不受影响。interrupt() 并不能真正的中断线程，需要被调用的线程自己进行配合才行。
 
@@ -152,17 +138,17 @@ class Thread4 extends Thread{
 
 ## 线程之间的通信及同步
 
-### volatile
+## volatile
 `volatile` 基本可以做到两件事情：
 1. 阻止编译器为了提高速度将一个变量缓存到寄存器内而不写回。
 2. 阻止编译器调整操作volatile变量的指令顺序。
 
 关键字 volatile 可以用来修饰字段（成员变量），就是告知程序**任何对该变量的访问均需要从共享内存中获取，而对它的改变必须同步刷新回共享内存，它能保证所有线程对变量访问的可见性。**
 
-### ThreadLocal
+## ThreadLocal
 [ThreadLocal](./java基础-线程安全的实现方法.md#线程本地存储-threadlocal)
 
-### 等待通知机制
+## 等待通知机制
 <center><img src="pics/wait-notify.jpg" width=50% heght=50%></center>
 
 1. 调用 wait() 、notify() 或 notifyAll() 前需要先获取对象的锁
@@ -171,10 +157,10 @@ class Thread4 extends Thread{
 4. notify() 方法将等待队列中的一个等待线程从等待队列中移到同步队列中（阻塞于锁的队列），notifyAll() 则是将等待队列中的所有线程移到同步队列中，被移动的线程状态由 WAITING 变为 BLOCKED。
 5. 从 wait() 方法返回的前提是获得对象的锁。
 
-### 等待/通知的经典范式
+## 等待/通知的经典范式
 等待方遵循如下原则：
 1. 获取对象锁
-2. 如果条件不满足，那么调用对象的wait()方法，被通知后仍要检查条件，因为被通知后不一定会立即获取到锁，其他线程有可能先获取锁并改变条件使得条件不再满足。
+2. 如果条件不满足，那么调用对象的 `wait()` 方法，被通知后仍要检查条件(`使用 while 循环`)，因为被通知后只是线程变成了可运行状态，在被调度运行之前不会立即获取到锁，其他线程有可能先得到调度获取锁并改变条件使得条件不再满足。
 3. 条件满足则执行相应的逻辑。
 对应的伪代码如下：
 ```
@@ -196,4 +182,52 @@ class Thread4 extends Thread{
         改变条件;
         Object.notify();
     }
+```
+
+### 两个线程轮流打印0-100
+```
+public class UserCenterApp {
+
+    private static int counter = 0;
+
+    public static void main(String[] args) {
+        ExecutorService executorService = Executors.newFixedThreadPool(2);
+        Object lock = new Object();
+        executorService.submit(() -> {
+            while (true) {
+                synchronized (lock) {
+                    while (counter % 2 == 0) {
+                        try {
+                            lock.wait();
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                    if (counter > 100) return;
+                    System.out.println("Thread 1" + ":" + counter++);
+                    lock.notifyAll();
+                }
+            }
+        });
+
+        executorService.submit(() -> {
+            while (true) {
+                synchronized (lock) {
+                    while (counter % 2 != 0) {
+                        try {
+                            lock.wait();
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                    if (counter > 100) return;
+                    System.out.println("Thread 2" + ":" + counter++);
+                    lock.notifyAll();
+                }
+            }
+        });
+
+        executorService.shutdown();
+    }
+}
 ```

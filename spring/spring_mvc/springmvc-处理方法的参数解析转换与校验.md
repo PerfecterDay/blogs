@@ -1,7 +1,7 @@
-#  SpringMvc 的处理方法参数绑定与校验
+#  SpringMvc 的请求处理方法请求参数绑定与校验
 {docsify-updated}
 
-- [SpringMvc 的处理方法参数绑定与校验](#springmvc-的处理方法参数绑定与校验)
+- [SpringMvc 的请求处理方法请求参数绑定与校验](#springmvc-的请求处理方法请求参数绑定与校验)
     - [本文解决的核心问题](#本文解决的核心问题)
     - [参数绑定- HandlerMethodArgumentResolver 及 HttpMessageConverter](#参数绑定--handlermethodargumentresolver-及-httpmessageconverter)
     - [HandlerMethodArgumentResolver 和 HttpMessageConverter 的关系](#handlermethodargumentresolver-和-httpmessageconverter-的关系)

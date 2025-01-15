@@ -149,7 +149,7 @@ settings.xml:
 
 #### 聚合(多模块)
 当我们的两个Maven项目是相关的，共同作用以构成一个更大的项目，我们可以把他们称为更大项目的模块。如 regs-api/regs-serve/regs-ft。一个简单的需求就是：我们想要一次构建两个模块而不是分别进入到不同模块目录下执行 mvn 命令。Maven 聚合就是为这一需求服务的。    
-首先，需要创建另一个模块，并且 packaging 类型必须是 POM ，然后，在 pom 文件中配置 modules，每个 module 的值都是一个相对于当前 pom 的**目录**，该目录下包含一个maven 项目（pom.xml）。聚合模块通常只包含一个 pom.xml 文件，没有源码资源等目录。
+首先，需要创建另一个模块，并且 packaging 类型必须是 POM ，然后，在 pom 文件中配置 modules，**每个 module 的值都是一个相对于当前 pom 的目录，该目录下包含一个maven 项目（pom.xml）**。聚合模块通常只包含一个 pom.xml 文件，没有源码资源等目录。
 
 #### 继承
 当多个模块之间有许多重复的配置时，可以将他们抽取出来作为一个父模块供这些模块继承共享。父模块的打包类型也必须是 pom，而且不需要源代码之类的目录。子模块继承时，使用 parent 元素指定父模块， parent下的 groupId、artifactId、version 制定了父模块的坐标， relativePath 指定父模块 pom 文件相对与本 pom 的路径，默认值是 ../pom.xml，即上层目录中的 pom.xml ，maven 会首先根据 relativePath 查找父 POM， 如果找不到，再从本地仓库查找 。
@@ -177,7 +177,7 @@ settings.xml:
 
 ##### 继承下的依赖
 当模块A和B都依赖了一些共同的 jar，可以将这些共同的依赖放到父模块的依赖配置下，这样子模块就不用添加这些配置直接继承即可。但是，这样的话，以后新加的子模块C都会依赖这些A和B的依赖，有可能对C是没用的。    
-可以使用 dependencyManagement 统一管理这些共同依赖， dependencyManagement 下的依赖不会引入实际的依赖（打包不打），但是可以为一些依赖项配置好版本，这样子元素要使用某一项依赖时，只需要直接添加 groupId、artifactId 的 dependency，版本就是父模块中的版本，当然也可以写上 version ，这样会使用子模块中的版本（类似覆盖）。与 dependencyManagement 还有 pluginManagement 。
+可以使用 `dependencyManagement` 统一管理这些共同依赖， dependencyManagement 下的依赖不会引入实际的依赖（打包不打），但是可以为一些依赖项配置好版本，这样子元素要使用某一项依赖时，只需要直接添加 groupId、artifactId 的 dependency，版本就是父模块中的版本，当然也可以写上 version ，这样会使用子模块中的版本（类似覆盖）。与 dependencyManagement 还有 pluginManagement 。
 
 #### 聚合与继承的关系
 聚合与继承的目的是完全不同的，聚合是为了方便快速的构建多个项目，后者主要是为了消除重复的配置。两者其实没有什么关系，如果非要说两者的共同点，那就是两者的 packaging 类型都必须是 pom ,同时，聚合模块与父模块中除了 pom.xml 文件没有其他内容。

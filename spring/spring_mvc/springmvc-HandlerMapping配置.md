@@ -53,11 +53,11 @@ RequestMapping 有很多属性可以指定匹配的细节：
 + `@PatchMapping`
 
 示例：
-+ "/resources/ima?e.png"： - 匹配路径段中的一个字符
-+ "/resources/*.png"： - 匹配路径段中的零个或多个字符
-+ "/resources/**"： - 匹配多个路径段
-+ "/projects/{project}/versions"： - 匹配路径段并将其作为变量捕获
-+ "/projects/{project:[a-z]}/versions"+ ： - 使用 regex 匹配并捕获变量
++ `/resources/ima?e.png`： 匹配路径段中的一个字符
++ `/resources/*.png`： 匹配路径段中的零个或多个字符
++ `/resources/**`： 匹配多个路径段
++ `/projects/{project}/versions`： 匹配路径段并将其作为变量捕获
++ `/projects/{project:[a-z]}/versions` ： 使用 regex 匹配并捕获变量
 
 ### 利用代码显示的注册
 

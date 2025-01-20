@@ -6,6 +6,8 @@
 <center>
 <img src="pics/jvm运行时数据区.png" alt="JVM运行时数据区" width="40%" >
 <img src="pics/java-memory-model.png" alt="JVM运行时数据区" width="55%" >
+
+<img src="pics/jvm-memory.webp" alt="JVM运行时数据区" width="100%" >
 </center>
 
 JVM主要可以分为两大部分：

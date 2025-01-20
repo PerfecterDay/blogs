@@ -108,11 +108,6 @@ public class DefaultServiceLocator {
 
 要了解某个特定Bean的实际运行时类型，建议使用 `BeanFactory.getType(String beanName)` 方法或者指定bean的类型。这将考虑到上述所有情况，并返回 `BeanFactory.getBean` 调用对同一Bean名称将返回的对象类型。
 
-### Bean 生命周期回调
-为了与容器对Bean生命周期的管理进行交互，你可以实现Spring `InitializingBean` 和 `DisposableBean` 接口。容器为前者调用 `afterPropertiesSet()` ，为后者调用 `destroy()` ，让Bean在初始化和销毁你的Bean时执行某些动作。如果你的bean 需要在 Spring 为你设置好某些属性或者在销毁前做一些事情，可以实现这些接口。
-
-JSR-250的 `@PostConstruct` 和 `@PreDestroy` 注解通常被认为是在现代Spring应用程序中接收生命周期回调的最佳实践。使用这些注解意味着你的Bean不会被耦合到Spring特定的接口。
-
 ### 在非网络应用中优雅地关闭Spring IoC容器
 如果你在非网络应用环境中使用Spring的IoC容器（例如，在富客户端桌面环境中），请向JVM注册一个关机钩。这样做可以确保优雅地关闭，并在你的单体Bean上调用相关的destroy方法，从而释放所有资源。你仍然必须正确配置和实现这些销毁回调。
 

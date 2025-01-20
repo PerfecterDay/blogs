@@ -2,11 +2,11 @@
 {docsify-updated}
 
 - [YAML 简介](#yaml-简介)
-  - [YAML 语法](#yaml-语法)
-    - [YAML 字面量写法](#yaml-字面量写法)
-    - [YAML 对象写法](#yaml-对象写法)
-    - [YAML 数组写法](#yaml-数组写法)
-  - [多文档 YAML](#多文档-yaml)
+    - [YAML 语法](#yaml-语法)
+      - [YAML 字面量写法](#yaml-字面量写法)
+      - [YAML 对象写法](#yaml-对象写法)
+      - [YAML 数组写法](#yaml-数组写法)
+    - [多文档 YAML](#多文档-yaml)
 
 
 YAML 全称 YAML Ain't Markup Language， 它是一种以数据为中心的标记语言，比 XML 和 JSON 更适合作为配置文件。
@@ -30,8 +30,8 @@ YAML 支持以下三种数据结构：
 #### YAML 字面量写法
 字面量是指单个的，不可拆分的值，例如：数字、字符串、布尔值、以及日期等。  
 空字符串是 null。  
-在 YAML 中，使用“key:[空格]value”的形式表示一对键值对（空格不能省略），如 `url: www.biancheng.net` 。  
-字面量直接写在键值对的“value”中即可，且默认情况下字符串是不需要使用单引号或双引号的。
+在 YAML 中，使用 `key:[空格]value` 的形式表示一对键值对（空格不能省略），如 `url: www.biancheng.net` 。  
+字面量直接写在键值对的 `value` 中即可，且默认情况下字符串是不需要使用单引号或双引号的。
 
 若字符串使用单引号，则不会转义特殊字符:  
 `name: 'zhangsan \n lisi'`  输出为 `zhangsan \n lisi`

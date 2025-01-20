@@ -5,10 +5,10 @@
 Spring容器最初提供了两种bean的scope类型：`singleton` 和 `prototype` ，但发布2.0之后，又引入了另外三种scope类型，即 `request` 、 `session` 、 `application` 和 `websocket` 类型。不过这三种类型有所限制，只能在Web应用中使用。
 + `singleton`: 标记为拥有singleton scope的对象定义，在Spring的IoC容器中只存在一个实例，所有对该对象的引用将共享这个实例。该实例从容器启动，并因为第一次被请求而初始化之后，将一直存活到容器退出，也就是说，它与IoC容器“几乎”拥有相同的“寿命”。
 + `prototype` ：容器在接到该类型对象的请求的时候，会每次都重新生成一个新的对象实例给请求方。虽然这种类型的对象的实例化以及属性设置等工作都是由容器负责的，但是只要准备完毕，并且对象实例返回给请求方之后，容器就不再拥有当前返回对象的引用，请求方需要自己负责当前返回对象的后继生命周期的管理工作，包括该对象的销毁。也就是说，容器每次返回给请求方一个新的对象实例之后，就任由这个对象实例“自生自灭”了。
-+ `request`: Spring容器的 XmlWebApplicationContext 会为每个HTTP请求创建一个全新的bean对象供当前请求使用，当请求结束后，该对象实例的生命周期即告结束。
++ `request`: Spring容器会为每个HTTP请求创建一个全新的bean对象供当前请求使用，当请求结束后，该对象实例的生命周期即告结束。
 + `session` ：Spring容器会为每个独立的session创建属于它们自己的全新的bean对象实例。与request相比，除了可能更长的存活时间，其他方面真是没什么差别。
-+ `application`: 将单个 Bean 定义的作用域扩展到 ServletContext 的生命周期。仅在网络感知 Spring ApplicationContext 的上下文中有效。
-+ `websocket`: 将单个 Bean 定义的作用域扩展到 WebSocket 的生命周期。仅在网络感知 Spring ApplicationContext 的上下文中有效。
++ `application`: 将单个 Bean 定义的作用域扩展到 ServletContext 的生命周期。仅在Web 类型的 Spring ApplicationContext 的上下文中有效。
++ `websocket`: 将单个 Bean 定义的作用域扩展到 WebSocket 的生命周期。仅在Web 类型的 Spring ApplicationContext 的上下文中有效。
 
 ## 懒加载
 默认情况下，ApplicationContext 实现会急切地创建和配置所有单例 Bean，作为初始化过程的一部分。一般来说，这种预实例化是可取的，因为配置中的错误会立即被发现，而不是几小时甚至几天后才被发现。如果这种行为不可取，您可以通过将 Bean 定义标记为懒初始化来阻止单例 Bean 的预初始化。懒初始化的 Bean 会告诉 IoC 容器在首次请求时创建 Bean 实例，而不是在启动时。
@@ -60,7 +60,7 @@ public interface Lifecycle {
 	boolean isRunning();
 }
 ```
-任何 Spring 管理的 Bean 都可以实现 `Lifecycle` 接口。然后，当 ApplicationContext 本身接收到启动和停止信号时（例如容器的停止/重启场景），它将委托给一个 `LifecycleProcessor` 将这些调用级联到该上下文中定义的所有 Lifecycle 实现。，如下图所示：
+任何 Spring 管理的 Bean 都可以实现 `Lifecycle` 接口。然后，当 ApplicationContext 本身接收到启动和停止信号时（例如容器的停止/重启场景），它将委托给一个 `LifecycleProcessor` 将这些调用级联到该上下文中定义的所有 Lifecycle 实现。如下图所示：
 ```
 public interface LifecycleProcessor extends Lifecycle {
 	void onRefresh();

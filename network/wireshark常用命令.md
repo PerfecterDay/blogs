@@ -2,6 +2,7 @@
 {docsify-updated}
 
 - [wireshark 常用命令](#wireshark-常用命令)
+  - [](#)
 
 
 1. 过滤地址
@@ -32,3 +33,7 @@
   
 通过连接符可以把上面的命令连接在一起，比如：
 `ip.src==192.168.10.10 and http.request.method=="POST"`
+
+
+## 
+`dst host 198.18.1.227`

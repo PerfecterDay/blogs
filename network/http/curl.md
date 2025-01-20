@@ -60,6 +60,19 @@
 27. `--http1.1/--http2/--http3`: 指定使用的http 版本 
 28. `curl --compressed -vv 'https://www.baidu.com' -w '%{size_download}'` : 显示压缩数据及数据大小
 29. `-w` : 按指定格式显示本次传输的信息，用字符串表示
+30. `--trace <file>`: 会把完整的http 请求和响应保存到一个文件，如果想在命令行输出这些信息，使用 `-` 作为文件名，如 \
+    ```
+	curl --trace - --location 'http://localhost:8080/user/bmp/queryUser' \
+	--form 'a="2"' \
+	--form '2="3"'
+	```
+31. `--trace-time` : 记录请求的详细时间
+    ```
+	curl --trace log.txt --trace-time -w "dnslookup: %{time_namelookup} | connect: %{time_connect} | appconnect: %{time_appconnect} | pretransfer: %{time_pretransfer} | starttransfer: %{time_starttransfer} | total: %{time_total} | size: %{size_download}\n" -k -H 'Accept:application/json' -H 'Content-type:application/json' -XPOST https://ttl-api-uat.gtjai.net/mobile/services/v0/accountBalanceEnquiry -d '{
+		"clientID" : "621166",
+		"sessionID": "nQMWR/vXi8lfiO3GbdZNOg=="
+	}'
+	```
 
 ### 检查Http服务是否支持gzip
 ```

@@ -2,16 +2,16 @@
 {docsify-updated}
 
 - [Chart](#chart)
-  - [Chart 目录结构](#chart-目录结构)
-    - [Chart.yaml](#chartyaml)
-    - [values.yaml](#valuesyaml)
-    - [templates 目录](#templates-目录)
-  - [自定义创建一个 Chart](#自定义创建一个-chart)
-    - [templates](#templates)
-    - [内置对象](#内置对象)
-    - [Values 文件](#values-文件)
-    - [多环境配置](#多环境配置)
-  - [调试](#调试)
+    - [Chart 目录结构](#chart-目录结构)
+      - [Chart.yaml](#chartyaml)
+      - [values.yaml](#valuesyaml)
+      - [templates 目录](#templates-目录)
+    - [自定义创建一个 Chart](#自定义创建一个-chart)
+      - [templates](#templates)
+      - [内置对象](#内置对象)
+      - [Values 文件](#values-文件)
+      - [多环境配置](#多环境配置)
+    - [调试](#调试)
 
 chart 是 Helm 的应用打包格式。 chart 由一系列文件组成，这些文件描述了 Kubernetes部署应用时所需要的资源。
 
@@ -288,6 +288,6 @@ helm install example-prod sample-app -n production -f values-prod.yaml
 
 ### 调试
 + `helm lint`: 是验证chart是否遵循最佳实践的首选工具。
-+ `helm template --debug`: 在本地测试渲染chart模板。
-+ `helm install --dry-run --debug`：我们已经看到过这个技巧了，这是让服务器渲染模板的好方法，然后返回生成的清单文件。
-+ `helm get manifest`: 这是查看安装在服务器上的模板的好方法。
++ `helm template --debug <chart-dir>`: 在本地测试渲染chart模板。
++ `helm install --dry-run --debug <name> <chart-dir>`：我们已经看到过这个技巧了，这是让服务器渲染模板的好方法，然后返回生成的清单文件。
++ `helm get manifest <name>`: 这是查看安装在服务器上的模板的好方法。

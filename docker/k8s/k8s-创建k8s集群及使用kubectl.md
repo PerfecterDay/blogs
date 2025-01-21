@@ -1,21 +1,22 @@
 # K8S 集群创建与交互
 {docsify-updated}
 - [K8S 集群创建与交互](#k8s-集群创建与交互)
-  - [使用 podman-desktop 创建 k8s 集群](#使用-podman-desktop-创建-k8s-集群)
-  - [使用 kubectl 与集群交互(https://kubernetes.io/zh-cn/docs/reference/kubectl/cheatsheet/)](#使用-kubectl-与集群交互httpskubernetesiozh-cndocsreferencekubectlcheatsheet)
-    - [Kubectl 上下文和配置](#kubectl-上下文和配置)
-    - [创建对象](#创建对象)
-    - [查看和查找资源](#查看和查找资源)
-    - [更新资源](#更新资源)
-    - [部分更新资源](#部分更新资源)
-    - [编辑资源](#编辑资源)
-    - [对资源进行扩缩](#对资源进行扩缩)
-    - [删除资源](#删除资源)
-    - [与运行中的 Pod 进行交互](#与运行中的-pod-进行交互)
-    - [从容器中复制文件和目录](#从容器中复制文件和目录)
-    - [与 Deployments 和 Services 进行交互](#与-deployments-和-services-进行交互)
-    - [与节点和集群进行交互](#与节点和集群进行交互)
-    - [格式化输出](#格式化输出)
+    - [使用 podman-desktop 创建 k8s 集群](#使用-podman-desktop-创建-k8s-集群)
+    - [使用 kubectl 与集群交互(https://kubernetes.io/zh-cn/docs/reference/kubectl/cheatsheet/)](#使用-kubectl-与集群交互httpskubernetesiozh-cndocsreferencekubectlcheatsheet)
+      - [Kubectl 上下文和配置](#kubectl-上下文和配置)
+      - [创建对象](#创建对象)
+      - [查看和查找资源](#查看和查找资源)
+      - [更新资源](#更新资源)
+      - [部分更新资源](#部分更新资源)
+      - [编辑资源](#编辑资源)
+      - [对资源进行扩缩](#对资源进行扩缩)
+      - [删除资源](#删除资源)
+      - [与运行中的 Pod 进行交互](#与运行中的-pod-进行交互)
+      - [从容器中复制文件和目录](#从容器中复制文件和目录)
+      - [与 Deployments 和 Services 进行交互](#与-deployments-和-services-进行交互)
+      - [与节点和集群进行交互](#与节点和集群进行交互)
+      - [格式化输出](#格式化输出)
+      - [端口转发](#端口转发)
 
 ### 使用 podman-desktop 创建 k8s 集群
 1. 安装 podman
@@ -382,4 +383,39 @@ kubectl get pods -A -o=custom-columns='DATA:spec.containers[?(@.image!="registry
 
 # 输出 metadata 下面的所有字段，无论 Pod 名字为何
 kubectl get pods -A -o=custom-columns='DATA:metadata.*'
+```
+
+#### 端口转发
+转发一个或多个本地端口到某 Pod。
+
+使用资源类型/名称（例如 deployment/mydeployment）来选择 Pod。 如果省略，资源类型默认为 “pod”。
+
+如果有多个 Pod 与条件匹配，将自动选择一个 Pod。 一旦所选 Pod 终止，转发会话也会结束，你需要重新运行命令以恢复转发。
+
+```
+kubectl port-forward TYPE/NAME [options] [LOCAL_PORT:]REMOTE_PORT [...[LOCAL_PORT_N:]REMOTE_PORT_N]
+```
+
+示例：
+```
+# 在本地监听端口 5000 和 6000，转发与 Pod 中的端口 5000 和 6000 间的往来数据
+kubectl port-forward pod/mypod 5000 6000
+  
+# 在本地监听端口 5000 和 6000，转发与 Deployment 所选择的 Pod 中端口 5000 和 6000 间往来数据
+kubectl port-forward deployment/mydeployment 5000 6000
+  
+# 在本地监听端口 8443，将数据转发到由 Service 所选择的 Pod 中名为 "https" 的服务端口的 targetPort
+kubectl port-forward service/myservice 8443:https
+  
+# 在本地监听端口 8888，将数据转发到 Pod 中的端口 5000
+kubectl port-forward pod/mypod 8888:5000
+  
+# 在所有地址上监听端口 8888，将数据转发到 Pod 中的端口 5000
+kubectl port-forward --address 0.0.0.0 pod/mypod 8888:5000
+  
+# 在 localhost 和选定的 IP 上监听端口 8888，将数据转发到 Pod 中的端口 5000
+kubectl port-forward --address localhost,10.19.21.23 pod/mypod 8888:5000
+  
+# 在本地监听随机端口，将数据转发到 Pod 中的端口 5000
+kubectl port-forward pod/mypod :5000
 ```

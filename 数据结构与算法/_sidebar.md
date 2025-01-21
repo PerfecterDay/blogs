@@ -24,3 +24,4 @@
 * [回溯](/数据结构与算法/回溯.md)
 * [每日一文](https://www.baeldung.com/cs/category/algorithms)
 * [可视化算法](https://www.cs.usfca.edu/~galles/visualization/Algorithms.html)
+* [算法模式](https://mp.weixin.qq.com/s/om0plD_OuI31ksQHWCjwfw)

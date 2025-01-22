@@ -1,6 +1,8 @@
 # vim 手册
 {docsify-updated}
 
+<center><img src="pics/vim.png" width="80%"></center>
+
 Mac 下可以使用 vimtutor 学习 vim。 直接在终端输入命令 vimtutor 即可。
 
 1. 统计字符串出现的次数： `:%s/pattern//gn`

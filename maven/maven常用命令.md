@@ -22,6 +22,9 @@
 11. `mvn package -Dmvn.test.skip=true`：跳过测试代码编译同时跳过测试运行
 12. `mvn test -Dtest=testClass1,testClass2|Random*Test`：运行指定的测试类（|代表或）
 13. `mvn -pl '!submodule1,!submodule2' install 或者 mvn -pl -submodule1,-submodule2 install` ：打包时跳过某些模块
+14. `mvn dependency:sources`: 下载依赖包的源码文件
+15. `mvn dependency:resolve -Dclassifier=javadoc`: 下载依赖包的 javadoc
+16. `mvn dependency:sources dependency:resolve -Dclassifier=javadoc` ：同时下载以来包的javadoc和源码文件
 
 #### maven 常用配置
 最佳实践是将 maven 安装目录下的 `conf/settings.xml` 文件复制到用户目录下的 `.m2` 文件夹中，并修改其中的配置。

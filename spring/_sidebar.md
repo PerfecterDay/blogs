@@ -18,6 +18,7 @@
   * [Spring 类型转换与格式化](/spring/core-ioc/spring-数据类型转换与格式化.md)
   * [Spring 国际化](/spring/core-ioc/spring-国际化.md)
   * [Spring 事件机制](/spring/core-ioc/spring-事件机制.md)
+  * [Spring Lifecycle与SmartLifecycle](/spring/core-ioc/spring-lifecycle.md)
 * [Spring AOP](#)
   * [AOP 核心概念及 Spring AOP APIs](/spring/aop/spring-aop核心概念.md)
   * [Spring AOP 基于注解的配置](/spring/aop/spring-aop注解配置.md)

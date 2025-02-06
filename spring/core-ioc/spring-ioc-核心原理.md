@@ -2,6 +2,7 @@
  {docsify-updated}
 > https://docs.spring.io/spring-framework/reference/core/beans.html
 
+<center><img src="pics/spring-bean-lifecycle.webp" alt=""></center>
 
 Spring的IoC容器所起的作用就是它会以某种方式加载Configuration Metadata（通常也就是XML格式的配置信息），然后根据这些信息绑定整个系统的对象，最终组装成一个可用的基于轻量级容器的应用系统。
 Spring的IoC容器实现以上功能的过程，基本上可以按照类似的流程划分为两个阶段，即

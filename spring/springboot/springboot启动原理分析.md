@@ -21,7 +21,7 @@
 ## 扩展点
 
 ### SpringApplicationRunListener
-`SpringApplicationRunListener` 是 `SpringApplication run()` 方法的侦听器。 与 spring events(`ApplicationListener`) 机制不同，它是专门用来监控 `run()` 方法的，只在 `run()` 方法作用域内有效， 而 sring events 中的 listeners 是长期存在与容器中，可以在各个业务逻辑中随时使用监听特定事件发生的。创建并使用自定义 `SpringApplicationRunListener` 一般要两个步骤：
+`SpringApplicationRunListener` 是 `SpringApplication run()` 方法的侦听器。 **与 spring events(`ApplicationListener`) 机制不同，它是专门用来监控 `run()` 方法的，只在 `run()` 方法作用域内有效， 而 sring events 中的 listeners 是长期存在与容器中，可以在各个业务逻辑中随时使用监听特定事件发生的。**创建并使用自定义 `SpringApplicationRunListener` 一般要两个步骤：
 1. `SpringApplicationRunListener` 是通过 `SpringFactoriesLoader` 加载的，所以必须在 `META-INF/spring.factories`中声明：
    ```
 	org.springframework.boot.SpringApplicationRunListener=\

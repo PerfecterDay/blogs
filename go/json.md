@@ -51,3 +51,24 @@ if err := json.Unmarshal(data, &titles); err != nil {
 }
 fmt.Println(titles) // "[{Casablanca} {Cool Hand Luke} {Bullitt}]"
 ```
+
+## 精度丢失问题
+> https://www.51cto.com/article/697019.html
+
+当Json 字符串:
+```
+{"dictCode":1554660410667769858,"dictLabel":"美容/保健服务"}
+```
+反序列化为 `map[string]interface{}` 类型时， 1554660410667769858 会变成 1554660410667769900 。  
+测试代码:
+```
+func main() {
+	var result map[string]interface{}
+	body := "{\"dictCode\":1554660410667769858,\"dictLabel\":\"美容/保健服务\"}"
+	bytes := []byte(body)
+	json.Unmarshal(bytes, &result)
+	fmt.Println(result)
+	var a float64 = 1.5546604106677699e+18
+	fmt.Printf("%18.f", a)
+}
+```

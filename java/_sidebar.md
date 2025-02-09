@@ -8,6 +8,7 @@
   * [GC](https://www.baeldung.com/tag/garbage-collection)
     * [垃圾收集算法](/java/jvm/gc/jvm-垃圾收集算法.md)
     * [经典垃圾收集器](/java/jvm/gc/jvm-经典的垃圾收集器.md)
+    * [虚拟机调优](./jvm/gc/jvm-gc调优.md)
   * [常用 Jvm 命令](/java/jvm/jvm-常用jvm命令.md)
   * [虚拟机性能监控与故障处理工具](/java/jvm/jvm-虚拟机性能监控与故障处理工具.md)
   * [JFR和JMC](/java/jvm/jvm-JFR和JMC.md)

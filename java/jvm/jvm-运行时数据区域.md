@@ -113,4 +113,12 @@ Java Code Cache 分块（Segmented Code Cache）： 从 Java 9 开始引入的 C
 不同 GC 算法的 GC 内存开销也不同。`-XX:+UseSerialGC` 和 `-XX:+UseShenandoahGC` 的内存开销最小。G1 或 CMS 可能会轻松占用堆总大小的 10% 左右。
 
 ### JIT 编译器
-JIT 编译器本身也需要内存来完成工作。通过关闭分层编译或减少编译器线程数，可以再次减少内存占用：-XX:CICompilerCount.
+JIT 编译器本身也需要内存来完成工作。通过关闭分层编译或减少编译器线程数，可以再次减少内存占用：`-XX:CICompilerCount`.
+
+## 实例
+阿里云上服务 `jinfo 8` 显示的 JVM Flags:
+```
+-XX:CICompilerCount=4 -XX:ConcGCThreads=2 -XX:G1ConcRefinementThreads=8 -XX:G1HeapRegionSize=1048576 -XX:GCDrainStackTargetSize=64 -XX:InitialHeapSize=257949696 -XX:MarkStackSize=4194304 -XX:MaxHeapSize=4127195136 -XX:MaxNewSize=2475687936 -XX:MinHeapDeltaBytes=1048576 -XX:NonNMethodCodeHeapSize=5835340 -XX:NonProfiledCodeHeapSize=122911450 -XX:ProfiledCodeHeapSize=122911450 -XX:ReservedCodeCacheSize=251658240 -XX:+SegmentedCodeCache -XX:+UseCompressedClassPointers -XX:+UseCompressedOops -XX:+UseG1GC
+```
+
+G1 算法有多个阶段，其中一些是 "stop the world" 阶段，即在垃圾收集期间停止应用程序，还有一些阶段是在应用程序运行时并发的（候选标记等），因此要考虑到这些信息： `ParallelGCThreads` 选项会影响在应用程序线程停止时阶段的G1线程数，而 `ConcGCThreads` 标志会影响用于G1与应用程序并发阶段的线程数。

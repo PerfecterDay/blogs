@@ -180,16 +180,12 @@ public AbstractAutowireCapableBeanFactory() {
  
 看看几个主要的方法：
 
-1. `obtainFreshBeanFactory()` 方法 :
+1. `AbstractApplicationContext` 的 `obtainFreshBeanFactory()` 方法 :
 
 	```
 	protected ConfigurableListableBeanFactory obtainFreshBeanFactory() {
 		refreshBeanFactory();
-		ConfigurableListableBeanFactory beanFactory = getBeanFactory();
-		if (logger.isDebugEnabled()) {
-			logger.debug("Bean factory for " + getDisplayName() + ": " + beanFactory);
-		}
-		return beanFactory;
+		return getBeanFactory();
 	}
 
 	@Override
@@ -210,7 +206,7 @@ public AbstractAutowireCapableBeanFactory() {
 	```
 	该方法主要是实例化一个 `beanFactory`，并加载 bean 定义。
 
-2. `prepareBeanFactory`:
+2. `AbstractApplicationContext` 的 `prepareBeanFactory`:
 ```
     protected void prepareBeanFactory(ConfigurableListableBeanFactory beanFactory) {
 		// Tell the internal bean factory to use the context's class loader etc.
@@ -256,7 +252,7 @@ public AbstractAutowireCapableBeanFactory() {
 		}
 	}
 ```
-3. 事件相关的监听器注册： `registerListeners`:
+3. 事件相关的监听器注册： `AbstractApplicationContext` 的 `registerListeners`:
 ```
     protected void registerListeners() {
 		// Register statically specified listeners first.

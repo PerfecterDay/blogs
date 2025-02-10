@@ -5,6 +5,7 @@
 	- [系统相关](#系统相关)
 		- [System 类](#system-类)
 		- [Runtime类](#runtime类)
+		- [获取机器的物理内存](#获取机器的物理内存)
 	- [常用类](#常用类)
 		- [Object类](#object类)
 		- [Objects类](#objects类)
@@ -55,6 +56,26 @@ shutdown hook 就是一个初始化好的但是没有启动的线程。当JVM虚
 未捕获的异常在关闭钩子中与其他线程一样被处理，方法是调用线程的 `ThreadGroup` 对象的 `uncaughtException()` 方法。该方法的默认实现会将异常的堆栈跟踪打印到 `System.err`，然后终止线程；它不会导致虚拟机退出或停止。
 
 在极少数情况下，虚拟机可能会中止运行，即在未正常关闭的情况下停止运行。这种情况发生在虚拟机被外部强制终止时，例如在 Unix 系统中收到 `SIGKILL` 信号或在 Microsoft Windows 中调用 `TerminateProcess` 。如果本地方法出现问题，例如破坏了内部数据结构或尝试访问不存在的内存，虚拟机也可能中止。如果虚拟机中止，则无法保证是否会运行任何关闭钩子。
+
+### 获取机器的物理内存
+Runtime 只能获取 JVM 中的内存信息，要获取物理机器的内存信息使用下面代码：
+```
+import java.lang.management.OperatingSystemMXBean;
+import java.lang.management.ManagementFactory;
+
+public class A{
+    public static void main(String[] args){
+        OperatingSystemMXBean osBean = ManagementFactory.getOperatingSystemMXBean();
+        long totalMemory;
+        if (osBean instanceof com.sun.management.OperatingSystemMXBean) {
+            totalMemory = ((com.sun.management.OperatingSystemMXBean) osBean).getTotalPhysicalMemorySize();
+            System.out.println("总物理内存大小：" + totalMemory / (1024 * 1024) + "MB");
+        } else {
+            System.out.println("该操作系统不支持获取物理内存大小");
+        }
+    }
+}
+```
 
 ## 常用类
 

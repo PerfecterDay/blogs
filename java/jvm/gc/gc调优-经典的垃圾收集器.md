@@ -68,6 +68,7 @@ GC会保存暂停的平均时间和方差。平均值是从执行开始时开始
 # 打印基本 GC 信息
 -XX:+PrintGCDetails  ---> -Xlog:gc*
 -XX:+PrintGCDateStamps  ---> -Xlog:gc*::time
+-verbose:gc
 
 # 打印对象分布
 -XX:+PrintTenuringDistribution 

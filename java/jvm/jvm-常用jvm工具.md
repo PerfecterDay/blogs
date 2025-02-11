@@ -1,4 +1,4 @@
-# java基础-常用jvm命令
+# java基础-常用jvm工具
 {docsify-updated}
 
 ## jps
@@ -117,3 +117,6 @@ jinfo(JVM Configuration info)这个命令作用是实时查看和调整虚拟机
 + `jinfo 8 | grep GC`: 查看jvm使用的是什么垃圾收集器
 + `jinfo 8`: 查看jvm的信息
 + ```jinfo -flag  +PrintGC `pgrep -f tomcat` ```: 动态开启VM参数
++ `jinfo -flag SoftMaxHeapSize=2048 {PID} (sets it to 2M)` : 动态设置VM参数值
+
+并不是所有JVM参数都可以动态设置，只有 `java -XX:+PrintFlagsInitial -vesion` 中输出的  `manageable` 类型的 flags 才能动态修改。

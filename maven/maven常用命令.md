@@ -2,12 +2,12 @@
 {docsify-updated}
 
 - [maven 常用命令参数和配置](#maven-常用命令参数和配置)
-      - [maven 常用命令](#maven-常用命令)
-      - [maven 常用配置](#maven-常用配置)
-      - [maven 问题](#maven-问题)
+  - [maven 常用命令](#maven-常用命令)
+  - [maven 常用配置](#maven-常用配置)
+  - [maven 问题](#maven-问题)
 
 
-#### maven 常用命令
+## maven 常用命令
 0. `mvn -B archetype:generate -DgroupId=com.my -DartifactId=simple-weather -DpackageName=com.baicy -Dversion=1.0 `: 以batch模式创建新项目，会选择 Archetype ，可能需要删除 settings配置文件中 archetypeRepository 和 archetypeCatalog 配置。
 1. `mvn archetype:generate -DgroupId=com.coder.wang -DartifactId=maven-count-plugin -DarchetypeArtifactId=maven-archetype-plugin -DarchetypeVersion=3.0 `:使用指定的 Archetype 生成项目。
 2. ` mvn dependency:list` ：输出依赖所有依赖的包
@@ -26,7 +26,7 @@
 15. `mvn dependency:resolve -Dclassifier=javadoc`: 下载依赖包的 javadoc
 16. `mvn dependency:sources dependency:resolve -Dclassifier=javadoc` ：同时下载以来包的javadoc和源码文件
 
-#### maven 常用配置
+## maven 常用配置
 最佳实践是将 maven 安装目录下的 `conf/settings.xml` 文件复制到用户目录下的 `.m2` 文件夹中，并修改其中的配置。
 1. 修改本地仓库路径: `<localRepository>D:/repository</localRepository>`
 2. 修改远程仓库镜像：
@@ -57,7 +57,7 @@
 </plugins>
 ```
 
-#### maven 问题
+## maven 问题
 1. 有时候使用 https 时会遇到如下错误：`sun.security.validator.ValidatorException: PKIX path building failed: sun.security.provider.certpath.SunCertPathBuilderException: unable to find valid certification path to requested target`
 
 解决方法：加上 `-Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true`

@@ -13,3 +13,7 @@ MultiSgSyncClientProcessor 继承自 SmartInstantiationAwareBeanPostProcessor
                  ClientInvokeTargetFilter->SgMultiHttpConnection 发起实际调用
                  Object proxy = Forest.config(providerNode.getIdentifier()).createInstance(clazzName); 使用 Forest 发起远程调用
                  return methodName.invoke(proxy, args);
+
+
+
+HardWareUtil 获取主机IP

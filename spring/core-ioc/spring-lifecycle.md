@@ -1,9 +1,9 @@
 # Spring Lifecycle 与 SmartLifecycle
 {docsify-updated}
 
-在使用Spring的过程中，我们通常会用@PostConstruct和@PreDestroy在Bean初始化或销毁时执行一些操作，这些操作属于Bean声明周期级别的。
+在使用Spring的过程中，我们通常会用 `@PostConstruct` 和 `@PreDestroy` 在Bean初始化或销毁时执行一些操作，这些操作属于Bean生命周期级别的。也就是每次 bean 创建或销毁的时候都会执行这些指定操作。
 
-那么，就存在一些遗漏的场景，比如我们想在容器本身的生命周期（比如容器启动、停止）的事件上做一些工作，很典型的就是Spring Boot中启动内嵌的Web容器。该怎么办？
+那么，就存在一些遗漏的场景，比如我们想在**容器本身的生命周期**（比如容器启动、停止）的事件上做一些工作，很典型的就是Spring Boot中启动内嵌的Web容器。该怎么办？
 
 这就需要用到Spring提供的另外一个接口 `Lifecycle` 。这篇文件就介绍一下 `Lifecycle` 接口，以及比它更聪明（Smart）的 `SmartLifecycle` 。
 

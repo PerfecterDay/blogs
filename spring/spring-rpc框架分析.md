@@ -17,3 +17,6 @@ MultiSgSyncClientProcessor 继承自 SmartInstantiationAwareBeanPostProcessor
 
 
 HardWareUtil 获取主机IP
+
+
+配置类： `ConfigurationContainer`

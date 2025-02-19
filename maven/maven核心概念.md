@@ -89,6 +89,9 @@ Maven 会去仓库中查找依赖，优先从本地库查找，本地库找不�
 ```
 如果项目需要其他的私有仓库配置，只需要在pom中添加类似的 `repositories > repository` 即可。
 
+maven 检索、下载依赖包的顺序：
+<center><img src="pics/maven-repos.png" width="50%"></center>
+
 #### 部署jar包到私服仓库 
 ```
 项目POM:

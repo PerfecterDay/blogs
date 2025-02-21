@@ -3,7 +3,7 @@
 每个Http请求到达服务时，都会绑定到一个线程处理，当我们的服务中涉及到多线程时，需要注意线程安全。
 
 ## HttpServletRequest注入
-当我们注入一个 `HttpServletRequest` 到一个单例 bean 时，Spring 通过 `ServletRequestAttributes` 类型的封装对象来 `HttpServletRequest` 对象（以及当前 `HttpSession` 对象）。该封装对象绑定到 `ThreadLocal` ，可通过调用静态方法 `RequestContextHolder.currentRequestAttributes()` 获得。
+当我们注入一个 `HttpServletRequest` 到一个单例 bean 时，Spring 通过 `ServletRequestAttributes` 类型来封装 `HttpServletRequest` 对象（以及当前 `HttpSession` 对象）。该封装对象绑定到 `ThreadLocal` ，可通过调用静态方法 `RequestContextHolder.currentRequestAttributes()` 获得。
 
 `ServletRequestAttributes` 提供了 `getRequest()` 方法来获取当前 `HttpServletRequest` 对象，`getSession()` 方法来获取当前 `HttpSession` 对象 ，以及其他方法来获取存储在两个作用域中的属性。下面的代码虽然有点难看，但可以在应用程序适当的地方获取当前请求对象：
 ```

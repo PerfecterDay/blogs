@@ -34,7 +34,8 @@ A和B的自然连接：**来自A表的元组和来自B表的元组在共同属�
 `A join B using (p1)` p1 上值相同的元组进行连接。
 
 ### on 表达式
-自然连接默认连接的是两个关系中**相同属性上(表中列名相同的列)**值相同的元组。不同属性不会被考虑在内。SQL的 on 表达式可以指定任意的连接条件。on 只能出现在连接表达式的末尾。
+自然连接默认连接的是两个关系中 **相同属性上(表中列名相同的列)** 值相同的元组。不同属性不会被考虑在内。SQL的 on 表达式可以指定任意的连接条件。on 只能出现在连接表达式的末尾。
+```
 <select id="selectLoginGroupMsg" resultMap="grpMsgResultMap">
 	SELECT m.id, m.title,m.subtitle,m.category,m.subcategory,m.url,mc.name as subcategoryName,
 	m.priority,m.unix_create_time_stamp as unixCreateTimeStamp,
@@ -52,6 +53,7 @@ A和B的自然连接：**来自A表的元组和来自B表的元组在共同属�
 	</where>
 	ORDER BY m.PRIORITY DESC
 </select>
+```
 
 ### 外连接
 

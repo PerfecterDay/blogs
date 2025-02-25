@@ -23,6 +23,31 @@
 + Windows:
 1. 在用户的 .ssh 目录内建立 config 文件内容如上
 
+### Git 配置
+在Git中用户名和密码是保存在 git 配置文件中的。这个文件有全局配置和本地配置，全局配置指的是Git所有仓库都适用的配置，一般是 `~/.gitconfig` 文件中，本地配置指的是特定仓库适用的配置， 一般在 `.git/config` 文件中 。 `--global credential.helper store` 命令告诉Git将用户名和密码存储在本地 `.git-credentials` 文件中。
+
+#### 查看/修改配置
+```
+git config --list //查看配置
+git config --local --edit // 编辑本地配置文件
+git config --global --edit // 编辑全局配置文件
+
+git config --global http.sslVerify false // 修改全局配置
+git config --local http.sslVerify false // 修改本地配置
+
+git -c http.sslVerify=false clone https://example.com/path/to/git //执行命令时传递参数,跳过证书验证
+```
+
+#### 配置账号密码避免每次都要输入账号密码
+1. `git config --global url."https://wangzhongzhu026484:wzz900119!@gjywgitlab.gtja.net".insteadOf "http://gjywgitlab.gtja.net"`
+2. 配置用户名、密码：
+   ```
+   git config --global user.name 用户名
+   git config --global user.password 密码
+   git config --global user.email "1548429568@qq.com"
+   ```
+3. `git remote set-url origin https://{username}:{password}@github.com/{username}/project.git`
+
 ### git 常用命令
 <center><img src="pics/git-frame.jpg" width="30%" /></center>
 
@@ -92,15 +117,6 @@
 20. `git push` : 如果当前分支只有一个追踪分支，那么主机名都可以省略
 21. `git ls-remote -h -- ssh://git@gjywgitlab.gtja.net:223/gtja-app-platform/user-center-g/user-center-service.git`
 
-### Git 配置
-1. `git config --global url."https://wangzhongzhu026484:wzz900119!@gjywgitlab.gtja.net".insteadOf "http://gjywgitlab.gtja.net"`
-2. 配置用户名、密码：
-   ```
-   git config --global user.name 用户命
-   git config --global user.password 密码
-   git config --global user.email "1548429568@qq.com"
-   ```
-3. `git remote set-url origin https://{username}:{password}@github.com/{username}/project.git`
 
 #### 常见问题
 1. windows乱码：  

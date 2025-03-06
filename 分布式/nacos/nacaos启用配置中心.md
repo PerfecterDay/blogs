@@ -1,4 +1,4 @@
-# 启用Nacos 配置管理
+# 启用Nacos 配置中心
 {docsify-updated}
 
 1. 添加依赖

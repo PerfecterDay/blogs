@@ -27,14 +27,24 @@ Nacos started successfully in stand alone mode. use embedded storage
 
 
 ## 开启鉴权
+> https://nacos.io/docs/latest/manual/admin/auth/?spm=5238cd80.2ef5001f.0.0.3f613b7chivyRa
+
+编辑 `nacos/conf/application.properties` 的配置文件：
 ```
-nacos.core.auth.default.token.secret.key=$custom_base64_token_secret_key
+###
+nacos.core.auth.default.token.secret.key=$custom_base64_token_secret_key //自定义一个base64 编码格式的token
+
+例如： nacos.core.auth.plugin.nacos.token.secret.key=ZGFzZGFzZmRzYWZkc2dkZmdkZmhmZHNmc2Zkc2Rhc2Rhc2Rhc2Rhcw==
 
 ### 配置自定义身份识别的key（不可为空）和value（不可为空）
 nacos.core.auth.server.identity.key=$custom_server_identity_key
 nacos.core.auth.server.identity.value=$custom_server_identity_value
 
+比如：
+nacos.core.auth.server.identity.key=nacos
+nacos.core.auth.server.identity.value=nacos
 
+###
 nacos.core.auth.system.type=nacos
 nacos.core.auth.enabled=true
 ```

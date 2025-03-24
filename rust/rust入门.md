@@ -1,14 +1,12 @@
-# Rust 安装
+# Rust 入门
 
-## Linux
-`$ curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf | sh`  
-`apt install gcc`
+## Linux 安装 Rust
++ `curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf | sh`  
++ `apt install gcc`
 
-验证： `rustc --version`
-
-升级: `$ rustup update`
-
-卸载: `rustup self uninstall`
++ 验证: `rustc --version`
++ 升级: `rustup update`
++ 卸载: `rustup self uninstall`
 
 ## Hello World
 创建一个文件 hello.rs
@@ -35,7 +33,6 @@ Rust 的缩进风格使用 4 个空格，而不是 1 个制表符（tab）。
 
 ## Cargo
 + 查看 cargo 版本：`cargo --version`
-
 
 ### 使用 Cargo 创建项目
 `cargo new hello_cargo` ,会创建一个 hello_cargo 目录，里边有一个 Cargo.toml 文件和一个 src 目录：
@@ -122,12 +119,12 @@ Cargo 如果发现文件并没有被改变，它不会有重新编译，而是�
 10 directories, 10 files
 ```
 
-+ 可以使用 `cargo new` 创建项目。
-+ 可以使用 `cargo build` 构建项目。
-+ 可以使用 `cargo run` 一步构建并运行项目。
-+ 可以使用 `cargo check` 在不生成二进制文件的情况下构建项目来检查错误。
-+ 可以使用 `cargo doc --open` 来构建所有本地依赖提供的文档，并在浏览器中打开crate 使用说明文档
-+ 有别于将构建结果放在与源码相同的目录，Cargo 会将其放到 target/debug 目录。
++ `cargo new`: 创建项目。
++ `cargo build`: 构建项目。
++ `cargo run`: 一步构建并运行项目。
++ `cargo check`: 在不生成二进制文件的情况下构建项目来检查错误。
++ `cargo doc --open`: 来构建所有本地依赖提供的文档，并在浏览器中打开crate 使用说明文档
++ 有别于将构建结果放在与源码相同的目录，Cargo 会将其放到 `target/debug` 目录。
 
 ### 发布（release）构建
-当项目最终准备好发布时，可以使用 cargo build --release 来优化编译项目。这会在 target/release 而不是 target/debug 下生成可执行文件。这些优化可以让 Rust 代码运行的更快，不过启用这些优化也需要消耗更长的编译时间。这也就是为什么会有两种不同的配置：一种是为了开发，你需要经常快速重新构建；另一种是为用户构建最终程序，它们不会经常重新构建，并且希望程序运行得越快越好。如果你在测试代码的运行时间，请确保运行 cargo build --release 并使用 target/release 下的可执行文件进行测试。
+当项目最终准备好发布时，可以使用 `cargo build --release` 来优化编译项目。这会在 `target/release` 而不是 `target/debug` 下生成可执行文件。这些优化可以让 Rust 代码运行的更快，不过启用这些优化也需要消耗更长的编译时间。这也就是为什么会有两种不同的配置：一种是为了开发，你需要经常快速重新构建；另一种是为用户构建最终程序，它们不会经常重新构建，并且希望程序运行得越快越好。如果你在测试代码的运行时间，请确保运行 `cargo build --release` 并使用 `target/release` 下的可执行文件进行测试。

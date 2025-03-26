@@ -7,6 +7,7 @@
 * [网络协议](/network/_sidebar.md)
 * [Java](/java/_sidebar.md)
 * [Go](/go/_sidebar.md)
+* [Rust](/rust/_sidebar.md)
 * [Git](/git/_sidebar.md)
 * [maven](/maven/_sidebar.md)
 * [mybatis](/mybatis/_sidebar.md)
@@ -28,4 +29,3 @@
 * [开发工具与其他](/other/_sidebar.md)
 * [Gtja](/gtja/_sidebar.md)
 * [AI](/AI/_sidebar.md)
-* [Rust](/rust/_sidebar.md)

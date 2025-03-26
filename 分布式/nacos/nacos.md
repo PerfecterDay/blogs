@@ -50,6 +50,7 @@ nacos.core.auth.enabled=true
 ```
 
 
+修改完配置后，可以在admin 控制台界面修改密码（首次登陆会让你设置密码）；或者通过 API curl 设置：
 ```
 curl -X POST 'http://127.0.01:8848/nacos/v1/auth/users/admin' -d 'password=123456'
 {"username":"nacos","password":"123456"}% 

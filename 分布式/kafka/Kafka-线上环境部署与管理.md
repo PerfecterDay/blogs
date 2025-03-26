@@ -2,10 +2,10 @@
 {docsify-updated}
 
 - [Kafka线上环境部署管理及监控](#kafka线上环境部署管理及监控)
-  - [Kafka 参数配置](#kafka-参数配置)
-  - [Zookeeper 配置文件](#zookeeper-配置文件)
-  - [Kafka的启动与管理](#kafka的启动与管理)
-  - [Kafka 集群监控](#kafka-集群监控)
+    - [Kafka 参数配置](#kafka-参数配置)
+    - [Zookeeper 配置文件](#zookeeper-配置文件)
+    - [Kafka的启动与管理](#kafka的启动与管理)
+    - [Kafka 集群监控](#kafka-集群监控)
 
 
 ### Kafka 参数配置

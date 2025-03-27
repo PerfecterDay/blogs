@@ -155,18 +155,18 @@ git branch -f new-feature <commit hash>
 ## 删除某个历史commit
 Once you push to the repo, you really don't want to go about changing history. However, if you are absolutely sure that nobody has pulled/fetched from the repo since your offending commit, you have 2 options.
 
-If you want to remove the "bad" commit altogether (and every commit that came after that), do a git reset --hard ABC (assuming ABC is the hash of the "bad" commit's elder sibling — the one you want to see as the new head commit of that branch). Then do a git push --force (or git push -f).
+If you want to remove the "bad" commit altogether (and every commit that came after that), do a `git reset --hard ABC` (assuming ABC is the hash of the "bad" commit's elder sibling — the one you want to see as the new head commit of that branch). Then do a git push --force (or `git push -f`).
 
-If you just want to edit that commit, and preserve the commits that came after it, do a git rebase -i ABC~. This will launch your editor, showing the list of your commits, starting with the offending one. Change the flag from "pick" to "e", save the file and close the editor. 
-In the editor that opens, find the line with the commit you want to delete, change pick to drop, or simply delete the line.
-Then make the necessary changes to the files, and do a git commit -a --amend, then do git rebase --continue. Follow it all up with a git push -f.
+If you just want to edit that commit, and preserve the commits that came after it, do a `git rebase -i ABC~`. This will launch your editor, showing the list of your commits, starting with the offending one. Change the flag from "pick" to "e", save the file and close the editor. 
+In the editor that opens, find the line with the commit you want to delete, `change pick to drop, or simply delete the line`.
+Then make the necessary changes to the files, and do a git commit -a --amend, then do `git rebase --continue`. Follow it all up with a `git push -f`.
 
 I want to repeat, these options are only available to you if nobody has done a pull or fetch that contains your offending commit. If they have, doing these steps will just make matters worse.
 
 ## 提交一个change 到历史commit 中
-1. Use git stash to store the changes you want to add.
-2. Use git rebase -i HEAD~10 (or however many commits back you want to see).
-3. Mark the commit in question (a0865...) for edit by changing the word pick at the start of the line into edit. Don't delete the other lines as that would delete the commits.[^vimnote]
+1. Use `git stash` to store the changes you want to add.
+2. Use `git rebase -i HEAD~10` (or however many commits back you want to see).
+3. Mark the commit in question (a0865...) for edit by changing the word pick at the start of the line into edit. Don't delete the other lines as that would delete the commits.
 4. Save the rebase file, and git will drop back to the shell and wait for you to fix that commit.
 5. Pop the stash by using `git stash pop`.
 6. Add your file with `git add <file>`.
@@ -174,3 +174,14 @@ I want to repeat, these options are only available to you if nobody has done a p
 8. Do a `git rebase --continue` which will rewrite the rest of your commits against the new one.
 9. Repeat from step 2 onwards if you have marked more than one commit for edit.
 10. If you have previously pushed the modified commits anywhere else, then you will have to push --force again to update them on the remote. However, the usual warnings about using --force apply, and you can easily lose other people's work if you are not careful and coordinate with them beforehand.
+
+实战：
+1. `git stash` -> 暂存需要提交到历史 commit 的更改
+2. `git log` -> 查找需要提交到哪个commit，记下那个commit
+3. `git rebase -i 99d14f7a77a6e8f91c40756aab76eded31f6151f` -> 会打开一个vim 编辑框, 将你想要提交到的 commit 行的 `pick` 改成 `edit`:
+   <img src="pics/git-rebasei.png" width="50%" />
+4. 保存文件并退出 vim 编辑
+5. `git stash pop` -> 弹出提交的内容
+6. `git add ./` -> 暂存要提交的内容
+7. `git commit --amend` -> 提交内容
+8. `git rebase --continue` -> 继续 git rebase 完成操作

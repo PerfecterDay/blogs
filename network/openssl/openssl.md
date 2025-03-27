@@ -211,4 +211,10 @@ sudo openssl verify -CAfile ~/Desktop/ISRGRootX1.pem ~/Desktop/R3.cer
 
 测试 https 的性能：
 openssl s_time -time 60 -connect appapi.gtjai.com:443
+
+openssl s_client -crlf -connect ttl-api-uat.gtjai.net:443 -debug | ts
+openssl s_client -crlf -connect ttl-api-uat.gtjai.net:443 -msg
+
+openssl s_client -crlf -connect 172.80.231.216:44500 -debug
+openssl s_client -crlf -connect 172.80.231.216:44500 -msg
 ```

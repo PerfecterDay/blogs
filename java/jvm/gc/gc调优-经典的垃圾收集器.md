@@ -13,44 +13,6 @@
 启动时，Java HotSpot VM在地址空间中保留整个Java堆，但除非需要，否则不会为其分配任何物理内存。覆盖Java堆的整个地址空间在逻辑上分为年轻一代和老一代。为对象内存保留的完整地址空间可以分为年轻一代和老一代。年轻一代由eden和两个幸存者空间组成。大多数对象最初在eden中分配。一个幸存者空间在任何时候都是空的，在垃圾收集期间作为eden和另一个幸存者空间的活体对象的目的地；垃圾收集后，eden和源幸存者空间是空的。在下一个垃圾收集中，交换两个幸存者空间的目的。最近填充的一个空间是活体物体的来源，这些物体被复制到另一个幸存者空间中。对象以这种方式在幸存者空间之间复制，直到它们被复制了一定次数，或者那里没有足够的空间。这些对象被复制到旧区域。这个过程也被称为衰老。
 
 
-## GC日志配置
-```
-# 打印基本 GC 信息
--XX:+PrintGCDetails  ---> -Xlog:gc*
--XX:+PrintGCDateStamps  ---> -Xlog:gc*::time
--verbose:gc
-
-# 打印对象分布
--XX:+PrintTenuringDistribution 
-
-# 打印堆数据
--XX:+PrintHeapAtGC 
-
-# 打印Reference处理信息
--XX:+PrintReferenceGC 
-
-# 打印STW时间
--XX:+PrintGCApplicationStoppedTime
-
-# 打印safepoint信息
--XX:+PrintSafepointStatistics 
--XX:PrintSafepointStatisticsCount=1
-
-# GC日志输出的文件路径
--Xloggc:/path/to/gc-%t.log ---> -Xlog:gc*:gc.log
-# 开启日志文件分割
--XX:+UseGCLogFileRotation 
-# 最多分割几个文件，超过之后从头文件开始写
--XX:NumberOfGCLogFiles=14
-# 每个文件上限大小，超过就触发分割
--XX:GCLogFileSize=100M
-```
-
-JDK 9 之后可以使用
-```
--Xlog:gc*=trace:file="gc.log":tags,time,uptime,level
-```
-
 ## 参数
 `java -XX:+PrintFlagsFinal -version` 可以查看所有的支持的VM参数设置
 

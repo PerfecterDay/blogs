@@ -1,7 +1,7 @@
 # 集成 vault
 {docsify-updated}
 
-> https://cloud.spring.io/spring-cloud-vault/reference/html/#_service_registry_configuration
+> https://cloud.spring.io/spring-cloud-vault/reference/html/
 
 ## 自定义 Environment
 SpringApplication 有 `ApplicationListener` 和 `ApplicationContextInitializer` 实现，用于将自定义应用到上下文或环境中。Spring Boot 从 `META-INF/spring.factories` 中加载了大量此类自定义，供内部使用。注册其他自定义的方法不止一种：
@@ -50,4 +50,11 @@ public class MyEnvironmentPostProcessor implements EnvironmentPostProcessor {
 	}
 
 }
+```
+
+
+###
+```
+export VAULT_ADDR="http://localhost:8200" && brew services restart vault
+less /opt/homebrew/var/log/vault.log
 ```

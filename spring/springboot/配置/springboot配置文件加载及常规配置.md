@@ -1,15 +1,30 @@
 #  Springboot 配置文件加载及常见配置
 
 {docsify-updated}
-> https://blog.csdn.net/u013217730/article/details/116716418
+> https://docs.spring.io/spring-boot/reference/features/external-config.html#features.external-config.files
 
-- [Springboot 配置文件加载及常见配置](#springboot-配置文件加载及常见配置)
-    - [加载配置文件及使用](#加载配置文件及使用)
-    - [数据库连接池配置](#数据库连接池配置)
-    - [配置加密-Vault](#配置加密-vault)
-    - [常用配置](#常用配置)
+Spring Boot 允许您将配置外部化，这样您就可以在不同的环境中使用相同的应用程序代码。您可以使用各种外部配置源，包括 Java 属性文件、YAML 文件、环境变量和命令行参数。
 
-### 加载配置文件及使用
+属性值可以通过 `@Value` 注解直接注入到您的 Bean 中，也可以通过 Spring 的环境抽象访问，还可以通过 `@ConfigurationProperties` 绑定属性到结构化对象。
+
+Spring Boot 使用一种非常特殊的 `PropertySource` 顺序，旨在允许对值进行合理的覆盖。后面的属性源可以覆盖前面属性源中定义的值。属性源按以下顺序考虑：
+1. 默认属性（通过设置 `SpringApplication.setDefaultProperties(Map)` 指定）。
+2. 在 `@Configuration` 类上添加 `@PropertySource` 注解。请注意，在应用程序上下文刷新之前，此类属性源不会添加到环境中。这对于配置某些属性（如 `logging.*` 和 `spring.main.*`）来说为时已晚，因为这些属性是在刷新开始前读取的。
+3. 配置数据（如 `application.properties` 文件）。
+4. `RandomValuePropertySource` 只包含 `random.*` 中的属性。
+5. 操作系统环境变量。
+6. Java 系统属性（`System.getProperties()`）。
+7. 来自 `java:comp/env` 的 JNDI 属性。
+8. ServletContext 初始参数
+9. ServletConfig 初始参数
+10. 来自 SPRING_APPLICATION_JSON 的属性（嵌入到环境变量或系统属性中的内联 JSON）。
+11. 命令行参数。
+12. 测试属性。在 @SpringBootTest 和测试注解中可用，用于测试应用程序的特定片段。
+13. 在测试中使用 @DynamicPropertySource 注解。
+14. 测试中的 @TestPropertySource 注解。
+15. Devtools 激活时，$HOME/.config/spring-boot 目录中的 Devtools 全局设置属性。
+
+## 加载配置文件及使用
 
 1. 加载自定义路径下的配置文件  
     Spring/Springboot 中可以使用 `@PropertySource`/`@PropertySources` 注解加载指定路径的配置文件：
@@ -126,7 +141,10 @@
 
     我们可以在 `src/main/resources/configuration` 目录下新建三个文件夹分别为 dev/stage/prod ,分别对应三种环境，三个文件中配置相同的配置文件。然后删除默认的 application.properties 配置文件，分别在三个文件夹下建立 app.properties 文件，并分别配置上 env=dev/stage/prod 配置项，然后代码中相同的配置文件只要动态加载 ${env} 即可。但是，在启动程序时要指定使用对应环境的 application.properties 配置文件（`--spring.config.location=classpath:/configuration/{stage)/app.properties`）。
 
-### 数据库连接池配置
+### 配置文件分模块集中管理
+
+
+## 数据库连接池配置
 
 `DataSourceProperties` 以了解更多支持的选项。这些是标准的选项，不管实际的实现是什么，都可以工作。也可以通过使用各自的前缀（`spring.datasource.hikari.*`、`spring.datasource.tomcat.*`、`spring.datasource.dbcp2.*`和`spring.datasource.oracleucp.*`）来微调特定实现的设置。更多细节请参见你所使用的连接池实现的文档。
 
@@ -167,7 +185,7 @@ spring:
 
 自动配置的相关类 `DataSourceAutoConfiguration` 、 `DataSourceConfiguration` 。
 
-### 配置加密-Vault
+## 配置加密-Vault
 
 安装 vault :
 
@@ -194,7 +212,7 @@ export VAULT_TOKEN="hvs.qbUz87luxIjXMeMl83OEwt3c"
 `vault kv undelete -mount=secret -versions=2 hello` : 恢复一个已经删除的key,如果没有永久删除
 
 
-### 常用配置
+## 常用配置
 
 1. 配置端口： `server.port=9090`
 2. 配置请求路径： `server.servlet.context-path=/trade`

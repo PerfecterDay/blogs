@@ -3,9 +3,8 @@
 
 > https://docs.spring.io/spring-boot/reference/features/external-config.html#features.external-config.files
 
-Spring Boot 允许您将配置外部化，这样您就可以在不同的环境中使用相同的应用程序代码。您可以使用各种外部配置源，包括 Java 属性文件、YAML 文件、环境变量和命令行参数。
-
-属性值可以通过 `@Value` 注解直接注入到您的 Bean 中，也可以通过 Spring 的环境抽象访问，还可以通过 `@ConfigurationProperties` 绑定属性到结构化对象。
+Spring Boot 允许您将配置外部化，这样您就可以在不同的环境中使用相同的应用程序代码。您可以使用各种外部配置源，包括 Java 属性文件、YAML 文件、环境变量和命令行参数。  
+属性值可以通过 `@Value` 注解直接注入到您的 Bean 中，也可以通过 Spring 的环境抽象访问，还可以通过 `@ConfigurationProperties` 绑定属性到结构化对象。  
 
 Spring Boot 使用一种非常特殊的 `PropertySource` 顺序，旨在允许对值进行合理的覆盖。后面的属性源可以覆盖前面属性源中定义的值。属性源按以下顺序考虑：
 1. 默认属性（通过设置 `SpringApplication.setDefaultProperties(Map)` 指定）。
@@ -71,7 +70,9 @@ $ java -jar myproject.jar --spring.config.location=\
 如果 `spring.config.location` 指定的是一个目录（而非文件），则应以 `/` 结尾，这时配置文件会由目录和 `spring.config.name` 指定的文件名同时确定。如果 `spring.config.location` 指定的是文件， 文件将被直接导入。  
 在大多数情况下，你添加的每个 `spring.config.location` 项都将引用一个文件或目录。配置文件按照定义的顺序进行处理，后面的位置可以覆盖前面位置的值。
 
-如果指定的配置文件不存在时允许使用默认配置，要使用前缀 `optional:` 。 `spring.config.name`、`spring.config.location` 和 `spring.config.additional-location` 用于确定需要加载的文件。它们必须定义为环境属性（通常是操作系统环境变量、系统属性或命令行参数）。
+如果指定的配置文件不存在时允许使用默认配置，要使用前缀 `optional:` 。 
+
+> 注意：`spring.config.name`、`spring.config.location` 和 `spring.config.additional-location` 用于确定需要加载的文件。它们必须定义为环境属性（通常是操作系统环境变量、系统属性或命令行参数）。也就是说你在一个配置文件中配置这些属性将不会生效。
 
 
 ### 可选配置
@@ -94,9 +95,28 @@ $ java -jar myproject.jar --spring.config.location=\
 ### Profile专用文件
 除了应用程序属性文件外，Spring Boot 还会尝试使用命名约定 `application-{profile}` 加载特定于profile的配置文件。例如，如果您的应用程序激活了名为 `prod` 的配置文件并使用 YAML 文件，那么 `application.yaml` 和 `application-prod.yaml` 都将被考虑。
 
-profile配置文件的加载位置与标准 `application.properties` ，profile配置文件总是优先于非特定文件。如果激活了多个profile，则采用后胜策略。例如，如果通过 `spring.profiles.active` 属性激活了 `prod` 、 `live` ，则 `application-prod.properties` 中的值就会被 `application-live.properties` 中的值覆盖。
+profile配置文件的加载位置与标准 `application.properties` 一致，profile配置文件总是优先于非特定文件。如果激活了多个profile，则采用后胜策略。例如，如果通过 `spring.profiles.active` 属性激活了 `prod` 、 `live` ，则 `application-prod.properties` 中的值就会被 `application-live.properties` 中的值覆盖。
 
 `Environment` 有一组默认配置文件（默认为 [default]），如果没有设置激活的配置文件，就会使用这些配置文件。换句话说，如果没有明确激活任何配置文件，则会考虑 `application-default` 文件中的属性。
+
+后胜策略适用于位置组级别。`spring.config.location` 中的 `classpath:/cfg/`,`classpath:/ext/`与`classpath:/cfg/;classpath:/ext/`的覆盖规则不同。  
+例如，继续上面的 prod,live 示例，我们可能会有以下文件：
+```
+/cfg
+ application-live.properties
+/ext
+ application-live.properties
+ application-prod.properties
+```
+当我们的 `spring.config.location` 为 `classpath:/cfg/,classpath:/ext/` 时，我们会在处理所有 `/ext` 文件之前处理所有 `/cfg` 文件：
+1. /cfg/application-live.properties
+2. /ext/application-prod.properties
+3. /ext/application-live.properties
+
+当我们使用 `classpath:/cfg/;classpath:/ext/` 时（使用 ; 分隔符），我们会在同一级别处理 `/cfg` 和 `/ext` 文件：
+1. /ext/application-prod.properties
+2. /cfg/application-live.properties
+3. /ext/application-live.properties
 
 ### 导入其他数据
 ### 导入无扩展文件

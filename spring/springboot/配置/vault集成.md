@@ -53,8 +53,38 @@ public class MyEnvironmentPostProcessor implements EnvironmentPostProcessor {
 ```
 
 
-###
+### vault
 ```
+brew tap hashicorp/tap
+brew install hashicorp/tap/vault
 export VAULT_ADDR="http://localhost:8200" && brew services restart vault
 less /opt/homebrew/var/log/vault.log
+```
+
+### springboot 集成
+```
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-vault-config</artifactId>
+    <version>3.0.0-SNAPSHOT</version>
+</dependency>
+
+
+bootstrap.yml
+spring.cloud.vault:
+    authentication: TOKEN
+    token: 00000000-0000-0000-0000-000000000000
+
+
+public class CustomizationBean implements VaultConfigurer {
+
+    @Override
+    public void addSecretBackends(SecretBackendConfigurer configurer) {
+
+        configurer.add("secret/my-application");
+
+        configurer.registerDefaultKeyValueSecretBackends(false);
+        configurer.registerDefaultDiscoveredSecretBackends(true);
+    }
+}
 ```

@@ -189,16 +189,16 @@ spec:
 ```
 
 #### 阿里云 ConfigMap 实战
-1. 新建 configMap，名称(key) 为配置文件名，后续deployment 挂载的时候，会以key 的名字在挂载路径下生成配置文件
+1. 新建 configMap(nts-config)，名称(key) 为配置文件名: nts-sit.xml，后续deployment 挂载的时候，会以key 的名字在挂载路径下生成配置文件
 <center><img src="pics/ali-configmap-1.png" width="40%"></center>
 
-2. 部署deployment 的时候，挂载 configmap 到指定路径
+2. 部署deployment 的时候，挂载名字为 nts-config 的 configmap 到指定路径
 <center><img src="pics/ali-configmap-2.png" width="40%"></center>
 
 3. 修改代码加载配置文件的路径到挂载的路径
 <center><img src="pics/ali-configmap-3.png" width="40%"></center>
 
-可以看到部署的容器内部，会在挂载路径下生成 configMap 中的文件
+可以看到部署的容器内部，会在挂载路径下生成 configMap 中的文件，文件名是配置时key 的名字，内容就是配置的内容：
 <center><img src="pics/ali-configmap-4.png" width="40%"></center>
 
 configMap 的配置在 K8S 中更新后会实时反映在挂载的 deployment 中，也就是说相应 pod 中挂载的文件会实时更新反映 configMap 的更新，而不需要重新部署 deployment。

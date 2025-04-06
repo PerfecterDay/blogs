@@ -52,13 +52,55 @@ public class MyEnvironmentPostProcessor implements EnvironmentPostProcessor {
 }
 ```
 
-
-### vault
+## vault
+安装:
 ```
 brew tap hashicorp/tap
 brew install hashicorp/tap/vault
-export VAULT_ADDR="http://localhost:8200" && brew services restart vault
+```
+
+以开发者非TLS模式启动：
+```
+brew services start vault
 less /opt/homebrew/var/log/vault.log
+
+export VAULT_ADDR="http://localhost:8200"
+vault login hvs.dhauihdsiudhaidhaid
+```
+
+以开发者TLS模式启动：
+```
+vault server -dev -dev-root-token-id root -dev-tls
+less /opt/homebrew/var/log/vault.log
+
+
+export VAULT_ADDR='https://127.0.0.1:8200'
+export VAULT_CACERT='/var/folders/qr/zgztx0sj6n1dxy86sl36ntnw0000gn/T/vault-tls3037226588/vault-ca.pem'
+vault login root
+```
+
+
+### 命令行工具：
+```
+vault version
+vault help
+vault login [token] | [userID]
+vault token --help
+vault status [-format=json]
+```
+
+通用语法： `vault <command> [options] [path] [args]`
+
+```
+vault kv list secret
+
+vault write secret/data/root \
+    access_key=dasdijaosdaosdoa \
+    secret_key=daoidjaoidapdpapogit \
+    region=us-east-1
+
+vault read secret/data/foo
+
 ```
 
 ### springboot 集成

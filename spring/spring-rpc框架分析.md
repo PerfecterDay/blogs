@@ -1,10 +1,21 @@
-RPCCtxRequest
+## multi-protocol-framework-springboot
+SpringBootAutoConfiguration 中注入了以下 bean:
++ SgPlaceHolder
++ MultiSgSyncClientProcessor ： 处理 @MultiSgSyncClient 注解
++ SgSpringListener
++ SgSpringConfig ： 当使用 XML 配置时生效
++ ConfigurationContainer ： 使用 yaml 配置时生效
++ SgMultiLifecycle ：
 
+
+### SgSpringListener
 SgSpringListener 监听 ContextRefreshedEvent/ContextClosedEvent
 
-调用
+### SgMultiLifecycle
+
 SgMultiLifecycle.startup
 
+### MultiSgSyncClientProcessor
 MultiSgSyncClientProcessor 继承自 SmartInstantiationAwareBeanPostProcessor
     SynchronousConsumerManager.getConsumerInstance(injectedType, builder.build()); 生成bean
         Object object = Proxy.newProxyInstance(clazz.getClassLoader(),
@@ -38,3 +49,15 @@ enable:true
 healthy:true
 clusterName:
 ```
+
+
+## multi-protocol-framework-http-starter
+`HttpProviderInvokeFilter` 拦截 http 的调用
+
+## SPIContainer
+`SPIContainer` 自定义的 SPI，会扫描 jar 包中的 `META-INF/gtja-multi-sg-services/` 路径下注册的  
+
+## 探活
+SgMultilHttpExtConnectionPool -> orgValidate
+
+sg-monitor-api 注册了 META-INF/gtja-multi-sg-services/com.gtja.sg.multi.monitor.SgMonitorBehavior SPI, `basic=com.gtja.sg.multi.monitor.BasicSgMonitorBehavior`

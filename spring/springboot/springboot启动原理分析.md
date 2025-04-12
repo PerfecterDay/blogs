@@ -1,7 +1,7 @@
-# Springboot 启动原理-run方法
+# Springboot 启动原理-run方法及扩展点
 {docsify-updated}
 
-- [Springboot 启动原理-run方法](#springboot-启动原理-run方法)
+- [Springboot 启动原理-run方法及扩展点](#springboot-启动原理-run方法及扩展点)
   - [扩展点](#扩展点)
     - [SpringApplicationRunListener](#springapplicationrunlistener)
     - [ApplicationContextInitializer](#applicationcontextinitializer)
@@ -27,6 +27,7 @@
 	org.springframework.boot.SpringApplicationRunListener=\
 	com.gtja.gjyw.MyRunnerListener
    ```
+   因为 `SpringApplication` 没有提供 `addSpringApplicationRunListener` 之类的方法，而是采用 SPI 机制，所以只能用上述方法。  
 2. 自定义一个类`SpringApplicationRunListener`接口，实现类应该定义一个接受 `SpringApplication` 实例和`String[]`参数的公共构造函数。`SpringApplication` 每次运行都会创建一个新的 `SpringApplicationRunListener` 实例。
 
 `SpringApplicationRunListener` 的方法会在 `SpringApplication run()` 方法的不同阶段被调用。
@@ -70,6 +71,29 @@ public class MyRunnerListener implements SpringApplicationRunListener {
         System.out.println(">>>>>>>>> failed");
     }
 }
+```
+
+输出:
+```
+>>>>>>>>> starting
+>>>>>>>>> environmentPrepared
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::                (v2.7.2)
+
+>>>>>>>>> contextPrepared
+2025-04-12 19:19:48.541  INFO 89853 --- [           main] com.alibaba.demo.Application             : Starting Application using Java 17.0.7 on coder-wangdeMacBook-Pro.local with PID 89853 (/Users/coder_wang/Workspace/demo-service/start/target/classes started by coder_wang in /Users/coder_wang/Workspace/demo-service)
+2025-04-12 19:19:48.542 DEBUG 89853 --- [           main] com.alibaba.demo.Application             : Running with Spring Boot v2.7.2, Spring v5.3.22
+2025-04-12 19:19:48.542  INFO 89853 --- [           main] com.alibaba.demo.Application             : No active profile set, falling back to 1 default profile: "default"
+>>>>>>>>> contextLoaded
+2025-04-12 19:19:49.111  INFO 89853 --- [           main] com.alibaba.demo.Application             : Started Application in 0.773 seconds (JVM running for 1.306)
+>>>>>>>>> started >>>>>>
+>>>>>>>>> ready
 ```
 
 ### ApplicationContextInitializer

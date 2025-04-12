@@ -1,7 +1,7 @@
 ## multi-protocol-framework-springboot
 SpringBootAutoConfiguration 中注入了以下 bean:
 + SgPlaceHolder
-+ MultiSgSyncClientProcessor ： 处理 @MultiSgSyncClient 注解
++ MultiSgSyncClientProcessor ： 处理 `@MultiSgSyncClient` 注解
 + SgSpringListener
 + SgSpringConfig ： 当使用 XML 配置时生效
 + ConfigurationContainer ： 使用 yaml 配置时生效

@@ -86,13 +86,23 @@ The above list only includes SpringApplicationEvents that are tied to a SpringAp
 ## 手动实现自己的业务事件发布与监听
 1. 定义业务事件，继承自 `ApplicationEvent` 
 2. 发布者（需要发布自定义业务事件的业务Bean）实现 `ApplicationEventPublisherAware`,`ApplicationContextAware` 接口，利用 `ApplicationContext` 对象就可以发布自定义的事件
-3. 监听者实现 `ApplicationListener` 接口并注册到容器中，实现监听自定义事件逻辑，或者也使用 `@EventListener` 注解：
+3. 可以使用 `@EventListener` 注解：
    ```
 	@Component
 	public class AnnotationDrivenEventListener {
 		@EventListener
-		public void handleContextStart(ContextStartedEvent cse) {
-			System.out.println("Handling context started event.");
+		public void handleContextStart(MyEvent cse) {
+			System.out.println("Handling self defined event.");
 		}
 	}
    ```
+   使用这种方式，如果想监听 spring/springboot 的自带事件，只能监听到 `ContextRefreshedEvent`/`ApplicationStartedEvent`/`ApplicationReadyEvent`/`AvailabilityChangeEvent`/`ContextClosedEvent` 这些事件，之前的事件无法获取到。
+4. 上述方法只能在监听器被注册到容器后才能生效，如果想监听 sprin 启动时的一些事件，需要实现 `ApplicationListener` 接口并手动注册到容器中。
+   ```
+     public static void main(String[] args) {
+        SpringApplication app = new SpringApplication(Application.class);
+        app.addListeners(new MyOwnListener());
+        app.run();
+    }
+   ```
+   这样才能监听到 `ApplicationStartingEvent`/`ApplicationEnvironmentPreparedEvent`/`ApplicationContextInitializedEvent`/`ApplicationPreparedEvent`

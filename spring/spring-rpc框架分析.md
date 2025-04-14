@@ -2,14 +2,16 @@
 SpringBootAutoConfiguration 中注入了以下 bean:
 + SgPlaceHolder
 + MultiSgSyncClientProcessor ： 处理 `@MultiSgSyncClient` 注解
-+ SgSpringListener
++ SgSpringListener：主要是监听 spring 的 `ContextRefreshedEvent` 和 `ContextClosedEvent` 事件
 + SgSpringConfig ： 当使用 XML 配置时生效
 + ConfigurationContainer ： 使用 yaml 配置时生效
-+ SgMultiLifecycle ：
++ SgMultiLifecycle(SgExternalMultiLifecycle) ：没有使用 spring 的 LifeCycle ，
 
 
 ### SgSpringListener
-SgSpringListener 监听 ContextRefreshedEvent/ContextClosedEvent
+SgSpringListener 监听 ContextRefreshedEvent/ContextClosedEvent：
++ ContextRefreshedEvent： 开启一个异步线程调用 `lifecycle.startup();`
++ ContextClosedEvent：调用 `lifecycle.close();`
 
 ### SgMultiLifecycle
 
@@ -32,7 +34,8 @@ HardWareUtil 获取主机IP
 
 配置类： `ConfigurationContainer`
 
-
+## 注册中心相关-服务注册与解注册
+`SgNacosRegistry`
 注册参数：
 ```
 app:unknown
@@ -55,7 +58,28 @@ clusterName:
 `HttpProviderInvokeFilter` 拦截 http 的调用
 
 ## SPIContainer
-`SPIContainer` 自定义的 SPI，会扫描 jar 包中的 `META-INF/gtja-multi-sg-services/` 路径下注册的  
+`SPIContainer` 自定义的 SPI，会扫描 jar 包中的 `META-INF/gtja-multi-sg-services/` 路径下注册的服务
+
+`getSPIImplementClasses` 读取SPI 文件，解析并保存名字与服务的映射，比如 `sg-registry-nacos` jar 中的SPI文件：
+```
+nacos-byService=com.gtja.sg.multi.registry.nacos.SgNacosRegistry
+nacos-byApplication=com.gtja.sg.multi.registry.nacos.SgNacosRegistry
+```
+
+`sg-registry-zookeeper` 中的如下：
+```
+zookeeper-byService=com.gtja.sg.multi.registry.zookeeper.SgZookeeperServiceRegistry
+zookeeper-byApplication=com.gtja.sg.multi.registry.zookeeper.SgZookeeperServiceRegistry
+```
+
+`sg-registry-local` 中的如下：
+```
+local-byService=com.gtja.sg.multi.registry.local.SgLocalRegistry
+local-byApplication=com.gtja.sg.multi.registry.local.SgLocalRegistry
+```
+
+然后根据配置中的注册中心的类型和byApplication/byService来决定实例化的类型。
+
 
 ## 探活
 SgMultilHttpExtConnectionPool -> orgValidate

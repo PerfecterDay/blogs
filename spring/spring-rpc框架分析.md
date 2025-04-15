@@ -36,6 +36,9 @@ HardWareUtil 获取主机IP
 
 ## 注册中心相关-服务注册与解注册
 `SgNacosRegistry`
+
+namespace 命名规则是：配置中的 protocol + publish-type
+
 注册参数：
 ```
 app:unknown

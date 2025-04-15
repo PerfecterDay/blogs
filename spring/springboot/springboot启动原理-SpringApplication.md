@@ -62,6 +62,8 @@ private <T> Collection<T> getSpringFactoriesInstances(Class<T> type, Class<?>[] 
 > For any factory implementation class that cannot be loaded or error that occurs while instantiating it, the given failure handler is called.
 
 ```java
+public static final String FACTORIES_RESOURCE_LOCATION = "META-INF/spring.factories"; //定义了读取文件的位置
+
 public static List<String> loadFactoryNames(Class<?> factoryType, @Nullable ClassLoader classLoader) {
     ClassLoader classLoaderToUse = classLoader;
     if (classLoaderToUse == null) {

@@ -22,7 +22,7 @@ Spring基于注解配置功能主要依赖 `BeanPostProcessor/BeanFactoryPostPro
 其中某些 `xxxProcessor` 的加载过程如下：
 <center><img src="pics/create_context.svg" width=""></center>
 
-加载了这些 `xxxProcessor` 后，就能扫描配置类了。自动配置类与普通配置类有一些些差别。
+所以springboot在启动时就会自动注册这些 BeafnDefinition,加载了这些 `xxxProcessor` 后，就能扫描配置类了。自动配置类与普通配置类有一些些差别。
 
 ## 自动配置类
 Springboot（通常是各种starter） 的自动配置实际上就是为我们写好了很多 `@Configuration` 注解的配置类，这些类中大量使用了基于 `@Conditional` 注解的配置，以在满足一些条件时自动为我们注入一些 Bean 。那么还有一个问题，我们知道，要使 `@Configuration` 注解的配置类生效，主要有三种方式：
@@ -162,7 +162,7 @@ public interface Condition {
 ## 自定义starter [官方指导](https://docs.spring.io/spring-boot/docs/current/reference/html/features.html#features.developing-auto-configuration.custom-starter)
 Spring Boot 2.7 引入了用于注册自动配置的新 `META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports` 文件，同时保持了与 spring.factories 中注册的向后兼容性。在此版本中，使用 `org.springframework.boot.autoconfigure.EnableAutoConfiguration` 关键字在 `spring.factories` 中注册自动配置的支持已被移除，转而使用 imports 文件。`spring.factories` 中其他键下的条目不受影响。
 
-Spring Boot 会检查发布的 jar 中是否存在 META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports 文件。该文件应列出配置类，每行一个类名，如下例所示：
+Spring Boot 会检查发布的 jar 中是否存在 `META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports` 文件。该文件应列出配置类，每行一个类名，如下例所示：
 ```
 com.mycorp.libx.autoconfigure.LibXAutoConfiguration
 com.mycorp.libx.autoconfigure.LibXWebAutoConfiguration

@@ -13,6 +13,7 @@ Jenkins 支持各种运行方式，可通过系统包、Docker 或者通过一�
 
 ### 安装
 `HOMEBREW_BOTTLE_DOMAIN= brew reinstall jenkins`
+`vim /opt/homebrew/Cellar/jenkins/2.506/homebrew.mxcl.jenkins.plist` 修改绑定地址
 
 ### Pipeline
 <center><img src="pics/realworld-pipeline-flow.png" width="60%"></center>

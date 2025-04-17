@@ -2,10 +2,10 @@
 SpringBootAutoConfiguration 中注入了以下 bean:
 + SgPlaceHolder
 + MultiSgSyncClientProcessor ： 处理 `@MultiSgSyncClient` 注解
-+ SgSpringListener：主要是监听 spring 的 `ContextRefreshedEvent` 和 `ContextClosedEvent` 事件
++ SgSpringListener ：主要是监听 spring 的 `ContextRefreshedEvent` 和 `ContextClosedEvent` 事件
 + SgSpringConfig ： 当使用 XML 配置时生效
 + ConfigurationContainer ： 使用 yaml 配置时生效
-+ SgMultiLifecycle(SgExternalMultiLifecycle) ：没有使用 spring 的 LifeCycle ，
++ SgMultiLifecycle (SgExternalMultiLifecycle) ：没有使用 spring 的 LifeCycle ，
 
 
 ### SgSpringListener
@@ -17,7 +17,7 @@ SgSpringListener 监听 ContextRefreshedEvent/ContextClosedEvent：
 
 SgMultiLifecycle.startup
 
-### MultiSgSyncClientProcessor
+### MultiSgSyncClientProcessor 处理 `MultiSgSyncClient` 注解
 MultiSgSyncClientProcessor 继承自 SmartInstantiationAwareBeanPostProcessor
     SynchronousConsumerManager.getConsumerInstance(injectedType, builder.build()); 生成bean
         Object object = Proxy.newProxyInstance(clazz.getClassLoader(),
@@ -28,8 +28,32 @@ MultiSgSyncClientProcessor 继承自 SmartInstantiationAwareBeanPostProcessor
                  return methodName.invoke(proxy, args);
 
 
+### 服务调用动态代理 `SynchronousConsumerInvocationHandler`
+pre-filters:
+`CustomerFullFillInfoFilter`
+`CustomerTraceKeyFullFillFilter` 
+`ConsumerPreSimpleTrace`
+`CustomerRequestLogFilter`
+`CustomerMergerSearchFilter` 服务查询
+`CustomerConfigSearchFilter`
+`CustomerAddAuthFilter`
+`ConsumerFaultInjectFilter`
 
-HardWareUtil 获取主机IP
+
+around-filters:
+`ClientFailOverFilter`
+`ConsumerSimpleControlFilter`
+`ProviderNodeFilter` 获取节点
+`ChooseNodeFilter`
+`ConsumerAroundSimpleTrace`
+`ConnectionFetchFilter` 获取 RPC connection
+`ClientInvokeTargetFilter`
+`GrpcAsyncConsumerInvokerFilter`
+
+post-filters:
+`ConsumerPostOpenTracingTrace`
+`CustomerResponseLogFilter`
+`CustomerContextCleaningFilter`
 
 
 配置类： `ConfigurationContainer`
@@ -37,7 +61,7 @@ HardWareUtil 获取主机IP
 ## 注册中心相关-服务注册与解注册
 `SgNacosRegistry`
 
-namespace 命名规则是：配置中的 protocol + publish-type
+namespace 命名规则是：配置中的 protocol + publish-type。这块的具体代码在 `SgNacosRegistry` 的 `startUp` 方法中创建 `namingService` 实例时。
 
 注册参数：
 ```
@@ -88,3 +112,6 @@ local-byApplication=com.gtja.sg.multi.registry.local.SgLocalRegistry
 SgMultilHttpExtConnectionPool -> orgValidate
 
 sg-monitor-api 注册了 META-INF/gtja-multi-sg-services/com.gtja.sg.multi.monitor.SgMonitorBehavior SPI, `basic=com.gtja.sg.multi.monitor.BasicSgMonitorBehavior`
+
+
+HardWareUtil 获取主机IP

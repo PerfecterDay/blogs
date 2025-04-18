@@ -59,6 +59,15 @@ post-filters:
 配置类： `ConfigurationContainer`
 
 ## 注册中心相关-服务注册与解注册
+在 `SgMultiLifecycle` 的 `startupRegistries` 方法中有一下代码段：
+```
+for (SgRegistry registry : registries) {
+    //这里是异步的
+    registry.initEnv();
+}
+```
+会启动服务注册订阅功能。
+
 `SgNacosRegistry`
 
 namespace 命名规则是：配置中的 protocol + publish-type。这块的具体代码在 `SgNacosRegistry` 的 `startUp` 方法中创建 `namingService` 实例时。
@@ -80,6 +89,11 @@ healthy:true
 clusterName:
 ```
 
+### nacos 服务监听监听
+`SgNacosRegistry` 的 startup 方法中会监听服务下的实例列表变化。
+```
+namingService.subscribe(convertKeyToNacos(application),new ApplicationEventListener());
+```
 
 ## multi-protocol-framework-http-starter
 `HttpProviderInvokeFilter` 拦截 http 的调用

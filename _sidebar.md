@@ -27,5 +27,5 @@
 * [测试](/测试/_sidebar.md)
 * [Web](/web/_sidebar.md)
 * [开发工具与其他](/other/_sidebar.md)
-* [Gtja](/gtja/_sidebar.md)
+<!-- * [Gtja](/gtja/_sidebar.md) -->
 * [AI](/AI/_sidebar.md)

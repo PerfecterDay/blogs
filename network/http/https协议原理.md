@@ -110,8 +110,9 @@ TrustManager 和 KeyManager 之间的关系
 + KeyManager决定向远程主机发送哪些认证凭证（通常是提供让对方认证的凭证）。
 
 ### 启用 Java SSL 调试日志
-+ 命令行参数：`java -Djavax.net.debug=ssl -jar MyApp.jar`
-+ 使用系统参数：`System.setProperty("javax.net.debug", "ssl");`
++ 命令行参数：`java -Djavax.net.debug=ssl:handshake -jar MyApp.jar`
++ 使用系统参数：`System.setProperty("javax.net.debug", "ssl:handshake");`
++ 打开网络调试: `-Djavax.net.debug=all` 
 
 ## 问题总结
 当遇到 https 证书验证失败时，你需要选择下面三种方法中的一个来解决：
@@ -185,6 +186,3 @@ TrustManager 和 KeyManager 之间的关系
 	```
 
 + Add the certificate for that site to the default Java trust store.
-
-
-`-Djavax.net.debug=all` 打开网络调试

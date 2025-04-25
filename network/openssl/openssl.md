@@ -206,6 +206,9 @@ openssl s_client -connect 10.18.172.216:44300 -showcerts < /dev/null | openssl x
 查看公钥的信息：
 openssl x509 -in cms_cert.pem -noout -text
 
+查看证书指纹，用于与keytool输出指纹比对：
+openssl x509 -in cert.pem -noout -fingerprint -sha256
+
 用CA证书验证某个证书的合法性：
 sudo openssl verify -CAfile ~/Desktop/ISRGRootX1.pem ~/Desktop/R3.cer
 

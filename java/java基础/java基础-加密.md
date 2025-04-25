@@ -657,15 +657,3 @@ JKS是是基于二进制编码的证书格式，扩展名是jks。JKS证书通�
 	openssl pkcs12 -in server.pfx -nodes -out server.pem
 	openssl rsa -in server.pem -out server.key
 	```
-
-### keytool 工具
-
-1. 生成密钥对： `keytool -genkeypair -keystore alice.certs -alias alice`
-2. 将生成的密钥导出为一个证书： `keytool -exportcert -keystore alice.certs -alias alice -file alice.cer`
-3. 打印证书内容： `keytool -printcert -file alice.cer`
-4. `keytool -list -keystore jre/lib/security/cacerts`
-5. 导入证书到密钥库： `keytool -importcert -keystore bob.certs -alias alice -file alice.cer` 绝对不妥将你并不完全信任的证书导入到密钥库中 。 一旦证书添加到密钥库中，使用密钥库的任何程序都会认为这些证书可以用来对签名进行校验。
-
-### Https 双向认证
-
-> https://help.aliyun.com/document_detail/160093.html

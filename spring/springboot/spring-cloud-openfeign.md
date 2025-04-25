@@ -152,7 +152,7 @@ spring:
 
 #### 熔断降级
 Spring Cloud CircuitBreaker 支持回退概念：当电路断开或出现错误时执行的默认代码路径。所以，
-第一步，需要添加依赖：
+1. 第一步，需要添加依赖：
 ```
 <dependency>
 	<groupId>org.springframework.cloud</groupId>
@@ -161,9 +161,8 @@ Spring Cloud CircuitBreaker 支持回退概念：当电路断开或出现错误�
 </dependency>
 ```
 
-第二步： 配置 `feign.circuitbreaker.enabled=true`，这个要根据使用的 openFeigin 版本来定，最新的版本是 `spring.cloud.openfeign.circuitbreaker.enabled=true`
-
-第三步：要为给定的 `@FeignClient` 启用回退，请将 `fallback` 属性设置为实现回退的类名。您还需要将您的实现声明为 Spring Bean。
+2. 第二步： 配置 `feign.circuitbreaker.enabled=true`，这个要根据使用的 openFeigin 版本来定，最新的版本是 `spring.cloud.openfeign.circuitbreaker.enabled=true`
+3. 第三步：要为给定的 `@FeignClient` 启用回退，请将 `fallback` 属性设置为实现回退的类名。您还需要将您的实现声明为 Spring Bean。
 ```
 @FeignClient(name = "test", url = "http://localhost:${server.port}/", fallback = Fallback.class)
 protected interface TestClient {
@@ -187,6 +186,45 @@ static class Fallback implements TestClient {
 	public String getException() {
 		return "Fixed response";
 	}
+}
+```
+
+如果需要根据异常内容来定义降级策略，可以使用 `FallbackFactory`：
+```
+@FeignClient(name = "testClientWithFactory", url = "http://localhost:${server.port}/",
+            fallbackFactory = TestFallbackFactory.class)
+protected interface TestClientWithFactory {
+
+    @RequestMapping(method = RequestMethod.GET, value = "/hello")
+    Hello getHello();
+
+    @RequestMapping(method = RequestMethod.GET, value = "/hellonotfound")
+    String getException();
+
+}
+
+@Component
+static class TestFallbackFactory implements FallbackFactory<FallbackWithFactory> {
+
+    @Override
+    public FallbackWithFactory create(Throwable cause) {
+        return new FallbackWithFactory();
+    }
+
+}
+
+static class FallbackWithFactory implements TestClientWithFactory {
+
+    @Override
+    public Hello getHello() {
+        throw new NoFallbackAvailableException("Boom!", new RuntimeException());
+    }
+
+    @Override
+    public String getException() {
+        return "Fixed response";
+    }
+
 }
 ```
 
@@ -252,11 +290,3 @@ public <T> T newInstance(Target<T> target, C requestContext) {
 }
 ``` 
 最终返回的是一个 Proxy 对象。
-
-/Users/coder_wang/.sdkman/candidates/java/current/lib/src.zip!/java.base/sun/net/www/protocol/http/HttpURLConnection.java
-/Users/coder_wang/.sdkman/candidates/java/17.0.7-tem/lib/src.zip!/java.base/java/net/HttpURLConnection.java
-
-
-FeignCircuitBreakerInvocationHandler
-
-SynchronousMethodHandler

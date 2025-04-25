@@ -216,8 +216,9 @@ JKS是是基于二进制编码的证书格式，扩展名是jks。JKS证书通�
 1. 生成密钥对： `keytool -genkeypair -keystore alice.certs -alias alice`
 2. 将生成的密钥导出为一个证书： `keytool -exportcert -keystore alice.certs -alias alice -file alice.cer`
 3. 打印证书内容： `keytool -printcert -file alice.cer`
-4. `keytool -list -keystore jre/lib/security/cacerts`
-5. 导入证书到密钥库： `keytool -importcert -keystore bob.certs -alias alice -file alice.cer` 绝对不妥将你并不完全信任的证书导入到密钥库中 。 一旦证书添加到密钥库中，使用密钥库的任何程序都会认为这些证书可以用来对签名进行校验。
+4. `keytool -list -keystore jre/lib/security/cacerts -storepass changeit`
+5. 导入证书到密钥库： `keytool -importcert -keystore bob.certs -alias alice -file alice.cer` 绝对不妥将你并不完全信任的证书导入到密钥库中 。 一旦证书添加到密钥库中，使用密钥库的任何程序都会认为这些证书可以用来对签名进行校验。注意：当你的cer/pem 文件中有多个CA证书时，keytool 只会导入文件中的第一个证书。
+6. `-storepass` : 需要传递密码时使用这个选项
 
 ### Https 双向认证
 

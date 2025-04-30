@@ -32,3 +32,39 @@ Redisson是一个具有内存数据网格功能的Redis Java客户端。它提�
 	<version>3.22.1</version>
 </dependency>
 ```
+
+
+
+```
+@Component
+public class RedissonWrapper {
+    @Resource
+    Redisson redisson;
+
+    public RLock getLock(String name) {
+        return new CustomRedissonLock(redisson.getCommandExecutor(), name);
+    }
+
+    class CustomRedissonLock extends RedissonLock {
+
+        public CustomRedissonLock(CommandAsyncExecutor commandExecutor, String name) {
+            super(commandExecutor, name);
+        }
+
+        @Override
+        protected RFuture<Boolean> unlockInnerAsync(long threadId) {
+            return this.evalWriteAsync(this.getRawName(), LongCodec.INSTANCE, RedisCommands.EVAL_BOOLEAN, "if (redis" +
+                            ".call('hexists', KEYS[1], ARGV[3]) == 0) then return nil;end; local counter = redis.call" +
+                            "('hincrby', KEYS[1], ARGV[3], -1); if (counter > 0) then redis.call('pexpire', KEYS[1], " +
+                            "ARGV[2]); return 0; else redis.call('del', KEYS[1]); redis.call('"+ this.getSubscribeService().getPublishCommand() +"', KEYS[2], " +
+                            "ARGV[1]); return 1; end; return nil;",
+                    Arrays.asList(this.getRawName(), this.getChannelName()), new Object[]{LockPubSub.UNLOCK_MESSAGE,
+                            this.internalLockLeaseTime, this.getLockName(threadId)});
+        }
+
+        protected String getChannelName() {
+            return prefixName("custom_redisson_lock__channel", this.getRawName());
+        }
+    }
+}
+```

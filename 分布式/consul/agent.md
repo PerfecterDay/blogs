@@ -1,11 +1,6 @@
 #  Agent API
 {docsify-updated}
 
-- [Agent API](#agent-api)
-		- [概览](#概览)
-		- [Checks 相关](#checks-相关)
-		- [Service 相关](#service-相关)
-
 `/agent`端点用于与**本地Consul代理**进行交互。通常，服务和检查是在代理处注册的，然后由代理承担起保持该数据与集群同步的责任。例如，代理向目录注册服务和检查，并执行反熵以从中断中恢复。
 
 ## 概览

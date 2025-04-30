@@ -6,6 +6,7 @@
 * [缓存](/分布式/缓存相关问题.md)
 * [Redis](#)
   * [Redis入门](/分布式/redis/Redis入门.md)
+  * [Redis数据类型](/分布式/redis/Redis数据类型.md)
   * [Redis持久化](/分布式/redis/Redis持久化.md)
   * [Redis缓存淘汰策略](/分布式/redis/Redis-key过期策略.md)
   * [Redis高可用](/分布式/redis/Redis高可用.md)

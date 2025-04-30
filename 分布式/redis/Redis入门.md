@@ -1,59 +1,84 @@
 # Redis 入门
 {docsify-updated}
 
-- [Redis 入门](#redis-入门)
-    - [Redis 安装](#redis-安装)
-    - [Redis Server 启动与连接](#redis-server-启动与连接)
-    - [常用命令](#常用命令)
-    - [数据类型](#数据类型)
-      - [字符串](#字符串)
-      - [哈希](#哈希)
-      - [列表](#列表)
-      - [集合](#集合)
-      - [有序集合](#有序集合)
-    - [Jedis 简介](#jedis-简介)
-    - [设置过期时间](#设置过期时间)
-
-
 Redis是一种基于键值对（key-value）的NoSQL数据库，与很多键值对数据库不同的是，Redis中的值可以是由string（字符串）、hash（哈希）、list（列表）、set（集合）、zset（有序集合）、Bitmaps（位图）、HyperLogLog、GEO（地理信息定位）等多种数据结构和算法组成，因此Redis可以满足很多的应用场景，而且因为Redis会将所有数据都存放在内存中，所以它的读写性能非常惊人。不仅如此，Redis还可以将内存的数据利用快照和日志的形式保存到硬盘上，这样在发生类似断电或者机器故障的时候，内存中的数据不会“丢失”。除了上述功能以外，Redis还提供了键过期、发布订阅、事务、流水线、Lua脚本等附加功能。总之，如果在合适的场景使用好Redis，它就会像一把瑞士军刀一样所向披靡。
 
-### Redis 安装
+## Redis 安装
 + CentOS 安装实战
 	1. 官网下载 redis 源码包： https://redis.io/download/；
 	2. 拷贝到linux 服务器后，执行 make install，安装完成
 	3. 拷贝源码包中的 redis.conf 到 dev/redis 目录 
 
-### Redis Server 启动与连接
+## Redis Server 启动与连接
 <center>
 <img src="pics/redis-exe.png" width="60%" alt="">
 </center>
 
-1. redis-server
-   1. 默认配置启动：`# redis-server`
-   2. 指定配置文件启动: `# redis-server /opt/redis/redis.conf`
-   3. 运行时通过命令行参数指定配置启动：`# redis-server --configKey1 configValue1 --configKey2 configValue2`
+1. 默认配置启动：`# redis-server`
+2. 指定配置文件启动: `# redis-server /opt/redis/redis.conf`
+3. 运行时通过命令行参数指定配置启动：`# redis-server --configKey1 configValue1 --configKey2 configValue2`
 
-	Redis目录下都会有一个redis.conf配置文件，里面就是Redis的默认配置，通常来讲我们会在一台机器上启动多个Redis，并且将配置集中管理在指定目录下，而且配置不是完全手写的，而是将redis.conf作为模板进行修改。一些基础配置如下：
-	+ bind : 绑定IP地址,默认情况只绑定了 127.0.0.1， 也就是说只能从本机访问
-	+ port : 监听端口（Redis的默认端口是6379）
-	+ logfile : 日志文件存放位置
-	+ dir : Redis 工作目录（存放持久化文件和日志文件）
-	+ daemonize: 是否以守护进程的方式启动
-	+ protected-mode yes : 保护模式开关
-	+ dbfilename: 备份文件的文件名字
-	+ requirepass foobared:设置密码
+Redis目录下都会有一个redis.conf配置文件，里面就是Redis的默认配置，通常来讲我们会在一台机器上启动多个Redis，并且将配置集中管理在指定目录下，而且配置不是完全手写的，而是将redis.conf作为模板进行修改。一些基础配置如下：
++ `bind` : 绑定IP地址,默认情况只绑定了 127.0.0.1， 也就是说只能从本机访问
++ `port` : 监听端口（Redis的默认端口是6379）
++ `logfile` : 日志文件存放位置
++ `dir` : Redis 工作目录（存放持久化文件和日志文件）
++ `daemonize`: 是否以守护进程的方式启动
++ `protected-mode yes` : 保护模式开关
++ `dbfilename`: 备份文件的文件名字
++ `requirepass foobared`:设置密码
 
 
-2. redis-cli
-   + `redis-cli -h {host} -p {port} -a {password}` ：使用主机、端口和密码以交互式连接 redis 服务
-   + `redis-cli -h {host} -p {port} -a {password} {command}` ：使用主机、端口和密码以命令式连接 redis 服务并执行一条命令
+## redis-cli
++ `redis-cli -h {host} -p {port} -a {password}` ：使用主机、端口和密码以交互式连接 redis 服务
++ `redis-cli -h {host} -p {port} -a {password} {command}` ：使用主机、端口和密码以命令式连接 redis 服务并执行一条命令
++ `redis-cli -n {dbnum} {command}` ：在 <dbnum> 指定的数据库中执行操作
++ `redis-cli -u redis://{user}:{password}@{host}:{port}/{dbnum}` ：以URL的方式指定参数， `redis-cli -u redis://LJenkins:p%40ssw0rd@redis-16379.hosted.com:16379/0 PING`
++ `redis-cli -r {count} -i {delay seconds} {command}` : 持续重复执行某个操作 {count} 次，每两次间隔 {delay} 秒，{count}为 -1时代表一直执行
++ `redis-cli --stat -i <interval>` : 持续查看服务器状态， `-i <interval>` 指定间隔时间
 
-3. 关闭 Redis 服务
-   1. `redis-cli shutdown`：断开与客户端的连接、持久化文件生成，是一种相对优雅的关闭方式。
-   2. shutdown还有一个参数，代表是否在关闭Redis前，生成持久化文件：`redis-cli shutdown nosave|save`
-   3. 除了可以通过shutdown命令关闭Redis服务以外，还可以通过kill进程号的方式关闭掉Redis，但是不要粗暴地使用kill-9强制杀死Redis服务，不但不会做持久化操作，还会造成缓冲区等资源不能被优雅关闭，极端情况会造成AOF和复制丢失数据的情况。
+使用上下箭头可以查看 redis-cli 中执行的历史命令，历史命令保存在 `$HOME/.rediscli_history` 文件中。如果想保存在别的文件中，使用环境变量 `REDISCLI_HISTFILE` 定义指定位置即可，如果不想保留历史记录，将 `REDISCLI_HISTFILE` 设置为 `/dev/null`。
 
-### 常用命令
+### redis-cli 的配置
+有两种方法可以自定义 redis-cli 的行为。CLI 会在启动时加载主目录中的 `.redisclirc` 文件。可以使用 `REDISCLI_RCFILE` 环境变量设置为其他路径，从而覆盖配置文件的默认位置。也可以在 CLI 会话期间设置首选项，在这种情况下，首选项仅在会话期间有效。
+
+使用特殊命令 `:set` 来配置 CLI。这些指令既可以保存在 `.redisclirc` 文件中，也可以直接在 CLI 交互模式下输入即可生效。例子：
++ `:set hints` - enables syntax hints
++ `:set nohints` - disables syntax hints
+
+### 交互模式
++ `auth {user} {password}` : 使用账号密码认证
++ `select {dbnum}` : 选定使用的数据库
++ `connect {host} {port}` : 连接指定的数据库
++ `{num} {comman}` : 重复执行命令若干次， `5 INCR mycounter`
+
+### 查看帮助
+`HELP @<category>` 显示有关给定类别的所有命令。 <category>包括: 
++ @generic
++ @string
++ @list
++ @set
++ @sorted_set
++ @hash
++ @pubsub
++ @transactions
++ @connection
++ @server
++ @scripting
++ @hyperloglog
++ @cluster
++ @geo
++ @stream
+
+`HELP <command>` 查看指定命令的帮助
+
+
+### 关闭 Redis 服务
+1. `redis-cli shutdown`：断开与客户端的连接、持久化文件生成，是一种相对优雅的关闭方式。
+2. shutdown还有一个参数，代表是否在关闭Redis前，生成持久化文件：`redis-cli shutdown nosave|save`
+3. 除了可以通过shutdown命令关闭Redis服务以外，还可以通过kill进程号的方式关闭掉Redis，但是不要粗暴地使用kill-9强制杀死Redis服务，不但不会做持久化操作，还会造成缓冲区等资源不能被优雅关闭，极端情况会造成AOF和复制丢失数据的情况。
+
+## 常用命令
 
 1. 配置命令
    1. 查看所有配置： `config get *`
@@ -78,70 +103,7 @@ Redis是一种基于键值对（key-value）的NoSQL数据库，与很多键值�
    1. 查看连接的客户端：`redis 127.0.0.1:6379> CLIENT LIST` 
 
 
-### 数据类型
-
-#### 字符串
-字符串类型是 Redis 最基础的类型，所有的键都是字符串类型。字符串的值实际可以是字符串、数字，甚至二进制（图片、音视频），但是大小最大不能超过512MB。
-<center><img src="pics/redis-string.png" width="50%"></center>
-
-1. 命令
-   + `set key value [ex seconds] [px milliseconds] [nx|xx]` : 设置值，ex 代表设置秒级过期时间，px代表设置毫秒级过期时间，nx代表键不存在才可以设置，xx代表存在才可以设置（用于更新）
-   + `setex` : 相当于上面的 ex 选项
-   + `setnx` ：相当于上面的 nx 选项，不存在时才设置成功。
-   + `mset key value [key value...]` : 批量设置值
-   + `get key` ：获取 key 对应的值，key 不存在则返回 nil。
-   + `mget key [key...]` : 批量获取值
-   + `incr key` ：计数自增,若值不是整数，返回错误；若值是整数，返回自增后的结果；键不存在，按照值为0自增，返回结果1。
-   + `decr key` ：计数递减1
-   + `incrby key increment` ：计数 + increment
-   + `decrby key decrement` ：计数 - decrement
-   + `incrbyfloat key increment` ：浮点数 + increment
-   + `append key value` ：向字符串尾部追加值
-   + `strlen value` ：获取字符串长度
-   + `getset key value` ：设置并返回原值
-   + `setrange key offeset value` ：设置指定位置的字符
-   + `getrange key start end` ：获取部分字符串
-  <center>
-  <img src="pics/redis-string-time.png" width="60%">
-  </center>
-   
-2. 内部编码
-   字符串类型的内部编码有3种：
-   + int：8个字节的长整型。
-   + embstr：小于等于39个字节的字符串。
-   + raw：大于39个字节的字符串。
-
-#### 哈希
-  <center>
-  <img src="pics/redis-hash.png" width="40%">
-  </center>
-
-
-1. 命令
-   + 设置值 ：`hset key field value`,设置 field-value，成功返回1，否则返回0。还有 `hsetnx` 命令，只有field不存在时才会设置值
-   + 获取值 ：`hget key field`；如果 field 不存在，返回 nil
-   + 删除 field ：`hdel key field [field ...]`：可以删除一个或多个 field，返回成功删除的个数
-   + 计算field的个数 ：`hlen key`
-   + 批量设置field-value ：`hmset key field value [field value ...]`
-   + 批量获取field-value ：`hmget key field [field....]`
-   + 判断 field 是否存在 ：`hexists key field`,存在返回1，否则返回0
-   + 获取所有 field ：`hkeys key`
-   + 获取所有 value ：`hvals key`
-   + 获取所有 field-value ：`hgetall key`
-   + 指定 field 加1：`hincrby key field`
-   + 同上，对浮点数操作 ：`hincrbyfloat key field`
-   + 计算value的字符串长度 ：`hstrlen key field`
-
-<center>
-<img src="pics/redis-hash-time.png" width="50%">
-</center>
-   
-
-#### 列表
-#### 集合
-#### 有序集合
-
-### Jedis 简介
+## Jedis 简介
 1. 直接构造操作 Jedis 
    ```
    # 1. 生成一个Jedis对象，这个对象负责和指定Redis实例进行通信
@@ -218,7 +180,7 @@ Redis是一种基于键值对（key-value）的NoSQL数据库，与很多键值�
    ```
 
 
-### 设置过期时间
+## 设置过期时间
 1. `expire key 10000`: 设置 key 过期时间 1000s
 2. `ttl key`: 查看 key 剩余存活时间，单位s，-1 表示没有设置过期时间，-2表示key不存在
 3. `persist key`: 取消key 的过期时间设置

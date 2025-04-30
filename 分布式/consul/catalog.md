@@ -4,5 +4,12 @@
 
 
 
-### 注册实体
+## 注册实体
 
+## 查询节点
+GET /v1/catalog/nodes
+
+## 查询服务列表
+GET /v1/catalog/services
+
+GET /v1/catalog/services?wait=2s&index=21424&token= HTTP/1.1

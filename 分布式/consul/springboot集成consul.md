@@ -186,7 +186,7 @@ public class ConsulServiceRegistry implements ServiceRegistry<ConsulRegistration
       }
 }
 ```
-ConsulServiceRegistry 注册服务时使用的 endpoint：
+`ConsulServiceRegistry` 注册服务时使用的 endpoint：
 http://consul:8500/v1/agent/service/register?token=xxx
 
 body:
@@ -340,7 +340,16 @@ spring.cloud.consul.discovery.heartbeat.enabled= true
 spring.cloud.consul.discovery.heartbeat.reregister-service-on-failure=true
 ```
 
-原理： `ConsulHeartbeatAutoConfiguration` 会启动一个 `TtlScheduler` -> `ConsulHeartbeatTask`
+原理：  
+启用了 `spring.cloud.consul.discovery.heartbeat.enabled= true` 后，服务注册时会启动一个定时任务：
+```
+if (this.heartbeatProperties.isEnabled() && this.ttlScheduler != null && service.getCheck() != null
+            && service.getCheck().getTtl() != null) {
+      this.ttlScheduler.add(reg.getService());
+}
+```
+
+`ConsulHeartbeatAutoConfiguration` 会注册一个bean `TtlScheduler` -> `ConsulHeartbeatTask`
 ```
 @Override
 public void run() {

@@ -17,11 +17,11 @@
 		- [聚集函数](#聚集函数)
 		- [having子句](#having子句)
 		- [对空值和布尔值的聚集](#对空值和布尔值的聚集)
+		- [case...when 语句](#casewhen-语句)
+		- [Like](#like)
 	- [SQL 删除](#sql-删除)
 	- [SQL 插入数据](#sql-插入数据)
 	- [SQL 更新](#sql-更新)
-		- [case...when 语句](#casewhen-语句)
-		- [Like](#like)
 
 
 ## 数据库表的新建修改与删除
@@ -212,6 +212,35 @@ SQL 关系上的 `union 、 intersect 、 except` 运算对应于数学集合论
 ### 对空值和布尔值的聚集
 除了 **count(\*)** 外的所有聚集函数都**忽略**输入集合中的空值。
 
+### case...when 语句
+```
+case
+    when pred then result1
+    when pred2 then result2
+    ...
+    when predn then resuln
+    else result
+end as column_name
+```
+统计指定条件下的数据(统计trade_account IS NOT NULL的总合)：
+```
+SELECT
+COUNT(1) as total,
+sum(
+	case 
+		when trade_account IS NOT NULL then 1
+		else 0
+	end
+) as trade_count
+FROM user;
+```
+
+### Like 
+_和%字符在 LIKE 子句中具有特殊含义，用来匹配一个字符或任意一个字符序列 。 目前并不存在任何在宇面上使用它们的标准方式，所以如果想要匹配所有包含字符_的字符串，就必须使用下面的结构：
+```... WHERE ? LIKE %!_% {escape ’!’} ```
+
+!定义为转义字符，而`!_`组合表示字面常量下划线。
+
 ## SQL 删除
 SQL删除的基本结构：
 `delete from r wher p`
@@ -237,29 +266,3 @@ set c1=value1,c2=value2,...
 where p
 ```
 SQL首先检查关系中的所有元组，判断是否应该被更新，然后才执行更新。
-
-### case...when 语句
-```
-case
-    when pred then result1
-    when pred2 then result2
-    ...
-    when predn then resuln
-    else result
-end as column_name
-```
-统计指定条件下的数据(统计hit_cache='true'的总合)：
-```
-sum(
-case 
-    when hit_cache='true' then 1 
-    else 0 
-    end
-)
-```
-
-### Like 
-_和%字符在 LIKE 子句中具有特殊含义，用来匹配一个字符或任意一个字符序列 。 目前并不存在任何在宇面上使用它们的标准方式，所以如果想要匹配所有包含字符_的字符串，就必须使用下面的结构：
-```... WHERE ? LIKE %!_% {escape ’!’} ```
-
-!定义为转义字符，而`!_`组合表示字面常量下划线。

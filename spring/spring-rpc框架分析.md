@@ -128,4 +128,4 @@ SgMultilHttpExtConnectionPool -> orgValidate
 sg-monitor-api 注册了 META-INF/gtja-multi-sg-services/com.gtja.sg.multi.monitor.SgMonitorBehavior SPI, `basic=com.gtja.sg.multi.monitor.BasicSgMonitorBehavior`
 
 
-HardWareUtil 获取主机IP
+HardWareUtil 获取主机IP  -DgtjaSgHost=xxx 指定绑定的 IP

@@ -1,8 +1,8 @@
-# Optional 判空
+# Optional
 {docsify-updated}
 > https://www.baeldung.com/java-optional
 
-- [Optional 判空](#optional-判空)
+- [Optional](#optional)
     - [Optional 创建](#optional-创建)
     - [常用方法](#常用方法)
       - [检查值是否存在：`isPresent()` 和 `isEmpty()`](#检查值是否存在ispresent-和-isempty)
@@ -13,6 +13,7 @@
       - [检索封装值的最终方法是 `get()` 方法。](#检索封装值的最终方法是-get-方法)
       - [用map()转换值](#用map转换值)
       - [用flatMap()转换值](#用flatmap转换值)
+      - [map 与 flatmap 区别](#map-与-flatmap-区别)
     - [序列化问题](#序列化问题)
     - [判空示例](#判空示例)
 
@@ -34,7 +35,7 @@ if(computer != null){
 }
 
 
-String name = computer.flatMap(Computer::getSoundcard)
+String version = computer.flatMap(Computer::getSoundcard)
                           .flatMap(Soundcard::getUSB)
                           .map(USB::getVersion)
                           .orElse("UNKNOWN");
@@ -241,7 +242,32 @@ public void givenOptional_whenFlatMapWorks_thenCorrect2() {
 
 因此，在使用map()方法时，我们需要在使用转换后的值之前增加一个额外的调用来检索该值。这样一来，Optional的包装就会被移除。在使用flatMap时，这个操作是隐式执行的。
 
+#### map 与 flatmap 区别
+```
+public <U> Optional<U> map(Function<? super T, ? extends U> mapper) {
+    Objects.requireNonNull(mapper);
+    if (!isPresent()) {
+        return empty();
+    } else {
+        return Optional.ofNullable(mapper.apply(value));
+    }
+}
 
+public <U> Optional<U> flatMap(Function<? super T, ? extends Optional<? extends U>> mapper) {
+    Objects.requireNonNull(mapper);
+    if (!isPresent()) {
+        return empty();
+    } else {
+        @SuppressWarnings("unchecked")
+        Optional<U> r = (Optional<U>) mapper.apply(value);
+        return Objects.requireNonNull(r);
+    }
+}
+```
+可以看出来， `map` 的参数 `Function` 可以返回任意类型对象， `map` 方法内部会使用 `Optional.ofNullable(xxx)` 来包装返回值。  
+而 `flatMap` 要求参数 `Function` 返回 `Optional` 对象，自己本身不会再包装返回的对象。
+
+所以如果我们使用 `Function<? super T, ? extends Optional<? extends U>>` 的参数分别调用两个方法时， `map` 就会返回类似 `Optional<Optional<String>>` 的值，而 `flatmap` 会直接返回 `Optional<String>` 类型值。
 
 ### 序列化问题
 如上所述，Optional是作为一个返回类型使用的。不建议将其作为一个字段类型使用。

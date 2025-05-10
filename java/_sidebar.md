@@ -53,7 +53,7 @@
   * [加密](/java/java基础/java基础-加密.md)
   * [Java应用程序的打包](/java/java基础/java基础-jar文件.md)
   * [JDBC访问数据库](/java/java基础/java基础-JDBC访问数据库.md)
-  * [Optional判空](/java/java基础/java基础-Optional判空.md)
+  * [Optional](/java/java基础/java基础-Optional判空.md)
   * [正则表达式](/java/java基础/java基础-正则表达式.md)
   * [Jmx](/java/java基础/java基础-JMX.md)
   * [Apache commons 类库](/java/java基础/java基础-apach-commons类库.md)

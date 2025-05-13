@@ -129,3 +129,15 @@ sg-monitor-api 注册了 META-INF/gtja-multi-sg-services/com.gtja.sg.multi.monit
 
 
 HardWareUtil 获取主机IP  -DgtjaSgHost=xxx 指定绑定的 IP
+
+
+## proto文件发布编译流程
+proto 文件发布编译流程：
+1. 登录全链接 OA -> 服务治理
+2. 点击微服务管理下的 微服务发布菜单
+3. 左侧找到香港国际业务平台->国际etradePro柜台对接服务系统
+4. 新增应用或者选择已有的应用
+5. 点击发布编译，上传包含 proto 文件的文件夹
+6. 点击编译
+7. 点击发布填写 GAV 信息
+8. 查看信息 复制对应的 GAV 信息后添加依赖即可使用

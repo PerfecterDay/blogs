@@ -45,8 +45,8 @@ Spring Cloud OpenFeign 是一个用于Spring Boot应用程序的声明式REST客
 ### 配置
 **理解每个Feign客户端是由一组可定制的组件组成的，这一点非常重要。**
 Spring Cloud使用 `FeignClientsConfiguration` 类为每个命名的客户端按需创建一个默认配置选项。主要包括下述配置项：
-+ Decoder – `ResponseEntityDecoder` ，它包装了 `SpringDecoder` ，用于解码 Response 响应。
-+ Encoder – `SpringEncoder`， 用于编码请求。
++ Decoder – `ResponseEntityDecoder` ，它包装了 `SpringDecoder` ，用于解码 Response 响应， 将 http 响应解码成方法的返回参数。
++ Encoder – `SpringEncoder`， 用于编码请求，将方法参数编码成 HTTP 请求参数内容。
 + Logger – 日志logger ,`Slf4jLogger` 是默认的日志。
 + MicrometerObservationCapability - micrometerObservationCapability ,如果类路径上有 `feign-micrometer` ，且 `ObservationRegistry` 可用
 + CachingCapability - 缓存，如果使用 `@EnableCaching` 注解。可通过 `spring.cloud.openfeign.cache.enabled` 停用。

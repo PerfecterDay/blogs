@@ -155,28 +155,28 @@ settings.xml:
 首先，需要创建另一个模块，并且 packaging 类型必须是 POM ，然后，在 pom 文件中配置 modules，**每个 module 的值都是一个相对于当前 pom 的目录，该目录下包含一个maven 项目（pom.xml）**。聚合模块通常只包含一个 pom.xml 文件，没有源码资源等目录。
 
 #### 继承
-当多个模块之间有许多重复的配置时，可以将他们抽取出来作为一个父模块供这些模块继承共享。父模块的打包类型也必须是 pom，而且不需要源代码之类的目录。子模块继承时，使用 parent 元素指定父模块， parent下的 groupId、artifactId、version 制定了父模块的坐标， relativePath 指定父模块 pom 文件相对与本 pom 的路径，默认值是 ../pom.xml，即上层目录中的 pom.xml ，maven 会首先根据 relativePath 查找父 POM， 如果找不到，再从本地仓库查找 。
+当多个模块之间有许多重复的配置时，可以将他们抽取出来作为一个父模块供这些模块继承共享。父模块的打包类型也必须是 pom，而且不需要源代码之类的目录。子模块继承时，使用 parent 元素指定父模块， **parent下的 `groupId、artifactId、version` 指定了父模块的坐标， `relativePath` 指定父模块 pom 文件相对与本 pom 的路径，默认值是 `../pom.xml` ，即上层目录中的 `pom.xml` ，maven 会首先根据 `relativePath` 查找父 POM， 如果找不到，再从本地/远程仓库查找 。如果使用 `<relativePath/>` 会直接在本地仓库中查找，找不到就去远程仓库查找**
 
 父 pom 中一些配置元素是可以被继承的，下边是一个完整的列表：
-+ groupId ：项目组 ID ，项目坐标的核心元素；  
-+ version ：项目版本，项目坐标的核心元素；  
-+ description ：项目的描述信息；  
-+ organization ：项目的组织信息；  
-+ inceptionYear ：项目的创始年份；  
-+ url ：项目的 url 地址  
-+ develoers ：项目的开发者信息；  
-+ contributors ：项目的贡献者信息；  
-+ distributionManagerment ：项目的部署信息；  
-+ issueManagement ：缺陷跟踪系统信息；  
-+ ciManagement ：项目的持续继承信息；  
-+ scm ：项目的版本控制信息；  
-+ mailingListserv ：项目的邮件列表信息；  
-+ properties ：自定义的 Maven 属性；  
-+ dependencies ：项目的依赖配置；  
-+ dependencyManagement ：项目的依赖管理配置；  
-+ repositories ：项目的仓库配置；  
-+ build ：包括项目的源码目录配置、输出目录配置、插件配置、插件管理配置等；  
-+ reporting ：包括项目的报告输出目录配置、报告插件配置等。 
++ `groupId` ：项目组 ID ，项目坐标的核心元素；  
++ `version` ：项目版本，项目坐标的核心元素；  
++ `description` ：项目的描述信息；  
++ `organization` ：项目的组织信息；  
++ `inceptionYear` ：项目的创始年份；  
++ `url` ：项目的 url 地址  
++ `develoers` ：项目的开发者信息；  
++ `contributors` ：项目的贡献者信息；  
++ `distributionManagerment` ：项目的部署信息；  
++ `issueManagement` ：缺陷跟踪系统信息；  
++ `ciManagement` ：项目的持续继承信息；  
++ `scm` ：项目的版本控制信息；  
++ `mailingListserv` ：项目的邮件列表信息；  
++ `properties` ：自定义的 Maven 属性；  
++ `dependencies` ：项目的依赖配置；  
++ `dependencyManagement` ：项目的依赖管理配置；  
++ `repositories` ：项目的仓库配置；  
++ `build` ：包括项目的源码目录配置、输出目录配置、插件配置、插件管理配置等；  
++ `reporting` ：包括项目的报告输出目录配置、报告插件配置等。 
 
 ##### 继承下的依赖
 当模块A和B都依赖了一些共同的 jar，可以将这些共同的依赖放到父模块的依赖配置下，这样子模块就不用添加这些配置直接继承即可。但是，这样的话，以后新加的子模块C都会依赖这些A和B的依赖，有可能对C是没用的。    

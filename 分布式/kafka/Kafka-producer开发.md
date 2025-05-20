@@ -81,8 +81,8 @@ Kafka 只能保证单个 partion 内的消息是有序的。如果发送到同�
 [消息顺序](https://stackoverflow.com/questions/29511521/is-key-required-as-part-of-sending-messages-to-kafka)
 
 ### 消息序列化
-在网络中发送数据都是以字节的方式， Kafka 也不例外。 Apache Kafka 支持用户给 broker发送各种类型的消息。它可以是一个字符串、一个整数、一个数组或是其他任意的对象类型。
-序列化器（ serializer ）负责在 producer 发送前将消息转换成字节数组；而与之相反，解序列化器（ deserial izer ）则用于将 consumer 接收到的字节数组转换成相应的对象。
+在网络中发送数据都是以**字节**的方式传输， Kafka 也不例外。 Apache Kafka 支持用户给 broker发送各种类型的消息。它可以是一个字符串、一个整数、一个数组或是其他任意的对象类型。
+序列化器（serializer）负责在 producer 发送前将消息转换成字节数组；而与之相反，解序列化器（deserializer）则用于将 consumer 接收到的字节数组转换成相应的对象。
 <center><img src="pics/kafka-serializer.png" width="60%"></center>
 
 序列化器负责在 producer 发送前将消息转换成字节数组；解序列化器则用于在 consumer 接收到的字节数组转换成相应的对象。Kafka 默认提供了十几种序列化器，常用的如下：

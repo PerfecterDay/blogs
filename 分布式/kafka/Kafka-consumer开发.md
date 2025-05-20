@@ -2,11 +2,11 @@
 {docsify-updated}
 
 - [Kafka-consumer 开发](#kafka-consumer-开发)
-  - [消费者组与独立消费者](#消费者组与独立消费者)
-  - [构建 consumer](#构建-consumer)
-  - [Consumer 的主要参数](#consumer-的主要参数)
-  - [重平衡](#重平衡)
-  - [消息交付语义](#消息交付语义)
+    - [消费者组与独立消费者](#消费者组与独立消费者)
+    - [构建 consumer](#构建-consumer)
+    - [Consumer 的主要参数](#consumer-的主要参数)
+    - [重平衡](#重平衡)
+    - [消息交付语义](#消息交付语义)
 
 
 ### 消费者组与独立消费者
@@ -85,9 +85,11 @@ class Consumer implements Runnable{
    Kafka 会定期地关闭空闲 socket 连接，这个参数指定空闲时间。如果超过空闲时间，那么 socket 连接会被关闭，下次要处理请求时，需要重新创建连接 broker 的 socket 连接。
 
 ### 重平衡
-consumer group 的 rebalance 本质上是一组协议，它规定了一个 consumer group 是如何达成一致来分配订阅 topic 的所有分区的 。 topic 的每个分区只会分配给组内的一个 consumer 实例。
+consumer group 的 rebalance 本质上是一组协议，它规定了一个 consumer group 是如何达成一致来分配订阅 topic 的所有分区的 。 
 
-Kafka内置的一个全新的组协调协议（ group coordination protocol)负责重平衡 。对于每个组而言， Kafka 的某个broker 会被选举为组协调者（ group coordinator) o coordinator 负责对组的状态进行管理，它的主要职责就是当新成员到达时促成组内所有成员达成新的分区分配方案，即 coordinator 负责对组执行 rebalance 操作。
+**topic 的每个分区只会分配给每个组内的一个 consumer 实例。**
+
+Kafka内置的一个全新的组协调协议 (group coordination protocol) 负责重平衡 。对于每个组而言， Kafka 的某个broker 会被选举为组协调者（ group coordinator). coordinator 负责对组的状态进行管理，它的主要职责就是当新成员到达时促成组内所有成员达成新的分区分配方案，即 coordinator 负责对组执行 rebalance 操作。
 
 组 rebalance 触发的条件有以下 3 个：
 + 组成员发生变更，比如新 consumer 加入组，或己有 consumer 主动离开组，再或是己有 consumer 崩溃时则触发 rebalance 。

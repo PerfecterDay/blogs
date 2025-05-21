@@ -8,6 +8,7 @@
     - [Maven 插件开发的一般步骤](#maven-插件开发的一般步骤)
     - [调试自己开发的 Maven 插件](#调试自己开发的-maven-插件)
   - [常用的插件](#常用的插件)
+    - [IDEA 集成 mvnd](#idea-集成-mvnd)
 
 ## 生命周期
 在 Maven 出现之前，项目构建的生命周期就已经存在了，软件开发人员会对项目进行清理、编译、测试及部署。但是不同的开发人员、不同的公司以及不同的项目之间，往往使用不同的方式做类似的工作。造成了大量的重复劳动。
@@ -90,3 +91,9 @@ public class CountMojo extends AbstractMojo{
 
 ## 常用的插件
 + [maven-shade-plugin](https://headcrashing.wordpress.com/2020/02/23/reducing-jar-footprint-with-maven-shade-plugin-3-2-2/):缩小包的体积
+  
+### IDEA 集成 mvnd
+1. 安装 maven helper 插件
+2. 设置 maven helper 插件是用 mvnd 运行命令
+3. 不要使用右侧 IDEA 集成的 maven 栏执行 maven 操作
+4. 右击项目/或者模块目录，点击 `Run Maven` 执行操作

@@ -249,6 +249,37 @@ static class FallbackWithFactory implements TestClientWithFactory {
 	}
    ```
 
+#### 配置 okhttp 连接池
+1. 添加依赖：
+   ```
+    <dependency>
+		<groupId>io.github.openfeign</groupId>
+		<artifactId>feign-okhttp</artifactId>
+	</dependency>
+   ```
+2. 配置连接池：
+   ```
+	public class ChannelGatewayConfiguration {
+		@Bean
+		public okhttp3.OkHttpClient okHttpClient() {
+			HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+			logging.setLevel(HttpLoggingInterceptor.Level.BASIC);
+
+			return new okhttp3.OkHttpClient.Builder()
+					.connectionPool(new ConnectionPool(50, 5, TimeUnit.MINUTES)) // 最大50个空闲连接，保活5分钟
+					.connectTimeout(10, TimeUnit.SECONDS)
+					.readTimeout(20, TimeUnit.SECONDS)
+					.writeTimeout(20, TimeUnit.SECONDS)
+					.addInterceptor(logging)
+					.build();
+		}
+
+		@Bean
+		public feign.Client feignClient(okhttp3.OkHttpClient okHttpClient) {
+			return new feign.okhttp.OkHttpClient(okHttpClient); // 使用 OkHttp 封装的 Feign 客户端
+		}
+	}
+   ```
 
 ## 工作原理
 ```

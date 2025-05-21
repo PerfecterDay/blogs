@@ -1,6 +1,8 @@
 # Okhttp简介
 {docsify-updated}
 
+> https://segmentfault.com/a/1190000045343278#item-3-3
+
 - [Okhttp简介](#okhttp简介)
     - [核心类及作用](#核心类及作用)
     - [Get 请求](#get-请求)

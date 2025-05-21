@@ -12,7 +12,7 @@
 + `sdk install java`
 + `sdk install java 11.0.17-tem `
 + `sdk upgrade java`
-+ `sdk current java`
++ `sdk current java`： 查看当前使用的版本
 + `sdk current`
 + `sdk use java 11.0.19-tem`: 临时切换java 版本，如果切换shell，可能用的还是老版本的java
 + `sdk default java 11.0.19-tem`：切换默认的 java 版本，全局生效

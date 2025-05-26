@@ -72,7 +72,6 @@ server.3=zk3:2888:3888
    `kafka-console-consumer --topic topic2 --from-beginning --group=test --bootstrap-server localhost:9092`
 
 ### Kafka 集群监控
-CMAK(原名 Kafka Manager)：
-https://github.com/yahoo/CMAK
-
-`docker run -it --name=kafka-ui -p 9090:8080 -e DYNAMIC_CONFIG_ENABLED=true provectuslabs/kafka-ui`
+1. CMAK(原名 Kafka Manager)：https://github.com/yahoo/CMAK
+2. kafka-ui: https://github.com/provectus/kafka-ui?tab=readme-ov-file  
+   `docker run -it --name=kafka-ui -p 9090:8080 -e DYNAMIC_CONFIG_ENABLED=true provectuslabs/kafka-ui`

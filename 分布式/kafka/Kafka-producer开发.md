@@ -53,21 +53,21 @@ for (int i = 0; i < 10; i++) {
    幂等性设置，启用以后，相同的消息（错误重试的消息）只会被集群存储一次。
 
 ####  ProducerRecord
-ProducerRecord代表了一条要发送的消息， 由5个字段构成，它们分别如下:
-+ topic ：该消息所属的 topic 
-+ partition ：直接指定该消息所属的分区 
-+ key ：消息 key 
-+ value ：消息体
-+ timestamp ：消息时间戳，慎重使用这个功能，因为它有可能会令时间戳索引机制失效
+`ProducerRecord` 代表了一条要发送的消息，由5个字段构成，它们分别如下:
++ `String topic` ：该消息所属的 topic 
++ `Integer partition` ：直接指定该消息所属的分区 
++ `Headers headers`: 消息头
++ `K key` ：消息 key 
++ `V value` ：消息体
++ `Long timestamp` ：消息时间戳，慎重使用这个功能，因为它有可能会令时间戳索引机制失效
 
 #### RecordMetadata
 该数据结构表示 Kafka 服务器端返回给客户端的消息的元数据信息，包含如下内容 。
-+ offset ：消息在分区日志中的位移信息。
-+ timestamp ：消息时间戳 。
-+ topic/partition ：所属 topic 的分区 。
-+ checksum ：消息 CRC32 码 。
-+ serializedKeySize ：序列化后的消息 key 字节数。
-+ serializedValueSize ：序列化后的消息 value 字节数 。
++ `long offset` ：消息在分区日志中的位移信息。
++ `long timestamp` ：消息时间戳 。
++ `TopicPartition topicPartition` ：所属 topic 及分区 。
++ `int serializedKeySize` ：序列化后的消息 key 字节数。
++ `int serializedValueSize` ：序列化后的消息 value 字节数 。
 
 #### 消息分区机制
 Kafka 的消息发送过程中，很重要的一步就是要确定将消息发送到指定的 topic 的哪个分 区中。默认的分区策略会尽力确保具有相同 key 的所有消息都会被发送到相同的分区上；如果没有为消息指定 key ，则会选择轮询的方式来确保消息在 topic 的所有分上均匀分布。

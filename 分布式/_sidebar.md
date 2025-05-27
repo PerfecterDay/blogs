@@ -17,6 +17,7 @@
 * [Kafka](#)
   * [Kafka-入门基本概念](/分布式/kafka/Kafka-入门基本概念.md)
   * [Kafka线上环境部署管理及监控](/分布式/kafka/Kafka-线上环境部署与管理.md)
+  * [Kafka-producer原理](/分布式/kafka/Kafka-producer原理.md)
   * [Kafka-producer开发](/分布式/kafka/Kafka-producer开发.md)
   * [Kafka-consumer开发](/分布式/kafka/Kafka-consumer开发.md)
   * [Kafka-位移](/分布式/kafka/kafka-consumer-offset.md)

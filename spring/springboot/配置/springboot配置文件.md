@@ -29,6 +29,7 @@ Spring Boot 使用一种非常特殊的 `PropertySource` 顺序，旨在允许�
 3. 打包在 jar 之外的应用程序属性（`application.properties` 和 YAML 变体）。
 4. 打包的 jar 之外的特定配置文件应用程序属性（`application-{profile}.properties` 和 YAML 变体）。
 
+优先级从上到下依次递增。
 
 ## 访问命令行属性
 默认情况下，SpringApplication 会将任何命令行选项参数（即以 `--` 开头的参数，如 `--server.port=9000`）转换为属性，并将其添加到 Spring `Environment` 中。如前所述，**命令行属性总是优先于基于文件的属性源。**
@@ -56,7 +57,7 @@ Spring Boot 会在应用程序启动时自动从以下位置查找并加载 `app
    2. 当前目录中的 config/ 子目录
    3. config/ 子目录的即时子目录
 
-列表按优先级排序，从上到下优先级一次递增。加载文件中的文档将作为 `PropertySource` 实例添加到 Spring `Environment` 中。如果不喜欢使用 `application` 作为配置文件名，可以通过指定 `spring.config.name` 环境属性切换到其他文件名。例如，要查找 `myproject.properties` 和 `myproject.yaml` 文件，可以按如下方式运行应用程序：
+列表按优先级排序，从上到下优先级依次递增。加载文件中的文档将作为 `PropertySource` 实例添加到 Spring `Environment` 中。如果不喜欢使用 `application` 作为配置文件名，可以通过指定 `spring.config.name` 环境属性切换到其他文件名。例如，要查找 `myproject.properties` 和 `myproject.yaml` 文件，可以按如下方式运行应用程序：
 ```
 $ java -jar myproject.jar --spring.config.name=myproject
 ```

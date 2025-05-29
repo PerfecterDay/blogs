@@ -29,9 +29,9 @@ org.springframework.web.servlet.HandlerExceptionResolver=org.springframework.web
 ### 统一异常处理
 Spring 统一异常处理有 3 种方式，分别为：
 
-1. 使用 @ ExceptionHandler 注解
-2. 实现 HandlerExceptionResolver 接口
-3. 使用 @controlleradvice 注解
+1. 使用 `@ExceptionHandler` 注解
+2. 实现 `HandlerExceptionResolver` 接口
+3. 使用 `@ControllerAdvice/@RestControllerAdvice` 注解
 
 #### 使用 @ExceptionHandler 注解
 使用该注解有一个不好的地方就是：进行异常处理的方法必须与出错的方法在同一个Controller里面。使用如下：
@@ -72,10 +72,10 @@ public class UnifiedExceptionResolver implements HandlerExceptionResolver {
     }
 }
 ```
-同时使用 HandlerExceptionResolver 和 @ExceptionHandler 注解时，@ExceptionHandler 会覆盖 HandlerExceptionResolver 。
+同时使用 `HandlerExceptionResolver` 和 `@ExceptionHandler` 注解时， `@ExceptionHandler` 会覆盖 `HandlerExceptionResolver` 。
 
 #### 使用 @ControllerAdvice+ @ExceptionHandler 注解
-上文说到 @ ExceptionHandler 需要进行异常处理的方法必须与出错的方法在同一个Controller里面。那么当代码加入了 @ControllerAdvice，则不需要必须在同一个 controller 中了。这也是 Spring 3.2 带来的新特性。从名字上可以看出大体意思是控制器增强。 也就是说，@controlleradvice + @ ExceptionHandler 也可以实现全局的异常捕捉，请确保此WebExceptionHandle 类能被扫描到并装载进 Spring 容器中。
+上文说到 `@ExceptionHandler` 需要进行异常处理的方法必须与出错的方法在同一个Controller里面。那么当代码加入了 `@ControllerAdvice` ，则不需要必须在同一个 controller 中了。这也是 Spring 3.2 带来的新特性。从名字上可以看出大体意思是控制器增强。 也就是说， `@ControllerAdvice + @ExceptionHandler` 也可以实现全局的异常捕捉，请确保此 `WebExceptionHandle` 类能被扫描到并装载进 Spring 容器中。
 ```
 @ControllerAdvice
 @ResponseBody

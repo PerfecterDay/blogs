@@ -61,3 +61,5 @@ ServletInvocableHandlerMethod.invokeAndHandle -> InvocableHandlerMethod.invokeFo
 当返回值是 `ResponseBodyEmitter` 类型时（`SseEmitter`是其子类），就会用 `ResponseBodyEmitterReturnValueHandler` 处理。
 
 上图中还有许多其他的 `HandlerMethodReturnValueHandler` 类，处理不同的返回值，注意，返回值可以被多个 `HandlerMethodReturnValueHandler` 对象处理，只要 `HandlerMethodReturnValueHandler` 能处理返回值。
+
+`@ControllerAdvice` 和 `@RestControllerAdvice` 都是在这个环节被调用的。

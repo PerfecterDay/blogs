@@ -169,6 +169,7 @@ server.http2.enabled //启用 http2
 server.ssl.key-store=classpath:spring.keystore
 server.ssl.key-store-password=123456
 ```
-如果希望使用编程式的方式对Web服务器进行配置，Spring Boot则 提供了如下两种方式:
+
+如果希望使用编程式的方式对Web服务器进行配置，Spring Boot则 提供了如下两种方式:  
 + 定义一个实现 `WebServerFactoryCustomizer` 接口的Bean实例。
 + 直接在容器中配置一个自定义的 `ConfigurableServletWebServerFactory` ，它负责创建Web服务器。

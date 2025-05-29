@@ -23,3 +23,132 @@ public class ExampleAdvice3 {}
 ```
 选择器在运行时进行评估，如果大量使用，可能会对性能产生负面影响。
 
+## 原理
+请求进入 DispatcherServlet
+        ↓
+调用 Handler（你的 Controller 方法）
+        ↓
+返回值处理器（HandlerMethodReturnValueHandler）
+        ↓
+【调用 ResponseBodyAdvice】
+        ↓
+使用 HttpMessageConverter 将返回值写入响应体
+        ↓
+响应写出到客户端
+
+特定类型的 `HandlerMethodReturnValueHandler` -> `AbstractMessageConverterMethodProcessor` -> `HttpEntityMethodProcessor/RequestResponseBodyMethodProcessor` 会调用 Advice ，核心代码在 `AbstractMessageConverterMethodProcessor` 的 `writeWithMessageConverters` 方法:
+```
+body = getAdvice().beforeBodyWrite(body, returnType, selectedMediaType,
+							(Class<? extends HttpMessageConverter<?>>) converter.getClass(),
+							inputMessage, outputMessage);
+```
+
+## 接口加解密功能
+使用 `RequestBodyAdvice` 和 `ResponseBodyAdvice` 实现基于注解的接口加解密功能。
+
+### 自定义注解
+自定义一个注解，只有请求处理的方法参数中包含了注解才会启动加解密功能：
+```
+@Documented
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Encrypted {
+    String assignee() default "";
+}
+```
+
+### 接口解密处理
+```
+@Slf4j
+@RestControllerAdvice(assignableTypes = {LoginController.class})
+@AllArgsConstructor
+public class DecryptRequestAdvice implements RequestBodyAdvice {
+
+    private final AppIdService appIdService;
+
+    @Override
+    public boolean supports(MethodParameter methodParameter, Type targetType, Class<? extends HttpMessageConverter<?>> converterType) {
+        return ObjectUtils.allNotNull(methodParameter.getMethodAnnotation(Encrypted.class));
+    }
+
+    @Override
+    public HttpInputMessage beforeBodyRead(HttpInputMessage inputMessage, MethodParameter parameter, Type targetType, Class<? extends HttpMessageConverter<?>> converterType) throws IOException {
+        String encryptedBody = new BufferedReader(new InputStreamReader(inputMessage.getBody()))
+                .lines().collect(Collectors.joining(System.lineSeparator()));
+
+        try {
+            Encrypted methodAnnotation = parameter.getMethodAnnotation(Encrypted.class);
+            String assignee = methodAnnotation.assignee();
+            String decrypted = AesUtil.decrypt(encryptedBody, getKey(assignee));
+            InputStream decryptedInputStream = new ByteArrayInputStream(decrypted.getBytes(StandardCharsets.UTF_8));
+            return new HttpInputMessage() {
+                @Override
+                public InputStream getBody() {
+                    return decryptedInputStream;
+                }
+
+                @Override
+                public org.springframework.http.HttpHeaders getHeaders() {
+                    return inputMessage.getHeaders();
+                }
+            };
+        } catch (Exception e) {
+            log.info("请求解密失败");
+            throw new RuntimeException("请求解密失败", e);
+        }
+    }
+
+    @Override
+    public Object afterBodyRead(Object body, HttpInputMessage inputMessage, MethodParameter parameter, Type targetType, Class<? extends HttpMessageConverter<?>> converterType) {
+        return body;
+    }
+
+    @Override
+    public Object handleEmptyBody(Object body, HttpInputMessage inputMessage, MethodParameter parameter, Type targetType, Class<? extends HttpMessageConverter<?>> converterType) {
+        return body;
+    }
+
+
+    private String getKey(String assignee) {
+        return appIdService.getSecretByAssignee(assignee);
+    }
+}
+```
+
+### 接口加密处理
+```
+@RestControllerAdvice(assignableTypes = {LoginController.class})
+@AllArgsConstructor
+public class EncryptResponseAdvice implements ResponseBodyAdvice<Object> {
+
+    private final AppIdService appIdService;
+
+    @Override
+    public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
+        return ObjectUtils.allNotNull(returnType.getMethodAnnotation(Encrypted.class));
+    }
+
+    @Override
+    public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType, Class<? extends HttpMessageConverter<?>> selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
+        try {
+            String responseJson = JacksonUtil.writeValueAsString(body);
+            Encrypted methodAnnotation = returnType.getMethodAnnotation(Encrypted.class);
+            String assignee = methodAnnotation.assignee();
+            return AesUtil.encrypt(responseJson, appIdService.getSecretByAssignee(assignee));
+        } catch (Exception e) {
+            throw new RuntimeException("响应加密失败", e);
+        }
+    }
+}
+```
+
+### 接口
+这里注意⚠️：  
+响应类型需要定义成 `ResponseEntity<String>` 而不能是一个自定义 DTO，应为如果是 DTO，spring 还会用类似 `MappingJackson2HttpMessageConverter` 的转换器处理最后的加密字符串，这样客户端收到的响应会比加密字符串前后加上双引号。
+```
+@PostMapping("/test")
+@Encrypted(assignee = "va")
+public ResponseEntity<String> test(@RequestBody TestRequest request) {
+    return ResponseEntity.ok(JacksonUtil.writeValueAsString(testService.test(request)));
+}
+```

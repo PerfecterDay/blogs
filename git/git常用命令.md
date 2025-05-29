@@ -185,3 +185,29 @@ I want to repeat, these options are only available to you if nobody has done a p
 6. `git add ./` -> 暂存要提交的内容
 7. `git commit --amend` -> 提交内容
 8. `git rebase --continue` -> 继续 git rebase 完成操作
+
+
+## git 仓库过大清理
+要对 Git 仓库进行清理和优化，回收无用数据，压缩对象，减小仓库体积，提高性能。可以使用下述命令：
+```
+git gc
+git gc --prune=now  //会立即删除所有无法访问的对象，请慎用。
+```
+查看优化前后的效果：
+```
+du -sh .git
+git count-objects -v
+```
+
+当 git 仓库太大，要推送的东西过多时，推送时可能会报错： `error: RPC failed; HTTP 500 curl 22 The requested URL returned error: 500`, 可以使用上述命令优化本地仓库大小。如果还有问题，可以尝试：
+```
+git config http.postBuffer 157286400
+```
+
+`git fsck` 是 Git 提供的一个用于检查仓库完整性和一致性的命令，全称是 “file system check”，其作用类似于文件系统中的 fsck 工具。 检测 Git 仓库中潜在的问题，包括：
+| 问题类型   | 描述                             |
+|------------|----------------------------------|
+| dangling   | 悬空对象（未被任何引用）        |
+| missing    | 丢失的对象或引用                |
+| corrupted  | 损坏的对象（SHA 不匹配、解析失败） |
+| invalid    | 非法对象结构                    |

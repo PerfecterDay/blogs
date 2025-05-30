@@ -1,19 +1,19 @@
 
-### Jackson序列化注解
+# Jackson序列化注解
 {docsify-updated}
 
 > https://www.baeldung.com/jackson-annotations
 
 - [Jackson序列化注解](#jackson序列化注解)
-  - [用指定的方法来序列化某个属性：`@JsonGetter`](#用指定的方法来序列化某个属性jsongetter)
-  - [平铺输出：`@JsonAnyGetter`](#平铺输出jsonanygetter)
-  - [指定 key 的顺序：`@JsonPropertyOrder`](#指定-key-的顺序jsonpropertyorder)
-  - [指示 Jackson 按原样序列化属性：`@JsonRawValue`](#指示-jackson-按原样序列化属性jsonrawvalue)
-  - [指定序列化整个实例的方法: `@JsonValue`](#指定序列化整个实例的方法-jsonvalue)
-  - [使用指定 key 包装 json: `@JsonRootName`](#使用指定-key-包装-json-jsonrootname)
-  - [使用自定义序列化器：`@JsonSerialize`](#使用自定义序列化器jsonserialize)
-  - [序列化时忽略某些属性](#序列化时忽略某些属性)
-  - [@JsonAnyGetter](#jsonanygetter)
+      - [用指定的方法来序列化某个属性：`@JsonGetter`](#用指定的方法来序列化某个属性jsongetter)
+      - [平铺输出：`@JsonAnyGetter`](#平铺输出jsonanygetter)
+      - [指定 key 的顺序：`@JsonPropertyOrder`](#指定-key-的顺序jsonpropertyorder)
+      - [指示 Jackson 按原样序列化属性：`@JsonRawValue`](#指示-jackson-按原样序列化属性jsonrawvalue)
+      - [指定序列化整个实例的方法: `@JsonValue`](#指定序列化整个实例的方法-jsonvalue)
+      - [使用指定 key 包装 json: `@JsonRootName`](#使用指定-key-包装-json-jsonrootname)
+      - [使用自定义序列化器：`@JsonSerialize`](#使用自定义序列化器jsonserialize)
+      - [序列化时忽略某些属性](#序列化时忽略某些属性)
+      - [@JsonAnyGetter](#jsonanygetter)
 
 #### 用指定的方法来序列化某个属性：`@JsonGetter`
 Jackson序列化时默认调用标准的 getter 方法获取对象值，如果我们想要使用特定方法作为Jackson获取对象值的方法，就可以用 `@JsonGetter` 标注该方法：

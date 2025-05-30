@@ -2,16 +2,16 @@
 {docsify-updated}
 
 - [Jackson 通用注解](#jackson-通用注解)
-  - [忽略特定的属性/字段：`@JsonIgnoreProperties({ "id" })`](#忽略特定的属性字段jsonignoreproperties-id-)
-  - [忽略特定属性：`@JsonIgnore`](#忽略特定属性jsonignore)
-  - [忽略所有特定类型的属性：`@JsonIgnoreType`](#忽略所有特定类型的属性jsonignoretype)
-  - [忽略掉null的属性：`@JsonInclude(Include.NON_NULL)`](#忽略掉null的属性jsonincludeincludenon_null)
-  - [指定需要序列化的字段：`@JsonIncludeProperties`](#指定需要序列化的字段jsonincludeproperties)
-  - [指定key名：`@JsonProperty("keyName")`](#指定key名jsonpropertykeyname)
-  - [指定格式/忽略大小写：`@JsonFormat`](#指定格式忽略大小写jsonformat)
-  - [`JsonUnwrapped`](#jsonunwrapped)
-  - [`@JsonView`](#jsonview)
-  - [循环引用问题：`@JsonIdentityInfo`](#循环引用问题jsonidentityinfo)
+    - [忽略特定的属性/字段：`@JsonIgnoreProperties({ "id" })`](#忽略特定的属性字段jsonignoreproperties-id-)
+    - [忽略特定属性：`@JsonIgnore`](#忽略特定属性jsonignore)
+    - [忽略所有特定类型的属性：`@JsonIgnoreType`](#忽略所有特定类型的属性jsonignoretype)
+    - [忽略掉null的属性：`@JsonInclude(Include.NON_NULL)`](#忽略掉null的属性jsonincludeincludenon_null)
+    - [指定需要序列化的字段：`@JsonIncludeProperties`](#指定需要序列化的字段jsonincludeproperties)
+    - [指定key名：`@JsonProperty("keyName")`](#指定key名jsonpropertykeyname)
+    - [指定格式/忽略大小写：`@JsonFormat`](#指定格式忽略大小写jsonformat)
+    - [`JsonUnwrapped`](#jsonunwrapped)
+    - [`@JsonView`](#jsonview)
+    - [循环引用问题：`@JsonIdentityInfo`](#循环引用问题jsonidentityinfo)
 
 
 ### 忽略特定的属性/字段：`@JsonIgnoreProperties({ "id" })`

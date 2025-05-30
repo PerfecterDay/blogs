@@ -1,16 +1,16 @@
 
-### Jackson反序列化注解
+# Jackson反序列化注解
 {docsify-updated}
 
 > https://www.baeldung.com/jackson-annotations
 
 - [Jackson反序列化注解](#jackson反序列化注解)
-  - [使用 `@JsonCreator` 注解来调整反序列化中使用的构造器/工厂。](#使用-jsoncreator-注解来调整反序列化中使用的构造器工厂)
-  - [`@JacksonInject`](#jacksoninject)
-  - [平铺设置 Map 属性:`@JsonAnySetter`](#平铺设置-map-属性jsonanysetter)
-  - [使用指定方法设置属性：`@JsonSetter`](#使用指定方法设置属性jsonsetter)
-  - [`@JsonDeserialize`](#jsondeserialize)
-  - [为反序列化过程中的属性定义了一个或多个别名：`@JsonAlias`](#为反序列化过程中的属性定义了一个或多个别名jsonalias)
+      - [使用 `@JsonCreator` 注解来调整反序列化中使用的构造器/工厂。](#使用-jsoncreator-注解来调整反序列化中使用的构造器工厂)
+      - [`@JacksonInject`](#jacksoninject)
+      - [平铺设置 Map 属性:`@JsonAnySetter`](#平铺设置-map-属性jsonanysetter)
+      - [使用指定方法设置属性：`@JsonSetter`](#使用指定方法设置属性jsonsetter)
+      - [`@JsonDeserialize`](#jsondeserialize)
+      - [为反序列化过程中的属性定义了一个或多个别名：`@JsonAlias`](#为反序列化过程中的属性定义了一个或多个别名jsonalias)
 
 #### 使用 `@JsonCreator` 注解来调整反序列化中使用的构造器/工厂。
 ```

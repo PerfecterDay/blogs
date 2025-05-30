@@ -25,6 +25,7 @@ WantedBy=multi-user.target
 6. `systemctl status gtja-thrift-proxy`
 7. 修改了 service 文件之后，要重载： `systemctl daemon-reload`
 8. `systemctl restart gtja-thrift-proxy` ： 重启服务
+9. `systemctl cat <service-name>/systemctl list-unit-files | grep <service-name>` ： 查看服务定义文件的目录及内容，比如我要查找 mysql 自启动服务的描述文件，可以 `systemctl cat mysqld`
 
 
 查看日志： `journalctl -xe`

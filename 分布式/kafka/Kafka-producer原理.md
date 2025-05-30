@@ -1,4 +1,4 @@
-# Producer 原理
+# Producer 设计原理
 {docsify-updated}
 
 <center><img src="pics/kafka-producer.png" alt="" width="50%"></center>

@@ -9,3 +9,4 @@
 * [proxychains](/other/proxychains和netcat.md)
 * [coredns](/other/coredns.md)
 * [MacOs](/other/mac操作汇总.md)
+* [sdkman](/other/sdkman.md)

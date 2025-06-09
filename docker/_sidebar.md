@@ -34,6 +34,7 @@
   * [envoy是什么](/docker/envoy/envoy-what.md)
   * [envoy简介](/docker/envoy/envoy.md)
   * [envoy配置](/docker/envoy/envoy配置.md)
+  * [envoy管理后台Api](/docker/envoy/envoy-admin-api.md)
   * [envoy xDS配置](/docker/envoy/envoy-xDS.md)
   * [envoy go插件开发](/docker/envoy/envoy集成go插件.md)
   * [envoy 集成JWT校验](/docker/envoy/envoy-jwt.md)

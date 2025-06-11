@@ -4,12 +4,13 @@
 > https://segmentfault.com/a/1190000045343278#item-3-3
 
 - [Okhttp简介](#okhttp简介)
-    - [核心类及作用](#核心类及作用)
-    - [Get 请求](#get-请求)
-    - [Post 请求](#post-请求)
-    - [HttpUrl.Builder-构造带参数的 URL](#httpurlbuilder-构造带参数的-url)
-    - [异步发送请求](#异步发送请求)
-    - [设置超实时间](#设置超实时间)
+  - [核心类及作用](#核心类及作用)
+  - [Get 请求](#get-请求)
+  - [Post 请求](#post-请求)
+  - [HttpUrl.Builder-构造带参数的 URL](#httpurlbuilder-构造带参数的-url)
+  - [异步发送请求](#异步发送请求)
+  - [设置超时时间](#设置超时时间)
+  - [设置连接池](#设置连接池)
 
 
 Okhttp是一个处理网络请求的开源项目,是安卓端最火热的轻量级框架,由移动支付Square公司贡献(该公司还贡献了Picasso)用于替代 HttpUrlConnection 和 Apache HttpClient (android API23 6.0里已移除HttpClient,现在已经打不出来)
@@ -28,7 +29,7 @@ Okhttp是一个处理网络请求的开源项目,是安卓端最火热的轻量�
 
 OKHTTP支持Android 5 +（API级别21 +）和Java 8 +。
 
-### 核心类及作用
+## 核心类及作用
 + `Request` : 代表一个 Http 请求实体信息，可以多次发送一个 Request，每次 Request 相同，但是 Call 不同
 + `Request.Builder` : 用来创建 Request 的 builder
   + `addHeader("Content-Type", "application/json")`: 添加请求头
@@ -47,7 +48,7 @@ OKHTTP支持Android 5 +（API级别21 +）和Java 8 +。
   + `enqueue(Callback callback)` ： 异步发送 Http 请求
 + `OkHttpClient.Builder` : 创建 OkHttpClient 的 builder
 
-### Get 请求
+## Get 请求
 发起一个 Get 请求时简单的：
 ```
 OkHttpClient client = new OkHttpClient();
@@ -63,7 +64,7 @@ String run(String url) throws IOException {
 }
 ```
 
-### Post 请求
+## Post 请求
 ```
 public static final MediaType JSON
     = MediaType.get("application/json; charset=utf-8");
@@ -82,7 +83,7 @@ String post(String url, String json) throws IOException {
 }
 ```
 
-### HttpUrl.Builder-构造带参数的 URL
+## HttpUrl.Builder-构造带参数的 URL
 ```
 HttpUrl.Builder urlBuilder 
   = HttpUrl.parse(BASE_URL + "/ex/bars").newBuilder();
@@ -91,7 +92,7 @@ urlBuilder.addQueryParameter("id", "1");
 String url = urlBuilder.build().toString();
 ```
 
-### 异步发送请求
+## 异步发送请求
 ```
 Request request = new Request.Builder()
     .url(BASE_URL + "/date")
@@ -110,7 +111,7 @@ call.enqueue(new Callback() {
 });
 ```
 
-### 设置超实时间
+## 设置超时时间
 ```
 OkHttpClient client = new OkHttpClient.Builder()
     .connectTimeout(10, TimeUnit.SECONDS) //连接超时时间
@@ -124,4 +125,11 @@ Request request = new Request.Builder()
 
 Call call = client.newCall(request);
 Response response = call.execute();
+```
+
+## 设置连接池
+```
+return new okhttp3.OkHttpClient.Builder().connectionPool(new ConnectionPool(50, 5, TimeUnit.MINUTES)) // 最大50个空闲连接，保活5分钟
+    .connectTimeout(10, TimeUnit.SECONDS).readTimeout(20, TimeUnit.SECONDS).writeTimeout(20, TimeUnit.SECONDS)
+    .build();
 ```

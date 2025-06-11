@@ -1,6 +1,7 @@
-# curl 命令简介
+# curl与wget命令简介
 {docsify-updated}
 
+## curl
 1. 不带有任何参数时，curl 就是发出 GET 请求。
 	`curl http://www.baidu.com`
 2. `-A` ：指定客户端的用户代理标头，即 `User-Agent` 。curl 的默认用户代理字符串是`curl/[version]`
@@ -101,3 +102,16 @@ dnslookup: 1.510 | connect: 1.757 | appconnect: 2.256 | pretransfer: 2.259 | sta
 ```
 
 <center><img src="pics/timingOfHTTPS.png" width="60%"></center>
+
+
+## wget
+wget 是一个非常实用的命令行工具，用于下载文件、网页等内容，支持 HTTP、HTTPS、FTP 等协议。
++ `wget http://example.com/file.txt`  file.txt 下载到当前目录
++ `wget -O newname.txt http://example.com/file.txt`: -o 指定保存的文件名
++ `wget -c http://example.com/largefile.zip`: 断点续传
++ `wget -p http://example.com/page.html`: 下载整个网页，包括资源
++ `wget --user=username --password=secret http://example.com/securefile`: 使用 http 认证
++ `wget --header="Cookie: session=abc123" http://example.com/private`: 携带cookie
++ `wget http://example.com/file1.txt http://example.com/file2.txt`: 下载多个文件
++ `wget -i urls.txt  # 文件中每行一个链接`: 下载多个文件
++ `wget --no-check-certificate https://example.com`: 忽略 HTTPS 证书错误

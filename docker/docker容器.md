@@ -2,8 +2,8 @@
 {docsify-updated}
 
 - [docker 容器](#docker-容器)
-	- [容器操作的命令](#容器操作的命令)
-	- [实现容器的底层技术](#实现容器的底层技术)
+		- [容器操作的命令](#容器操作的命令)
+		- [实现容器的底层技术](#实现容器的底层技术)
 
 ### 容器操作的命令
 
@@ -56,7 +56,7 @@
    1. `docker cp ~/Documents/gtja/com_gmas/com_gmas.tar.gz ubuntu:/home`：主机到容器
    2. `docker cp ubuntu:/home/test.txt ~/Documents/gtja/com_gmas/`：容器到主机
 7. `docker run -it -p 8999:8999 --name user-center -v /Users/coder_wang/Workspace/com_gmas:/usr/local/gtja/com_gmas  docker.io/library/golang:1.17.7`
-
+8. `docker update --restart=always --cpus=2 --memory=1g my-container`: 用于动态修改一个或多个已运行容器的资源限制或重启策略，而不会中断容器运行。
 
 ### 实现容器的底层技术
 cgroup 和 namespace 是最重要的两种技术

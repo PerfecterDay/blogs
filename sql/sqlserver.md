@@ -7,10 +7,12 @@ mcr.microsoft.com/mssql/server:2022-latest
 
 docker exec -it sql1 "bash"
 
-/opt/mssql-tools18/bin/sqlcmd -No -S localhost -U SA -P "Aa123456789#"
+/opt/mssql-tools18/bin/sqlcmd -No -S localhost -U SA -P "Aa123456789#" //连接数据库
 
+SELECT name FROM sys.databases; go //查看当前有哪些数据库
+create database etradepro; go //创建数据库
 
-select name from sysobjects where type = 'P';
+select name from sysobjects where type = 'P'; go //查看存储过程
 
 
 /opt/mssql-tools18/bin/sqlcmd -No -S localhost -U SA -P "Aa123456789#" -d etradepro -Q "create PROCEDURE [dbo].[API_CLNTSETTING_LIST](
@@ -56,3 +58,22 @@ Set NoCount On
 /opt/mssql-tools18/bin/sqlcmd -No -S localhost -U SA -P "Aa123456789#" -d ClntAuth -Q 'drop PROCEDURE [dbo].[GJ_CLNTTRADETOKENCHECK]'
 
 QUIT
+
+
+/opt/mssql-tools18/bin/sqlcmd -No -S localhost -U SA -P "Aa123456789#" -d etradepro -Q "create  PROCEDURE  [dbo].[API_CLNTNAMELIST] 
+(
+	@ClntCode	Varchar(20),
+	@Opuser		Varchar(20) ='Internet'
+)
+AS
+SET NOCOUNT ON
+ 
+if ( @Opuser = 'Internet')
+Begin
+	select ClntName='6838LastName_Eng 6838FirstName_Eng'
+End
+else
+begin
+	RaisError ('Invalid Opuser', 18, 1);  
+	Return 
+end"

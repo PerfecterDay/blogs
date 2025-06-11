@@ -1,6 +1,9 @@
 # Spring 国际化
 {docsify-updated}
 
+获取当前 Request 的 locale: `LocaleContextHolder.getLocale()`
+
+
 ```
 public class PersonValidator implements Validator {
 

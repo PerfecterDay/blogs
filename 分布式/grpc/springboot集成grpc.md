@@ -16,4 +16,13 @@
 	参照 grpc-client-spring-boot-autoconfigure jar 包中的 `net.devh.boot.grpc.client.config.GrpcChannelsProperties` 类
 3. @GrpcClient("myService") 注解为每一个 RPC 服务调用者注册一个名字，可以在配置文件中为各个调用者定义不同的配置。GLOBAL代表全局配置。
 4. @GrpcService 就可以注册一个 gRpc 服务
-5. `GrpcClientBeanPostProcessor` 这个类处理使用了上述注解的自动注入
+5. `GrpcClientBeanPostProcessor` 这个类处理使用了 `@GrpcClient` 注解的自动注入
+6. `AnnotationGrpcServiceDiscoverer` 这个类处理了 `@GrpcService` 注解的自动注入
+
+
+`GrpcServerLifecycle` --> `createAndStartGrpcServer` 等价于我们使用原生 grpc 开发时使用的 ：
+```
+Server server =
+    NettyServerBuilder.forPort(12345)
+        .addService(ProtoReflectionService.newInstance()).build();
+```

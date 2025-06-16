@@ -321,3 +321,27 @@ public <T> T newInstance(Target<T> target, C requestContext) {
 }
 ``` 
 最终返回的是一个 Proxy 对象。
+
+
+## 实用技巧
+1. 动态构造请求路径：
+```
+@PostMapping("/agreement/v0/{apiNo}")
+Response<Object> agreement(GenericRequest request, @PathVariable String apiNo);
+```
+
+2. `Interceptor` 拦截请求统一处理：
+```
+@Bean
+public RequestInterceptor interceptor() {
+	return requestTemplate -> {
+		Header header = GrpcContextKeys.HEADER.get();
+		requestTemplate.header("x-request-id", header.getXRequestId());
+		requestTemplate.header("platform", header.getPlatform());
+		requestTemplate.header("osVersion", header.getOsVersion());
+		requestTemplate.header("xff", header.getXff());
+		requestTemplate.header("version", header.getVersion());
+		requestTemplate.header("accept-language", header.getLang());
+	};
+}
+```

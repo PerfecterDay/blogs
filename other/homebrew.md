@@ -9,6 +9,7 @@
 	- [安装软件的默认配置文件位置](#安装软件的默认配置文件位置)
 	- [国内 homebrew 加速](#国内-homebrew-加速)
 	- [常用命令](#常用命令)
+	- [Macos 自带的服务管理 launchctl](#macos-自带的服务管理-launchctl)
 	- [brew services](#brew-services)
 		- [Jenv 进行JDK多版本管理](#jenv-进行jdk多版本管理)
 		- [常用命令](#常用命令-1)
@@ -46,8 +47,8 @@ source ~/.bash_profile
 4. `brew search (text|/text/)`： 查找 formula
 5. `brew cleanup`: 清理缓存
 
+## Macos 自带的服务管理 launchctl
 > 摘译自 [robots.thoughtbot.com](http://robots.thoughtbot.com/starting-and-stopping-background-services-with-homebrew)
-
 `launchctl` 命令加载/卸载开机自动运行的服务，在 OS X 中，服务本身存储在 `.plist` 文件中（即 property list），这些文件的位置一般在 `~/Library/LaunchAgents` 或 `/Library/LaunchAgents`。可以使用 `launchctl load $PATH_TO_LIST` 和 `launchctl unload $PATH_TO_LIST` 命令来加载/卸载他们。加载就是允许这个程序开机执行，卸载反之。
 
 如果你使用 `Homebrew` 安装过 `mysql` 那么下面的安装后提示你可能比较熟悉

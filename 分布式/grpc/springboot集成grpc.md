@@ -1,6 +1,6 @@
 # Springboot 集成 grpc
 
-### grpc-spring-boot-starter 配置
+## grpc-spring-boot-starter 配置
 上述配置过程非常复杂，可以使用开源工具类帮助我们简化这些步骤。
 
 ```
@@ -25,4 +25,28 @@
 Server server =
     NettyServerBuilder.forPort(12345)
         .addService(ProtoReflectionService.newInstance()).build();
+```
+
+
+## 配置 ServerInterceptor
+向您的服务端添加 ` ServerInterceptor` 的三种方式。
+
++ 使用 @GrpcGlobalServerIntercetor 注解或者使用 GlobalServerIntercetorConfigurer 将 ServerInterceptor 定义为全局拦截器
++ 在 @GrpcService#interceptors 或 @GrpcService#interceptorNames 字段中明确列出
++ 使用 ` GrpcServerConfigurer 并调用 serverBuilder.intercept(ServerInterceptor interceptor)` 方法
+
+## GrpcServerConfigurer
+Grpc 服务端配置器允许您将自定义配置添加到 gRPC 的 ServerBuilder。
+```
+@Bean
+public GrpcServerConfigurer keepAliveServerConfigurer() {
+    return serverBuilder -> {
+        if (serverBuilder instanceof NettyServerBuilder) {
+            ((NettyServerBuilder) serverBuilder)
+                    .keepAliveTime(30, TimeUnit.SECONDS)
+                    .keepAliveTimeout(5, TimeUnit.SECONDS)
+                    .permitKeepAliveWithoutCalls(true);
+        }
+    };
+}
 ```

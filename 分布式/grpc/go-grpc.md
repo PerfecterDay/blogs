@@ -61,6 +61,7 @@ func main() {
 
 ### 问题
 ```
+大写定义：
 rpc Handle (Request) returns (Response) {}
 
 jsonservice.pb.micro.go
@@ -74,7 +75,7 @@ func (c *greeterService) Handle(ctx context.Context, in *Request, opts ...client
 	return out, nil
 }
 
-
+小写定义：
 rpc handle (Request) returns (Response) {}
 func (c *greeterService) Handle(ctx context.Context, in *Request, opts ...client.CallOption) (*Response, error) {
 	req := c.c.NewRequest(c.name, "Greeter.handle", in)

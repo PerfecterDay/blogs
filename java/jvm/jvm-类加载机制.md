@@ -498,4 +498,7 @@ org.springframework.boot.loader.LaunchedURLClassLoader@1a86f2f1
 
 确实是使用了不同的 Classloader ，因为我们使用了 `CompletableFuture` ，并且没有使用自定义的线程池，所以 `CompletableFuture` 会使用默认的 fork-join pool 去执行任务，并且 jaxb 会使用线程的 Classloader 去加载类：`Thread.currentThread().getContextClassLoader();`
 
-网上有相似的问题：https://juejin.cn/post/6909445190642040846
+网上有相似的问题：
++ https://juejin.cn/post/6909445190642040846  
++ https://blog.csdn.net/qq_40836488/article/details/126367111
++ https://blog.51cto.com/u_16608712/10069927

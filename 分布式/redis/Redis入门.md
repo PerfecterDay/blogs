@@ -36,6 +36,7 @@ Redis目录下都会有一个redis.conf配置文件，里面就是Redis的默认
 + `redis-cli -u redis://{user}:{password}@{host}:{port}/{dbnum}` ：以URL的方式指定参数， `redis-cli -u redis://LJenkins:p%40ssw0rd@redis-16379.hosted.com:16379/0 PING`
 + `redis-cli -r {count} -i {delay seconds} {command}` : 持续重复执行某个操作 {count} 次，每两次间隔 {delay} 秒，{count}为 -1时代表一直执行
 + `redis-cli --stat -i <interval>` : 持续查看服务器状态， `-i <interval>` 指定间隔时间
++ `redis-cli CLIENT LIST` : 查看当前的连接情况及使用的DB信息
 
 使用上下箭头可以查看 redis-cli 中执行的历史命令，历史命令保存在 `$HOME/.rediscli_history` 文件中。如果想保存在别的文件中，使用环境变量 `REDISCLI_HISTFILE` 定义指定位置即可，如果不想保留历史记录，将 `REDISCLI_HISTFILE` 设置为 `/dev/null`。
 

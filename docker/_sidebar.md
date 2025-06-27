@@ -30,6 +30,7 @@
   * [Service Mesh简介](/docker/service-mesh/service-mesh.md)
   * [istio入门](/docker/service-mesh/istio入门体验.md)
 * [envoy](#)
+  * [envoy 内幕](https://envoy-insider.mygraphql.com/zh-cn/latest/)
   * [envoy中文文档](https://cloudnative.to/envoy/)
   * [envoy是什么](/docker/envoy/envoy-what.md)
   * [envoy简介](/docker/envoy/envoy.md)

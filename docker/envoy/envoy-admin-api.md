@@ -40,15 +40,9 @@ admin:
 
 `GET /clusters?format=json` json 格式输出
 
-+ `GET /help` : 帮助页面
-+ `GET /help` : 帮助页面
-+ `GET /help` : 帮助页面
-+ `GET /help` : 帮助页面
-+ `GET /help` : 帮助页面
-+ `GET /help` : 帮助页面
-+ `GET /help` : 帮助页面
-+ `GET /help` : 帮助页面
-+ `GET /help` : 帮助页面
-+ `GET /help` : 帮助页面
-+ `GET /help` : 帮助页面
-+ `GET /help` : 帮助页面
+
+## GET /config_dump
+Dump 当前的 envoy 配置
+
+## POST /cpuprofiler
+启用或禁用 CPU 剖析器。需要使用 gperftools 进行编译。输出文件可通过 `admin.profile_path` 配置。

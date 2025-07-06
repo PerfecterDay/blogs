@@ -236,7 +236,7 @@ https://medium.com/@lapwingcloud/dont-load-balance-grpc-or-http2-using-kubernete
 10.96.0.100:8000  # ClusterIP + 端口, 这个是 Kubernetes 为 Service 分配的虚拟 IP。
 ```
 
-1. Kube-proxy（默认是 iptables 或 IPVS 模式）会对访问 ClusterIP 的流量进行转发：
+2. Kube-proxy（默认是 iptables 或 IPVS 模式）会对访问 ClusterIP 的流量进行转发：
 ```
 10.96.0.100:8080 
   ↓（iptables 转发）

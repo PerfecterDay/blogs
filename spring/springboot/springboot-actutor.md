@@ -137,3 +137,25 @@ public class HttpTraceAutoConfiguration {
 ```
 
 Actuator 的配置在 `org.springframework.boot.actuate.autoconfigure...` 配置包下都能找到。 
+
+
+## 自定义健康检查逻辑
+```
+@Component
+public class CustomHealthIndicator implements HealthIndicator {
+
+    @Override
+    public Health health() {
+        // 举例：当本地有一个文件存在，则视为不健康
+        if (Files.exists(Paths.get("/tmp/block-envoy"))) {
+            return Health.down()
+                .withDetail("reason", "manual offline via file")
+                .build();
+        }
+
+        // 可以加更多自定义逻辑，比如数据库、缓存等探测
+
+        return Health.up().withDetail("status", "everything is fine").build();
+    }
+}
+```

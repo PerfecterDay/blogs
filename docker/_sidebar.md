@@ -22,6 +22,7 @@
   * [k8s-ingress和gateway api](/docker/k8s/k8s-ingress和gatewayapi.md)
   * [k8s-亲和性](/docker/k8s/k8s-亲和性设置.md)
   * [k8s-控制启动顺序](/docker/k8s/k8s-init容器.md)
+  * [k8s-滚动更新](/docker/k8s/k8s-更新策略.md)
 * [helm](#)
   * [helm-Helm包管理器](/docker/helm/helm-Helm包管理器.md)
   * [helm-Chart](/docker/helm/helm-chart.md)

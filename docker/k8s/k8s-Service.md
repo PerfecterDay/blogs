@@ -1,21 +1,6 @@
 # k8s-Service
 {docsify-updated}
 
-- [k8s-Service](#k8s-service)
-	- [Service 创建](#service-创建)
-	- [Service IP 原理](#service-ip-原理)
-	- [Service的种类](#service的种类)
-		- [ClusterIP](#clusterip)
-			- [Headlsess service](#headlsess-service)
-		- [NodePort](#nodeport)
-		- [LoadBalancer](#loadbalancer)
-		- [ExternalName](#externalname)
-	- [Envoy + service 导致的负载不均衡问题](#envoy--service-导致的负载不均衡问题)
-			- [问题描述](#问题描述)
-			- [原因分析](#原因分析)
-			- [解决方案](#解决方案)
-
-
 我们不应该期望 Kubernetes Pod 是健壮的，而是要假设 Pod 中的容器很可能因为各种原因发生故障而死掉。Deployment 等 controller 会通过动态创建和销毁 Pod 来保证应用整体的健壮性。换句话说，Pod 是脆弱的，但应用是健壮的。  
 每个 Pod 都有自己的 IP 地址。当 controller 用新 Pod 替代发生故障的 Pod 时，新 Pod 会分配到新的 IP 地址。这样就产生了一个问题：  
 如果一组 Pod 对外提供服务（比如 HTTP），它们的 IP 很有可能发生变化，那么客户端如何找到并访问这个服务呢？
@@ -309,4 +294,5 @@ DNS 会直接返回 Pod IP 列表，Envoy 可用 strict_dns 模式自己进行�
 ✔️ 支持负载策略（round_robin、least_request 等）  
 ✔️ 支持健康检查、熔断、连接控制  
 ✔️ 更适合高性能场景或服务网格
+✔️ 但是使用这种服务有一个限制就是，k8s服务的端口必须与 deployment 的端口一致，因为是直接连接pod 的端口，没有 k8s 帮忙转发
 ```

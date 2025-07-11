@@ -32,7 +32,7 @@
 
 k8s 集群由 Masetr 和 Node 组成，节点上运行着若干 K8s 服务. Master 同时也是一个Node。
 
-### Master 节点
+### Master 节点（控制平面）
 Master 是 K8s 的大脑，运行着的Daemon服务包括 kube-apiserver、kube-scheduler、kube-controller-manager、etcd 和 pod 网络。为了保证高可用，可以同时有多个master节点。
 
 1. Api Server(kube-apiserver)  
@@ -47,7 +47,7 @@ Master 是 K8s 的大脑，运行着的Daemon服务包括 kube-apiserver、kube-
 5. Pod 网络  
 	Pod要能够相互通信，K8s 集群必须部署 Pod 网络，flannel 是其中一个可选方案。
 
-### Node 节点
+### Node 节点（数据平面）
 Node 是Pod 运行的地方，K8S 支持 Docker、rkt等容器 runtime。Node 上运行的 K8s 组件有 kubelet 、 kube-proxy 和 Pod 网络。
 1. kubelet  
 	kubelet 是节点上运行的代理。当 Scheduler确定在某个Node上运行 Pod 后，会将Pod的具体配置信息发送给该节点 kubelet，kubelet 根据这些信息创建和运行容器，并向Master报告运行状态。
@@ -62,6 +62,19 @@ Node 是Pod 运行的地方，K8S 支持 Docker、rkt等容器 runtime。Node �
 
 ## K8S部署示意图
 <center><img src="pics/k8s-demo.jpg" alt="" width="60%"></center>
+
+## K8S 一般原理
+1. 执行 `kubectl apply -f demo.yaml` ，请求发给 `kube-apiserver`
+2. `kube-apiserver` 校验 YAML、写入 `etcd`
+3. `deployment controller` 发现新增 Deployment，创建 ReplicaSet
+4. `replicaset controller` 发现需要 2 个 Pod，创建 2 个 Pod
+5. `kube-scheduler` 监听到未绑定节点的 Pod，选择节点进行调度
+6. Pod 被分配到某个 Node，记录在 `etcd` 中
+7. 目标节点的 `kubelet` 监听到要运行的 Pod
+8. `kubelet` 使用 `containerd` 拉取镜像并启动容器
+9. Pod 启动后， `kubelet` 持续将运行状态汇报给 `kube-apiserver`
+10. Controller 持续检查资源（如副本数）并且与预期的状态进行对比，，如果一致则认为“状态达成”，否则自动修复状态到预期状态 ➜ 比如某个 Pod 掉了，会自动重建
+
 
 ## Minikube安装运行k8s
 1. 安装 Kubectl: `brew install kubectl`

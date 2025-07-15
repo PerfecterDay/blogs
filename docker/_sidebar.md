@@ -36,6 +36,7 @@
   * [envoy是什么](/docker/envoy/envoy-what.md)
   * [envoy简介](/docker/envoy/envoy.md)
   * [envoy配置](/docker/envoy/envoy配置.md)
+  * [envoy路由](/docker/envoy/envoy-路由.md)
   * [envoy健康检查](/docker/envoy/envoy-健康检查.md)
   * [envoy熔断](/docker/envoy/envoy-熔断.md)
   * [envoy管理后台Api](/docker/envoy/envoy-admin-api.md)

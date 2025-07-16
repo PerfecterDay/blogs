@@ -2,16 +2,6 @@
 {docsify-updated}
 >https://developer.mozilla.org/zh-CN/docs/Web/HTTP
 
-- [Http 概述](#http-概述)
-	- [统一资源标识符的语法 (URI)](#统一资源标识符的语法-uri)
-	- [Http 消息格式](#http-消息格式)
-	- [Http 1.1 的连接管理（HTTP/2 新增了其他连接管理模型）](#http-11-的连接管理http2-新增了其他连接管理模型)
-	- [Http2](#http2)
-	- [Http3](#http3)
-		- [域名分片](#域名分片)
-	- [数据压缩](#数据压缩)
-
-
 ### 统一资源标识符的语法 (URI)
 ```
 http://www.example.com:80/path/to/myfile?key1=val1&key2=val2#somewhereInDocument
@@ -132,3 +122,9 @@ QUIC 旨在为 HTTP 连接设计更低的延迟。类似于 HTTP/2，它是一�
 ### 数据压缩
 为了选择要采用的压缩算法，浏览器和服务器之间会使用主动协商机制。浏览器发送 `Accept-Encoding` 标头，其中包含有它所支持的压缩算法，以及各自的优先级，服务器则从中选择一种，使用该算法对响应的消息主体进行压缩，并且发送 `Content-Encoding` 标头来告知浏览器它选择了哪一种算法。由于该内容协商过程是基于编码类型来选择资源的展现形式的，在响应时，服务器至少发送一个包含 `Accept-Encoding` 的 `Vary` 标头；这样的话，缓存服务器就可以对资源的不同展现形式进行缓存。
 <center><img src="pics/httpcompression.png" width="50%"></center>
+
+
+## 决策依据
+HTTP 多路复用通过共享连接来节省资源，但请注意，这个连接是 TCP 连接。这意味着，如果单个 TCP 能够充分利用信道容量（即 TCP 连接能充分利用可用带宽），那么 HTTP 多路复用将是最佳选择。
+
+但是，如果单个 TCP 连接无法充分利用通道，那么打开多个连接将获得更好的性能。- 这可能是 TCP 的拥塞避免机制管理和理解数据包丢失的方式造成的。- 在这种情况下，多个连接将比单个连接获得更高的传输吞吐量。

@@ -168,6 +168,8 @@ TrustManager 和 KeyManager 之间的关系
 		e.printStackTrace();
 	}
 
+
+	// 解决方案
 	String keyStoreFile = "C:\\Users\\BaIcy\\Documents\\xca\\ca_wang.jks";
 	String password = "test123";
 	KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
@@ -186,3 +188,7 @@ TrustManager 和 KeyManager 之间的关系
 	```
 
 + Add the certificate for that site to the default Java trust store.
+  ```
+  	COPY ./gtjai.pem gtjai.pem
+  	keytool -import -alias myserver -file ./gtjai.pem -keystore /usr/local/openjdk-21/lib/security/cacerts -storepass changeit -noprompt
+  ```

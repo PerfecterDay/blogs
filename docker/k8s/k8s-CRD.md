@@ -19,13 +19,7 @@ CustomResourceDefinition API 资源允许你定义定制资源。 定义 CRD 对
 
 CRD 使得你不必编写自己的 API 服务器来处理定制资源，不过其背后实现的通用性也意味着你所获得的灵活性要比 API 服务器聚合少很多。
 
-### API 服务器聚合 
-通常，Kubernetes API 中的每个资源都需要处理 REST 请求和管理对象持久性存储的代码。 Kubernetes API 主服务器能够处理诸如 Pod 和 Service 这些内置资源， 也可以按通用的方式通过 CRD 来处理定制资源。
-
-聚合层（Aggregation Layer） 使得你可以通过编写和部署你自己的 API 服务器来为定制资源提供特殊的实现。 主 API 服务器将针对你要处理的定制资源的请求全部委托给你自己的 API 服务器来处理， 同时将这些资源提供给其所有客户端。
-
-
-## 创建 CustomResourceDefinition
+#### 创建 CustomResourceDefinition
 当创建新的 CustomResourceDefinition（CRD）时，Kubernetes API 服务器会为你所指定的每个版本**生成一个新的 RESTful 资源路径**。 基于 CRD 对象所创建的自定义资源可以是名字空间作用域的，也可以是集群作用域的， 取决于 CRD 对象 `spec.scope` 字段的设置。
 
 与其它的内置对象一样，删除名字空间也将删除该名字空间中的所有自定义对象。 `CustomResourceDefinitions` 本身是无名字空间的，可在所有名字空间中访问。
@@ -82,7 +76,7 @@ spec:
 
 删除CRD ： `kubectl delete -f resourcedefinition.yaml`
 
-## 创建定制对象
+#### 创建定制对象
 在创建了 CustomResourceDefinition 对象之后，你可以创建**定制对象**（Custom Objects）。定制对象可以包含定制字段。这些字段可以包含任意的 JSON 数据。 在下面的例子中，在类别为 CronTab 的定制对象中，设置了 `cronSpec` 和 `image` 定制字段。类别 `CronTab` 来自你在上面所创建的 CRD 的规约。
 
 将下面的 YAML 保存到 `my-crontab.yaml`：
@@ -98,20 +92,19 @@ spec:
 
 执行： `kubectl apply -f my-crontab.yaml`
 
+如果使用 `curl http://127.0.0.1:8001/apis/stable.example.com/v1/namespaces/default/crontabs\?watch\=true` 监听了资源的变化，就能看到如下输出：
+<center><img src="pics/k8s-watch.png"></center>
+
 查看 crontab 资源： `kubectl get crontab` ，查看详细信息可以 `kubectl get ct -o yaml`
 
-## 定制控制器
+#### 定制控制器
 就定制资源本身而言，它只能用来存取结构化的数据。 当你将**定制资源**与**定制控制器**（Custom Controller） 结合时， 定制资源就能够提供真正的声明式 API（Declarative API）。
 
 Kubernetes 声明式 API 强制对职权做了一次分离操作。 你声明所用资源的期望状态，而 Kubernetes 控制器使 Kubernetes 对象的当前状态与你所声明的期望状态保持同步。 声明式 API 的这种机制与命令式 API（你指示服务器要做什么，服务器就去做什么）形成鲜明对比。
 
 你可以在一个运行中的集群上部署和更新定制控制器，这类操作与集群的生命周期无关。 定制控制器可以用于任何类别的资源，不过它们与定制资源结合起来时最为有效。 Operator 模式就是将定制资源与定制控制器相结合的。 你可以使用定制控制器来将特定于某应用的领域知识组织起来，以编码的形式构造对 Kubernetes API 的扩展。
 
-```
-
-```
-
-## 工作原理
+#### 工作原理
 ```
 你 apply 一个 CRD.yaml --> kube-apiserver 注册该资源类型 --> etcd 记录 CRD 元信息
          ↓
@@ -125,15 +118,14 @@ etcd 存储这个 CR 的具体内容（YAML 对象）
             ↓
     Informer（缓存 + Watch 管理器）
             ↓
-    Kube-apiserver 的 /watch 接口（HTTP 长连接）
+    Kube-apiserver 的 GET /api/v1/myresources?watch=true 接口（HTTP 长连接）
             ↓
     etcd（底层存储，触发事件）
             ↓
 Controller 根据 CR 内容执行自定义逻辑，如部署服务、修改资源
 ```
 
-
-## 实战
+#### 实战
 1. 安装 kubebuilder  
 ```
 # download kubebuilder and install locally.
@@ -154,3 +146,9 @@ make manifests
 make install
 make run
 ```
+
+
+### API 服务器聚合 
+通常，Kubernetes API 中的每个资源都需要处理 REST 请求和管理对象持久性存储的代码。 Kubernetes API 主服务器能够处理诸如 Pod 和 Service 这些内置资源， 也可以按通用的方式通过 CRD 来处理定制资源。
+
+聚合层（Aggregation Layer） 使得你可以通过编写和部署你自己的 API 服务器来为定制资源提供特殊的实现。 主 API 服务器将针对你要处理的定制资源的请求全部委托给你自己的 API 服务器来处理， 同时将这些资源提供给其所有客户端。

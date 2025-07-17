@@ -6,7 +6,7 @@
       - [Kubectl 上下文和配置](#kubectl-上下文和配置)
       - [创建对象](#创建对象)
       - [查看和查找资源](#查看和查找资源)
-      - [更新资源](#更新资源)
+      - [版本更新与回退](#版本更新与回退)
       - [部分更新资源](#部分更新资源)
       - [编辑资源](#编辑资源)
       - [对资源进行扩缩](#对资源进行扩缩)
@@ -17,6 +17,7 @@
       - [与节点和集群进行交互](#与节点和集群进行交互)
       - [格式化输出](#格式化输出)
       - [端口转发](#端口转发)
+      - [调试](#调试)
 
 ### 使用 podman-desktop 创建 k8s 集群
 1. 安装 podman
@@ -222,7 +223,7 @@ for pod in $(kubectl get po --output=jsonpath={.items..metadata.name}); do echo 
 kubectl get deployment nginx-deployment --subresource=status
 ```
 
-#### 更新资源
+#### 版本更新与回退
 ```
 kubectl set image deployment/frontend www=image:v2               # 滚动更新 "frontend" Deployment 的 "www" 容器镜像
 kubectl rollout history deployment/frontend                      # 检查 Deployment 的历史记录，包括版本
@@ -418,4 +419,10 @@ kubectl port-forward --address localhost,10.19.21.23 pod/mypod 8888:5000
   
 # 在本地监听随机端口，将数据转发到 Pod 中的端口 5000
 kubectl port-forward pod/mypod :5000
+```
+
+#### 调试
+```
+kubectl proxy & // 开启代理转发后可以使用 curl 直接访问 apiserver 的接口
+curl http://127.0.0.1:8001/apis/samplecontroller.k8s.io/v1alpha1/namespaces/default/foos?watch=true
 ```

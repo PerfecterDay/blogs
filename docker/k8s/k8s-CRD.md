@@ -126,6 +126,25 @@ Controller 根据 CR 内容执行自定义逻辑，如部署服务、修改资�
 ```
 
 #### 实战
+https://github.com/kubernetes/sample-controller
+
+```
+# assumes you have a working kubeconfig, not required if operating in-cluster
+go build -o sample-controller .
+./sample-controller -kubeconfig=$HOME/.kube/config
+
+# create a CustomResourceDefinition
+kubectl create -f artifacts/examples/crd-status-subresource.yaml
+
+# create a custom resource of type Foo
+kubectl create -f artifacts/examples/example-foo.yaml
+
+# check deployments created through the custom resource
+kubectl get deployments
+```
+
+效果：控制器会监听K8S集群的变化，当在K8S集群中部署自定义的资源时，会部署一个 nginx pod。
+
 1. 安装 kubebuilder  
 ```
 # download kubebuilder and install locally.

@@ -2,12 +2,13 @@
 {docsify-updated}
 
 - [Spring Cache的集成](#spring-cache的集成)
-  - [缓存基础知识](#缓存基础知识)
-  - [自己实现缓存的简单实现](#自己实现缓存的简单实现)
-  - [Spring Cache 的注解](#spring-cache-的注解)
-  - [JSR-107 Cache](#jsr-107-cache)
-  - [Caffeine](#caffeine)
-  - [Springboot 集成 redis 缓存](#springboot-集成-redis-缓存)
+    - [缓存基础知识](#缓存基础知识)
+    - [自己实现缓存的简单实现](#自己实现缓存的简单实现)
+    - [Spring Cache 的注解](#spring-cache-的注解)
+    - [JSR-107 Cache](#jsr-107-cache)
+    - [Caffeine](#caffeine)
+    - [Springboot 集成 redis 缓存](#springboot-集成-redis-缓存)
+    - [caffine+redis 双层缓存](#caffineredis-双层缓存)
 
 
 ### 缓存基础知识
@@ -18,11 +19,11 @@
 
 2. 缓存过期策略
 	即如果缓存满了，从缓存中移除数据的策略。常见的有 LFU 、 LRU 、 FIFO 。
-	+ FIFO(FirstInFirstOut):先进先出策略，即先放入缓存的数据先被移除。
-	+ LRU(LcastRecentlyUsed):最久未使用策略，即使用时间距高现在最久的那个数据被移除。
-	+ LFU(LeastFrequentlyUsed):最近最少使用策略，即一定时间段内使用次数(频率)最少的那个数据被移除。
-	+ TMTL(TimeToLive):存活期，即从缓存中创建时间点开始直至到期的一个时间段(不管在这个时间段内有没有访问都将过期)。
-	+ TTI(TimeToldle):空闲期，即一个数据多久没被访问就从缓存中移除的时间。
+	+ `FIFO(FirstInFirstOut)`:先进先出策略，即先放入缓存的数据先被移除。
+	+ `LRU(LcastRecentlyUsed)`:最久未使用策略，即上次使用时间距离现在最久的那个数据被移除。
+	+ `LFU(LeastFrequentlyUsed)`:最近最少使用策略，即一定时间段内使用次数(频率)最少的那个数据被移除。
+	+ `TMTL(TimeToLive)`:存活期，即从缓存中创建时间点开始直至到期的一个时间段(不管在这个时间段内有没有访问都将过期)。
+	+ `TTI(TimeToldle)`:空闲期，即一个数据多久没被访问就从缓存中移除的时间。
 
 ### 自己实现缓存的简单实现
 ```
@@ -210,3 +211,40 @@ public RedisCacheManagerBuilderCustomizer redisCacheManagerBuilderCustomizer() {
 ```
 
 
+### caffine+redis 双层缓存
+使用 `CompositeCacheManager` 能组合多个缓存管理器：
+```
+@Configuration
+@EnableCaching
+public class CacheConfig {
+
+    @Bean
+    public CacheManager caffeineCacheManager() {
+        Caffeine<Object, Object> caffeine = Caffeine.newBuilder()
+                .expireAfterWrite(10, TimeUnit.SECONDS)
+                .maximumSize(10000);
+        return new CaffeineCacheManager() {{
+            setCaffeine(caffeine);
+        }};
+    }
+
+    @Bean
+    public CacheManager cacheManager(RedisConnectionFactory redisConnectionFactory) {
+        RedisCacheConfiguration redisCacheConfig = RedisCacheConfiguration.defaultCacheConfig()
+            .entryTtl(Duration.ofMinutes(10));
+
+        RedisCacheManager redisCacheManager = RedisCacheManager.builder(redisConnectionFactory)
+            .cacheDefaults(redisCacheConfig)
+            .build();
+
+        // 自定义 CompositeCacheManager，将本地和 Redis 管理器组合
+        CompositeCacheManager cacheManager = new CompositeCacheManager(
+            caffeineCacheManager(), redisCacheManager
+        );
+
+        // 如果所有缓存都 miss，则使用 fallback（防止 NPE）
+        cacheManager.setFallbackToNoOpCache(false);
+        return cacheManager;
+    }
+}
+```

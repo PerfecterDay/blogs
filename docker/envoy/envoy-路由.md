@@ -58,3 +58,36 @@ body的定义如下：
     body:
       inline_string: '{ "status" : "E0009", "message": "Service Unavailable" }'
 ```
+
+### 路由重写与添加请求头
+重写请求路径/对特定路由禁用三防插件/转发时增加请求头
+```
+- match:
+    prefix: "/h5/fund"
+typed_per_filter_config:
+    envoy.filters.http.ext_authz:
+    "@type": type.googleapis.com/envoy.extensions.filters.http.ext_authz.v3.ExtAuthzPerRoute
+    disabled: true
+route: { cluster: financial-management-cluster, timeout: { seconds: 10 } , regex_rewrite: {pattern: {regex: "/h5/fund", google_re2: {}},substitution: "/fund"} }
+- match:
+    safe_regex: { google_re2: {}, regex: "^/[service|yichat].*" }
+route: { cluster: kefu-cluster, timeout: { seconds: 10 } }
+- match:
+    safe_regex: { google_re2: {}, regex: "^/gtjaiback.*" }
+  route: { cluster: bpm-cluster, timeout: { seconds: 10 } }
+  request_headers_to_add: 
+  - header:
+      key: "appId"
+      value: "1e6c3a95-552a-5d04-38ad-2f4e238236b6"
+```
+
+### 配置websocket
+ ```
+ - match:
+      safe_regex: { google_re2: {}, regex: "^/yichat.*" }
+  typed_per_filter_config:
+      envoy.filters.http.ext_authz:
+      "@type": type.googleapis.com/envoy.extensions.filters.http.ext_authz.v3.ExtAuthzPerRoute
+      disabled: true
+  route: { cluster: kefu-cluster-1, timeout: { seconds: 0 }, upgrade_configs: [{upgrade_type: websocket}] }
+ ```

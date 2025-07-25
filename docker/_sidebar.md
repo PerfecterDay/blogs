@@ -33,7 +33,7 @@
   * [istio入门](/docker/service-mesh/istio入门体验.md)
 * [envoy](#)
   * [envoy 内幕](https://envoy-insider.mygraphql.com/zh-cn/latest/)
-  * [envoy中文文档](https://lixiangyun.gitbook.io/envoy/introduction)
+  * [envoy文档](https://www.envoyproxy.io/docs/envoy/latest/start/start)
   * [envoy是什么](/docker/envoy/envoy-what.md)
   * [envoy简介](/docker/envoy/envoy.md)
   * [envoy配置](/docker/envoy/envoy配置.md)

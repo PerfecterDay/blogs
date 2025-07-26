@@ -7,9 +7,16 @@
 ## 注册实体
 
 ## 查询节点
+```
 GET /v1/catalog/nodes
+```
 
 ## 查询服务列表
+```
 GET /v1/catalog/services
+```
 
-GET /v1/catalog/services?wait=2s&index=21424&token= HTTP/1.1
+## 注销服务
+```
+curl -X PUT http://localhost:8500/v1/catalog/deregister -H "Content-Type: application/json" -d '{"Datacenter": "dc1", "Node": "consul-server-2", "ServiceID": "trade-center-gmt-5755564b9-4cqmv" }'
+```

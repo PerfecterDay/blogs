@@ -15,6 +15,8 @@ logrotate [-dv] [-f|--force] [-s|--state file] config_file ..
 + `-v, --verbose` : 打开 verbose 
 
 ## 配置文件
+`/etc/logrotate.conf`
+
 ```
 # see "man logrotate" for details
 # rotate log files weekly/daily/monthly/yearly

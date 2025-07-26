@@ -9,6 +9,7 @@
 * [用户及权限管理](/linux/用户及权限管理.md)
 * [环境变量总结](/linux/环境变量总结.md)
 * [软件包管理](/linux/软件包管理.md)
+* [logrotate日志切分](/linux/logrotate.md)
 * [Shell-脚本简介](/linux/shell.md)
 * [Shell-条件判断](/linux/shell-条件判断.md)
 * [Shell-循环](/linux/shell-循环.md)

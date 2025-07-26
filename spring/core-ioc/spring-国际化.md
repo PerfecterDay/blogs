@@ -58,6 +58,7 @@ public MessageSource messageSource() {
     return messageSource;
 }
 ```
+注意：如果资源文件是放在classpath 下边的，一定要加上 `classpath:xxx` 前缀。
 
 3. 使用 MessageSource 获取消息
 ```
@@ -76,6 +77,32 @@ https://www.baeldung.com/java-resourcebundle
 5. `MessageSource` 如果找不到 key，可以返回你指定的默认文本; `ResourceBundle` 抛异常（ `MissingResourceException` ），不够友好。
 6. `MessageSource` 本质上是一个接口，你可以自定义实现来支持读取 XML/YAML、数据库、Redis 等多种数据源。
 
+
+## Springmvc 中的国际化
+`DispatcherServlet` 在初始化时会查找 `public static final String LOCALE_RESOLVER_BEAN_NAME = "localeResolver";` 名字的 bean，如果没有，就会使用默认的 `AcceptHeaderLocaleResolver`:
+```
+private void initLocaleResolver(ApplicationContext context) {
+    try {
+        this.localeResolver = context.getBean(LOCALE_RESOLVER_BEAN_NAME, LocaleResolver.class);
+        if (logger.isTraceEnabled()) {
+            logger.trace("Detected " + this.localeResolver);
+        }
+        else if (logger.isDebugEnabled()) {
+            logger.debug("Detected " + this.localeResolver.getClass().getSimpleName());
+        }
+    }
+    catch (NoSuchBeanDefinitionException ex) {
+        // We need to use the default.
+        this.localeResolver = getDefaultStrategy(context, LocaleResolver.class);
+        if (logger.isTraceEnabled()) {
+            logger.trace("No LocaleResolver '" + LOCALE_RESOLVER_BEAN_NAME +
+                    "': using default [" + this.localeResolver.getClass().getSimpleName() + "]");
+        }
+    }
+}
+```
+
+<center><img src="pics/default-strategies.png" alt=""></center>
 
 ## 与校验的结合使用
 ```

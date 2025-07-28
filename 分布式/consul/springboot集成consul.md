@@ -64,7 +64,7 @@ public class ConsulAutoServiceRegistrationAutoConfiguration {
 3. 配置Consul健康检查，conusl发请求给服务以检查健康状态
    Consul 实例的健康检查默认位于"/actuator/health"，这是 Spring Boot Actuator 应用程序中健康端点的默认位置。如果使用非默认上下文路径或 servlet 路径（如 server.servletPath=/foo），即使是 Actuator 应用程序也需要更改。
 4. 如果要禁用健康检查，设置 `spring.cloud.consul.discovery.register-health-check=false`,`management.health.consul.enabled=false`
-5. TTL检查：应用程序会主动向 Consul 代理发送心跳信号，而不是 Consul 代理向应用程序发送请求。
+5. TTL健康检查：应用程序会主动向 Consul 代理发送心跳信号，而不是 Consul 代理向应用程序发送请求。
 6. 注册服务时提供 MetaData
 ```
 spring:
@@ -83,17 +83,36 @@ spring:
         service-name: ${spring.application.name}
         register: true
         port: ${grpc.server.port}
-        healthCheckUrl: "http://${spring.cloud.consul.discovery.hostInfo.ipAddress}:${management.server.port}/actuator/health"
-        health-check-critical-timeout: 3m
-        heartbeat:
-          enabled: true
-          ttl: 10s
+        health-check-url: "http://${spring.cloud.consul.discovery.hostInfo.ipAddress}:${management.server.port}/actuator/health"
+        health-check-interval: 10s  //健康检查的间隔
+        health-check-critical-timeout: 1m  // 如果连续健康检查失败，并维持 critical 状态超过此时间（如 1 分钟），Consul 就会注销这个服务
         metadata:
              myfield: myvalue
              anotherfield: anothervalue
 ```
 #### HeartbeatProperties
 `HeartbeatProperties` 对应的配置前缀是 `spring.cloud.consul.discovery.heartbeat`。
+
+```
+spring:
+  application:
+    name: trade-center-service
+  cloud:
+    consul:
+      host: consul
+      port: 8500
+      discovery:
+        hostInfo:
+          ipAddress: localhost
+        service-name: ${spring.application.name}
+        register: true
+        port: ${grpc.server.port}
+        heartbeat:
+          enabled: true
+          ttl: 20s
+          intervalRatio: 0.8
+          reregisterServiceOnFailure: true
+```
 
 ### 服务注册过程
 

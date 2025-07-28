@@ -16,3 +16,4 @@
   * [Springboot 启用 SSE](/spring/springboot/springboot集成SSE.md)
   * [Spring email 发送邮件](/spring/springboot/spring-email.md)
   * [Springboot 优雅停机](/spring/springboot/优雅停机.md)
+  * [Springboot的集成consul](/分布式/consul/springboot集成consul.md)

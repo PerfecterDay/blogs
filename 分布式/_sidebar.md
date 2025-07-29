@@ -41,4 +41,6 @@
   * [Agent API](/分布式/consul/agent.md)
   * [Catalog API](/分布式/consul/catalog.md)
   * [Health API](/分布式/consul/health.md)
+  * [Consul 服务注册](/分布式/consul/consul-服务注册.md)
+  * [Consul 健康检查](/分布式/consul/consul-健康检查.md)
   * [Springboot的集成](/分布式/consul/springboot集成consul.md)

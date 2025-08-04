@@ -50,3 +50,56 @@ public GrpcServerConfigurer keepAliveServerConfigurer() {
     };
 }
 ```
+
+## 服务发现-DiscoveryClientResolverFactory
+`ConsulCatalogWatchAutoConfiguration` 会注册一个 `ConsulCatalogWatch` ， `ConsulCatalogWatch` 会启动一个定时任务，这个定时任务会定期去调用 `GET /v1/catalog/services` API 更新服务列表，并且发布 `HeartbeatEvent` 事件通知相关组件。
+```
+@Timed("consul.watch-catalog-services")
+public void catalogServicesWatch() {
+    try {
+        long index = -1;
+        if (this.catalogServicesIndex.get() != null) {
+            index = this.catalogServicesIndex.get().longValue();
+        }
+
+        CatalogServicesRequest request = CatalogServicesRequest.newBuilder()
+                .setQueryParams(new QueryParams(this.properties.getCatalogServicesWatchTimeout(), index))
+                .setToken(this.properties.getAclToken()).build();
+        Response<Map<String, List<String>>> response = this.consul.getCatalogServices(request);
+        Long consulIndex = response.getConsulIndex();
+        if (consulIndex != null) {
+            this.catalogServicesIndex.set(BigInteger.valueOf(consulIndex));
+        }
+
+        if (log.isTraceEnabled()) {
+            log.trace("Received services update from consul: " + response.getValue() + ", index: " + consulIndex);
+        }
+        this.publisher.publishEvent(new HeartbeatEvent(this, consulIndex));
+    }
+    catch (Exception e) {
+        log.error("Error watching Consul CatalogServices", e);
+    }
+}
+```
+
+通过下述配置可以配置 `ConsulCatalogWatch` 的行为：
+```
+spring:
+  cloud:
+    consul:
+      discovery:
+        catalog-services-watch-delay: 1000  # 每隔多少ms去调用consul API
+        catalog-services-watch-timeout: 10
+```
+
+`grpc-spring-boot-starter` 组件中的 `DiscoveryClientResolverFactory` 会监听 `HeartbeatEvent` 并且更新服务列表：
+```
+@EventListener(HeartbeatEvent.class)
+public void heartbeat(final HeartbeatEvent event) {
+    if (this.monitor.update(event.getValue())) {
+        for (final DiscoveryClientNameResolver discoveryClientNameResolver : this.discoveryClientNameResolvers) {
+            discoveryClientNameResolver.refreshFromExternal();
+        }
+    }
+}
+```

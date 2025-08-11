@@ -19,7 +19,7 @@
 8. `mvn help:effective-settings`: 查看当前 maven 生效的设置
 9. 安装本地JAR包到本地仓库：`mvn install:install-file -Dfile="D:\workspace\trade\trade-center\trade-center-service\lib\ZHConverter.jar" -DgroupId="com.spreada.utils.chinese" -DartifactId="ZHConverter" -Dversion="1.0" -Dpackaging="jar"`
 10. `mvn package -DskipTests`: 跳过测试运行
-11. `mvn package -Dmvn.test.skip=true`：跳过测试代码编译同时跳过测试运行
+11. `mvn package -Dmaven.test.skip=true`：跳过测试代码编译同时跳过测试运行
 12. `mvn test -Dtest=testClass1,testClass2|Random*Test`：运行指定的测试类（|代表或）
 13. `mvn -pl '!submodule1,!submodule2' install 或者 mvn -pl -submodule1,-submodule2 install` ：打包时跳过某些模块
 14. `mvn dependency:sources`: 下载依赖包的源码文件

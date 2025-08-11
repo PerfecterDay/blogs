@@ -56,7 +56,7 @@ curl -XPUT http://consul-cluster-server.consul.svc.cluster.local:8500/v1/agent/l
 1. 列出注册的检查：`curl -XGET http://consul-cluster-server.consul.svc.cluster.local:8500/v1/agent/checks`
 2. 注册检查：`curl -XPUT http://consul-cluster-server.consul.svc.cluster.local:8500/v1/agent/check/register`
 3. 注销检查：`curl -XPUT http://consul-cluster-server.consul.svc.cluster.local:8500/v1/agent/check/deregister/{check_id}` check_id是路径参数
-4. `curl -XPUT http://consul-cluster-server.consul.svc.cluster.local:8500/v1//agent/check/pass/{check_id}`
+4. TTL报送健康信息：`curl -XPUT http://consul-cluster-server.consul.svc.cluster.local:8500/v1//agent/check/pass/{check_id}`
 
 ## Service 相关
 1. 列出注册的服务：`curl -XGET http://consul-cluster-server.consul.svc.cluster.local:8500/v1/agent/services`

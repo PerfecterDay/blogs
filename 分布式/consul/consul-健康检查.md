@@ -53,8 +53,66 @@ spring:
 6. 此时即使服务恢复，Consul 也不会再自动“重新注册”，因为它已经忘记该服务了；
 7. 除非你的应用在恢复时执行了重新注册逻辑
 
-## TTL 
+服务重启：正常情况下，服务重启时会注销服务注册，然后启动时又会重新注册服务，所以没有影响
+consul重启： consul 重启后会加载之前的注册信息，如果服务可用，健康检查通过，那么服务就会依然可用；如果服务宕机，那么健康检查失败后服务会被注销
 
+## TTL 
+```
+spring:
+  cloud:
+    consul:
+      discovery:
+        heartbeat:
+          enabled: true
+          ttl: 10s
+          reregister-service-on-failure: true
+```
+在 spring-cloud-starter-consul-discovery 中如果启用了 TTL，那么就会使用 TTL 健康检查， HTTP的检查将会被忽略。
+```
+{
+    "service:trade-center-service-8100": {
+        "Node": "gtjaMac-mini.local",
+        "CheckID": "service:trade-center-service-8100",
+        "Name": "Service 'trade-center-service' check",
+        "Status": "passing",
+        "Notes": "",
+        "Output": "",
+        "ServiceID": "trade-center-service-8100",
+        "ServiceName": "trade-center-service",
+        "ServiceTags": [],
+        "Type": "ttl",
+        "Interval": "",
+        "Timeout": "",
+        "ExposedPort": 0,
+        "Definition": {},
+        "CreateIndex": 0,
+        "ModifyIndex": 0
+    },
+    "service:trade-center-service-8100-management": {
+        "Node": "gtjaMac-mini.local",
+        "CheckID": "service:trade-center-service-8100-management",
+        "Name": "Service 'trade-center-service-management' check",
+        "Status": "passing",
+        "Notes": "",
+        "Output": "",
+        "ServiceID": "trade-center-service-8100-management",
+        "ServiceName": "trade-center-service-management",
+        "ServiceTags": [
+            "management"
+        ],
+        "Type": "ttl",
+        "Interval": "",
+        "Timeout": "",
+        "ExposedPort": 0,
+        "Definition": {},
+        "CreateIndex": 0,
+        "ModifyIndex": 0
+    }
+}
+```
+
+服务重启：正常情况下，服务重启时会注销服务注册，然后启动时又会重新注册服务，所以没有影响
+consul重启： consul 重启后会加载之前的注册信息，如果服务可用，会主动上报心跳信息，那么服务就会依然可用；如果服务宕机，那么TTL检查失败后服务会被注销
 
 ## TCP
 ```

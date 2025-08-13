@@ -67,7 +67,7 @@ spring:
           ttl: 10s
           reregister-service-on-failure: true
 ```
-在 spring-cloud-starter-consul-discovery 中如果启用了 TTL，那么就会使用 TTL 健康检查， HTTP的检查将会被忽略。
+在 spring-cloud-starter-consul-discovery 中如果启用了 TTL(heartbeat.enabled: true)，那么就会使用 TTL 健康检查， HTTP的检查将会被忽略。
 ```
 {
     "service:trade-center-service-8100": {
@@ -115,6 +115,7 @@ spring:
 consul重启： consul 重启后会加载之前的注册信息，如果服务可用，会主动上报心跳信息，那么服务就会依然可用；如果服务宕机，那么TTL检查失败后服务会被注销
 
 ## TCP
+具体配置需要根据 spring-cloud-consul-discovery 的版本而定，有些版本（比如4.2.0）可能不支持配置文件启用：
 ```
 spring:
   application:

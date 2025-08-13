@@ -3,20 +3,6 @@
 
 > https://docs.spring.io/spring-cloud-consul/docs/current/reference/html/
 
-- [Springboot 集成 Consul](#springboot-集成-consul)
-    - [自动配置类](#自动配置类)
-      - [ConsulDiscoveryProperties](#consuldiscoveryproperties)
-      - [HeartbeatProperties](#heartbeatproperties)
-    - [服务注册过程](#服务注册过程)
-      - [相关配置](#相关配置)
-      - [ConsulAutoRegistration](#consulautoregistration)
-      - [ConsulAutoServiceRegistration](#consulautoserviceregistration)
-      - [ConsulServiceRegistry](#consulserviceregistry)
-      - [ConsulAutoServiceRegistrationListener](#consulautoserviceregistrationlistener)
-    - [服务发现](#服务发现)
-    - [自定义注册-使用tcp health check](#自定义注册-使用tcp-health-check)
-    - [重启consul 后，服务不能重新注册：](#重启consul-后服务不能重新注册)
-    - [问题](#问题)
 
 consul提供的各种语言的SDK/开发库： https://developer.hashicorp.com/consul/api-docs/libraries-and-sdks  
 `spring-cloud-starter-consul-discovery` 使用的是  [consul-api](https://github.com/Ecwid/consul-api) ,依赖其底层的 `ConsulClient` 与 Consul 交互。
@@ -66,6 +52,8 @@ public class ConsulAutoServiceRegistrationAutoConfiguration {
 4. 如果要禁用健康检查，设置 `spring.cloud.consul.discovery.register-health-check=false`,`management.health.consul.enabled=false`
 5. TTL健康检查：应用程序会主动向 Consul 代理发送心跳信号，而不是 Consul 代理向应用程序发送请求。
 6. 注册服务时提供 MetaData
+7. `prefer-ip-address: true`: 注册时的地址信息使用IP，k8s环境下默认使用 pod 名字，会导致发现方调用失败
+
 ```
 spring:
   application:
@@ -78,8 +66,7 @@ spring:
       host: consul
       port: 8500
       discovery:
-        hostInfo:
-          ipAddress: 10.176.81.23
+        prefer-ip-address: true
         service-name: ${spring.application.name}
         register: true
         port: ${grpc.server.port}

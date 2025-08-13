@@ -25,6 +25,16 @@ yum localinstall mysql-community-icu-data-files-8.0.33-1.el8.x86_64.rpm -y &&\
 yum localinstall mysql-community-server-8.0.33-1.el8.x86_64.rpm -y
 ```
 
+
+如果只需要安装客户端：
+```
+yum localinstall mysql-community-common-8.0.33-1.el8.x86_64.rpm -y &&\
+yum localinstall mysql-community-client-plugins-8.0.33-1.el8.x86_64.rpm -y &&\
+yum localinstall mysql-community-libs-8.0.33-1.el8.x86_64.rpm -y &&\
+yum localinstall mysql-community-client-8.0.33-1.el8.x86_64.rpm -y
+```
+
+
 + `systemctl start mysqld` 启动服务。
 + `cat /var/log/mysqld.log | grep temporary`: 查询首次安装的登录账号和密码
 + 在配置文件 `/ect/my.cnf` 的 mysqld 中加上 `skip-grant-tables` 配置，然后启动 `systemctl start mysqld`，使用 mysql 可以直接登录.

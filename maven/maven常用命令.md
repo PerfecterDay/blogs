@@ -90,3 +90,9 @@
         <url>https://maven.aliyun.com/repository/public</url>
     </mirror>
     ```
+
+3. spring-boot-maven-plugin 打的 jar 包 不能被依赖  
+spring-boot-maven-plugin 在打包时，会把依赖放到 BOOT-INF/lib/ 里，把你的 classes 放到 BOOT-INF/classes/，并加上一个特殊的启动器类（org.springframework.boot.loader.JarLauncher 等）。
+
+这种结构是为了用 java -jar 启动，而不是为了类路径加载。
+Maven/Java 的普通类加载器找不到 BOOT-INF/classes 里的类，所以作为依赖引用时会报 ClassNotFoundException。

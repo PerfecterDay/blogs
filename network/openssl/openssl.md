@@ -196,6 +196,14 @@ openssl s_server -cert mycert.pem -www
 # 在另一台主机上(可以跟服务端同一台)，运行s_time
 openssl s_time -connect myhost:4433 -www / -new -ssl3
 ```
+### 操作 pfx 文件
+```
+openssl pkcs12 -in ClientCert.pfx -nocerts -nodes -out cms.key
+openssl pkcs12 -in ClientCert.pfx -clcerts -nokeys -out cms.crt
+
+当不使用证书时：
+1e8a2045-7eb3-458c-95f1-ebe46da1574f
+```
 
 ### 实战
 其它openssl 命令：

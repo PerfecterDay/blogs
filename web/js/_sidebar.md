@@ -8,3 +8,5 @@
 * [JS对象](/web/js/05-JS创建对象.md)
 * [JS原型模式](/web/js/06-JS原型模式.md)
 * [模块](/web/js/07-JS模块.md)
+* [Promise](/web/js/08-JS中的promise.md)
+* [客户端开发工具与生态](/web/js/客户端工具.md)

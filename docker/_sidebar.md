@@ -40,6 +40,8 @@
   * [envoy路由](/docker/envoy/envoy-路由.md)
   * [envoy健康检查](/docker/envoy/envoy-健康检查.md)
   * [envoy熔断](/docker/envoy/envoy-熔断.md)
+  * [envoy负载均衡](/docker/envoy/envoy-负载均衡.md)
+  * [envoy上游集群配置](/docker/)
   * [envoy管理后台Api](/docker/envoy/envoy-admin-api.md)
   * [envoy xDS配置](/docker/envoy/envoy-xDS.md)
   * [envoy go插件开发](/docker/envoy/envoy集成go插件.md)

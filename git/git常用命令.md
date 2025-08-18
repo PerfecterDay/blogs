@@ -36,6 +36,10 @@ git config --global http.sslVerify false // 修改全局配置
 git config --local http.sslVerify false // 修改本地配置
 
 git -c http.sslVerify=false clone https://example.com/path/to/git //执行命令时传递参数,跳过证书验证
+
+//配置代理
+git config --global http.proxy http://127.0.0.1:7890
+git config --global https.proxy http://127.0.0.1:7890
 ```
 
 #### 配置账号密码避免每次都要输入账号密码

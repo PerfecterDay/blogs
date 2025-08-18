@@ -10,3 +10,4 @@
 * [coredns](/other/coredns.md)
 * [MacOs](/other/mac操作汇总.md)
 * [sdkman](/other/sdkman.md)
+* [postman](/other/postman.md)

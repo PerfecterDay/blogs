@@ -48,6 +48,10 @@
 mysqldump --databases nrng -uroot -p > nrng.sql
 rsync ./nrng.sql 10.4.153.130:/root/mysql
 mysqldump -uroot -p nrng < nrng.sql
+
+
+mysqldump -u root -p block_chain_management system_users --no-create-info --skip-triggers --skip-add-locks --skip-comments > data.sql
+mysqldump -u root -p block_chain_management system_users --no-create-info --skip-triggers --skip-add-locks --skip-comments --skip-extended-insert > data.sql
 ```
 
 重要参数：

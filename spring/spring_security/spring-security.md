@@ -1,7 +1,7 @@
 # Spring security
 {docsify-updated}
 
-### spring-security 整体架构
+## spring-security 整体架构
 
 <center>
 <img src="pics/spring-security.png" alt="">
@@ -131,3 +131,12 @@ public class WebSecurityConfigure extends WebSecurityConfigurerAdapter {
       `org.springframework.security.access.vote.UnanimousBased`，它要求所有的非弃权投票则都投赞成票，否则将拒绝访问请求。
    
    要配置一个 `AccessDecisionManager`，只需要声明一个标注了 `@Configuration` 的配置类，让该类扩展 `GlobalMethodSecurityConfiguration` 类，并且覆盖 `accessDecisionManager` 方法返回一个 `ConsensusBased`、`UnanimousBased`或者一些自定义的实现。
+
+
+## 
+Block_chain_managementSecurityAutoConfiguration 配置类
+
+AuthorizationManagerBeforeMethodInterceptor
+      PreAuthorizeAuthorizationManager
+        ExpressionUtils
+         SecurityFrameworkServiceImpl

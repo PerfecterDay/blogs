@@ -13,6 +13,7 @@
   * [Spring Async](/spring/springboot/spring-async集成.md)
   * [Spring 缓存](/spring/springboot/spring-cache.md)
   * [Spring cloud open feign](/spring/springboot/spring-cloud-openfeign.md)
+  * [Spring cloud loadbancer](/spring/springboot/spring-cloud-loadbancer.md)
   * [Springboot 启用 SSE](/spring/springboot/springboot集成SSE.md)
   * [Spring email 发送邮件](/spring/springboot/spring-email.md)
   * [Springboot 优雅停机](/spring/springboot/优雅停机.md)

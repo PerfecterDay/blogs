@@ -4,6 +4,7 @@
 * [文件及目录管理](/linux/文件及目录管理.md)
 * [磁盘管理](/linux/磁盘管理.md)
 * [文本处理](/linux/文本处理.md)
+* [awk](/linux/awk.md)
 * [进程管理](/linux/进程管理工具.md)
 * [Top性能监控](/linux/Top性能监控.md)
 * [用户及权限管理](/linux/用户及权限管理.md)

@@ -1,5 +1,3 @@
 * [Home](/)
 * [..](../_sidebar.md)
-* [Spring](/spring/_sidebar.md)
-  * [Spring Security](#)
-    * [Spring security](/spring/spring_security/spring-security.md)
+* [Spring security](/spring/spring_security/spring-security.md)

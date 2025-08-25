@@ -4,16 +4,17 @@
 ## spring-security 整体架构
 
 <center>
-<img src="pics/spring-security.png" alt="">
+<img src="pics/spring-security.png" width="60%">
 </center>
 上图中  Bean Filter 实际上是 FilterChainProxy 。
 
 Spring security 的配置由两个关键步骤组成：注册过滤器和创建安全规则。  
 Spring security 提供了 `AbstractSecurityWebApplicationInitializer` 类来注册过滤器，我们只要继承该类即可实现过滤器的注册。  
 使用 springboot 时，只要添加 `spring-boot-starter-security` 依赖，就会自动配置：
-1. 一个名为 `springSecurityFilterChain` 的 Filter 类型的 bean，这个 bean 负责所有安全相关的功能
-2. 生成一个名为 `UserDetailsService` 的 bean ,且会配置一个名为 user ，密码随机（会打印在控制台）的用户
-3. 会把 `springSecurityFilterChain` 的 Filter 注册到 servlet 容器中以实现拦截功能
+1. 一个名为 `springSecurityFilterChain` 的 Filter 类型的 bean (`DelegatingFilterProxyRegistrationBean`)，这个 bean 负责所有安全相关的功能
+2. `TokenAuthenticationFilter`
+3. 生成一个名为 `UserDetailsService` 的 bean ,且会配置一个名为 user ，密码随机（会打印在控制台）的用户
+4. 会把 `springSecurityFilterChain` 的 Filter 注册到 servlet 容器中以实现拦截功能
 
 注册过滤器后，需要对 Spring security 进行安全规则的配置：
 ```
@@ -77,10 +78,9 @@ public class WebSecurityConfigure extends WebSecurityConfigurerAdapter {
     
 
     <center>'
-        <img src="pics/AbstractAuthenticationProcessingFilter.png" alt="">  
+        <img src="pics/AbstractAuthenticationProcessingFilter.png" width="60%">  
     </center> 
     
-
     1. 当用户提交认证凭据后， `AbstractAuthenticationProcessingFilter` 会根据 `HttpRequest` 创建一个用来做认证的 `Authentication` 对象，具体的 `Authentication` 取决于 `AbstractAuthenticationProcessingFilter`的子类，比如 `UsernamePasswordAuthenticationFilter` 会创建一个 `UsernamePasswordAuthenticationToken`.
     2. `Authentication`会被传递给 `AuthenticationManager` 来做认证
     3. 如果认证失败

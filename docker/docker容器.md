@@ -50,6 +50,15 @@
     	+ 如果想直接在终端中查看启动命令的输出，用 attach；其他情况使用 exec。
     	+ 当然，如果只是为了查看启动命令的输出，可以使用 docker logs 命令
 
+	4. 覆盖 entry-point 启动容器：
+		```
+		docker run -it -p 8101:8100 \
+		-v ./config:/home/config/ \
+		-e SPRING_PROFILES_ACTIVE=uat \
+		--entrypoint sh \
+		token:1.0.0
+		```
+
 5. 查看容器启动命令的输出日志
 	1.  `docker logs -f`:持续输出docker启动命令的输出日志
 6. 容器与宿主机之间拷贝文件 

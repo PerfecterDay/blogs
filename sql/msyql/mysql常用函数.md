@@ -1,8 +1,7 @@
 #  Mysql 常用函数
 {docsify-updated}
 
-### 字符串函数
-
+## 字符串函数
 + `ASCII(str)` : 返回值为字符串str 的**最左字符的数值**。假如str为空字符串，则返回值为 0 。假如str 为NULL，则返回值为NULL。 ASCII()用于带有从 0到255的数值的字符。
 + `BIN(N)` ：返回值为N的二进制值的字符串表示，其中 N 为一个longlong (BIGINT) 数字。这等同于 `CONV(N,10,2)`。假如N 为NULL，则返回值为 NULL。
 + `BIT_LENGTH(str)` :　返回值为二进制的字符串str 长度。
@@ -30,7 +29,7 @@
 	update info_content2 set `cont`=REPLACE(cont,"~nn",'') WHERE `cont` LIKE '%~nn%';
 	```
 
-### 日期和时间函数
+## 日期和时间函数
 + `ADDDATE(date,INTERVAL expr type) ADDDATE(expr,days)`: 返回日期相加后的日期，当被第二个参数的INTERVAL格式激活后， ADDDATE()就是DATE_ADD()的同义词。相关函数SUBDATE() 则是DATE_SUB()的同义词。
 + `ADDTIME(expr,expr2)` ：ADDTIME()将 expr2添加至expr 然后返回结果。 expr 是一个时间或时间日期表达式，而expr2 是一个时间表达式。
 + `CURDATE()` :　将**当前日期**按照'YYYY-MM-DD' 或YYYYMMDD 格式的值返回，具体格式根据函数用在字符串或是数字语境中而定。
@@ -46,7 +45,7 @@
 + `STR_TO_DATE(str,format)`: 这是DATE_FORMAT() 函数的倒转。它获取一个字符串 str 和一个格式字符串format。若格式字符串包含日期和时间部分，则 STR_TO_DATE()返回一个 DATETIME 值， 若该字符串只包含日期部分或时间部分，则返回一个 DATE 或TIME值。`ELECT STR_TO_DATE('04/31/2004', '%m/%d/%Y'); -> '2004-04-31'`
 + `UNIX_TIMESTAMP(), UNIX_TIMESTAMP(date)` :若无参数调用，则返回一个Unix timestamp ('1970-01-01 00:00:00' GMT 之后的秒数) 作为无符号整数。若用date 来调用UNIX_TIMESTAMP()，它会将参数值以'1970-01-01 00:00:00' GMT后的秒数的形式返回。date可以是一个DATE 字符串、一个 DATETIME字符串、一个 TIMESTAMP或一个当地时间的YYMMDD或YYYMMDD格式的数字。
 
-### 数值处理函数
+## 数值处理函数
 + `Abs()` : 返回绝对值
 + `Cos()` : 返回余弦值
 + `Exp()` : 返回指数
@@ -56,3 +55,11 @@
 + `Sin()` : 返回正弦值
 + `Sqrt()` : 返回平方根
 + `Tan()` : 返回正切值
+
+## JSON 处理函数
+```
+select su.id,su.username,su.email,su.status,su.login_date,su.create_time,GROUP_CONCAT(sur.role_id) as roles from system_users su left join system_user_role sur on su.id=sur.user_id left join system_role sr on sur.role_id=sr.id group by su.id,su.username,su.email,su.status,su.login_date,su.create_time\G;
+
+//查询用户的角色ID和名字
+select su.id,su.username,su.email,su.status,su.login_date,su.create_time,JSON_ARRAYAGG(JSON_OBJECT('id', sr.id, 'name', sr.name)) AS roles from system_users su left join system_user_role sur on su.id=sur.user_id left join system_role sr on sur.role_id=sr.id group by su.id,su.username,su.email,su.status,su.login_date,su.create_time\G;
+```

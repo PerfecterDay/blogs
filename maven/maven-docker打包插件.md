@@ -37,7 +37,7 @@
 ```
 
 ## 多架构问题
-> https://github.com/UCLALibrary/docker-cantaloupe/pull/151/files 
+> https://dmp.fabric8.io/#build-buildx
 
 增加 `buildx` 配置：
 ```

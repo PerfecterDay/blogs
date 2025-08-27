@@ -23,3 +23,16 @@ awk 'pattern { action }' filename
 + `FS（Field Separator）`：字段分隔符，默认是空格 ------> `awk 'BEGIN{FS=","} {print $1}' data.csv`
 + `RS（Record Separator）`：记录分隔符，默认是换行符 ------> ``
 + `OFS（Output Field Separator）`：输出字段分隔符 -------> `awk 'BEGIN{OFS="|"} {print $1, $2}' users.txt`
+
+## 模式匹配
+1. 正则表达式匹配：`awk '/工程师/ {print $1}' users.txt`
+2. 条件匹配：`awk '$2 > 27 {print $1, $2}' users.txt`
+3. 范围匹配：`awk '/start/,/end/ {print}' logfile`
+4. `BEGIN` 和 `END` ：`awk 'BEGIN{print "姓名 年龄"} {print $1, $2} END{print "总共", NR, "条记录"}' users.txt`
+
+
+## 函数
+1. `length()` ：返回字符串长度 ---> `awk '{if(length($1) > 5) print $1}' users.txt`
+2. `substr()`：截取子字符串 ----> `awk '{print substr($1, 1, 2)}' users.txt  # 打印姓名的前两个字符`
+3. `gsub()`：全局替换 ----> `awk '{gsub(/工程师/, "Engineer"); print}' users.txt`
+4. `split()` ：分割字符串 -----> `awk '{split($4, arr, "/"); print arr[1]}' logfile`

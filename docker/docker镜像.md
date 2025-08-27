@@ -1,14 +1,6 @@
 # Docker 镜像
 {docsify-updated}
 
-- [Docker 镜像](#docker-镜像)
-    - [镜像的分层结构](#镜像的分层结构)
-    - [镜像的构建](#镜像的构建)
-      - [Dockerfile 常用指令](#dockerfile-常用指令)
-        - [多阶段构建](#多阶段构建)
-      - [镜像操作](#镜像操作)
-
-
 Docker 发明的初衷就是为了方便软件的部署，通常我们开发完一款服务，部署的时候需要在服务器上安装运行环境、依赖库、配置环境等等，这些工作在不同的操作系统或者不同的系统版本上都要求部署人员具有相关的知识。而且可能开发环境和部署环境的不同，导致服务在部署环境的行为会有差异。这些种种原因就驱使人们想研究出一种能屏蔽这些差异的工具，Docker 就是这样一款工具。
 
 Docker 容器底层使用的是 Host 主机的内核，自己**通过镜像为 kernel 提供 rootfs** ，rootfs 就是用户空间的文件系统。事实上，我们每次部署发布服务，就是为我们的服务配置提供一个运行时的环境，而这本质上与提供一个 rootfs 没有差别。所以 Docker 镜像是为服务提供/配置运行环境的。
@@ -150,6 +142,7 @@ docker build --target builder -t hello .
    + 拉取指定平台的镜像： `docker pull envoyproxy/envoy:v1.23-latest --platform linux/amd64`
    + 利用 Dockerfile 来制作镜像:  `docker build -t [<repository>:<tag>] 镜像构建上下文路径`
    + 利用指定的 Dockerfile 来制作镜像: `docker build -f path/to/dockerfile -t [<repository>:<tag>] 镜像构建上下文路径`
+   + 查看镜像的架构： `docker inspect token:1.1-SNAPSHOT --format='{{.Architecture}}'`
 2. 查看本地镜像 
     + 查看镜像： `docker images(docker image ls)`
     + 查看所有镜像： `docker image ls -a`

@@ -59,3 +59,26 @@
 
 ## @Builder
 用在**类、构造器、方法**上，为你提供复杂的 builder APIs，让你可以像如下方式一样调用`Person.builder().name("Adam Savage").city("San Francisco").job("Mythbusters").job("Unchained Reaction").build()`。
+
+
+## 避坑
+当在一个 POJO 上使用 `@Builder` 时，就不会生成默认的构造函数，在进行 JSON 反序列化时会报错，因为无法使用默认构造函数构造对象。例如：
+```
+@Builder
+@Data
+public class PermissionAssignMultisignMsgBO {
+    private Long userId;
+    private List<Long> roleIds;
+}
+```
+解决方案， 同时加上 `@NoArgsConstructor` 和 `@AllArgsConstructor` 注解：
+```
+@Builder
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class PermissionAssignMultisignMsgBO {
+    private Long userId;
+    private List<Long> roleIds;
+}
+```

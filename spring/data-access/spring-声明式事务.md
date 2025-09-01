@@ -68,6 +68,9 @@ public @interface Transactional {
     String[] noRollbackForClassName() default {};
 }
 ```
+
+<center><img src="pics/transactional.png" alt=""></center>
+
 `@Transactional` 注解是一种元数据，用于指定接口、类或方法的具有事务语义。默认的 `@Transactional` 设置如下：
 + 传播设置为 `PROPAGATION_REQUIRED` 
 + 隔离级别为 `ISOLATION_DEFAULT` 

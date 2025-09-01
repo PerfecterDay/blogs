@@ -58,6 +58,8 @@ public enum Propagation {
 }
 ```
 
+<center><img src="pics/propagation.png" width="80%"></center>
+
 ##### PROPAGATION_REQUIRED
 <center><img src="pics/tx_prop_required.png" width="40%"></center>
 

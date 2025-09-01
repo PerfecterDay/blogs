@@ -30,6 +30,13 @@ Spring 通过 `DataSource` 获取与数据库的连接。 `DataSource` 是 JDBC 
 <context:property-placeholder location="jdbc.properties"/>
 ```
 
+### JNDI
+如果应用配置在高性能的应用服务器（如WebLogic或WebSphere等）上，则可能更希望使用应用服务器本身提供的数据源。应用服务器的数据源使用 `JNDI` 开放调用者使用，Spring为此专门提供了引用JNDI数据源的 `JndiObjectFactoryBean` 类。下面是一个简单的配置：
+```
+<bean id="dataSource" class="org.springframework.jndi.JndiobjectFactoryBean"
+p:jndiName="java:comp/env/jdbc/bbt"/>
+```
+
 ## 使用内置数据库支持
 `org.springframework.jdbc.datasource.embedded` 包为嵌入式 Java 数据库引擎提供支持。原生支持 HSQL、H2 和 Derby。还可以使用可扩展的 API 来插入新的嵌入式数据库类型和 DataSource 实现。
 

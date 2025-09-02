@@ -32,6 +32,8 @@
    + embstr：小于等于39个字节的字符串。
    + raw：大于39个字节的字符串。
 
+## JSON
+
 ## 哈希
   <center>
   <img src="pics/redis-hash.png" width="40%">
@@ -56,8 +58,37 @@
 <center>
 <img src="pics/redis-hash-time.png" width="50%">
 </center>
-   
 
 ## 列表
+
 ## 集合
+
 ## 有序集合
+Redis 排序集是按相关分数排序的唯一字符串（成员）的集合。当多个字符串的得分相同时，这些字符串按词典顺序排序。
+
+```
+//增
+ZADD <key> [NX|XX] [CH] [INCR] <score> <member> [<score> <member> ...]
+
+//删
+ZREM <key> <member> //删除指定成员
+ZREMRANGEBYSCORE <key> -inf 9 //删除分数在 [-infinity,9] 范围的成员
+
+// 改
+ZADD <key> <new_score> <member> -->  ZADD racer_scores 150 "Henshaw"
+ZINCRBY <key> <added_score> <member> -->  ZINCRBY racer_scores 50 "Henshaw"
+
+//查
+ZRANGE <key> <start> <stop> [WITHSCORES] // 默认升序
+ZREVRANGE <key> <start> <stop> [WITHSCORES] //降序输出
+ZRANGEBYSCORE <key> -inf 10  //根据分数返回[-infinity,10] 范围的数据，升序
+
+ZRANK <key> <member> // 返回某个元素的排名序号
+ZREVRANK <key> <member>
+```
++ `NX` ：只添加不存在的成员
++ `XX` ：只更新已存在的成员
++ `CH` ：返回新增或更新的成员数量（默认只返回新增数量）
++ `INCR` ：对已有成员的 score 进行递增
+
+排序集是通过包含跳转列表和哈希表的双端数据结构实现的，因此每次添加元素时，Redis 都会执行 `O(log(N))` 运算。这样很好，当我们要求对元素进行排序时，Redis 根本不需要做任何工作，它已经进行了排序。请注意， `ZRANGE` 排序是分数从低到高，而 `ZREVRANGE` 排序是从高到低。

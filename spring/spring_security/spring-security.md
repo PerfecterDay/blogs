@@ -140,3 +140,59 @@ AuthorizationManagerBeforeMethodInterceptor
       PreAuthorizeAuthorizationManager
         ExpressionUtils
          SecurityFrameworkServiceImpl
+
+TokenAuthenticationFilter 尝试用 token 获取用户信息，获取到就会设置到
+
+SecurityFrameworkUtils.setLoginUser  
+
+SecurityContextHolder.getContext().setAuthentication(authentication);  
+
+
+
+Principal - This interface represents the abstract notion of a principal, which can be used to represent any entity, such as an individual, a corporation, and a login id.
+public String getName();
+
+Authentication
+Represents the token for an authentication request or for an authenticated principal once the request has been processed by the AuthenticationManager.authenticate(Authentication) method.
+Once the request has been authenticated, the Authentication will usually be stored in a thread-local SecurityContext managed by the SecurityContextHolder by the authentication mechanism which is being used. An explicit authentication can be achieved, without using one of Spring Security's authentication mechanisms, by creating an Authentication instance and using the code:
+  SecurityContext context = SecurityContextHolder.createEmptyContext();
+  context.setAuthentication(anAuthentication);
+  SecurityContextHolder.setContext(context);
+  
+Note that unless the Authentication has the authenticated property set to true, it will still be authenticated by any security interceptor (for method or web invocations) which encounters it.
+In most cases, the framework transparently takes care of managing the security context and authentication objects for you.
+
+
+
+@Configuration(proxyBeanMethods = false, value = "systemSecurityConfiguration")
+public class SecurityConfiguration {
+
+    @Bean("systemAuthorizeRequestsCustomizer")
+    public AuthorizeRequestsCustomizer authorizeRequestsCustomizer() {
+        return new AuthorizeRequestsCustomizer() {
+
+            @Override
+            public void customize(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry registry) {
+                // TODO 芋艿：这个每个项目都需要重复配置，得捉摸有没通用的方案
+                // Swagger 接口文档
+                registry.requestMatchers("/v3/api-docs/**").permitAll()
+                        .requestMatchers("/webjars/**").permitAll()
+                        .requestMatchers("/swagger-ui").permitAll()
+                        .requestMatchers("/swagger-ui/**").permitAll();
+                // Druid 监控
+                registry.requestMatchers("/druid/**").permitAll();
+                // Spring Boot Actuator 的安全配置
+                registry.requestMatchers("/actuator").permitAll()
+                        .requestMatchers("/actuator/**").permitAll();
+                // RPC 服务的安全配置
+                registry.requestMatchers(ApiConstants.PREFIX + "/**").permitAll();
+            }
+
+        };
+    }
+
+}
+
+FilterChainProxy
+
+filterChain 

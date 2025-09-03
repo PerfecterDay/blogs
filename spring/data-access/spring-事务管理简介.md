@@ -156,3 +156,8 @@ public interface TransactionStatus extends TransactionExecution, SavepointManage
 
 <bean id="txManager" class="org.springframework.transaction.jta.JtaTransactionManager"/>
 ```
+
+```
+SQLExceptionTranslator
+TransactionSynchronizationManage
+```

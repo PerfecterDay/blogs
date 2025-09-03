@@ -1,6 +1,8 @@
 # Spring security
 {docsify-updated}
 
+> https://docs.spring.io/spring-security/reference/servlet/architecture.html
+
 ## spring-security 整体架构
 
 <center>

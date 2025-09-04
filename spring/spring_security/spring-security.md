@@ -165,36 +165,8 @@ Note that unless the Authentication has the authenticated property set to true, 
 In most cases, the framework transparently takes care of managing the security context and authentication objects for you.
 
 
+Block_chain_managementWebSecurityConfigurerAdapter 定义了一个 SecurityFilterChain
+WebSecurityConfiguration#springSecurityFilterChain ---> FilterChainProxy
+webSecurityExpressionHandler
+springSecurityFilterChain
 
-@Configuration(proxyBeanMethods = false, value = "systemSecurityConfiguration")
-public class SecurityConfiguration {
-
-    @Bean("systemAuthorizeRequestsCustomizer")
-    public AuthorizeRequestsCustomizer authorizeRequestsCustomizer() {
-        return new AuthorizeRequestsCustomizer() {
-
-            @Override
-            public void customize(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry registry) {
-                // TODO 芋艿：这个每个项目都需要重复配置，得捉摸有没通用的方案
-                // Swagger 接口文档
-                registry.requestMatchers("/v3/api-docs/**").permitAll()
-                        .requestMatchers("/webjars/**").permitAll()
-                        .requestMatchers("/swagger-ui").permitAll()
-                        .requestMatchers("/swagger-ui/**").permitAll();
-                // Druid 监控
-                registry.requestMatchers("/druid/**").permitAll();
-                // Spring Boot Actuator 的安全配置
-                registry.requestMatchers("/actuator").permitAll()
-                        .requestMatchers("/actuator/**").permitAll();
-                // RPC 服务的安全配置
-                registry.requestMatchers(ApiConstants.PREFIX + "/**").permitAll();
-            }
-
-        };
-    }
-
-}
-
-FilterChainProxy
-
-filterChain 

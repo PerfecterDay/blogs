@@ -28,6 +28,7 @@ static_resources:
         name: envoy.transport_sockets.tls
         typed_config:
           "@type": type.googleapis.com/envoy.extensions.transport_sockets.tls.v3.DownstreamTlsContext
+          allow_renegotiation: true
           common_tls_context:
             tls_certificates:
             - certificate_chain: {filename: "certs/servercert.pem"}

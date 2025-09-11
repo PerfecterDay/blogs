@@ -37,8 +37,9 @@ pnpm hardhat test  //跑测试
 
 pnpm hardhat run scripts/send-op-tx.ts //与链交互
 
-pnpm hardhat ignition deploy --network localhost ignition/modules/Counter.ts //部署合约到本地网络
-
+pnpm hardhat ignition deploy --network ganache ignition/modules/Counter.ts //部署合约到本地网络
+pnpm hardhat ignition visualize ignition/modules/Counter.ts
+pnpm hardhat ignition wipe <deploymentId> <futureId> ---> pnpm hardhat ignition wipe chain-1337 CounterModule#Counter
 
 pnpm hardhat console --network localhost //进入了一个 Node.js 环境 + Hardhat 的 ethers.js，可以直接调用合约或查询账户
 ```

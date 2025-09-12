@@ -4,9 +4,9 @@
 > https://www.envoyproxy.io/docs/envoy/latest/intro/arch_overview/http/http_routing.html
 
 
-Envoy 内置了一个 HTTP Router Filter（路由过滤器），用于在边缘代理或服务网格中根据配置将请求转发到对应的上游集群（Upstream Cluster） ￼。
+Envoy 内置了一个 HTTP Router Filter（路由过滤器），用于在边缘代理或服务网格中根据配置将请求转发到对应的上游集群（Upstream Cluster）。
 
-它还支持作为正向代理（forward proxy），客户端可将 Envoy 设置为 HTTP 代理使用()。
+它还支持作为正向代理（forward proxy），客户端可将 Envoy 设置为 HTTP 代理使用。
 
 路由工作流程:
 1. Envoy 接收一个 HTTP 请求。

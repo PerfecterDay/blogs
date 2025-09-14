@@ -45,3 +45,23 @@ gjsyShare@20210422
 
 http://10.187.224.48
 nginx 配置 ：/data/stablecoin-project/ETH/nginx-proxy/domestic
+
+
+## 代码
+EthContractService
+Web3j
+ChainClient
+
+授权：proposeGrantRole
+proposeBatchGrantRole
+approveProposal
+proposeAddToWhitelist
+proposeRemoveFromWhitelist
+proposeFreeze
+proposeUnfreeze
+proposePause
+proposeUnpause
+proposeForceTransfer
+addSuperAdmin
+updateSuperAdmins
+removeSuperAdmin

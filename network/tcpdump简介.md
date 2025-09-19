@@ -4,17 +4,37 @@
 ## Tcpdump
 tcpdump 是一个很有用的调试工具，可以让超级用户监视网络中的实时流量，实时生成文本信息。对于每个网络报文，tcpdump 都会显示出像时间戳、源 IP 地址、目的 IP 地址以及更多协议特有的细节信息。可以根据协议类型、源和目的 IP 地址、端口号以及其他一些标准来选择需要监视的数据包。
 
-### 常用参数
+使用语法：
+```
+tcpdump [ -AbdDefhHIJKlLnNOpqStuUvxX# ] [ -B buffer_size ]
+               [ -c count ] [ --count ] [ -C file_size ]
+               [ -E spi@ipaddr algo:secret,...  ]
+               [ -F file ] [ -G rotate_seconds ] [ -i interface ]
+               [ --immediate-mode ] [ -j tstamp_type ] [ -k (metadata_arg) ]
+               [ -m module ]
+               [ -M secret ] [ --number ] [ --print ]
+               [ -Q packet-metadata-filter ] [ -Q in|out|inout ]
+               [ -r file ] [ -s snaplen ] [ -T type ] [ --version ]
+               [ -V file ] [ -w file ] [ -W filecount ] [ -y datalinktype ]
+               [ -z postrotate-command ] [ -Z user ]
+               [ --time-stamp-precision=tstamp_precision ]
+               [ --micro ] [ --nano ]
+               [ expression ]
+```
+
+### 常用选项参数
 + `-D`: 列出所有网卡接口，监听时必须指定正确的接口，否则捕获不到流量
 + `-c [count]`: 抓取指定数量的包
 + `-i [interface]`: 指定要抓包的接口,如果-i 后没有加接口，默认抓取所有接口的流量
-+ `-L`: 设置为监听模式，只支持IEEE 802.11 Wi-Fi 接口，并且只支持一些操作系统
++ `-I`: 设置为监听模式，只支持IEEE 802.11 Wi-Fi 接口，并且只支持一些操作系统
 + `-w [file]`: 指定将抓包数据写入一个文件而不是打印出来, `tcpdump port 80 -w capture_file`
 + `-U`: 指定缓存，如果设置了-w，那么抓包数据会立即写入文件，没有指定-w，数据会被缓存然后输出
 + `-X`: 以十六进制格式输出
 + `-S`: 抓取整个包
 + `-nn`: 不解析主机名或端口名
 + `-vvv`: 输出更多
+
+### 过滤表达式
 + `host [ip]`: 过滤指定IP的包
 + `src [ip]`: 根据源地址过滤
 + `dst [ip]`: 根据目的地址过滤

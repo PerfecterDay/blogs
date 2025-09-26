@@ -43,6 +43,8 @@ duo.redirect.uri=http://localhost:50000
 ```
 
 ### DUO 流程分析
+客户访问登录网页（nginx的前端页面）---> 输入账号密码提交验证请求到后端服务器 ---> 服务器端使用DUO SDK生成一些信息，然后返回一个重定向URL给到前端（如果直接返回重定向302给到前端的话，会有CORS问题）---> 前端页面使用 window.location=url 的方式重定向到 DUO 2FA页面进行验证 ---> 验证完成后重新跳转到某个前端页面 ---> 前端页面调用后端接口校验2FA的结果，成功则返回登陆成功，失败则提示失败
+
 用户账号密码校验成功后，java 服务响应302重定向到DUO网站做 2FA 验证：
 ```
 https://api-b43484c8.duosecurity.com/oauth/v1/authorize?scope=openid&response_type=code&redirect_uri=http://localhost:50000/duo-callback&client_id=DIQ9C44MPO7Y05AA23J9&request=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJkdW9fdW5hbWUiOiJhYWEiLCJzY29wZSI6Im9wZW5pZCIsInJlc3BvbnNlX3R5cGUiOiJjb2RlIiwicmVkaXJlY3RfdXJpIjoiaHR0cDovL2xvY2FsaG9zdDo1MDAwMC9kdW8tY2FsbGJhY2siLCJzdGF0ZSI6IjlhNjI1YTRiZjQ5MTk0MWRmY2IyN2Q4MTU5ZTA3ZTMyZjY4NSIsImV4cCI6MTc1ODA5NzUzOSwidXNlX2R1b19jb2RlX2F0dHJpYnV0ZSI6dHJ1ZSwiY2xpZW50X2lkIjoiRElROUM0NE1QTzdZMDVBQTIzSjkifQ.Zun-Rdiv9YIocG4VIfah0ezjfJbGr8g-3q5yqq-4FW_tND1Vbaz1HTphILg-yuLFhpy2qI2RqedwaTxz_nCrQg

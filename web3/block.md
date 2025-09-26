@@ -65,3 +65,21 @@ proposeForceTransfer
 addSuperAdmin
 updateSuperAdmins
 removeSuperAdmin
+
+
+## 资料
+以太坊官方基础概念介绍：
+https://ethereum.org/zh/developers/docs/smart-contracts/
+
+以太坊标准：
+https://eips.ethereum.org/erc
+
+openzepplin官方文档和库：
+1. 开发智能合约的全流程：https://docs.openzeppelin.com/learn/
+2. openzepplin智能合约库介绍：https://docs.openzeppelin.com/contracts/5.x/
+3. https://github.com/OpenZeppelin/openzeppelin-contracts
+
+solidity官方文档
+https://docs.soliditylang.org/en/latest/introduction-to-smart-contracts.html
+
+Chainlink Web3视频教程，使用Solidity 0.8.x ：https://www.bilibili.com/video/BV1RFsfe5Ek5

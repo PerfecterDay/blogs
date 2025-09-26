@@ -57,6 +57,12 @@ curl -X POST 'http://127.0.01:8848/nacos/v1/auth/users/admin' -d 'password=12345
 {"username":"nacos","password":"123456"}% 
 ```
 
+使用账号密码登录：
+```
+curl 'http://10.5.80.113:8848/nacos/v1/auth/users/login' \
+  -H 'Content-Type: application/x-www-form-urlencoded' \
+  --data-raw 'username=nacos&password=123456'
+```
 
 
 curl -X POST 'http://127.0.0.1:8848/nacos/v1/ns/instance?serviceName=nacos.naming.serviceName&ip=20.18.7.10&port=8080&healthy=false&namespaceId=44a78092-158a-4cf7-b772-e22c03c02109' \

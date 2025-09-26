@@ -19,7 +19,18 @@ signal可以是以下参数：
 * *reload* — 重新加载配置文件
 * *reopen* — 重新打开日志文件
 
-mac homebrew 安装的 html 存放路径在： `/opt/homebrew/var/www/demo.html`
+mac homebrew 相关路径： 
+```
+/opt/homebrew/var/www
+/opt/homebrew/etc/nginx/nginx.conf
+/opt/homebrew/etc/nginx/servers/.
+/opt/homebrew/opt/nginx/bin/nginx
+
+~/Library/LaunchAgents/homebrew.mxcl.nginx.plist --> /opt/homebrew/Cellar/nginx/1.29.1/homebrew.mxcl.nginx.plist
+
+/opt/homebrew/var/log/nginx/error.log
+/opt/homebrew/var/log/nginx/access.log
+```
 
 ## Nginx命令行参数
 

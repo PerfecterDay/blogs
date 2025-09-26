@@ -83,6 +83,11 @@ Stopping `mysql`... (might take a while)
 ==> Successfully started `mysql` (label: homebrew.mxcl.mysql)
  ```
 
+使用 `--verbose` 可以查看输出日志，排查问题的时候有用：
+ ```
+ brew services start squid --verbose
+ ```
+
 想看所有的已启用的服务的话：
  ```
  $ brew services list

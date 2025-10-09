@@ -2,6 +2,7 @@
 {docsify-updated}
 
 > 本文只做技术探讨，切勿用于非法用途；转自：https://github.com/conwnet/wpa-dictionary/blob/master/README.md
+> https://medium.com/infosecmatrix/a-beginners-guide-to-wi-fi-attacks-33760f42020e
 
 ### Linux 篇（Recommended | 推荐）
 The Kali distribution already has everything installed | Kali 发行版已经安装了所有东西

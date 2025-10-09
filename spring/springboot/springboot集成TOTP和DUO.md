@@ -49,3 +49,18 @@ duo.redirect.uri=http://localhost:50000
 ```
 https://api-b43484c8.duosecurity.com/oauth/v1/authorize?scope=openid&response_type=code&redirect_uri=http://localhost:50000/duo-callback&client_id=DIQ9C44MPO7Y05AA23J9&request=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJkdW9fdW5hbWUiOiJhYWEiLCJzY29wZSI6Im9wZW5pZCIsInJlc3BvbnNlX3R5cGUiOiJjb2RlIiwicmVkaXJlY3RfdXJpIjoiaHR0cDovL2xvY2FsaG9zdDo1MDAwMC9kdW8tY2FsbGJhY2siLCJzdGF0ZSI6IjlhNjI1YTRiZjQ5MTk0MWRmY2IyN2Q4MTU5ZTA3ZTMyZjY4NSIsImV4cCI6MTc1ODA5NzUzOSwidXNlX2R1b19jb2RlX2F0dHJpYnV0ZSI6dHJ1ZSwiY2xpZW50X2lkIjoiRElROUM0NE1QTzdZMDVBQTIzSjkifQ.Zun-Rdiv9YIocG4VIfah0ezjfJbGr8g-3q5yqq-4FW_tND1Vbaz1HTphILg-yuLFhpy2qI2RqedwaTxz_nCrQg
 ```
+
+### DUO 集成的跨域问题
+```
+We've received a few more reports of this issue in the last couple weeks. I believe what is happening is:
+
+Folks are trying to add Duo to web applications that send login credentials to the server via XHR rather than a simple html form submit
+The server is replying to the XHR with a 302 redirect to the Duo URL
+Since this 302 is a reply to an XHR, it triggers a CORS preflight check (this may depend on the JS framework in use?)
+Duo is not expecting a CORS preflight check and so does not respond appropriately
+The CORS preflight errors out and so the whole redirect is canceled.
+if anyone who is still being affected by this issue could let me know it I seem to be on the right track, that would be very helpful.
+If I am right, there may be a few options...
+A) The example implementation of the server code is not assuming XHR is in use. Affected web applications could be updated to respond to the credential submit not with a 302 redirect but with something that indicates to the client-side JS about the URL to follow
+B) Duo might be able to support the CORS preflight check better
+```

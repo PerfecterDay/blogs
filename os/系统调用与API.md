@@ -91,7 +91,7 @@ vDSO"（virtual dynamic shared object）是内核自动映射到所有用户空�
 
 
 ## API 与 ABI
-API定义了源代码接口，术语“POSIX（可移植操作系统Portable Operating System Interface 的缩写）”是指在IEEE（电器及电子工程师协会），确切地说是其下属的可移植应用标准委员会（PASC, http://www.pasc.org/）赞助下所开发的一系列标准。PASC 标准的目标是提升应用程序在源码级别的可移植性。
+API定义了源代码接口，术语“POSIX（可移植操作系统Portable Operating System Interface 的缩写）”是指在IEEE（电器及电子工程师协会），确切地说是其下属的可移植应用标准委员会（PASC, http://www.pasc.org/ ）赞助下所开发的一系列标准。PASC 标准的目标是提升应用程序在源码级别的可移植性。
 
 符合 POSIX 标准的操作系统应向程序提供调用各项服务的 API，POSIX 文档对此作了规范。凡是提供了上述 API 的操作系统都可被认定为符合 POSIX 标准。 POSIX 基于UNIX 系统调用和 C 语言库函数，但无需与任何特殊实现相关。这意味着任何操作系统都可以实现该接口，而不一定要是 UNIX 操作系统。实际上，在不对底层操作系统大加改动的同时，一些厂商通过添加 API 已经使自己的专有操作系统符合了 POSIX 标准。
 

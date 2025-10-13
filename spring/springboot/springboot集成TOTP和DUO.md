@@ -18,6 +18,18 @@ TOTP认证流程如下：
 2. 生成OTP：TOTP生成器（用户应用程序）将当前时间除以时间步长，计算自基准时间（通常为Unix纪元时间，即1970年1月1日）以来的时间步数。随后采用算法（通常为`HMAC-SHA-1`），将Seed值与时间步长计数作为输入进行组合，生成哈希值。最后提取该哈希值的部分内容，转换为6至8位数字代码，即为TOTP验证码。
 3. 验证：用户在有效期内将生成器应用显示的TOTP输入至在线服务。同时，服务器凭借共享密钥和当前时间，通过相同流程生成预期TOTP。随后服务器将用户输入的TOTP与自身生成的预期TOTP进行比对。
 
+### springboot 集成
+> https://github.com/samdjstevens/java-totp/tree/master/totp-spring-boot-starter
+
+```
+<dependency>
+  <groupId>dev.samstevens.totp</groupId>
+  <artifactId>totp-spring-boot-starter</artifactId>
+  <version>1.7.1</version>
+</dependency>
+```
+
+
 ## DUO集成
 DUO验证成功后跳转的URL：http://localhost:50000/duo-callback?state=f98e6b1d9c20bd6f844786dce9155206112b&duo_code=ep4q7ZSuH3DuwdUGoZLGv5qb4VYKhYKp
 

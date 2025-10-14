@@ -19,15 +19,37 @@ TOTP认证流程如下：
 3. 验证：用户在有效期内将生成器应用显示的TOTP输入至在线服务。同时，服务器凭借共享密钥和当前时间，通过相同流程生成预期TOTP。随后服务器将用户输入的TOTP与自身生成的预期TOTP进行比对。
 
 ### springboot 集成
-> https://github.com/samdjstevens/java-totp/tree/master/totp-spring-boot-starter
+> https://github.com/wstrange/GoogleAuth
 
 ```
 <dependency>
-  <groupId>dev.samstevens.totp</groupId>
-  <artifactId>totp-spring-boot-starter</artifactId>
-  <version>1.7.1</version>
+    <groupId>com.warrenstrange</groupId>
+    <artifactId>googleauth</artifactId>
+    <version>1.5.0</version>
 </dependency>
 ```
+
+1. 生成TOTP的密钥  
+```
+GoogleAuthenticator gAuth = new GoogleAuthenticator();
+final GoogleAuthenticatorKey secretKey = gAuth.createCredentials();
+secretKey.getKey()
+```
+
+2. 生成 TOTP
+```
+GoogleAuthenticator gAuth = new GoogleAuthenticator();
+int code = gAuth.getTotpPassword(secretKey);
+```
+
+3. 验证 TOTP  
+```
+GoogleAuthenticator gAuth = new GoogleAuthenticator();
+boolean isCodeValid = gAuth.authorize(secretKey, password);
+```
+
+
+
 
 
 ## DUO集成

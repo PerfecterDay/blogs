@@ -5,6 +5,7 @@
   * [Springboot 启动原理-SpringApplication实例化](/spring/springboot/springboot启动原理-SpringApplication.md)
   * [Springboot 启动过程及扩展点](/spring/springboot/springboot启动原理分析.md)
   * [Springboot 自动配置原理](/spring/springboot/springboot自动配置原理.md)
+  * [Springboot中-MVC 的启动与配置原理](/spring/spring_mvc/springboot中的MVC的启动配置原理.md)
   * [配置](#)
     * [Springboot 配置文件](/spring/springboot/配置/springboot配置文件.md)
     * [Springboot 集成jasypt](/spring/springboot/配置/jasypt集成.md)

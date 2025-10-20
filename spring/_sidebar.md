@@ -41,7 +41,7 @@
     * [Servlet](/spring/spring_mvc/javaee/javaEE基础之Servlet.md)
     * [Servlet 异步请求](/spring/spring_mvc/javaee/javaEE之异步请求.md)
   * [Spring MVC](#)
-    * [Spring-MVC 的启动与配置原理](/spring/spring_mvc/springmvc的配置原理.md)
+    * [Springboot中-MVC 的启动与配置原理](/spring/spring_mvc/springboot中的MVC的启动配置原理.md)
     * [Spring-MVC的启动](/spring/spring_mvc/spring的启动.md)
     * [Spring-MVC整体运行流程和架构](/spring/spring_mvc/springmvc整体运行流程和架构.md)
     * [Spring-MVC中 DispatcherServlet](/spring/spring_mvc/springmvc中DispatcherServlet初始化分析.md)

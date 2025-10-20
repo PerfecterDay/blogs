@@ -64,7 +64,7 @@ jmap(JVM Memory Map)命令用于生成 heap dump 文件，如果不使用这个�
 
 **命令格式：**
 `jmap [option] LVMID`
-`jmap -dump:format=b,file=heapdump.phrof pid`
+`jmap -dump:format=b,file=heapdump.hprof pid`
 
 **常用参数：**
 + `-dump` : 生成堆转储快照

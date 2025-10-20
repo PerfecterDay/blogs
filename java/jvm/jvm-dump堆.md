@@ -7,6 +7,7 @@
 			- [jcmd](#jcmd)
 		- [自动捕获堆转储](#自动捕获堆转储)
 	- [Jhat分析Dump堆文件](#jhat分析dump堆文件)
+	- [Eclipse Memory Analyzer 分析 Dump 堆](#eclipse-memory-analyzer-分析-dump-堆)
 
 
 ## Dump 堆
@@ -72,3 +73,5 @@ jhat(JVM Heap Analysis Tool)命令是与jmap搭配使用，用来分析jmap生�
 + `-version` 启动后只显示版本信息就退出>
 + `-J flag` 因为 jhat 命令实际上会启动一个JVM来执行, 通过 -J 可以在启动JVM时传入一些启动参数. 例如, -J-Xmx512m 则指定运行 jhat 的Java虚拟机使用的最大堆内存为 512 MB. 如果需要使用多个JVM启动参数,则传入多个 -Jxxxxxx.
 
+
+## Eclipse Memory Analyzer 分析 Dump 堆

@@ -1,3 +1,4 @@
+```
 2025-10-16 14:39:26
 Full thread dump OpenJDK 64-Bit Server VM (11+28-Debian-1 mixed mode, sharing):
 
@@ -14309,4 +14310,4 @@ _java_thread_list=0x00007f49ac05f070, length=306, elements={
 "VM Periodic Task Thread" os_prio=0 cpu=115735.42ms elapsed=597023.43s tid=0x00007f4ad0104000 nid=0x11 waiting on condition  
 
 JNI global refs: 38, weak refs: 0
-
+```

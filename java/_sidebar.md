@@ -20,6 +20,7 @@
   * [虚拟机性能监控与故障处理工具](/java/jvm/jvm-虚拟机性能监控与故障处理工具.md)
   * [JFR和JMC](/java/jvm/jvm-JFR和JMC.md)
   * [Dump Heap堆](/java/jvm/jvm-dump堆.md)
+  * [Jstack分析服务假死](/java/jvm/jvm-jstack.md)
   * [OQL](https://cr.openjdk.org/~sundar/8022483/webrev.01/raw_files/new/src/share/classes/com/sun/tools/hat/resources/oqlhelp.html)
   * [AoT编译-Ahead of Time Compilation](https://www.baeldung.com/ahead-of-time-compilation)
   * [Servless-aws lambada](https://www.baeldung.com/java-aws-lambda)

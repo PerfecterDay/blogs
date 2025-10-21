@@ -135,7 +135,7 @@ public class WebSecurityConfigure extends WebSecurityConfigurerAdapter {
    要配置一个 `AccessDecisionManager`，只需要声明一个标注了 `@Configuration` 的配置类，让该类扩展 `GlobalMethodSecurityConfiguration` 类，并且覆盖 `accessDecisionManager` 方法返回一个 `ConsensusBased`、`UnanimousBased`或者一些自定义的实现。
 
 
-## 
+## 配置
 Block_chain_managementSecurityAutoConfiguration 配置类
 
 AuthorizationManagerBeforeMethodInterceptor
@@ -169,4 +169,15 @@ Block_chain_managementWebSecurityConfigurerAdapter 定义了一个 SecurityFilte
 WebSecurityConfiguration#springSecurityFilterChain ---> FilterChainProxy
 webSecurityExpressionHandler
 springSecurityFilterChain
+
+## 为什么 rpc-api 的请求不用 token ？
+AuthorizationFilter
+RequestMatcherDelegatingAuthorizationManager
+AuthorizeHttpRequestsConfigurer
+
+
+```
+cn.com.gtht.module.system.framework.security.config.SecurityConfiguration
+cn.com.gtht.module.infra.framework.security.config.SecurityConfiguration
+```
 

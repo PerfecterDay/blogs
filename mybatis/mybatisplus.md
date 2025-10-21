@@ -4,7 +4,7 @@
 > https://baomidou.com
 
 
-### 多数据源配置
+## 多数据源配置
 1. 添加依赖
    ```
 	<dependency>
@@ -39,3 +39,58 @@
 	public interface CouponMapper extends BaseMapper<CouponEntity> {
 	}
 	```
+
+## Join 查询
+```
+<dependency>
+    <groupId>com.github.yulichang</groupId>
+    <artifactId>mybatis-plus-join-boot-starter</artifactId>
+    <version>1.5.4</version>
+</dependency>
+```
+
+示例：
+```
+@Data
+public class User {
+    private Long id;
+    private String name;
+    private Integer age;
+    private String email;
+}
+
+@Data
+public class Address {
+    private Long id;
+    private Long userId;
+    private String city;
+    private String address;
+}
+
+/**
+ * 自定义resultType
+ */
+@Data
+@ToString
+public class UserDTO {
+    private Long id;
+    private String name;
+    private Integer age;
+    private String email;
+
+    private String city;
+    private String address;
+}
+
+
+public void testSelect() {
+	MPJLambdaWrapper<User> wrapper = new MPJLambdaWrapper<User>()
+			.selectAll(User.class)//查询user表全部字段
+			.select(Address::getCity, Address::getAddress)
+			.leftJoin(Address.class, Address::getUserId, User::getId);
+
+	List<UserDTO> userList = userMapper.selectJoinList(UserDTO.class, wrapper);
+
+	userList.forEach(System.out::println);
+}
+```

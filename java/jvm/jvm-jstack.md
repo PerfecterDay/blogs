@@ -17,3 +17,5 @@
 
 + `jmap -dump:format=b,file=heapdump.hprof 7` dump 了堆
 + 使用 `jstack -l 7` dump 了[线程快照](jstack_l.md)
+
+> https://www.joyk.com/dig/detail/1651125444231517#gsc.tab=0

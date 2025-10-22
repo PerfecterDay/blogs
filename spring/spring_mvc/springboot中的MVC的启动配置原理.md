@@ -158,7 +158,7 @@ Springboot 中使用 `ServletWebServerFactoryAutoConfiguration/DispatcherServlet
 ### Springboot 内置容器配置
 > https://docs.spring.io/spring-boot/docs/2.0.9.RELEASE/reference/html/howto-embedded-web-servers.html
 
-默认配置如下（`org.springframework.boot.autoconfigure.webServerProperties`）：
+默认配置如下（`org.springframework.boot.autoconfigure.web.ServerProperties`）：
 ```
 maxThreads-最大工作线程数（最大并发请求数） ---> 200
 minSpareThreads-预创建的空闲线程数 -----> 10
@@ -168,16 +168,25 @@ acceptCount-等待队列长度（连接请求排队数）-------> 100
 
 可以通过以下配置项修改：
 ```
-server.tomcat.max-connections=10000 //最大连接数
-server.tomcat.accept-count=1 // backlog 数
-server.tomcat.threads.max=2 //最大线程数
-
-server.http2.enabled //启用 http2
-
-// 配置https
-server.ssl.key-store=classpath:spring.keystore
-server.ssl.key-store-password=123456
+server:
+  tomcat:
+    maxConnections: 100   # 同时允许100个TCP连接
+    acceptCount: 5        # 超出maxConnections时，最多再排队5个
+    threads:
+      max: 5              # 同时能处理的请求线程只有 5 个
+      minSpare: 3
+  http2: enabled          # 启用 http2
+  ssl:
+	keyStore: classpath:spring.keystore
+	keyStorePassword: 123456
 ```
+按照上述配置假设同时有500个并发请求过来：
++ 前 100 个请求 会被 Tomcat 接受建立连接（TCP accepted）
++ 第 101 ~ 105 个请求 会进入 acceptCount = 5 的队列等待
++ 从第 106 个请求开始，Tomcat 直接拒绝连接（客户端可能看到：Connection refused、Read timeout 或 RST）
+
+所以只有前 105 个请求成功建立连接，剩下 395 个会立刻失败
+
 
 如果希望使用编程式的方式对Web服务器进行配置，Spring Boot则 提供了如下两种方式:  
 + 定义一个实现 `WebServerFactoryCustomizer` 接口的Bean实例。

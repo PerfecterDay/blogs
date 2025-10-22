@@ -1,4 +1,4 @@
-# POD
+# POD 与 优雅停机
 {docsify-updated}
 
 Pod 是可以在 Kubernetes 中创建和管理的、最小的可部署的计算单元。
@@ -25,24 +25,32 @@ Kubernetes 集群中的 Pod 主要有两种用法：
 2. 为什么pod 已经不存在了，健康检查还能成功？
 
 ### 为什么更新的时候没有 deregister 掉注册服务信息？
+consul 会在优雅停机时自动 `deregister` 掉注册的服务信息：
+```
+2025-10-22 15:54:36.071 [SpringApplicationShutdownHook] INFO  o.s.c.c.s.ConsulServiceRegistry   - Deregistering service with consul: user-center-service-8050
+```
+没有 deregister 掉，说明没有触发优雅停机。
+
 由于 Pod 所代表的是在集群中节点上运行的进程，当不再需要这些进程时允许其优雅关闭是很重要的。 一般不应武断地使用 `KILL` 信号终止它们，导致这些进程没有机会完成清理操作。
 
-设计的目标是令你能够请求删除进程，并且知道进程何时被终止，同时也能够确保删除操作终将完成。 当你请求删除某个 Pod 时，集群会记录并跟踪 Pod 的优雅终止周期， 而不是直接强制地杀死 Pod。在存在强制关闭设施的前提下， kubelet 会尝试优雅地终止 Pod。
+K8S 优雅停机设计的目标是令你能够请求删除进程，并且知道进程何时被终止，同时也能够确保删除操作终将完成。 当你请求删除某个 Pod 时，集群会记录并跟踪 Pod 的优雅终止周期， 而不是直接强制地杀死 Pod。在存在强制关闭设施的前提下， kubelet 会尝试优雅地终止 Pod。
 
-通常 Pod 优雅终止的过程为：kubelet 先发送一个带有优雅超时限期的 `SIGTERM` 信号到每个容器中的主进程（PID为1的进程），将请求发送到容器运行时来尝试停止 Pod 中的容器。 停止容器的这些请求由容器运行时以异步方式处理。 这些请求的处理顺序无法被保证。许多容器运行时遵循容器镜像内定义的 `STOPSIGNAL` 值， 如果不同，则发送容器镜像中配置的 `STOPSIGNAL` ，而不是 `SIGTERM` 信号。 
+通常 Pod 优雅终止的过程为：**kubelet 先发送一个带有优雅超时限期的 `SIGTERM` 信号到每个容器中的主进程（PID为1的进程），将请求发送到容器运行时来尝试停止 Pod 中的容器。 停止容器的这些请求由容器运行时以异步方式处理。 这些请求的处理顺序无法被保证。许多容器运行时遵循容器镜像内定义的 `STOPSIGNAL` 值， 如果不同，则发送容器镜像中配置的 `STOPSIGNAL` ，而不是 `SIGTERM` 信号。**
 
-在 Linux 上有了容器的概念之后，一旦容器建立了自己的 Pid Namespace(进程命名空间)，这个 Namespace 里的进程号也是从 1 开始标记的。所以，容器的 init 进程也被称为 1 号进程。你只需要记住：1 号进程是第一个用户态的进程，由它直接或者间接创建了 Namespace 中的其他进程。  
+在 Linux 上有了容器的概念之后，一旦容器建立了自己的 Pid Namespace(进程命名空间)，这个 Namespace 里的进程号也是从 1 开始标记的。所以，容器的 init 进程也被称为 1 号进程。你只需要记住：1 号进程是第一个用户态的进程，由它直接或者间接创建了 Namespace 中的其他进程。 
+
 每个Docker容器都是一个PID命名空间，这意味着容器中的进程与主机上的其他进程是隔离的。PID命名空间是一棵树，从PID 1开始，通常称为init。  
+
 注意：当你运行一个Docker容器时，镜像的 `ENTRYPOINT` 就是你的根进程，即PID 1(如果你没有 `ENTRYPOINT` ，那么 `CMD` 就会作为根进程，你可能配置了一个shell脚本，或其他的可执行程序，容器的根进程具体是什么，完全取决于你的配置)。
 
-一旦超出了优雅终止限期，容器运行时会向所有**剩余进程**发送 `SIGKILL` 信号，之后 Pod 就会被从 API 服务器上移除。 如果 kubelet 或者容器运行时的管理服务在等待进程终止期间被重启， 集群会从头开始重试，赋予 Pod 完整的优雅终止限期。
+**一旦超出了优雅终止限期，容器运行时会向所有剩余进程发送 `SIGKILL` 信号，之后 Pod 就会被从 API 服务器上移除。 如果 kubelet 或者容器运行时的管理服务在等待进程终止期间被重启， 集群会从头开始重试，赋予 Pod 完整的优雅终止限期。**
 
 回到我们的问题，我们的镜像中是通过 `start.sh` 脚本来启动 java 程序的：
 ```
 #!/usr/bin/env bash
 java -jar  -Dspring.profiles.active=uat app.jar
 ```
-因此，POD 启动后，这个 `start.sh` 的shell 进程是PID为1 的进程，而 java 进程则是它的子进程。根据上边的文档， shell 并不会将 `SIGTERM` 信号传递给子进程，因此 java 进程实际上并没有机会执行 deregister 操作。
+因此，POD 启动后，这个 `start.sh` 的shell 进程是PID为1 的进程，而 java 进程则是它的子进程。根据上边的文档， shell 并不会将 `SIGTERM` 信号传递给子进程，因此 java 进程实际上并没有机会执行 `deregister` 操作。
 
 ### 为什么pod 已经不存在了，健康检查还能成功？
 即使 java 进程没有主动 deregister 操作，但是因为有 consul 的健康检查，理论上是会标记服务为 critical 的，并最终 deregister 服务的。原因是集群中有多个 java 服务，每个服务都是用了 actuator 作为健康检查的 endpoint，并且使用了相同的端口，这就导致了各个服务的健康检查 URL 都是一样的。

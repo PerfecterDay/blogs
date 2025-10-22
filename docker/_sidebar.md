@@ -11,7 +11,7 @@
   * [k8s官方文档](https://kubernetes.io/zh-cn/docs/home/)
   * [k8s集群创建及使用kubectl交互](/docker/k8s/k8s-创建k8s集群及使用kubectl.md)
   * [k8s-概念及架构](/docker/k8s/k8s-概念及架构.md)
-  * [k8s-pod](/docker/k8s/k8s-pod.md)
+  * [k8s-pod与优雅停机](/docker/k8s/k8s-pod.md)
   * [k8s-对象描述](/docker/k8s/k8s-对象.md)
   * [k8s-deployment](/docker/k8s/k8s-deployment.md)
   * [k8s-DaemonSet](/docker/k8s/k8s-DaemonSet.md)

@@ -160,6 +160,7 @@ Springboot 中使用 `ServletWebServerFactoryAutoConfiguration/DispatcherServlet
 
 默认配置如下（`org.springframework.boot.autoconfigure.web.ServerProperties`）：
 ```
+maxConnections - 最大连接数 -----> 8192
 maxThreads-最大工作线程数（最大并发请求数） ---> 200
 minSpareThreads-预创建的空闲线程数 -----> 10
 acceptCount-等待队列长度（连接请求排队数）-------> 100

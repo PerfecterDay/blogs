@@ -75,3 +75,8 @@ jhat(JVM Heap Analysis Tool)命令是与jmap搭配使用，用来分析jmap生�
 
 
 ## Eclipse Memory Analyzer 分析 Dump 堆
+[安装问题解决](https://bbs.huaweicloud.com/blogs/356789)
+```
+<string>-vm</string>
+<string>/opt/homebrew/opt/sdkman-cli/libexec/candidates/java/current/bin/java</string>
+```

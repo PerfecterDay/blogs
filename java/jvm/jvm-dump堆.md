@@ -8,6 +8,8 @@
 		- [自动捕获堆转储](#自动捕获堆转储)
 	- [Jhat分析Dump堆文件](#jhat分析dump堆文件)
 	- [Eclipse Memory Analyzer 分析 Dump 堆](#eclipse-memory-analyzer-分析-dump-堆)
+		- [Dominator Tree](#dominator-tree)
+		- [Thread Overview线程视图](#thread-overview线程视图)
 
 
 ## Dump 堆
@@ -80,3 +82,19 @@ jhat(JVM Heap Analysis Tool)命令是与jmap搭配使用，用来分析jmap生�
 <string>-vm</string>
 <string>/opt/homebrew/opt/sdkman-cli/libexec/candidates/java/current/bin/java</string>
 ```
+
+<canter><img src="pics/mat.png" width="80%"></canter>
+
+核心概念：
+1. `shallow size` : 浅堆，代表了对象本身的内存占用，以及“为了引用”其他对象所占用的内存(引用指针的大小)，引用对象本身的大小不算。非数组类型的对象的 $shallow-heap=对象头+各成员变量大小之和+对齐填充$。其中，各成员变量大小之和就是实例数据，如果存在继承的情况，需要包括父类成员变量。数组类型的对象的$shallow-heap=对象头+类型变量大小*数组长度+对齐填充$，如果是引用类型，则是四字节或者八字节（64 位系统），如果是 boolean 类型，则是一个字节。这里类型变量大小*数组长度就是数组实例数据，强调是变量不实际是对象本身。
+2. `Retained heap`：深堆，一个统计结果，会循环计算引用的具体对象所占用的内存。但是深堆和“对象大小”有一点不同，深堆指的是一个对象被垃圾回收后，能够释放的内存大小，这些被释放的对象集合，叫做保留集（Retained Set）。
+3. `outgoing reference`: 对外部其他对象的引用
+4. `incoming reference` : 引用当前对象的引用
+
+
+### Dominator Tree
+Dominator Tree-支配树： 列出Heap Dump中处于活跃状态中的最大的几个对象，默认按 `retained size` 进行排序，因此很容易找到占用内存最多的对象。排在第一的最大的对象就是占用内存最多的对象，它在树中的子节点都是被该对象直接或间接引用的对象。
+
+
+### Thread Overview线程视图
+可以生成Heap Dump文件的时候线程视图Thread Overview，查看线程的运行情况，抛出的异常的分析。

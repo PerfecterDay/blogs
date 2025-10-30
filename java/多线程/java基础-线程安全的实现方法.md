@@ -1,13 +1,6 @@
 # 线程安全的实现方法
 {docsify-updated}
 
-- [线程安全的实现方法](#线程安全的实现方法)
-    - [互斥同步（阻塞同步）](#互斥同步阻塞同步)
-    - [非阻塞同步](#非阻塞同步)
-    - [无同步方案](#无同步方案)
-      - [可重入代码（Reentrant Code）](#可重入代码reentrant-code)
-      - [线程本地存储 ThreadLocal](#线程本地存储-threadlocal)
-
 ### 互斥同步（阻塞同步）
 互斥同步（Mutual Exclusion & Synchronization）是一种最常见也是最主要的并发正确性保障手段。同步是指在多个线程并发访问共享数据时，保证共享数据在同一个时刻只被一条（或者是一些，当使用信号量的时候）线程使用。而互斥是实现同步的一种手段，**临界区（Critical Section）、互斥量（Mutex）、信号量（Semaphore）和管程**都是常见的互斥实现方式。因此在“互斥同步”这四个字里面，互斥是因，同步是果；互斥是方法，同步是目的。
 
@@ -64,9 +57,10 @@
 
 Java中，可以通过`java.lang.ThreadLocal`类来实现线程本地存储的功能。每一个线程 Thread 对象中都有一个名为`threadLocals`的属性引用一个`ThreadLocal.ThreadLocalMap`对象，**这个对象存储了一组以`ThreadLocal`为键，以本地线程变量(ThreadLocal 对象中存的值)为值的 K-V 值对，`ThreadLocal` 对象就是当前线程的`ThreadLocalMap`的访问入口，使用这个值就可以在线程K-V值对中找回对应的本地线程变量。**
 
-`ThreadLocal` 可以类比成一个 `Map` 数据结构，只不过它是以当前线程对象作为 key 的，所以每次 `get/set` 都不需要传 key，默认以当前执行的操作的线程对象作为 key 。  
-不同的线程可以通过 `set(T value)` 放入不同的值到线程的 `ThreadLocalMap` 对象中，然后通过 `T get()` 方法获取当前线程的值，初始值为 null 。
-通过`ThreadLocal` 的`set`方法，可以看出来，当我们为 `ThreadLocal` 对象设置值时，实际上是以当前 `ThreadLocal` 对象为键，然后将值保存到当前 Thread 线程下的 `ThreadLocalMap` 中。
+直观表述为：每个 `Thread` 对象都保存了一个 `ThreadLocal.ThreadLocalMap<ThreadLocal,Object>` 的 `Map` ，当线程执行 `ThreadLocal` 的 `get/set` 方法时，就是使用当前的 `ThreadLocal` 对象作为 `key` 去当前线程的 `ThreadLocalMap` 中读取/保存数据。 
+
+<center><img src="pics/threadlocal.jpg" width="60%"></center>
+
 ```
 public void set(T value) {
     Thread t = Thread.currentThread();
@@ -76,6 +70,14 @@ public void set(T value) {
     } else {
         createMap(t, value);
     }
+}
+
+ThreadLocalMap getMap(Thread t) {
+    return t.threadLocals;
+}
+
+void createMap(Thread t, T firstValue) {
+    t.threadLocals = new ThreadLocalMap(this, firstValue);
 }
 ```
 
@@ -122,10 +124,6 @@ private T setInitialValue() {
     return value;
 }
 
-void createMap(Thread t, T firstValue) {
-    t.threadLocals = new ThreadLocalMap(this, firstValue);
-}
 ```
-
 
 `ThreadLocal` 的内存泄漏问题：由上可知，每个线程内部会保存以 ThreadLocal 对象为键的Map对象，那么即使在其它地方将 ThreadLocal 显示的设置为了 null，因为线程内部的 `ThreadLocalMap` 中还保留了对它的引用，所以 ThreadLocal 对象不会被回收，且 Thread 内部 `ThreadLocalMap` 中对应的键值对也不会被回收，这就有可能会引发内存泄漏。

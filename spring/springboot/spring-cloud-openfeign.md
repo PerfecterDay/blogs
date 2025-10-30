@@ -3,12 +3,56 @@
 > https://www.baeldung.com/spring-cloud-openfeign  
 > https://docs.spring.io/spring-cloud-openfeign/docs/current/reference/html/
 
-### 简介
+## 简介
 Spring Cloud OpenFeign 是一个用于Spring Boot应用程序的声明式REST客户端。Feign通过可插拔的注解支持，包括Feign注解和JAX-RS注解，使编写Web服务客户端更加容易。  
 此外，Spring Cloud还增加了对Spring MVC注解的支持，并支持使用与Spring Web相同的HttpMessageConverters。  
-使用Feign的一个好处是，除了一个接口定义外，我们不需要写任何调用服务的代码。
+使用Spring Cloud OpenFeign的一个好处是，除了一个接口定义外，我们不需要写任何调用服务的代码。
 
-### 集成步骤
+## 与 openfeign 的区别
+[openfeign](https://github.com/OpenFeign/feign) 是一个开源的项目，与spring 没有关系，主要是为了使编写 http 客户端请求代码变得更简单，而且在持续维护中。
+[spring-cloud-openfeign](https://github.com/spring-cloud/spring-cloud-openfeign) 是构建在 openfeign 之上的，目标是简化在spring 生态中使用 openfeign，它使 openfeign 支持 springMVC的注解、支持负载均衡、服务发现、熔断等等spring 的功能，而且简化了配置复杂性。但是，这个项目目前已经不再维护升级了，官方建议迁移到[ Spring HTTP Service Clients](https://docs.spring.io/spring-framework/reference/integration/rest-clients.html#rest-http-service-client)。
+
+下边是原生 Feign 使用的示例：
+```
+interface GitHub {
+  @RequestLine("GET /repos/{owner}/{repo}/contributors")
+  List<Contributor> contributors(@Param("owner") String owner, @Param("repo") String repo);
+
+  @RequestLine("POST /repos/{owner}/{repo}/issues")
+  void createIssue(Issue issue, @Param("owner") String owner, @Param("repo") String repo);
+
+}
+
+public static class Contributor {
+  String login;
+  int contributions;
+}
+
+public static class Issue {
+  String title;
+  String body;
+  List<String> assignees;
+  int milestone;
+  List<String> labels;
+}
+
+public class MyApp {
+  public static void main(String... args) {
+    GitHub github = Feign.builder()
+                         .decoder(new GsonDecoder())
+						 .encoder(new GsonEncoder())
+                         .target(GitHub.class, "https://api.github.com");
+
+    // Fetch and print a list of the contributors to this library.
+    List<Contributor> contributors = github.contributors("OpenFeign", "feign");
+    for (Contributor contributor : contributors) {
+      System.out.println(contributor.login + " (" + contributor.contributions + ")");
+    }
+  }
+}
+```
+
+## 集成步骤
 1. 添加依赖
 	````
 	<dependency>
@@ -42,7 +86,7 @@ Spring Cloud OpenFeign 是一个用于Spring Boot应用程序的声明式REST客
 	在 `@FeignClient` 注解中的value参数是一个强制性的、任意的客户端名称，指定了当前 feign client 的名字，如果集成了服务发现，这个名字会作为服务发现的服务名去解析服务端的URL，而通过url参数，我们可以人工指定服务端API的基本URL。
 4. 可以在其他Bean 中注入声明的 Feign 客户端了。
 
-### 配置
+## 配置
 **理解每个Feign客户端是由一组可定制的组件组成的，这一点非常重要。**
 Spring Cloud使用 `FeignClientsConfiguration` 类为每个命名的客户端按需创建一个默认配置选项。主要包括下述配置项：
 + Decoder – `ResponseEntityDecoder` ，它包装了 `SpringDecoder` ，用于解码 Response 响应， 将 http 响应解码成方法的返回参数。
@@ -73,7 +117,7 @@ Feign.builder()
 
 Spring-cloud-openfeign中的自动配置类： `FeignAutoConfiguration` 。
 
-#### 自定义 Java 代码配置
+### 自定义 Java 代码配置
 如果我们想定制这些Bean中的一个或多个，我们可以通过创建一个配置类来覆盖它们，然后将其添加到 `FeignClient` 注解的 `configuration` 属性中。
 ```
 @FeignClient(value = "jplaceholder",
@@ -96,7 +140,7 @@ public class ClientConfiguration {
 `ClientConfiguration` 不需要注释 `@Configuration` 。但是，如果使用了 `@Configuration` ，则应注意将其排除在任何包含此配置的 `@ComponentScan` 之外，因为指定后它将成为 `feign.Decoder` 、`feign.Encoder` 、 `feign.Contract` 等的默认配置。要避免这种情况，可以将其放在与任何 `@ComponentScan` 或 `@SpringBootApplication` 无关的独立包中，或者在 `@ComponentScan` 中明确将其排除。
 
 
-#### 配置文件配置
+### 配置文件配置
 也可以使用配置文件来配置Feign客户端，而不是使用配置类。
 
 老版本的超时配置：
@@ -150,7 +194,7 @@ spring:
 
 **如果我们同时拥有 java 配置和配置文件配置，配置文件的属性将覆盖 java 配置的值。如果我们想要java配置覆盖配置文件的配置，可以设置`spring.cloud.openfeign.client.default-to-properties=false`**
 
-#### 熔断降级
+### 熔断降级
 Spring Cloud CircuitBreaker 支持回退概念：当电路断开或出现错误时执行的默认代码路径。所以，
 1. 第一步，需要添加依赖：
 ```
@@ -228,7 +272,7 @@ static class FallbackWithFactory implements TestClientWithFactory {
 }
 ```
 
-#### Interceptors
+### Interceptors
 如果我们需要在请求之前对request 进行特定的操作，可以使用 RequestInterceptor。
 1. RequestInterceptor
 	```
@@ -249,7 +293,7 @@ static class FallbackWithFactory implements TestClientWithFactory {
 	}
    ```
 
-#### 配置 okhttp 连接池
+### 配置 okhttp 连接池
 1. 添加依赖：
    ```
     <dependency>
@@ -300,6 +344,7 @@ Spring官方在动态注册bean时(大多数时候是为一些特殊注解生成
 所有实现了该接口的类都会被 `ConfigurationClassPostProcessor` 处理， `ConfigurationClassPostProcessor` 实现了 `BeanFactoryPostProcessor` 接口，所以 `ImportBeanDefinitionRegistrar` 中动态注册的bean是优先于依赖其的bean初始化的，也能被aop、validator等机制处理。
 
 `FeignClientFactoryBean`
+`FeignBuilderCustomizer`
 
 `ReflectiveFeign` 的 `newInstance()` 方法
 ```

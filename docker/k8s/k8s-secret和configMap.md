@@ -5,7 +5,7 @@
 应用启动过程中可能需要一些敏感信息，比如访问数据库的用户名、密码或者密钥。将这 些信息直接保存在容器镜像中显然不妥，Kubernetes 提供的解决方案是Secret。
 Secret 会以密文的方式存储数据，避免了直接在配置文件中保存敏感信息。POD 服务有两种方式访问这些数据：
 + Secret 会以 Volume 的形式被 mount 到Pod，会以文件的形式存在于挂载的容器的挂载路径中，容器应用可以以**访问文件**的方式使用 Secret 中的敏感数据;
-+ 容器也可以以环境变量的方式使用这些数据。
++ 容器也可以以**环境变量**的方式使用这些数据。
 
 Secret 可通过命令行或 YAML 创建。
 
@@ -17,7 +17,7 @@ Secret 可通过命令行或 YAML 创建。
 2. `--from-file`
    ```
     echo -n admin > ./username
-    echo -n 123456 > -/password
+    echo -n 123456 > ./password
     kubectl create secret generic mysecret --from-file=./username --from-file=./password
    ```
 3. `-from-env-file`
@@ -77,9 +77,9 @@ spec:
         path: my-group/my-password
 ```
 可以自定义存放数据的文件名，如上所示，这时数据将分别存放在 `/etc/foo/my-group/my-username` 和 `/etc/foo/my-group/my-password`中。
-Kubernetes 默认会在指定的路径 /etc/foo 下为每条敏感数据创建一个文件，文件名默认就是数据条目的 Key， Value 则以明文存放在文件中。
+Kubernetes 默认会在指定的路径 `/etc/foo` 下为每条敏感数据创建一个文件，文件名默认就是数据条目的 Key， Value 则以明文存放在文件中。
 
-以 Volume 方式使用的 Secret 支持动态更新: Secret 更新后，容器中的数据也会更新。
+**以 Volume 方式使用的 Secret 支持动态更新: Secret 更新后，容器中的数据也会更新。**
 
 #### 环境变量方式
 通过 Volume 使用 Secret，容器必须从文件读取数据，稍显麻烦，Kubernetes 还支持通过环境变量使用Secret
@@ -108,7 +108,9 @@ spec:
             name: mysecret
             key: password
 ```
-需要注意的是，环境变量读取Secret 很方便，但无法支撑Secret 动态更新。
+`SECRET_USERNAME`/`SECRET_PASSWORD` 可以作为环境变量名被应用使用。
+
+需要注意的是，**环境变量读取Secret 很方便，但无法支撑Secret 动态更新。**
 
 ## ConfigMap
 Secret 可以为Pod 提供密码、Token、私钥等敏感数据;对于一些非敏感数据，比如应 用的配置信息，则可以用 ConfigMap。与 Secret 类似，POD 也可以通过 volume 挂载或者环境变量两种方式使用 ConfigMap 。

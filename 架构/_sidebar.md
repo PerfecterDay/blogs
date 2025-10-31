@@ -5,5 +5,6 @@
 * [ddd领域驱动设计](./ddd/_sidebar.md)
 * [编程范式](./编程范式.md)
 * [SOLID原则](./SOLID原则.md)
+* [12factor App](./12factor.md)
 * [微服务划分](./微服务划分.md)
 * [阿里巴巴手册](./手册规范.md)

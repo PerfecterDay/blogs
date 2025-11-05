@@ -171,7 +171,7 @@ FREEZER
 
 
 ## 交易流程
-客户购买 ：subscribe(客户申请认购) --> mint（铸币) --->  issue(通过 cross_to 私链向公链转稳定币)
+客户购买 ：subscribe(客户申请认购) --> mint（铸币） --->  issue(通过 cross_to 私链向公链转稳定币)
 客户赎回 ：redeem(通过cross_to 公链向私链转稳定币) ---> redemption(客户申请赎回，通过后直接创建 burn 记录)---> burn(burner 查看记录，点击burn 发起多签，多签完成，销毁私链的稳定币)
 
 ## 框架常用方法
@@ -235,3 +235,7 @@ curl 'http://localhost:48080/cross-chain/callable/add' \
 
 ## 以太坊初始化配置
 EthereumConfig
+
+
+## 一键改包
+`src/main/java/cn/com/gtht/server/ProjectReactor.java`

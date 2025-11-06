@@ -1,5 +1,8 @@
-# Spring Cloud
+# Spring Cloud Commons
 {docsify-updated}
+
+> https://docs.spring.io/spring-cloud-commons/reference/index.html
+
 
 `Spring Cloud Context` 为 Spring Cloud 应用程序的 ApplicationContext 提供实用工具和特殊服务（bootstrap context, encryption, refresh scope, and environment endpoints）。 `Spring Cloud Commons` 是一组抽象层和通用类，用于不同 Spring Cloud 实现（如 Spring Cloud Netflix 和 Spring Cloud Consul）。
 
@@ -73,11 +76,83 @@ management:
         include: refresh
 ```
 
-`http://localhost:8091/actuator/refresh`
+refresh 端点： `curl -XPOST http://localhost:8091/actuator/refresh`
 
 
-`RefreshAutoConfiguration`
-`RefreshEventListener`
+测试实例：
+```
+@Component
+@RefreshScope
+@Data
+public class B {
+
+    @Value("${cms.url}")
+    private String cmsUrl;
+}
+
+@Resource
+    B b;
+
+@GetMapping("/aaa")
+public String aa(){
+    Map<String, Object> map = new HashMap<>();
+    map.put("cms.url", "new-value"); // 修改或新增属性
+
+    // 添加到最前面，优先级最高
+    MapPropertySource propertySource = new MapPropertySource("dynamic-properties", map);
+    environment.getPropertySources().addFirst(propertySource);
+
+    HashSet set = new HashSet();
+    set.add("cms.url");
+    applicationContext.publishEvent(new EnvironmentChangeEvent(set));
+    return b.getCmsUrl();
+}
+```
+
+当你执行 `curl http://localhost:8050/user/aaa` 时，即使刷新了配置值，依旧返回的是初始化时的值。只有执行了 `curl -XPOST http://localhost:8091/actuator/refresh` 后，再次执行 `curl http://localhost:8050/user/aaa` 才会返回新值。
+
+
+### 原理
+`BeanFactory` 在生产 bean 时，会根据 beandefinition 的信息来获取对应的 scope，不同的 scope 使用不同的 `Scope` 实现类来生成 bean 对象，一些常见的 `Scope` 实现类如下：
+<center><img src="pics/scope.png" alt=""></center>
+
+```
+AbstractBeanFactory -> doGetBean :
+Object scopedInstance = scope.get(beanName, () -> {
+    beforePrototypeCreation(beanName);
+    try {
+        return createBean(beanName, mbd, args);
+    }
+    finally {
+        afterPrototypeCreation(beanName);
+    }
+});
+```
+
+其中 `RefreshScope` 继承自 `GenericScope` ，其 `get` 方法如下：
+```
+public Object get(String name, ObjectFactory<?> objectFactory) {
+    BeanLifecycleWrapper value = this.cache.put(name, new BeanLifecycleWrapper(name, objectFactory));
+    this.locks.putIfAbsent(name, new ReentrantReadWriteLock());
+    try {
+        return value.getBean();
+    }
+    catch (RuntimeException e) {
+        this.errors.put(name, e);
+        throw e;
+    }
+}
+```
+Cache 结构如下：
+<center><img src="pics/refresh_scope.png" alt=""></center>
+
+真正实现 `@RefreshScope` bean 创建的是 `BeanLifecycleWrapper` ，其中会保存 bean 实例对象，如果实例对象已经创建就直接返回该对象，如果没有创建就会创建一个新的实例对象。
+
+```
+RefreshAutoConfiguration
+RefreshEventListener
+RefreshScopeRefreshedEvent
+```
 
 ## Spring Cloud Commons
 诸如服务发现、负载均衡和熔断限流等模式，天然适合构建一个通用抽象层，该层可被所有Spring Cloud客户端使用，且与具体实现无关。（比如使用 Eurika 或者 Consul 都可以实现服务发现）。

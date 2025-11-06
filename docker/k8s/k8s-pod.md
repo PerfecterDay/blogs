@@ -13,6 +13,14 @@ Kubernetes 集群中的 Pod 主要有两种用法：
 + 运行单个容器的 Pod。"每个 Pod 一个容器"模型是最常见的 Kubernetes 用例； 在这种情况下，可以将 Pod 看作单个容器的包装器，并且 Kubernetes 直接管理 Pod，而不是容器。
 + 运行多个协同工作的容器的 Pod。 Pod 可以封装由紧密耦合且需要共享资源的多个并置容器组成的应用。 这些位于同一位置的容器构成一个内聚单元。
 
+## POD阶段
+Pending → Running → Succeeded / Failed
+
++ `Pending`: Pod 已被 Kubernetes 系统接受，但有一个或者多个容器尚未创建亦未运行。此阶段包括等待 Pod 被调度的时间和通过网络下载镜像的时间。
++ `Running`: Pod 已经绑定到了某个节点，Pod 中所有的容器都已被创建。至少有一个容器仍在运行，或者正处于启动或重启状态。
++ `Succeeded`: Pod 中的所有容器都已成功结束，并且不会再重启。
++ `Failed`: Pod 中的所有容器都已终止，并且至少有一个容器是因为失败终止。也就是说，容器以非 0 状态退出或者被系统终止，且未被设置为自动重启。
++ `Unknown`: 因为某些原因无法取得 Pod 的状态，通常是因为与 Pod 所在主机通信失败。
 
 ## 优雅关闭问题
 + https://www.baeldung.com/linux/exec-command-in-shell-script

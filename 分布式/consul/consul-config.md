@@ -17,15 +17,71 @@ consul kv put redis/conf/pwd test
 ```
 但是注意，此时 key 名不能以 `/` 开头，否则会报错。
 
-## 
+## Springboot 集成
+```
+<project>
+<parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>{spring-boot-version}</version>
+    <relativePath/> <!-- lookup parent from repository -->
+  </parent>
 
-<dependency>
-    <groupId>org.springframework.cloud</groupId>
-    <artifactId>spring-cloud-starter-consul-config</artifactId>
-    <version>3.1.2</version>
-</dependency>
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-starter-consul-config</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-dependencies</artifactId>
+        <version>${spring-cloud.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+</project>
+```
+
+Spring Cloud Consul Config 会根据应用名和 profile 自动构造出要读取的 KV 路径：
++ 当指定的是 YAML/PROPERTIES format 时， data-key必须被指定并且创建：
+```
+config/test,default/data    --> {prefix}/{applicationName},{profile}/{dataKey}
+config/test/data
+config/application,default/data ---> {prefix}/{applicationName},{profile}/{dataKey}
+config/application/data
+```
+
++ 当指定的是 files format 时：
+```
+config/test,default.properties
+config/test,default.yaml
+config/test,default.yaml
+config/test.properties
+config/test.yaml
+config/test.yml
+```
 
 
+配置：
+```
 spring:
   config:
     import: consul
@@ -40,3 +96,15 @@ spring:
         format: yaml
         prefix: user-center
         default-context: default
+```
+
+| 属性                                           | 作用                                | 默认值       |
+| ---------------------------------------------- | ----------------------------------- | ------------ |
+| `spring.cloud.consul.config.prefixes`            | Consul KV 的配置的文件夹路径数组     | `config`     |
+| `spring.cloud.consul.config.data-key`          | 每个路径下用于存放配置内容的 key 名 | `data`       |
+| `spring.cloud.consul.config.format`            | 存储内容格式（yaml 或 properties）  | `properties` |
+| `spring.cloud.consul.config.profile-separator` | 应用名和 profile 之间的分隔符       | `,`          |
+| `spring.cloud.consul.config.defaultContext`    | 所用应用共享的文件夹路径      | `application`     |
+| `spring.cloud.consul.config.watch.delay`       | Consul 监听配置变化的刷新周期       | `1000ms`     |
+
+配置类 ：`ConsulConfigProperties`

@@ -1,11 +1,59 @@
-#  Springboot 集成 Consul
+#  Springboot 集成 Consul 注册中心
 {docsify-updated}
 
 > https://docs.spring.io/spring-cloud-consul/docs/current/reference/html/
 
-
 consul提供的各种语言的SDK/开发库： https://developer.hashicorp.com/consul/api-docs/libraries-and-sdks  
 `spring-cloud-starter-consul-discovery` 使用的是  [consul-api](https://github.com/Ecwid/consul-api) ,依赖其底层的 `ConsulClient` 与 Consul 交互。
+
+```
+<project>
+<parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>{spring-boot-version}</version>
+    <relativePath/> <!-- lookup parent from repository -->
+  </parent>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-starter-consul-discovery</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-dependencies</artifactId>
+        <version>${spring-cloud.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+</project>
+```
+
+配置：
++ `spring.cloud.consul.discovery.enabled/spring.cloud.discovery.enabled` : 控制是否启用服务发现
++ `spring.cloud.consul.discovery.register` : 控制是否注册服务
++ `spring.cloud.consul.discovery.health-check-*` : 健康检查相关的
++ `spring.cloud.consul.discovery.register-health-check=false` ： 关闭健康检查
++ `spring.cloud.consul.discovery.heartbeat.*` : TTL 检查
 
 ### 自动配置类
 ```java

@@ -112,7 +112,7 @@ public String aa(){
 当你执行 `curl http://localhost:8050/user/aaa` 时，即使刷新了配置值，依旧返回的是初始化时的值。只有执行了 `curl -XPOST http://localhost:8091/actuator/refresh` 后，再次执行 `curl http://localhost:8050/user/aaa` 才会返回新值。
 
 
-### 原理
+#### 原理
 `BeanFactory` 在生产 bean 时，会根据 beandefinition 的信息来获取对应的 scope，不同的 scope 使用不同的 `Scope` 实现类来生成 bean 对象，一些常见的 `Scope` 实现类如下：
 <center><img src="pics/scope.png" alt=""></center>
 
@@ -157,5 +157,39 @@ RefreshScopeRefreshedEvent
 ## Spring Cloud Commons
 诸如服务发现、负载均衡和熔断限流等模式，天然适合构建一个通用抽象层，该层可被所有Spring Cloud客户端使用，且与具体实现无关。（比如使用 Eurika 或者 Consul 都可以实现服务发现）。
 
+### 服务注册与发现
 
-### `@EnableDiscoveryClient`
+#### 服务发现客户端
+`@EnableDiscoveryClient` 会扫描注册 `DiscoveryClient` 的实现。
+
+Spring Cloud 默认同时提供阻塞式和响应式服务发现客户端。可通过设置 `spring.cloud.discovery.blocking.enabled=false` 或 `spring.cloud.discovery.reactive.enabled=false` 轻松禁用阻塞式和/或响应式客户端。若需完全禁用服务发现功能，只需将 `spring.cloud.discovery.enabled` 设置为 `false` 即可。
+
+##### 优先级设置
+`spring.cloud.{clientIdentifier}.discovery.order` 属性可用于设置优先级。比如 `spring.cloud.eureka.client.order=0` ，`spring.cloud.consul.discovery.order=1` ，则 `Consul` 优先级更高。
+
+##### SimpleDiscoveryClient
+如果类路径中不存在由服务注册表支持的 `DiscoveryClient` ，则将使用 `SimpleDiscoveryClient` 实例，该实例通过属性获取服务和实例的相关信息。
+
+可用实例的相关信息应通过以下格式的属性传递： `spring.cloud.discovery.client.simple.instances.service1[0].uri=http://s11:8080` ，其中 `spring.cloud.discovery.client.simple.instances` 是通用前缀， `service1` 代表目标服务的ID， `[0]`表示实例的索引号（如示例所示，索引从0开始），而uri的值即为该实例实际可用的URI地址。
+
+#### 服务注册
+Commons 现提供 `ServiceRegistry` 接口，该接口包含 `register(Registration)` 和 `deregister(Registration)` 等方法，允许您提供自定义注册服务。 
+
+`Registration` 是一个标记接口。每个 `ServiceRegistry` 实现都拥有其专属的 `Registration` 实现:
++ `ZookeeperRegistration` 用于配合 `ZookeeperServiceRegistry` 使用
++ `EurekaRegistration` 用于配合 `EurekaServiceRegistry` 使用
++ `ConsulRegistration` 用于配合 `ConsulServiceRegistry` 使用
+
+若正在使用 `ServiceRegistry` 接口，则需为所使用的 `ServiceRegistry` 实现传递正确的 `Registration` 实现。
+
+默认情况下，服务会自动注册， 通过设置 `spring.cloud.service-registry.auto-registration.enabled=false` 可以禁用自动注册。 `@EnableDiscoveryClient(autoRegister=false)` 也可禁用自动注册。
+
+当服务自动注册时，将触发两个事件：
++ 第一个事件名为 `InstancePreRegisteredEvent` ，在服务注册前触发；
++ 第二个事件名为 `InstanceRegisteredEvent` ，在服务注册后触发。
+
+我们可以注册 `ApplicationListener` 监听器来监听并响应这些事件。
+
+
+
+

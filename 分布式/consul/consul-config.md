@@ -1,7 +1,9 @@
 # consul 作为配置中心
 {docsify-updated}
 
-## consul 中添加配置并查询
+> https://developer.hashicorp.com/consul/docs/automate/kv
+
+## consul-cli 中添加配置并查询
 UI创建配置值：
 <center><img src="pics/config-key.png" alt=""></center>
 
@@ -17,7 +19,14 @@ consul kv put redis/conf/pwd test
 ```
 但是注意，此时 key 名不能以 `/` 开头，否则会报错。
 
+## Restful API
++ 查询 key 的值： `GET /kv/:key` - `curl http://127.0.0.1:8500/v1/kv/my-key`
++ 创建/更新 key值, contents 参数是任意的，consul 按照原样存储： `PUT /kv/:key` - `curl --request PUT --data @contens http://127.0.0.1:8500/v1/kv/my-key`
++ 删除 key： `DELETE /kv/:key` - `curl --request DELETE http://127.0.0.1:8500/v1/kv/my-key`
+
 ## Springboot 集成
+> https://docs.spring.io/spring-cloud-consul/reference/config.html
+
 ```
 <project>
 <parent>
@@ -60,8 +69,8 @@ consul kv put redis/conf/pwd test
 </project>
 ```
 
-Spring Cloud Consul Config 会根据应用名和 profile 自动构造出要读取的 KV 路径：
-+ 当指定的是 YAML/PROPERTIES format 时， data-key必须被指定并且创建：
+Spring Cloud Consul Config 会根据**应用名**和 **profile** 自动构造出要读取的 KV 路径：
++ 当指定的是 `YAML/PROPERTIES` format 时， `data-key` 必须被指定并且创建：
 ```
 config/test,default/data    --> {prefix}/{applicationName},{profile}/{dataKey}
 config/test/data
@@ -69,7 +78,7 @@ config/application,default/data ---> {prefix}/{applicationName},{profile}/{dataK
 config/application/data
 ```
 
-+ 当指定的是 files format 时：
++ 当指定的是 `files` format 时：
 ```
 config/test,default.properties
 config/test,default.yaml

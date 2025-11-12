@@ -117,3 +117,5 @@ spring:
 | `spring.cloud.consul.config.watch.delay`       | Consul 监听配置变化的刷新周期       | `1000ms`     |
 
 配置类 ：`ConsulConfigProperties`
+
+`ConfigWatch` : 定时拉取配置， `spring.cloud.consul.config.watch.delay` 可以配置拉取间隔时间。

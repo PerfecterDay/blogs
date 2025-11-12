@@ -5,6 +5,11 @@
 
 ## 集成
 ```
+<properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <spring-cloud.version>2025.0.0</spring-cloud.version>
+</properties>
+
 <dependency>
     <groupId>org.springframework.cloud</groupId>
     <artifactId>spring-cloud-starter-gateway-server-webflux</artifactId>

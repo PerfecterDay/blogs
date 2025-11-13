@@ -244,7 +244,7 @@ spring:
 ```
 spring:
   cloud:
-    gateway:
+    gateway:lo
       routes:
         - id: user-service
           uri: lb://user-service

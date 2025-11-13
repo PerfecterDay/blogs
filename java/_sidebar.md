@@ -31,7 +31,7 @@
   * [包和访问权限](/java/java基础/java基础-包和访问权限.md)
   * [类和对象](/java/java基础/java基础-类和对象.md)
   * [不可变类](/java/java基础/java基础-不可变类.md)
-  * [继承](/java/java基础/java基础-继承.md)
+  * [继承与方法调用](/java/java基础/java基础-继承.md)
   * [接口与Lambda表达式](/java/java基础/java基础-接口与Lambda表达式.md)
   * [内部类](/java/java基础/java基础-内部类.md)
   * [异常、断言和日志](/java/java基础/java基础-异常断言和日志.md)

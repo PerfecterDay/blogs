@@ -1,12 +1,9 @@
-
-# mybatis 基本配置(1)
+# mybatis 基本配置
 {docsify-updated}
 
 
-
-
 mybatis 的配置文件的顶层结构如下：
-
+```
 + configuration 配置
     + [properties 属性](#properties)
     + [settings 设置](#settings)
@@ -20,6 +17,7 @@ mybatis 的配置文件的顶层结构如下：
             - [dataSource 数据源](#dataSource)
     + [databaseIdProvider 数据库厂商标识](#databaseIdProvider)
     + [mappers 映射器](#mappers)
+```
 
 ## <span id="properties">properties</span>
 这些属性都是可外部配置且可动态替换的，既可以在典型的 Java 属性文件中配置，亦可通过 properties 元素的子元素来传递。例如：

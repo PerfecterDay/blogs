@@ -63,7 +63,7 @@ public class MyService {
 
 有时，对于某些只能初始化一次的Bean，甚至必须应用 `@RefreshScope` 注解。如果Bean是“不可变”的，则必须为其添加 `@RefreshScope` 注解，或在 `spring.cloud.refresh.extra-refreshable` 属性键下指定类名。
 
-Refresh scope beans是惰性代理，仅在使用时（即方法被调用时）初始化，该作用域充当初始化值的缓存。若需强制Bean在下次方法调用时重新初始化，必须使其缓存条目失效。
+**Refresh scope beans是惰性的，当你在某个服务中注入了 `@RefreshScope` 类型的 bean 时，该 bean 并不会立即被注入，注入的实际上是一个代理对象，当你在调用 bean 的某个方法时，代理对象会去尝试获取 bean，如果bean 没有初始化，那么 bean 会被初始化并且`RefreshScope` 会缓存初始化好的 bean 。当调用了 `RefreshScope` 刷新方法后，会将缓存中的 bean 删除，这样当再次调用 bean 方法时，代理对象就会重新初始化它们，这样就能使用最新的初始化值。**
 
 `RefreshScope` 是上下文中的一个 Bean，其公开的 `refreshAll()` 方法通过清除目标缓存来刷新作用域内的所有 `Bean` 。 `/refresh` 端点通过 HTTP 或 JMX 协议暴露此功能。若需按名称刷新单个 Bean，还可使用 `refresh(String)` 方法。
 

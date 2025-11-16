@@ -49,6 +49,8 @@
 
 客户端向Spring Cloud网关发送请求。若网关处理器映射判定请求匹配路由，则将其转发至网关Web处理器。该处理器通过专属过滤器链处理请求。过滤器以点分隔线划分的原因在于：它们可在代理请求发送前、后执行逻辑。所有"预处理"过滤器逻辑执行完毕后，代理请求才会发出。代理请求发出后，将执行"后置"过滤器逻辑。
 
+`DispatcherHandler` 
+<center><img src="pics/dispatcher.png" alt=""></center>
 
 ```
 ┌────────────────────────┐
@@ -266,3 +268,22 @@ spring:
           predicates:
             - Path=/user/**
 ```
+
+## Actuator
+```
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-actuator</artifactId>
+</dependency>
+
+management:
+  endpoint:
+    gateway:
+      access: read-only
+
+  endpoints:
+    web:
+      exposure:
+        include: gateway
+```
+http://localhost:8080/actuator/gateway

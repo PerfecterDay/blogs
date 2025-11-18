@@ -1,6 +1,7 @@
-# cglib 与 bytebudy
+# Spring AOP 核心实现原理
 {docsify-updated}
 
+## cglib
 Spring 的 CGLIB 是一个“Shaded版本”， 你会在 Spring 里看到：
 ```
 org.springframework.cglib.proxy.Enhancer
@@ -44,6 +45,14 @@ Spring 并不会直接让你调用 Enhancer，而是封装在 AOP 框架中：
 + `CglibAopProxy`
 + `DefaultAopProxyFactory`
 
+```
+ProxyFactory proxyFactory = new ProxyFactory(targetObj);
+//或者 proxyFactory.setTarget(targetObj);
+proxyFactory.addAdvisor(advisor);
+//或者 proxyFactory.addAdvice(advice);
+Object proxy = proxyFactory.getProxy();
+```
+
 ## bytebudy
 ByteBuddy 是 CGLIB 的后继者。Spring 已经在逐步替换 CGLIB，但是：
 + Spring 仍可能在某些 class 级代理上回退到 CGLIB（主要是为了兼容旧版本）
@@ -52,6 +61,8 @@ ByteBuddy 是 CGLIB 的后继者。Spring 已经在逐步替换 CGLIB，但是�
 
 这就是 `org.springframework.cglib.proxy.Enhancer` 存在的原因。
 
+
+## AOP 核心实现原理
 CglibAopProxy 在 Spring 启动过程中的工作机制
 
 本文详细介绍 CglibAopProxy 在 Spring 启动过程中是如何起作用的，重点解释其在自动代理（Auto-Proxy）机制中的角色和工作流。
@@ -61,18 +72,18 @@ CglibAopProxy 在 Spring 启动过程中的工作机制
 🧠 总体流程概览
 
 Spring Boot 启动期间，Bean 的代理创建流程一般会经历以下阶段：
-1.	扫描 Bean Definitions
-2.	实例化 Bean
-3.	执行 BeanPostProcessor（重要！）
-4.	为符合条件的 Bean 创建代理对象（CglibAopProxy 或 JDK 动态代理）
-5.	将代理对象注册到容器中供业务使用
+1. 扫描 Bean Definitions
+2. 实例化 Bean
+3. 执行 BeanPostProcessor（重要！）
+4. 为符合条件的 Bean 创建代理对象（CglibAopProxy 或 JDK 动态代理）
+5. 将代理对象注册到容器中供业务使用
 
 ⸻
 
 🔍 核心触发点： `BeanPostProcessor`
 
 1. 注册 AOP 自动代理器
-当使用 AOP（如 @EnableAspectJAutoProxy，或通过 Spring Boot 引入 AOP 启动器）时，Spring 注册 AnnotationAwareAspectJAutoProxyCreator：
+当使用 AOP（如 @EnableAspectJAutoProxy，或通过 Spring Boot 引入 AOP 启动器）时，Spring 注册 `AnnotationAwareAspectJAutoProxyCreator` ：
 
 `AnnotationAwareAspectJAutoProxyCreator`
 

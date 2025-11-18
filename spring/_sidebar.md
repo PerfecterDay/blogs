@@ -24,6 +24,7 @@
   * [AOP 核心概念及 Spring AOP APIs](/spring/aop/spring-aop核心概念.md)
   * [Spring AOP 基于注解的配置](/spring/aop/spring-aop注解配置.md)
   * [Spring AOP简介](/spring/aop/spring-AOP知识.md)
+  * [Spring AOP核心实现原理](/spring/aop/cglib与bytebudy.md)
 * [Spring 数据访问](#)
   * [Spring 数据源管理](/spring/data-access/spring-数据库连接管理.md)
   * [Spring 使用JDBC访问数据库](/spring/data-access/spring-jdbc.md)

@@ -4,14 +4,6 @@
 > https://modelbaba.com/architecture/ddd/2100.html   
 > https://www.baeldung.com/hexagonal-architecture-ddd-spring
 
-- [COLA 架构规范](#cola-架构规范)
-    - [分层架构](#分层架构)
-    - [POJO 定义规范](#pojo-定义规范)
-    - [定义](#定义)
-    - [组件](#组件)
-    - [archetype](#archetype)
-    - [依赖关系](#依赖关系)
-
 [Github链接](https://github.com/alibaba/COLA)
 
 ### 分层架构
@@ -73,4 +65,7 @@ mvn archetype:generate \
 
 ### 依赖关系
 start -> adapter -> app -> client, infrastructure -> domain
-<center><img src="pics/cola-pom.png" alt=""></center>
+<center>
+<img src="pics/cola-arch.png" width="50%">
+<img src="pics/cola-pom.png" width="48%">
+</center>

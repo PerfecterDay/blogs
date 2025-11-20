@@ -1,5 +1,5 @@
 # Spring Cloud Gateway 原理
-
+{docsify-updated}
 
 ## 基础概念与原理
 + `Route` ： 网关的基本构建单元。由ID、目标URI、 `Predicate` 集合和 `filters` 集合定义。当 `Predicate` 为真时，路由即匹配成功。
@@ -41,13 +41,14 @@
      └────────────────────┘
 ```
 
-自动配置类： `GatewayAutoConfiguration` , `GatewayDiscoveryClientAutoConfiguration`
-
 > https://zhuanlan.zhihu.com/p/11306458448
 
 <center><img src="pics/route.png" width="60%"></center>
 
 
-## 
-`GatewayAutoConfiguration`
-`RouteDefinitionRouteLocator`
+## 自动配置原理
+```
+GatewayAutoConfiguration
+RouteDefinitionRouteLocator
+CachingRouteLocator
+```

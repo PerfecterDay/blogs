@@ -1,7 +1,7 @@
 # Spring cloud 动态刷新 bean 魔法- RefreshScope
 {docsify-updated}
 
-## Refresh Scope
+## RefreshScope的使用
 当配置发生变更时，标记为 `@RefreshScope` 的Spring `@Bean` 会获得特殊处理。此特性解决了有状态 `Bean` 仅在初始化时才注入配置的问题。例如，当通过环境变量修改数据库URL时，若数据源存在已打开的连接，通常需要允许这些连接持有者完成当前操作。但是，下次从连接池借用连接时，即可获得使用新URL的连接。
 
 有时，对于某些只能初始化一次的Bean，甚至必须应用 `@RefreshScope` 注解。如果Bean是“不可变”的，则必须为其添加 `@RefreshScope` 注解，或在 `spring.cloud.refresh.extra-refreshable` 属性键下指定类名。
@@ -56,6 +56,8 @@ public String aa(){
 
 
 ### 原理
+**1. 代理类的生成**
+
 `ClassPathBeanDefinitionScanner` 会将注解 `@RefreshScope` 的 bean 的 beanDefinition 重写： 
 ```
 protected Set<BeanDefinitionHolder> doScan(String... basePackages) {
@@ -117,7 +119,7 @@ public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) t
 }
 ```
 
-当你使用 `@RefreshScope` 注解声明一个 bean 时， Spring 会为其生成代理类：
+综上所述，当你使用 `@RefreshScope` 注解声明一个 bean 时， Spring 会为其生成代理类 `GenericScope.LockedScopedProxyFactoryBean` 的 bean:
 ```
 GenericScope.LockedScopedProxyFactoryBean -> ScopedProxyFactoryBean
 
@@ -151,6 +153,27 @@ public void setBeanFactory(BeanFactory beanFactory) {
     pf.addInterface(AopInfrastructureBean.class);
 
     this.proxy = pf.getProxy(cbf.getBeanClassLoader());
+}
+
+@Override
+public Object getObject() {
+    if (this.proxy == null) {
+        throw new FactoryBeanNotInitializedException();
+    }
+    return this.proxy;
+}
+```
+
+**2. 动态代理bean增强执行的过程**
+
+debug 看调用栈帧：
+<center><img src="pics/refresh.png" alt=""></center>
+
+`SimpleBeanTargetSource` 的 `getTarget()` 方法如下：
+```
+@Override
+public Object getTarget() throws Exception {
+    return getBeanFactory().getBean(getTargetBeanName());
 }
 ```
 
@@ -189,8 +212,6 @@ Cache 结构如下：
 
 真正实现 `@RefreshScope` bean 创建的是 `BeanLifecycleWrapper` ，其中会保存 bean 实例对象，如果实例对象已经创建就直接返回该对象，如果没有创建就会创建一个新的实例对象。
 
-```
-RefreshAutoConfiguration
-RefreshEventListener
-RefreshScopeRefreshedEvent
-```
+### 总结
+Spring 会为 `@RefreshScope` 标注的bean 生成一个代理对象，调用代理对象的方法时，每次会去会去 `Beanfactory` 中获取 bean 实例， `Beanfactory` 对于不同的 scope 使用不同的 `Scope` 实现类来生成 bean 实例，其中 `RefreshScope` 继承自 `GenericScope` ，`GenericScope` 的 `get` 方法会从 `GenericScope` 中获取 bean 实例，如果存在就返回该实例，如果实例不存在，就会创建一个新的实例对象并且缓存下来，下次再调用该方法时，就直接从缓存中获取。
+当配置刷新时（`RefreshScope.refreshAll()`）, `GenericScope` 中缓存的 bean 就会被清空，下次调用时就会重新创建一个新的实例对象。这时候 `Beanfactory` 会重新执行一遍 bean 实例化的过程，从而刷新最新配置。

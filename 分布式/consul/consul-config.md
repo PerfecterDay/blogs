@@ -41,11 +41,6 @@ consul kv put redis/conf/pwd test
       <groupId>org.springframework.cloud</groupId>
       <artifactId>spring-cloud-starter-consul-config</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-test</artifactId>
-      <scope>test</scope>
-    </dependency>
   </dependencies>
   <dependencyManagement>
     <dependencies>
@@ -118,4 +113,5 @@ spring:
 
 配置类 ：`ConsulConfigProperties`
 
+## Consul 配置监听实现动态刷新
 `ConfigWatch` : 定时拉取配置， `spring.cloud.consul.config.watch.delay` 可以配置拉取间隔时间。

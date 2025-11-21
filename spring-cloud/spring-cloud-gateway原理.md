@@ -52,3 +52,38 @@ GatewayAutoConfiguration
 RouteDefinitionRouteLocator
 CachingRouteLocator
 ```
+
+## Consul 动态配置路由
+```
+@Bean
+@RefreshScope
+@ConfigurationProperties("spring.cloud.gateway") //使用最新配置的一定要去除这行
+@Primary
+public GatewayProperties refreshableGatewayProperties() {
+     GatewayProperties gatewayProperties = new GatewayProperties();
+     return gatewayProperties;
+}
+
+spring:
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+          - id: abc
+            uri: https://www.abc.com
+            predicates:
+            - Path=/abc
+```
+
+动态刷新核心：RefreshRoutesEvent 事件机制
+
+`CachingRouteLocator` 实现了 Spring 的 `ApplicationListener` 接口，它监听一个特殊的事件： `RefreshRoutesEvent` 。
+无论何时，只要 Spring 应用上下文中发布了 `RefreshRoutesEvent` 事件， `CachingRouteLocator` 就会执行以下操作：
+1. 清除缓存： 立即清除内部存储的路由列表缓存。
+2. 重新加载： 再次调用底层的 `RouteDefinitionLocator` ，从最新的 Spring Environment (`GatewayProperties`)中获取新的路由配置。
+3. 更新路由： 将最新的路由列表加载到 Gateway 的路由表中，实现热更新。
+
+这里第2步就是关键，我们只要将 `GatewayProperties` 声明为 `RefreshScope` 这样就能实时更新配置值， `RouteDefinitionLocator` 就能加载到最新的配置路由了。这里有两个小坑：
+1. Gateway 自动配置中会配置 `GatewayProperties` ，所以我们必须加上 `@Primary` 覆盖自动配置的 bean
+2. Gateway 最新的路径配置前缀是 `spring.cloud.gateway.server.webflux` 不是文档中例子中的 `spring.cloud.gateway`， 为了兼容老的配置使用了 `GatewayServerWebfluxPropertiesMigrationListener` 来兼容了。所以如果使用老配置的，要加上 `@ConfigurationProperties("spring.cloud.gateway")` 注解

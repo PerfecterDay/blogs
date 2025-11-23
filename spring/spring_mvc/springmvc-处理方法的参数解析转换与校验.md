@@ -173,7 +173,7 @@ public interface HttpMessageConverter<T> {
 
 
 ### 数据绑定流程剖析
-Spring MvC通过反射机制对目标处理方法的签名进行分析，将请求消息绑定到处理方法的入参中。数据鄉定的核心部件是DataBinder，其运行机制描述如下所示：
+Spring MvC通过反射机制对目标处理方法的签名进行分析，将请求消息绑定到处理方法的入参中。数据鄉定的核心部件是 `DataBinder` ，其运行机制描述如下所示：
 <center><img src="pics/databind.jpg" width="40%"></center>
 
 Spring MVC 主框架将 ServletRequest 对象及处理方法的入参对象实例传递给 DataBinder, DataBinder 首先调用装配在SpringWeb 上下文中的 ConversionService 组件进行数据类型转换、数据格式化等工作，将 ServletRequest 中的消息填充到入参对象中， 然后调用 Validator 组件对己经鄉定了请求消息数据的入参对象进行数据合法性校验，最终生成数据绑定结果 BindingResult 对象。 BindingResult 包含了已完成数据绑定的入参 对象，还包含相应的校验错误对象。Spring MVC 抽取 BindingResult 中的入参对象及校验错误对象，将它们赋给处理方法的相应入参。

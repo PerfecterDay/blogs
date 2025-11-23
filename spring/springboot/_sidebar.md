@@ -8,6 +8,8 @@
   * [Springboot中-MVC 的启动与配置原理](/spring/spring_mvc/springboot中的MVC的启动配置原理.md)
   * [配置](#)
     * [Springboot 配置文件](/spring/springboot/配置/springboot配置文件.md)
+    * [Springboot 配置加载流程](/spring/springboot/配置/springboot-配置加载流程.md)
+    * [Springboot Binder](/spring/springboot/配置/springboot-binder.md)
     * [Springboot 集成jasypt](/spring/springboot/配置/jasypt集成.md)
     * [Springboot 集成vault](/spring/springboot/配置/vault集成.md)
   * [Springboot Actuator](/spring/springboot/springboot-actutor.md)

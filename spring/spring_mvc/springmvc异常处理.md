@@ -1,13 +1,6 @@
 # Spring MVC 的常见注解与异常处理
 {docsify-updated}
 
-- [Spring MVC 的常见注解与异常处理](#spring-mvc-的常见注解与异常处理)
-  - [异常处理](#异常处理)
-    - [统一异常处理](#统一异常处理)
-      - [使用 @ExceptionHandler 注解](#使用-exceptionhandler-注解)
-      - [实现 HandlerExceptionResolver 接口并注册到 bean 容器](#实现-handlerexceptionresolver-接口并注册到-bean-容器)
-      - [使用 @ControllerAdvice+ @ExceptionHandler 注解](#使用-controlleradvice-exceptionhandler-注解)
-
 ## 异常处理
 如果在请求处理过程中抛出异常， `DispatcherServlet` 会委托一连串 `HandlerExceptionResolver` Bean 来解决异常并提供替代处理方法，通常是错误响应。
 下面列出了可用的 `HandlerExceptionResolver` 实现：
@@ -16,7 +9,7 @@
 3. `ResponseStatusExceptionResolver` : 使用 `@ResponseStatus` 注解解决异常，并根据注解中的值将异常映射为 HTTP 状态代码。
 4. `ExceptionHandlerExceptionResolver` : 通过调用 `@Controller` 或 `@ControllerAdvice` 类中的 `@ExceptionHandler` 方法来解决异常
 
-可以在 Spring 配置中声明多个 HandlerExceptionResolver Bean，并根据需要设置它们的 order 属性，从而形成一个异常解析器链。顺序属性越高，异常解析器的位置就越靠后。
+可以在 Spring 配置中声明多个 `HandlerExceptionResolver` Bean，并根据需要设置它们的 order 属性，从而形成一个异常解析器链。顺序属性越高，异常解析器的位置就越靠后。
 
 Spring MVC的 `DispatcherServlet.properties` 会自动为一些默认异常、`@ResponseStatus` 注释的异常以及 `@ExceptionHandler` 注释的方法配置内置解析器。我们可以自定义或替换该列表。
 

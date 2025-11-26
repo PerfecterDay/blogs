@@ -24,24 +24,69 @@ public class ExampleAdvice3 {}
 选择器在运行时进行评估，如果大量使用，可能会对性能产生负面影响。
 
 ## 原理
-请求进入 DispatcherServlet
-        ↓
-调用 Handler（你的 Controller 方法）
-        ↓
-返回值处理器（HandlerMethodReturnValueHandler）
-        ↓
-【调用 ResponseBodyAdvice】
-        ↓
-使用 HttpMessageConverter 将返回值写入响应体
-        ↓
-响应写出到客户端
-
-特定类型的 `HandlerMethodReturnValueHandler` -> `AbstractMessageConverterMethodProcessor` -> `HttpEntityMethodProcessor/RequestResponseBodyMethodProcessor` 会调用 Advice ，核心代码在 `AbstractMessageConverterMethodProcessor` 的 `writeWithMessageConverters` 方法:
+特定类型的继承关系 `HandlerMethodReturnValueHandler` -> `AbstractMessageConverterMethodProcessor` -> `HttpEntityMethodProcessor/RequestResponseBodyMethodProcessor` 会调用 Advice ，核心代码在: 
 ```
-body = getAdvice().beforeBodyWrite(body, returnType, selectedMediaType,
+AbstractMessageConverterMethodArgumentResolver.readWithMessageConverters(...){
+    ...
+    HttpInputMessage msgToUse =
+	    getAdvice().beforeBodyRead(message, parameter, targetType, converterType);
+    ...
+}
+```
+<cennter><img src="pics/readeAdvice.png" alt=""></cennter>
+
+
+```
+AbstractMessageConverterMethodArgumentResolver.writeWithMessageConverters(...){
+   body = getAdvice().beforeBodyWrite(body, returnType, selectedMediaType,
 							(Class<? extends HttpMessageConverter<?>>) converter.getClass(),
 							inputMessage, outputMessage);
+}
 ```
+<cennter><img src="pics/writeAdvice.png" alt=""></cennter>
+
+最终调用功能都是在 `RequestResponseBodyAdviceChain` 类对应的方法里完成的：
+```
+@Override
+public HttpInputMessage beforeBodyRead(HttpInputMessage request, MethodParameter parameter,
+        Type targetType, Class<? extends HttpMessageConverter<?>> converterType) throws IOException {
+
+    for (RequestBodyAdvice advice : getMatchingAdvice(parameter, RequestBodyAdvice.class)) {
+        if (advice.supports(parameter, targetType, converterType)) {
+            request = advice.beforeBodyRead(request, parameter, targetType, converterType);
+        }
+    }
+    return request;
+}
+
+@Override
+@Nullable
+public Object beforeBodyWrite(@Nullable Object body, MethodParameter returnType, MediaType contentType,
+        Class<? extends HttpMessageConverter<?>> converterType,
+        ServerHttpRequest request, ServerHttpResponse response) {
+
+    return processBody(body, returnType, contentType, converterType, request, response);
+}
+
+@Nullable
+private <T> Object processBody(@Nullable Object body, MethodParameter returnType, MediaType contentType,
+        Class<? extends HttpMessageConverter<?>> converterType,
+        ServerHttpRequest request, ServerHttpResponse response) {
+
+    for (ResponseBodyAdvice<?> advice : getMatchingAdvice(returnType, ResponseBodyAdvice.class)) {
+        if (advice.supports(returnType, converterType)) {
+            body = ((ResponseBodyAdvice<T>) advice).beforeBodyWrite((T) body, returnType,
+                    contentType, converterType, request, response);
+        }
+    }
+    return body;
+}
+```
+
+从以上代码可以看出，首先会根据请求值/返回值**动态获取**匹配的 `RequestBodyAdvice` 和 `ResponseBodyAdvice` ，然后调用 `supports` 方法判断是否支持当前请求/返回值，如果支持则调用 `beforeBodyRead` 和 `beforeBodyWrite` 方法。
+
+这部分是动态获取的，所以官方文档才会说可能会有运行时开销。
+
 
 ## 接口加解密功能
 使用 `RequestBodyAdvice` 和 `ResponseBodyAdvice` 实现基于注解的接口加解密功能。
@@ -143,7 +188,7 @@ public class EncryptResponseAdvice implements ResponseBodyAdvice<Object> {
 ```
 
 ### 接口
-这里注意⚠️：  
+这里注意：  
 响应类型需要定义成 `ResponseEntity<String>` 而不能是一个自定义 DTO，应为如果是 DTO，spring 还会用类似 `MappingJackson2HttpMessageConverter` 的转换器处理最后的加密字符串，这样客户端收到的响应会比加密字符串前后加上双引号。
 ```
 @PostMapping("/test")

@@ -52,9 +52,9 @@
     * [Spring-MVC的内置Filter](/spring/spring_mvc/springmvc提供的内置Filter.md)
     * [Spring-MVC的Controller方法](/spring/spring_mvc/springmvc-请求处理方法.md)
     * [Spring-MVC的Controller Advice](/spring/spring_mvc/springmvc-controllerAdvice.md)
-    * [Spring-MVC中 ContextLoaderListener](/spring/spring_mvc/Springmvc中ContextLoaderListener分析.md)
-    <!-- * [Spring-MVC中的注解](/spring/spring_mvc/springmvc-注解.md) -->
     * [Spring-MVC异常处理](/spring/spring_mvc/springmvc异常处理.md)
+    <!-- * [Spring-MVC中的注解](/spring/spring_mvc/springmvc-注解.md) -->
+    * [Spring-MVC中 ContextLoaderListener](/spring/spring_mvc/Springmvc中ContextLoaderListener分析.md)
     * [Spring-MVC线程安全](/spring/spring_mvc/springmvc线程安全相关.md)
     * [Spring-MVC的Websocket](/spring/spring_mvc/springmvc-websocket.md)
 * [Springboot](#)

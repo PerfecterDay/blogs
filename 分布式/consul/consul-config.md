@@ -114,4 +114,4 @@ spring:
 配置类 ：`ConsulConfigProperties`
 
 ## Consul 配置监听实现动态刷新
-`ConfigWatch` : 定时拉取配置， `spring.cloud.consul.config.watch.delay` 可以配置拉取间隔时间。
+`ConfigWatch` : 定时拉取配置，有更新时发布 `RefreshEvent`事件。  `spring.cloud.consul.config.watch.delay` 可以配置拉取间隔时间。

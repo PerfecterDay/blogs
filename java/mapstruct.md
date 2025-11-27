@@ -1,22 +1,11 @@
 # Mapstruct
 {docsify-updated}
 
-- [Mapstruct](#mapstruct)
-  - [依赖与插件](#依赖与插件)
-  - [不同名字映射](#不同名字映射)
-  - [类型转换](#类型转换)
-  - [执行java语句](#执行java语句)
-  - [增加自定义转换逻辑](#增加自定义转换逻辑)
-  - [集合转换](#集合转换)
-  - [命名方法](#命名方法)
-  - [插件冲突](#插件冲突)
-  - [复杂转换-多个输入组成一个对象](#复杂转换-多个输入组成一个对象)
+> https://mapstruct.org/documentation/stable/reference/html/  
+> https://www.baeldung.com/mapstruct  
+> https://www.baeldung.com/java-mapstruct-mapping-collections
 
-https://www.baeldung.com/mapstruct  
-https://www.baeldung.com/java-mapstruct-mapping-collections
-
-
-### 依赖与插件
+## 依赖与插件
 ```
 <dependency>
     <groupId>org.mapstruct</groupId>
@@ -40,7 +29,7 @@ https://www.baeldung.com/java-mapstruct-mapping-collections
 </plugin>
 ```
 
-### 不同名字映射
+## 不同名字映射
 不同名字之间的map：
 ```
 @Mapper
@@ -56,7 +45,7 @@ public interface EmployeeMapper {
 }
 ```
 
-### 类型转换
+## 类型转换
 当类型需要转换时，比如时间转字符串：
 ```
 @Mapping(target="employeeId", source = "entity.id")
@@ -72,7 +61,7 @@ EmployeeDTO employeeToEmployeeDTO(Employee entity);
 Employee employeeDTOtoEmployee(EmployeeDTO dto);
 ```
 
-### 执行java语句
+## 执行java语句
 当某个字段需要特殊处理时：
 ```
 // List<String> 转 String
@@ -84,7 +73,7 @@ public interface PublishVersionRequst2AppVersionEntityMapper {
 }
 ```
 
-### 增加自定义转换逻辑
+## 增加自定义转换逻辑
 ```
 @Mapper
 public abstract class OrderSyncRequestMapper {
@@ -101,7 +90,7 @@ public abstract class OrderSyncRequestMapper {
 }
 ```
 
-### 集合转换
+## 集合转换
 转换 List 集合类型时，必须声明元素类型的转换方法：
 ```
 @Mapper
@@ -123,7 +112,7 @@ public abstract class TradeNews2MessageMapper {
 }
 ```
 
-### 命名方法
+## 命名方法
 当有多个转换方法可调用时，需要使用 `@Named` 区别各个方法，并在转 List 的方法上使用 `@IterableMapping` 注解指明要使用的方法：
 ```
     @Mapping(target = "memo", expression = "java(cn.hutool.json.JSONUtil.toList(version.getMemo(),String.class))")
@@ -142,7 +131,7 @@ public abstract class TradeNews2MessageMapper {
 ```
 
 
-### 插件冲突
+## 插件冲突
 与 Lombok 配合出现：
 No property named "sms" exists in source parameter/No property named "sms" exists in result parameter
 需要先用Lombok处理后才能用mapstruct，加入下列配置：
@@ -178,7 +167,7 @@ No property named "sms" exists in source parameter/No property named "sms" exist
 ```
 
 
-### 复杂转换-多个输入组成一个对象
+## 复杂转换-多个输入组成一个对象
 I have Car:
 + id
 + brand

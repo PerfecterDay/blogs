@@ -1,11 +1,7 @@
 # mysql高可用-主从复制
 {docsify-updated}
 
-- [mysql高可用-主从复制](#mysql高可用-主从复制)
-  - [复制原理](#复制原理)
-    - [一般步骤](#一般步骤)
-    - [Docker主从复制实战](#docker主从复制实战)
-  - [问题排查](#问题排查)
+
 
 ## 复制原理
 复制是 mysql 数据库提供的一种高可用高性能解决方案，分为3个步骤：
@@ -26,7 +22,7 @@
 2. 配置 master 服务器
    ```
    log-bin=master-bin #二进制文件名称
-   binlog-format=ROW  #二进制日志格式，有row、statement、mixed三种格式，row指的是把改变的内容复制过去，而不是把命令在从服务器上执行一遍，statement指的是在主服务器上执行的SQL语句，在从服务器上执行同样   的语句。MySQL默认采用基于语>句的复制，效率比较高。mixed指的是默认采用基于语句的复制，一旦发现基于语句的无法精确的复制时，就会采用基于行的复制。
+   binlog-format=ROW  #二进制日志格式，有row、statement、mixed三种格式，row指的是把改变的内容复制过去，而不是把命令在从服务器上执行一遍，statement指的是在主服务器上执行的SQL语句，在从服务器上执行同样的语句。MySQL默认采用基于语句的复制，效率比较高。mixed指的是默认采用基于语句的复制，一旦发现基于语句的无法精确的复制时，就会采用基于行的复制。
    server-id=1                #要求各个服务器的id必须不一样
    binlog-do-db=test   #同步的数据库名称
    binlog-ignore-db=mysql # 指定忽略的数据库

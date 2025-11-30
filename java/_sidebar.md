@@ -68,6 +68,7 @@
   * [线程池与Fork-Join](/java/多线程/java基础-并发之线程池.md)
   * [定时任务](/java/多线程/java基础-定时任务.md)
   * [AQS](/java/多线程/java基础-并发之AQS.md)
+  * [AQS-动画](/java/多线程/java-并发aqs动画.html)
   * [并发容器与并发工具类](/java/多线程/java基础-并发容器与工具类.md)
   * [CompletableFuture](/java/多线程/java基础-CompletableFuture.md)
   * [异步与多线程](/java/多线程/异步与多线程的区别.md)

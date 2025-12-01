@@ -61,9 +61,9 @@ public void start() {
 
 <center><img src="pics/lifecycle.png" width="80%"></center>
 
-可以发现只有传入 `false` 参数或者 bean 是 `SmartLifecycle` 类型实例且是自动启动时，才会调用 `start()` 方法。所以，通过上面的 `DefaultLifecycleProcessor` 的 `start` 方法调用时(通过 `AbstractApplicationContext` 的 `start()`方法会调用)， `Lifecycle/SmartLifecycle` bean 会被同时调用；而 `onRefresh()` 方法只会调用 `SmartLifecycle` bean 的 `start` 方法。
+可以发现只有传入 `false` 参数或者 bean 是 `SmartLifecycle` 类型实例且是自动启动时，才会调用 `Lifecycle` 的 `start()` 方法。所以，通过上面的 `DefaultLifecycleProcessor` 的 `start` 方法调用时(通过 `AbstractApplicationContext` 的 `start()`方法会调用)， `Lifecycle/SmartLifecycle` bean 会被同时调用；而 `onRefresh()` 方法只会调用 `SmartLifecycle` bean 的 `start` 方法。
 
-这也就是为什么说需要显示调用 `ApplicationCOntext` 的 `start()` 方法， `Lifecycle` bean 才能生效的原因。
+这也就是为什么说需要显示调用 `ApplicationContext` 的 `start()` 方法， `Lifecycle` bean 才能生效的原因。
 
 ## 与spring 事件机制的一些区别
 用 Spring 的事件机制（比如监听 ContextRefreshedEvent）也可以实现类似的“启动时做点事”的功能。但 `Lifecycle/SmartLifecycle` 和事件监听是关注点不同的机制，各有适用场景。

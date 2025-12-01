@@ -43,5 +43,5 @@
   * [Health API](/分布式/consul/health.md)
   * [Consul 服务注册](/分布式/consul/consul-服务注册.md)
   * [Consul 健康检查](/分布式/consul/consul-健康检查.md)
-  * [Springboot的集成服务注册与发现](/分布式/consul/springboot集成consul.md)
+  * [Springboot的集成服务注册与发现](/spring-cloud/springboot集成consul.md)
   * [Consul 配置中心](/分布式/consul/consul-config.md)

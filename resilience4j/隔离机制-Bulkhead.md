@@ -1,14 +1,5 @@
 # 隔离机制-Bulkhead
 {docsify-updated}
-- [隔离机制-Bulkhead](#隔离机制-bulkhead)
-	- [介绍](#介绍)
-	- [创建BulkheadRegistry](#创建bulkheadregistry)
-	- [创建和配置BulkHead](#创建和配置bulkhead)
-	- [创建和执行函数式接口](#创建和执行函数式接口)
-	- [处理RegistryEvent事件](#处理registryevent事件)
-	- [处理BulkheadEvents事件](#处理bulkheadevents事件)
-	- [处理BulkheadEvent事件](#处理bulkheadevent事件)
-
 
 ## 介绍
 

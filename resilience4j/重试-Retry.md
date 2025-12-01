@@ -1,14 +1,6 @@
 # 重试
 {docsify-updated}
 
-- [重试](#重试)
-	- [创建 RetryRegistry](#创建-retryregistry)
-	- [创建和配置重试](#创建和配置重试)
-	- [装饰和执行函数式接口](#装饰和执行函数式接口)
-	- [处理发出的RegistryEvent事件](#处理发出的registryevent事件)
-	- [使用自定义的IntervalFunction](#使用自定义的intervalfunction)
-
-
 ## 创建 RetryRegistry
 
 就像断路器模块一样，这么模块提供了在内存中的`RetryRegistry`，你可以使用这个管理（创建和检索）Retry实例。

@@ -1,17 +1,6 @@
 # 限流器-Limiter
 {docsify-updated}
 
-- [限流器-Limiter](#限流器-limiter)
-  - [介绍](#介绍)
-  - [原理](#原理)
-  - [创建RateLimiterRegistry](#创建ratelimiterregistry)
-  - [创建和配置限流器](#创建和配置限流器)
-  - [装饰和执行函数式接口](#装饰和执行函数式接口)
-  - [处理RegistryEvents事件](#处理registryevents事件)
-  - [处理RateLimiterEvents事件](#处理ratelimiterevents事件)
-  - [重写RegistryStore](#重写registrystore)
-
-
 ## 介绍
 
 限流是一种必不可少的技术，可以帮助您的API进行扩展，并建立服务的高可用性和可靠性。但是，这项技术还附带了一堆不同的选项，比如如何处理检测到的多余流量，或者您希望限制什么类型的请求。您可以简单地拒绝这个超限请求，或者构建一个队列以稍后执行它们，或者以某种方式组合这两种方法。

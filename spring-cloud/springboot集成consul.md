@@ -288,42 +288,7 @@ public class ConsulAutoServiceRegistrationListener implements SmartApplicationLi
       }
 }
 ```
-当收到Springboot的`WebServerInitializedEvent` 事件时，就会开始注册服务。
-
-### 服务发现
-
-1. 使用 `Spring Cloud LoadBalancer`
-Spring Cloud 支持 Feign（REST 客户端构建器）和 Spring RestTemplate，以便使用逻辑服务名称/ID 而不是物理 URL 查找服务。Feign 和具有 RestTemplate 都利用 Spring Cloud LoadBalancer 实现客户端负载平衡。
-1. 使用 `DiscoveryClient`
-   ```
-   @Autowired
-   private DiscoveryClient discoveryClient;
-
-   public String serviceUrl() {
-       List<ServiceInstance> list = discoveryClient.getInstances("STORES");
-       if (list != null && list.size() > 0 ) {
-           return list.get(0).getUri();
-       }
-       return null;
-   }
-   ```
-
-服务发现使用的 `HealthConsulClient` 的方法：
-```java
-public Response<List<HealthService>> getHealthServices(String serviceName, HealthServicesRequest healthServicesRequest) {
-      HttpResponse httpResponse = this.rawClient.makeGetRequest("/v1/health/service/" + serviceName, healthServicesRequest.asUrlParameters());
-      if (httpResponse.getStatusCode() == 200) {
-      List<HealthService> value = (List)GsonFactory.getGson().fromJson(httpResponse.getContent(), (new TypeToken<List<HealthService>>() {
-      }).getType());
-      return new Response(value, httpResponse);
-      } else {
-      throw new OperationException(httpResponse);
-      }
-}
-```
-
-调用的 API 是 `/v1/health/service/` .
-
+当收到Springboot的`WebServerInitializedEvent` 事件时，就会开始注册服务。这是 Spring-cloud-consul 的默认机制，如果没有 web 环境，就不会自动注册服务，此时就需要自行注册：
 ### 自定义注册-使用tcp health check
 
 以下类可以实现两个功能：
@@ -362,18 +327,8 @@ public class ConsulRegister implements ConsulRegistrationCustomizer{
             check.setTtl(ttlConfig.getTtl().getSeconds() + "s");
         }
 
-        Assert.notNull(port, "createCheck port must not be null");
-        Assert.isTrue(port > 0, "createCheck port must be greater than 0");
-
-//            if (properties.getHealthCheckUrl() != null) {
-//                check.setHttp(properties.getHealthCheckUrl());
-//            }
-//            else {
-//                check.setHttp(String.format("%s://%s:%s%s", properties.getScheme(), properties.getHostname(), port,
-//                        properties.getHealthCheckPath()));
-//            }
         check.setTcp(service.getAddress().concat(":").concat(String.valueOf(port)));
-        check.setHeader(properties.getHealthCheckHeaders());
+        check.setGrpc("localhost:8101"); //或者设置 grpc
         check.setInterval(properties.getHealthCheckInterval());
         check.setTimeout(properties.getHealthCheckTimeout());
         check.setTlsSkipVerify(properties.getHealthCheckTlsSkipVerify());
@@ -381,6 +336,42 @@ public class ConsulRegister implements ConsulRegistrationCustomizer{
     }
 }
 ```
+
+
+### 服务发现
+
+1. 使用 `Spring Cloud LoadBalancer`
+Spring Cloud 支持 Feign（REST 客户端构建器）和 Spring RestTemplate，以便使用逻辑服务名称/ID 而不是物理 URL 查找服务。Feign 和具有 RestTemplate 都利用 Spring Cloud LoadBalancer 实现客户端负载平衡。
+1. 使用 `DiscoveryClient`
+   ```
+   @Autowired
+   private DiscoveryClient discoveryClient;
+
+   public String serviceUrl() {
+       List<ServiceInstance> list = discoveryClient.getInstances("STORES");
+       if (list != null && list.size() > 0 ) {
+           return list.get(0).getUri();
+       }
+       return null;
+   }
+   ```
+
+服务发现使用的 `HealthConsulClient` 的方法：
+```java
+public Response<List<HealthService>> getHealthServices(String serviceName, HealthServicesRequest healthServicesRequest) {
+      HttpResponse httpResponse = this.rawClient.makeGetRequest("/v1/health/service/" + serviceName, healthServicesRequest.asUrlParameters());
+      if (httpResponse.getStatusCode() == 200) {
+      List<HealthService> value = (List)GsonFactory.getGson().fromJson(httpResponse.getContent(), (new TypeToken<List<HealthService>>() {
+      }).getType());
+      return new Response(value, httpResponse);
+      } else {
+      throw new OperationException(httpResponse);
+      }
+}
+```
+
+调用的 API 是 `/v1/health/service/` .
+
 
 ### 重启consul 后，服务不能重新注册：
 https://github.com/spring-cloud/spring-cloud-consul/issues/197  

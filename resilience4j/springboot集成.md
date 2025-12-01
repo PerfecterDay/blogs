@@ -2,15 +2,7 @@
 {docsify-updated}
 > https://resilience4j.readme.io/docs/getting-started-3
 
-- [Springboot 集成](#springboot-集成)
-	- [添加依赖](#添加依赖)
-	- [基于Yaml的配置](#基于yaml的配置)
-	- [Java 代码配置](#java-代码配置)
-	- [注解](#注解)
-	- [切面的顺序](#切面的顺序)
-
-
-### 添加依赖
+## 添加依赖
 ```
 <dependency>
 	<groupId>io.github.resilience4j</groupId>
@@ -25,7 +17,7 @@
 
 ```
 
-### 基于Yaml的配置
+## 基于Yaml的配置
 ```
 resilience4j.circuitbreaker:
     instances:
@@ -112,7 +104,7 @@ resilience4j.timelimiter:
             cancelRunningFuture: false
 ```
 
-### Java 代码配置
+## Java 代码配置
 ```
 @Bean
 public CircuitBreakerConfigCustomizer testCustomizer() {
@@ -133,7 +125,7 @@ Resilience4j有自己的customizer类型，可以按上述代码示使用：
 | Time Limiter       | TimeLimiterConfigCustomizer        |
 
 
-### 注解
+## 注解
 ```
 @CircuitBreaker(name = BACKEND, fallbackMethod = "fallback")
 @RateLimiter(name = BACKEND)
@@ -171,7 +163,7 @@ private Mono<String> fallback(String param1, Exception e) {
 >注意：降级方法（fallbackMethod）应置于相同的类中，并且必须具有相同的方法签名，只可以多一个额外的异常类型的参数。
 
 
-### 切面的顺序
+## 切面的顺序
 Resilience4j的切面执行顺序：
 
 ```

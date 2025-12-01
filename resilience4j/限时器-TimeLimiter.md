@@ -1,12 +1,6 @@
 # 限时器-TimeLimiter
 {docsify-updated}
 
-- [限时器-TimeLimiter](#限时器-timelimiter)
-	- [创建TimeLimiterRegistry](#创建timelimiterregistry)
-	- [创建和配置TimeLimiter](#创建和配置timelimiter)
-	- [装饰与执行函数式接口](#装饰与执行函数式接口)
-
-
 ## 创建TimeLimiterRegistry
 
 就像断路器模块一样，这个模块提供了一个内存中的`TimeLimiterRegistry`，你可以使用它管理（创建和检索）限时器实例。

@@ -6,7 +6,13 @@
 gRPC 基于远程过程调用的客户-服务器模型。 客户端创建一个与服务器相连的通道。 RPC 由客户端发起并发送给服务器，服务器再回复客户端。 当客户端和服务器发送完信息后，它们会半关闭各自的连接。 服务器一关闭，RPC 就完成了。
 
 客户端：  
-要发送 RPC，首先要使用 `ManagedChannelBuilder.forTarget(java.lang.String)` 创建一个通道。 使用自动生成的 Protobuf 存根时，存根类将有用于封装通道的构造函数。 这些构造函数包括 `newBlockingStub`、 `newStub`  和 `newFutureStub` ，你可以根据自己的设计来使用它们，存根是客户端与服务器交互的主要方式。
+要发送 RPC，首先要使用 `ManagedChannelBuilder.forTarget(java.lang.String)` 创建一个通道。 使用自动生成的 Protobuf 存根时，存根类将有用于封装通道的构造函数。 这些构造函数包括 `newBlockingStub`、 `newStub`  和 `newFutureStub` ，你可以根据自己的设计来使用它们，存根是客户端与服务器交互的主要方式。还可以指定负载均衡策略：
+```
+ManagedChannel channel = Grpc.newChannelBuilder(target, InsecureChannelCredentials.create())
+            .defaultLoadBalancingPolicy("round_robin")
+        .build();
+GreeterGrpc.GreeterBlockingStub blockingStub = GreeterGrpc.newBlockingStub(channel);
+```
 
 服务器端：  
 要接收 RPC，请使用 `ServerBuilder.forPort(int)` 创建一个服务器。 Protobuf 存根将包含一个名为 `AbstractFoo` 的抽象类，其中 Foo 是你的服务名称。 扩展这个类，并将它的实例传递给 `ServerBuilder.addService(io.grpc.ServerServiceDefinition)` 。 服务器构建完成后，调用 `Server.start()` 开始接受 RPC。

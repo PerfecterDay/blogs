@@ -62,11 +62,7 @@ public GrpcServerConfigurer keepAliveServerConfigurer() {
 }
 ```
 ## 客户端
-<<<<<<< Updated upstream
-1. 客户端配置参照 `grpc-client-spring-boot-autoconfigure` jar 包中的 `net.devh.boot.grpc.client.config.GrpcChannelsProperties` 类，`GrpcChannelProperties` 包含了具体的配置项
-=======
 1. 客户端配置参照 `grpc-client-spring-boot-autoconfigure` jar 包中的 `net.devh.boot.grpc.client.config.GrpcChannelsProperties` 类
->>>>>>> Stashed changes
 2. `GrpcClientBeanPostProcessor` 这个类处理使用了 `@GrpcClient` 注解的自动注入
 
 
@@ -125,7 +121,6 @@ public void heartbeat(final HeartbeatEvent event) {
 }
 ```
 
-<<<<<<< Updated upstream
 ### 负载均衡
 `GrpcChannelProperties` 中指定的默认负载均衡策略是 `round_robin`:
 ```
@@ -144,6 +139,3 @@ grpc:
   server:
     port: 8912
 ```
-=======
-### 负载均衡
->>>>>>> Stashed changes

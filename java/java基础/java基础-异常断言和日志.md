@@ -1,16 +1,6 @@
 # 异常、断言和日志
 {docsify-updated}
 
-- [异常、断言和日志](#异常断言和日志)
-  - [异常](#异常)
-    - [声明受查异常](#声明受查异常)
-    - [finally 语句](#finally-语句)
-      - [finally 与 return](#finally-与-return)
-    - [带资源的 try 语句](#带资源的-try-语句)
-  - [断言](#断言)
-  - [日志](#日志)
-
-
 ## 异常
 Java 的异常结构：
 
@@ -18,11 +8,11 @@ Java 的异常结构：
 
 ```
               ---> Throwable <--- 
-              |    (checked)     |
+              |                  |
               |                  |
               |                  |
       ---> Exception           Error
-      |    (checked)        (unchecked)
+      |                     (unchecked)
       |
 RuntimeException
   (unchecked)
@@ -44,11 +34,13 @@ Java语言规范:
 `Errors`: 代表严重且通常无法恢复的情况，如库不兼容、无限递归或内存泄漏。
 + `StackOverflowError`
 + `OutOfMemoryError`
++ `UnsupportedClassVersionError`: calss 文件不兼容
 
 而程序本身没有问题，但由于像I/O错误这类问题导致的异常不是派生于 `RuntimeException` ，常见的有：
 + 试图在文件尾部后面读取数据。
 + 试图打开一个不存在的文件。 `FileNotFoundException`
-+ 试图根据给定的字符串查找Class对象，而这个字符串表示的类并不存在。`ClassNotFoundException`
++ 运行时“主动加载”类失败，如 `Class.forname("xxx)`;试图根据给定的字符串查找Class对象，而这个字符串表示的类并不存在。`ClassNotFoundException`
++ `NoClassDefFoundError` : 编译时存在、运行时找不到 class 文件
 
 ### 声明受查异常
 如果遇到了无法处理的情况，那么Java的方法可以抛出一个异常。这个道理很简单：一个方法不仅需要告诉编译器将要返回什么值，还要告诉编译器有可能发生什么错误。 

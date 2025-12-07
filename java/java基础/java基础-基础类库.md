@@ -28,6 +28,7 @@ Runtime 类代表 Java 运行时环境，可以访问 JVM 的相关信息，如�
 + `public Process exec(String command)` :运行指定命令单独启动一个进程，返回启动进程的引用
 + `public void addShutdownHook(Thread hook)` : 注册一个新的 virtual-machine shutdown hook.
 
+#### 优雅停机支持
 JVM虚拟机会在以下两种情况下关闭：
 1. 程序运行完毕，所有的非 daemon 线程都退出执行或者 `System.exit()` 方法执行
 2. JVM接收到一些中断信号，比如 `^C`，或者一些系统事件，比如用户退出登录或者系统关机

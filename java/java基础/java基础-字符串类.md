@@ -1,24 +1,7 @@
 # Java基础-字符串类
 {docsify-updated}
 
-- [Java基础-字符串类](#java基础-字符串类)
-	- [定义多行字符串](#定义多行字符串)
-	- [获取系统行分隔符](#获取系统行分隔符)
-	- [String.join](#stringjoin)
-	- [StringWriter](#stringwriter)
-	- [去除字符串最后一个字符](#去除字符串最后一个字符)
-	- [统计字符串里字符的数量](#统计字符串里字符的数量)
-	- [split](#split)
-	- [字符串压缩](#字符串压缩)
-		- [Java6 的 Compressed String](#java6-的-compressed-string)
-		- [Java 9 的 Compact String](#java-9-的-compact-string)
-	- [字符串比较](#字符串比较)
-	- [换行符](#换行符)
-	- [字符串池](#字符串池)
-	- [String 的API](#string-的api)
-
-
-### 定义多行字符串
+## 定义多行字符串
 Java 15 开始，我们可以用`""""`（三个双引号）来声明字符串，从而使用文本块。(三个双引号）来声明字符串，就可以使用文本块：
 ```
 public String textBlocks() {
@@ -30,14 +13,14 @@ public String textBlocks() {
 }
 ```
 
-### 获取系统行分隔符
+## 获取系统行分隔符
 每个操作系统都有自己定义和识别新行的方法。
 在 Java 中，获取操作系统的行分隔符非常容易：
 ```
 String newLine = System.getProperty("line.separator");
 ```
 
-### String.join
+## String.join
 ```
 public String stringJoin() {
     return String.join(newLine,
@@ -47,7 +30,7 @@ public String stringJoin() {
                        "--Stephen King");
 }
 ```
-### StringWriter
+## StringWriter
 `StringWriter` 是另一种我们可以用来创建多行字符串的方法。在这里我们不需要 newLine，因为我们使用的是 `PrintWriter` :
 ```
 public String stringWriter() {
@@ -61,7 +44,7 @@ public String stringWriter() {
 }
 ```
 
-### 去除字符串最后一个字符
+## 去除字符串最后一个字符
 ```
 StringUtils.chop(TEST_STRING); //  Apache Commons Lang3
 
@@ -73,19 +56,19 @@ public static String removeLastCharOptional(String s) {
 }
 ```
 
-### 统计字符串里字符的数量
+## 统计字符串里字符的数量
 ```
 int count = StringUtils.countMatches("elephant", "e"); //  Apache Commons Lang3
 long count = someString.chars().filter(ch -> ch == 'e').count();
 ```
 
-### split
+## split
 ```
 String[] splitted = StringUtils.split("car jeep scooter"); //  Apache Commons Lang3
 String[] splitted = "peter,james,thomas".split(",");
 ```
 
-### 字符串压缩
+## 字符串压缩
 在JDK早期版本中，字符串在内部由包含字符串字符的 `char[]` 表示。每个字符由 2 个字节组成，因为 Java 内部使用 UTF-16。
 
 例如，如果字符串包含一个英语单词，那么每个字符的前 8 位都将为 0，因为 ASCII 字符可以用一个字节来表示。
@@ -96,13 +79,13 @@ String[] splitted = "peter,james,thomas".split(",");
 
 JDK6 中引入的压缩字符串选项和 JDK9 中引入的新的紧凑字符串。这两个选项都是为了优化 JMV 上字符串的内存消耗而设计的。
 
-#### Java6 的 Compressed String
+### Java6 的 Compressed String
 ```
 -XX:+UseCompressedStrings
 ```
 启用该选项后，字符串将存储为 `byte[]`，而不是 `char[]`，从而节省大量内存。不过，该选项最终在 JDK 7 中被删除，主要是因为它带来了一些意想不到的性能后果。
 
-#### Java 9 的 Compact String
+### Java 9 的 Compact String
 Java 9 恢复了紧凑字符串的概念。
 
 这意味着，当我们创建一个字符串时，如果该字符串的所有字符都可以用字节 - LATIN-1 表示，那么内部将使用一个字节数组，这样一个字节表示一个字符。
@@ -121,7 +104,7 @@ static final byte UTF16 = 1;
 
 如果要关闭 compactString,，可以加上启动参数: `+XX:-CompactStrings`
 
-### 字符串比较
+## 字符串比较
 ```
 String string1 = "using equals method";
 String string2 = "using equals method";
@@ -141,7 +124,7 @@ String string2 = "USING EQUALS IGNORE CASE";
 assertThat(string1.equalsIgnoreCase(string2)).isTrue();
 ```
 
-### 换行符
+## 换行符
 `\r` 和 `\n` 是 ASCII 值分别为 13 (CR) 和 10 (LF) 的字符。它们都表示两行之间的分隔符，但操作系统使用它们的方式不同。
 
 在 Windows 系统中，两个字符的序列用于开始新行，CR 紧接着 LF。相反，在类 Unix 系统中，只使用 LF。
@@ -150,7 +133,7 @@ assertThat(string1.equalsIgnoreCase(string2)).isTrue();
 
 最安全、最兼容的方法是使用 `System.lineSeparator()` 或者 `System.getProperty("line.separator")`。这样，我们就不必考虑操作系统。
 
-### 字符串池
+## 字符串池
 由于字符串在 Java 中具有不变性，JVM 可以通过在池中只存储每个字面字符串的一个副本来优化为字符串分配的内存量。这个过程被称为 "插值"（interning）。
 
 当我们创建一个字符串变量并为其赋字面值时，JVM 会在池中搜索等值的字符串。如果找到，Java 编译器将直接返回其内存地址的引用，而不会分配额外的内存。如果未找到，则会将其添加到池中（内部化），并返回其引用。
@@ -163,7 +146,7 @@ assertThat(string1.equalsIgnoreCase(string2)).isTrue();
 
 从 Java 7 开始，Java 字符串池存储在堆空间，由 JVM 进行垃圾回收。这种方法的优点是降低了发生 OutOfMemory 错误的风险，因为未引用的字符串将从池中删除，从而释放了内存。
 
-### String 的API
+## String 的API
 + String.String()
 + String.codePointCount()
 + String.codePointAt()

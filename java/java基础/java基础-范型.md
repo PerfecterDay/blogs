@@ -1,15 +1,7 @@
 # 范型
 {docsify-updated}
-
-- [范型](#范型)
-  - [范型类](#范型类)
-  - [类型变量的限定与范型通配符](#类型变量的限定与范型通配符)
-  - [范型方法](#范型方法)
-  - [泛型擦除](#泛型擦除)
-  - [范型的约束与局限性](#范型的约束与局限性)
-  - [泛型与继承](#泛型与继承)
-  - [桥方法](#桥方法)
-
+> https://docs.oracle.com/javase/tutorial/java/generics/index.html  
+> https://docs.oracle.com/javase/tutorial/extra/generics/index.html
 
 ## 范型类
 Java 集合有个缺点：当我们把一个对象放入集合中时，集合就会忘记这个对象的数据类型，当再次取出对象时，对象的编译类型就变成了Object类型，必须进行强制类型转换才能转换成需要的编译类型。 

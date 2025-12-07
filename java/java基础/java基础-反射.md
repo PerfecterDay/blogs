@@ -1,19 +1,6 @@
 # 反射
 {docsify-updated}
 
-- [反射](#反射)
-  - [Class对象](#class对象)
-  - [java.lang.Class类](#javalangclass类)
-  - [获取 Class 对象的三种方式](#获取-class-对象的三种方式)
-  - [Class 类的方法](#class-类的方法)
-    - [获取类的方法](#获取类的方法)
-      - [构造方法](#构造方法)
-      - [普通方法](#普通方法)
-    - [获取成员变量并使用](#获取成员变量并使用)
-      - [属性赋值](#属性赋值)
-  - [性能](#性能)
-
-
 JAVA反射机制是在运行状态中，对于任意一个类，都能够知道这个类的所有属性和方法；对于任意一个对象，都能够调用它的任意一个方法和属性；这种动态获取类的信息以及动态调用对象的方法的功能称为java语言的反射机制。
 
 要想解剖一个类,必须先要获取到该类的字节码文件对象，进而使用的Class类中的方法解剖类。所以先要获取到一个字节码文件对应的Class类型的对象。
@@ -80,6 +67,9 @@ Class没有公共构造方法。Class对象是在加载类时由Java虚拟机以
 
 ## 性能
 https://docs.oracle.com/javase/tutorial/reflect/index.html
+
 ```
-Because reflection involves types that are dynamically resolved, certain Java virtual machine optimizations can not be performed. Consequently, reflective operations have slower performance than their non-reflective counterparts, and should be avoided in sections of code which are called frequently in performance-sensitive applications.
+Because reflection involves types that are dynamically resolved, certain Java virtual machine optimizations can not be performed. 
+Consequently, reflective operations have slower performance than their non-reflective counterparts, 
+and should be avoided in sections of code which are called frequently in performance-sensitive applications.
 ```

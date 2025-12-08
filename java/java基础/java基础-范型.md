@@ -48,28 +48,33 @@ test(sList);
     //方法体
 }
 ```
-类型参数 T,S只能在该方法中使用。与类型范型不同的是，在调用范型方法时，无需显示的传入类型实参，系统可以直接推断出类型形参的类型。
+类型参数 T,S只能在该方法中使用。
 ```
-public <T> void arrayToCollection(T[] arr, Collection c){
-    for(T v:arr){
-        c.add(v);
+public class Util {
+    public static <K, V> boolean compare(Pair<K, V> p1, Pair<K, V> p2) {
+        return p1.getKey().equals(p2.getKey()) &&
+               p1.getValue().equals(p2.getValue());
     }
 }
-Integer[] arr3 = new Integer[10];
-List<Integer> list2 = new ArrayList<>();
-arrayToCollection(arr3,list2);
+Pair<Integer, String> p1 = new Pair<>(1, "apple");
+Pair<Integer, String> p2 = new Pair<>(2, "pear");
+
+boolean same = Util.<Integer, String>compare(p1, p2); //显示传递类型参数
+boolean same = Util.compare(p1, p2);  //编译器会自动推断类型
 ```
 范型方法允许类型参数被用来表示方法的多个参数之间的类型依赖关系，或者方法返回值和参数之间的类型依赖关系。如果没有这样的依赖关系，不应该使用范型方法。
 
 
 ## 泛型擦除
-无论何时定义一个泛型类型，都自动提供了一个相应的原始类型（raw type）。**原始类型的名字就是删去类型参数后的泛型类型名。擦除（erased）类型变量，并替换为限定类型（无限定的变量用Object）。如果有多个类型限定，原始类型用第一个限定的类型变量来替换，如果没有给定限定就用Object替换。**
+泛型被引入Java语言，旨在提供更严格的编译时类型检查并支持泛型编程。为实现泛型，Java编译器通过类型擦除机制：
 
-总之，需要记住有关Java泛型转换的事实：
 + 虚拟机中没有泛型，只有普通的类和方法。
-+ 所有的类型参数都用它们的限定类型替换。
-+ [桥方法](#桥方法)被合成来保持多态。（合成的桥方法有可能调用了新定义的方法。）
-+ 为保持类型安全性，必要时插入强制类型转换。
++ 将泛型类型中的所有类型参数替换为其边界类型，若类型参数未限定则替换为Object类型。因此生成的字节码仅包含普通类、接口和方法。
++ 在必要时插入类型转换以保持类型安全。
++ 生成桥接方法以在扩展泛型类型中保持多态性。
+
+类型擦除确保参数化类型**不会创建新类**，因此泛型不会产生运行时开销。
+
 
 ## 范型的约束与局限性
 1. 不能用基本类型作为类型参数。因此，没有`Pair<double>`，只有`Pair<Double>`。当然， 其原因是类型擦除。擦除之后，Pair 类含有Object 类型的域，而Object不能存储double值。

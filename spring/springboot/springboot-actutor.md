@@ -159,3 +159,20 @@ public class CustomHealthIndicator implements HealthIndicator {
     }
 }
 ```
+
+## 原理
+```
+ManagementContextAutoConfiguration
+       ↓
+ManagementContext (child ApplicationContext)
+       ↓
+ManagementWebServerFactory
+       ↓
+Management WebServer (Tomcat/Netty)
+       ↓
+ServletWebServerApplicationContext
+       ↓
+DispatcherServletAutoConfiguration
+       ↓
+DispatcherServlet
+```

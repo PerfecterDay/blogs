@@ -1,14 +1,6 @@
 #  Springboot 中MVC 的启动与配置原理
 {docsify-updated}
 
-- [Springboot 中MVC 的启动与配置原理](#springboot-中mvc-的启动与配置原理)
-	- [注册 DispatcherServlet](#注册-dispatcherservlet)
-	- [配置 MVC](#配置-mvc)
-		- [WebMvcConfigurer](#webmvcconfigurer)
-	- [Springboot 的配置](#springboot-的配置)
-		- [替换掉默认的 tomcat 容器](#替换掉默认的-tomcat-容器)
-		- [Springboot 内置容器配置](#springboot-内置容器配置)
-
 SpringMVC 的启动与配置根本上包括两个部分：
 1. 将 `DispatcherServlet` 注册、配置到 Servlet 容器中
 2. 配置 MVC 本身（ `HanMadlerpping、HandlerAdapter、HandlerExceptionResolver、ViewResolver`等）
@@ -16,12 +8,36 @@ SpringMVC 的启动与配置根本上包括两个部分：
 ## 注册 DispatcherServlet
 Sprinboot 使用代码编程的方式启动内置的 Servlet 容器，通过 `TomcatServletWebServerFactory/JettyServletWebServerFactory/UndertowServletWebServerFactory` 等类实现。Springboot 启动内置 Servlet 的具体过程如下：
 1. 创建一个继承自 `ServletWebServerApplicationContext` 的 `AnnotationConfigServletWebServerApplicationContext` 
-2. 在 `ServletWebServerApplicationContext#createWebServer()` 方法中创建内置的 servlet 容器，使用 `ServletWebServerFactory#getWebServer(ServletContextInitializer... initializers)` 工厂接口方法来创建，可以传入 `ServletContextInitializer` 来配置 servlet: 
+2. 在 `ServletWebServerApplicationContext#createWebServer()` 方法中创建内置的 servlet 容器，使用 `ServletWebServerFactory#getWebServer(ServletContextInitializer... initializers)` 工厂接口方法来创建，可以传入 `ServletContextInitializer` 来配置 servlet。
     <img src="pics/springboot-embed.png" alt="" />
 
 	```java
+	public WebServer getWebServer(ServletContextInitializer... initializers) {
+		if (this.disableMBeanRegistry) {
+			Registry.disableRegistry();
+		}
+		Tomcat tomcat = new Tomcat();
+		File baseDir = (this.baseDirectory != null) ? this.baseDirectory : createTempDir("tomcat");
+		tomcat.setBaseDir(baseDir.getAbsolutePath());
+		for (LifecycleListener listener : this.serverLifecycleListeners) {
+			tomcat.getServer().addLifecycleListener(listener);
+		}
+		Connector connector = new Connector(this.protocol);
+		connector.setThrowOnFailure(true);
+		tomcat.getService().addConnector(connector);
+		customizeConnector(connector);
+		tomcat.setConnector(connector);
+		tomcat.getHost().setAutoDeploy(false);
+		configureEngine(tomcat.getEngine());
+		for (Connector additionalConnector : this.additionalTomcatConnectors) {
+			tomcat.getService().addConnector(additionalConnector);
+		}
+		prepareContext(tomcat.getHost(), initializers); //在这里执行 ServletContextInitializer 的方法
+		return getTomcatWebServer(tomcat);
+	}
+
 	private org.springframework.boot.web.servlet.ServletContextInitializer getSelfInitializer() {
-		return this::selfInitialize;
+		return this::selfInitialize; //注意这里只是放回的方法引用，并没有真正执行方法，执行是在Tomcat启动之后执行的
 	}
 
 	private void selfInitialize(ServletContext servletContext) throws ServletException {
@@ -34,10 +50,66 @@ Sprinboot 使用代码编程的方式启动内置的 Servlet 容器，通过 `To
 	}
 	```
 	在 `selfInitialize` 方法中，会去遍历调用 `ServletContextInitializer#onStartup(ServletContext servletContext)` 方法。
+
+	`ServletWebServerApplicationContext` 负责创建并配置好 `WebServer` 实例，比如创建一个 Tomcat 服务器并且注册 `DispactherServlet` 到容器中。  
+	`WebServerStartStopLifecycle` 负责启动 `WebServer` （tomcat/jetty/undertow)。
+
 3. 在 `ServletContextInitializer` <- `RegistrationBean`<-`DynamicRegistrationBean`<-`ServletRegistrationBean`<-`DispatcherServletRegistrationBean` 的继承体系下，只要我们声明 `DispatcherServletRegistrationBean` 或者 其他的 `RegistrationBean` 类型，springboot 就会帮我们注册到 servlet 容器。
 4. springboot 的 `DispatcherServletAutoConfiguration#DispatcherServletRegistrationConfiguration#dispatcherServletRegistration(DispatcherServlet dispatcherServlet,WebMvcProperties webMvcProperties, ObjectProvider<MultipartConfigElement> multipartConfig)`方法就声明了`DispatcherServletRegistrationBean`，springboot 正是用这种方法实现了 `DispatcherServlet` 在容器中的注册的。
 
 通过以上分析，如果我们想注册除了 `DispatcherServlet` 以外的自定义 servlet ，只要声明一个 `ServletRegistrationBean` 的 bean 即可。类似的，`FilterRegistrationBean` 可以注册自定义的 `Filter` 。 如果自己实现 `Filetr` 接口又想使用 Spring 容器功能，springboot 提供了方便的 `DelegatingFilterProxyRegistrationBean` 类型，我们只要自定义一个 `DelegatingFilterProxyRegistrationBean` 类型的 bean 即可。
+
+### 注册多个 DispatcherServlet
+1. `spring.mvc.servlet.register=false` 禁用默认的 `DispatcherServlet` 自动注册
+2. 自定义注册 `DispatcherServlet` bean:
+```
+@Configuration
+public class DispatcherConfig {
+
+    @Bean
+    public DispatcherServlet apiDispatcherServlet() {
+        DispatcherServlet ds = new DispatcherServlet();
+    	ds.setApplicationContext(apiContext());
+    	return ds;
+    }
+
+	AnnotationConfigWebApplicationContext apiContext() {
+		AnnotationConfigWebApplicationContext context = new AnnotationConfigWebApplicationContext();
+		context.scan("com.example.api");
+		return context;
+	}
+
+    @Bean
+    public ServletRegistrationBean apiServletBean() {
+        ServletRegistrationBean registration = new ServletRegistrationBean(apiDispatcherServlet(), "/api/*");
+        registration.setName("apiDispatcherServlet");
+        registration.setLoadOnStartup(1);
+        return registration;
+    }
+
+    @Bean
+    public DispatcherServlet adminDispatcherServlet() {
+        DispatcherServlet ds = new DispatcherServlet();
+    	ds.setApplicationContext(adminContext());
+    	return ds;
+    }
+
+	AnnotationConfigWebApplicationContext adminContext() {
+		AnnotationConfigWebApplicationContext context = new AnnotationConfigWebApplicationContext();
+		context.scan("com.example.admin");
+		return context;
+	}
+
+    @Bean
+    public ServletRegistrationBean adminServletBean() {
+        ServletRegistrationBean registration = new ServletRegistrationBean(adminDispatcherServlet(), "/admin/*");
+        registration.setName("adminDispatcherServlet");
+        registration.setLoadOnStartup(1);
+        return registration;
+    }
+}
+```
+3. 上边的例子将 DispatcherServlet 的 context 也进行了区分，如果不区分就会共用一个 context 。
 
 ## 配置 MVC
 在第二步中，使用Spring MVC，应用程序可以声明处理请求所需的特殊 Bean 类型（`HanMadlerpping、HandlerAdapter、HandlerExceptionResolver、ViewResolver`等）。 `DispatcherServlet` 在初始化时（Servlet 的 init()方法调用时），会在 `WebApplicationContext` 中检查这些特殊的 Bean。如果有就会将其配置到相应的属性中，如果没有匹配的 Bean 类型，它就会使用classpath下的 `DispatcherServlet.properties` 中列出的默认类型配置。
@@ -132,7 +204,7 @@ Springboot 中使用 `ServletWebServerFactoryAutoConfiguration/DispatcherServlet
 	```
 	这就是为什么在 Springboot 中没有使用 `@EnableWebMvc` 注解，依然能启用 mvc 功能的原因。
 
-### 替换掉默认的 tomcat 容器
+### tomcat 容器的配置
 ```
 <dependency>
 	<groupId>org.springframework.boot</groupId>

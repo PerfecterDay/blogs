@@ -1,41 +1,27 @@
 # java基础-网络编程基础
 {docsify-updated}
 
-- [java基础-网络编程基础](#java基础-网络编程基础)
-  - [Java的基本网络支持](#java的基本网络支持)
-    - [IP地址：InetAddress](#ip地址inetaddress)
-    - [URLEncoder 和 URLDecoder](#urlencoder-和-urldecoder)
-    - [URL、URLConnection 和 URLPermission](#urlurlconnection-和-urlpermission)
-  - [基于TCP的网络编程](#基于tcp的网络编程)
-  - [基于UDP的网络编程](#基于udp的网络编程)
-    - [使用 DatagramSocket 发送、接收 UDP 数据](#使用-datagramsocket-发送接收-udp-数据)
-    - [使用 MulticastSocket 实现多点广播](#使用-multicastsocket-实现多点广播)
-  - [使用代理服务器](#使用代理服务器)
-    - [Proxy](#proxy)
-    - [ProxySelector](#proxyselector)
-  - [实现请求代理转发功能](#实现请求代理转发功能)
+## Java的基本网络支持
 
-
-### Java的基本网络支持
-
-#### IP地址：InetAddress
+### IP地址：InetAddress
 Java 使用 `InetAddress` 来代表 IP 地址， `InetAddress` 有两个子类： `Inet4Address` 和 `Inet6Address` 。分别代表 IPv4 和 IPv6 地址。
 
 `InetAddress` 没有提供构造器，而是提供了如下两个静态方法来获取 `InetAddress` 对象：
-+ `InetAddress getByName(String name)` ：根据主机域名获取对应 InetAddress 对象；
++ `InetAddress getByName(String name)` ：根据主机域名获取对应 `InetAddress` 对象；
 + `InetAddress[] getAllByName(String name)`: 有时候一个域名对应许多个IP，这个方法能返回对应的所有IP
-+ `InetAddress getByAdress(byte[] addr)`: 根据原始 IP 地址获取InetAddress对象；
++ `InetAddress getByAdress(byte[] addr)`: 根据原始 IP 地址获取 `InetAddress` 对象；
 + `InetAddress getLocalHost()`: 获取本机IP地址对应的 `InetAddress` 对象;
-当获取了一个 InetAddress 对象后，可以使用下述方法获取该 InetAddress 对象的相关信息：
+
+当获取了一个 `InetAddress` 对象后，可以使用下述方法获取该 `InetAddress` 对象的相关信息：
 + `String getCanonicalHostName()`: 获取IP地址的全限定域名
 + `String getHostAddress()`: 返回地址实例对应的 IP 地址字符串
-+ `String getHostName()`: 返回该 InetAddress 实例的主机名
++ `String getHostName()`: 返回该 `InetAddress` 实例的主机名
 + `boolean isReachable(int timeout)`: 测试该地址的主机是否可达
 
-#### URLEncoder 和 URLDecoder
-URLEncoder 和 URLDecoder 提供了静态的工具方法 encode 和 decode 来进行 URL 的编码和解码。
+### URLEncoder 和 URLDecoder
+`URLEncoder` 和 `URLDecoder` 提供了静态的工具方法 `encode` 和 `decode` 来进行 URL 的编码和解码。
 
-#### URL、URLConnection 和 URLPermission
+### URL、URLConnection 和 URLPermission
 URL 对象代表统一资源定位器，通常而言URL由协议名、主机、端口、路径和查询参数组成：  
 `protocol://host:port/resource?queryParam1=value1&queryParam2=value2...`
 
@@ -48,15 +34,15 @@ URL类提供了多个构造器用于创建URL对象，一旦构建一个URL对�
 6. `URLConnection openConnection()`: 打开一个到 URL 远程资源的连接，返回一个 URLConnection 对象
 7. `InputStream openStream()`: 打开一个到 URL 远程资源的连接，并返回一个读取 URL 资源的 InputStream 对象
 
-### 基于TCP的网络编程
-1. 使用ServerSocker创建TCP服务器端
+## 基于TCP的网络编程
+1. 使用 `ServerSocker` 创建TCP服务器端
 
-	Java使用 ServerSocket 来创建服务端用于监听客户端连接的套接字。有如下构造方法：
-	+ `ServerSocket(int port)`：使用指定端口创建一个 ServerSocket，端口应该在 0～65535之间。
-	+ `ServerSocket(int port, int backlog)`:除了端口，增加一个指定连接队列长度的backlog参数
+	Java使用 `ServerSocket` 来创建服务端用于监听客户端连接的套接字。有如下构造方法：
+	+ `ServerSocket(int port)`：使用指定端口创建一个 `ServerSocket` ，端口应该在 `0～65535` 之间。
+	+ `ServerSocket(int port, int backlog)`:除了端口，增加一个指定连接队列长度的 `backlog` 参数
 	+ `ServerSocket(int port, int backlog,InetAddress localAddress)`:当主机有多个IP地址时，可以指定ServerSocket绑定到的IP地址。
   
-	一旦构造了 ServerSocket 对象后，该对象会在指定端口监听连接请求，使用 `accept()` 方法接受来自客户端的请求，如果接收到了客户端请求，方法将会返回一个与客户端 Socket 连接的 Socket 对象；如果没有没有客户端请求，该方法将会阻塞线程。当 ServerSocket 对象使用完毕，应该使用 `close()` 方法关闭 ServerSocket 。
+	一旦构造了 `ServerSocket` 对象后，该对象会在指定端口监听连接请求，使用 `accept()` 方法接受来自客户端的请求，如果接收到了客户端请求，方法将会返回一个与客户端 `Socket` 连接的 `Socket` 对象；如果没有没有客户端请求，该方法将会阻塞线程。当 `ServerSocket` 对象使用完毕，应该使用 `close()` 方法关闭 `ServerSocket` 。
 
 2. 使用Socket进行通信
 
@@ -102,16 +88,16 @@ URL类提供了多个构造器用于创建URL对象，一旦构建一个URL对�
     }
 	```
 
-### 基于UDP的网络编程
+## 基于UDP的网络编程
 
-#### 使用 DatagramSocket 发送、接收 UDP 数据
+### 使用 DatagramSocket 发送、接收 UDP 数据
 
-#### 使用 MulticastSocket 实现多点广播
+### 使用 MulticastSocket 实现多点广播
 
-### 使用代理服务器
+## 使用代理服务器
 JDK1.5 开始，提供了 Proxy 和 ProxySelector 两个类，其中 Proxy 代表一个代理服务器，可以在打开 URLConnection 连接时指定所用的 Proxy 实例，也可以在创建 Socket 连接时指定Proxy 实例。而 ProxySelector 代表一个代理选择器，它提供了对代理服务器更加灵活的控制，可以对不同协议如 HTTP、HTTPS、FTP、SOCKS等分别设置代理，还以为某些地址设置不走代理。
 
-#### Proxy
+### Proxy
 Proxy 有一个构造器： Proxy(Proxy.Type type, SocketAddress sa)，sa指定代理服务器的地址，type指定代理服务器的类型，类型有如下三种：
 1. `Proxy.Type.DIRECT`： 表示直连
 2. `Proxy.Type.HTTP`： 表示高级协议的代理，如HTTP或FTP
@@ -121,7 +107,7 @@ Proxy 有一个构造器： Proxy(Proxy.Type type, SocketAddress sa)，sa指定�
 + URL的 `URLConnection openConnection(Proxy proxy)`方法
 + Socket 的构造方法： `Socket(Proxy proxy)`
 
-#### ProxySelector
+### ProxySelector
 基于 Proxy 的代理，需要在每次打开 URLConnection 或者 Socket 时指定代理服务器，如果想让系统在每次打开连接时都是用相关的代理服务器，而不用显示的为每个连接指定，则可以使用 ProxySelector ，它可以为不同的连接指定不同的代理服务器。
 
 系统提供了默认的 ProxySelector 子类作为代理选择器，默认的 ProxySelector 会检测各种系统属性和URL协议，然后决定是否使用指定的代理服务器，程序可以使用 System 类来设置系统的代理服务器属性，关于代理服务器常用的属性有以下几个：
@@ -138,7 +124,7 @@ Proxy 有一个构造器： Proxy(Proxy.Type type, SocketAddress sa)，sa指定�
 + `static void setDefault(ProxySelector ps)`： 设置默认的 ProxySelector
 
 
-### 实现请求代理转发功能
+## 实现请求代理转发功能
 ```
 package com.minigod.controller.user;
 

@@ -30,9 +30,13 @@ logrotate [-dv] [-f|--force] [-s|--state file] config_file ..
 + `-v, --verbose` : 打开 verbose 
 
 
-logrotate 需要状态文件控制频率（比如 daily）。默认，logrotate 会使用 `/var/lib/logrotate/status`（或 `/var/lib/logrotate/status.log` ）来记录上次执行时间。因此，如果你刚运行完一次，logrotate 不会再次执行 `daily` 配置，除非你：
+logrotate 需要状态文件控制频率（比如 daily）。默认，logrotate 会使用 `/var/lib/logrotate/status`（或 `/var/lib/logrotate/status.log` ）来记录上次执行时间。因此，如果你刚运行完一次， logrotate 不会再次执行 `daily` 配置，除非你：
 + 删除状态文件
 + 使用 `-f` 强制忽略状态文件
+
+新建一个日志文件后，立即运行 logrotate 也不会立即轮转日志文件：
+1. logrotate 检查状态文件。如果这个日志文件之前从未被轮转过，状态文件中没有它的记录。
+2. 对于新的、没有记录的文件，logrotate 不会将其视为需要立即轮转，而是将当前时间记录为它的首次轮转时间，然后等待 24 小时后的下一次运行。
 
 ## 配置文件
 ```
@@ -95,3 +99,28 @@ include /etc/logrotate.d
 + `ifempty` : 即使是空文件也会切割
 + `create [mode] [owner] [group]` : 在轮换操作完成后（在执行`postrotate`脚本之前），系统会立即创建日志文件（文件名与刚轮换的日志文件相同）。**这种情况下会有个问题，如果程序不重启，会将日志文件写入到分割归档的日志文件中而不是新建的日志文件中，因为logrotate是给源文件重命名后又创建了一个新文件**。`mode`参数以八进制形式指定日志文件的权限模式（与`chmod`命令相同），`owner`参数指定日志文件的所有者用户名，`group`参数指定日志文件所属的用户组。日志文件的任何属性均可省略，此时新文件的对应属性将继承原始日志文件的默认值。可通过 `nocreate` 选项禁用此功能。
 + `copytruncate` : 创建副本后就地截断原始日志文件，而非移动旧日志文件并可选创建新文件。当某些程序无法被要求关闭其日志文件，从而可能无限期地继续向旧日志文件追加写入时，可使用此选项。需注意文件复制与截断之间存在极短时间差，部分日志数据可能因此丢失(**复制后，程序又写日志文件了，然后截断导致新写的日志丢失**)。启用此选项时，`create`选项将失效，因旧日志文件仍保留在原位置。
+
+## 被 SELinux（Security-Enhanced Linux） 拦截的问题
+SELinux（Security-Enhanced Linux）是 Linux 的一个强制访问控制（MAC）安全系统，由美国 NSA 开发，后来开源并集成到 Linux 内核中。它提供了比传统权限（chmod / chown）更严格、更细粒度的安全控制。
+
+一句话总结：**SELinux 是 Linux 下最强的安全机制，用来限制进程能访问哪些文件、目录、端口。即使进程被黑，也只能在受限范围内活动。**
+
+```
+[root@LXUATGMAA2 redis]# journalctl -t setroubleshoot
+-- Logs begin at Fri 2023-12-08 04:12:34 CST, end at Thu 2025-12-11 10:50:09 CST. --
+Dec 11 03:26:06 LXUATGMAA2.GTJA.COM.UAT setroubleshoot[1964098]: AnalyzeThread.run(): Cancel pending alarm
+Dec 11 03:26:07 LXUATGMAA2.GTJA.COM.UAT setroubleshoot[1964098]: SELinux is preventing logrotate from read access on the directory redis. For complete SELinux messages run: sealert -l f9f76ccb-fe44-4e13-8872-c7c728b65d8e
+Dec 11 03:26:07 LXUATGMAA2.GTJA.COM.UAT setroubleshoot[1964098]: SELinux is preventing logrotate from read access on the directory redis.
+```
+
+```
+[root@LXUATGMAA2 redis]# getenforce
+Enforcing
+
+[root@LXUATGMAA2 redis]# ls -Zd /var/log/redis
+system_u:object_r:redis_log_t:s0 /var/log/redis
+
+[root@LXUATGMAA2 redis]# sudo chcon -R -t var_log_t /var/log/redis
+[root@LXUATGMAA2 redis]# ls -Zd /var/log/redis
+system_u:object_r:var_log_t:s0 /var/log/redis
+```

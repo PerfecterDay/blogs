@@ -116,9 +116,34 @@ class Thread4 extends Thread{
 }
 ```
 
+### JVM 线程状态不=OS线程状态
+测试程序：
+```
+public class NetDemo {
+    public static void main(String[] args) throws IOException {
+        ServerSocket serverSocket = new ServerSocket(10000, 1);
+        Socket clientSocket = serverSocket.accept();
+        if (clientSocket.isConnected()) {
+            System.out.println(clientSocket.getInetAddress().getHostAddress() + ":" + clientSocket.getPort());
+        }
+    }
+}
+```
+Thread-dump 输出线程处于 `RUNNABLE` 状态：
+<center><img src="pics/thread_dump_accept.png" alt=""></center>
+
+但是，操作系统显示处于 Sleeping 状态：
+<center><img src="pics/os_state.png" alt=""></center>
+
++ R:Running（正在运行）
++ S:Sleeping（可中断休眠，等待事件，如 I/O）
++ D:Uninterruptible sleep（通常等待 I/O，不可中断）
++ T:Stopped（暂停，可能被 SIGSTOP）
++ Z:Zombie（僵尸进程）
+
 ### BLOCKED 和 WAITING 区别
-0. BLOCKED 的线程等待的是一个**锁**，往往是在请求锁的时候，因为锁已经被别的线程持有，而**被动**(一般是由调度器将其设置为BLOCKED)的进入 BLOCKED 状态。
-1. 线程通过调用`wait()`方法进入 WAITING 状态是一种主动行为，此时会释放持有的锁，一般是等待另一个线程的信号，用来完成线程的同步；而 BLOCKED 状态是被动的，线程希望继续执行，但是锁被别的线程获取，必须等待别的线程释放锁。
+0. BLOCKED 的线程等待的是一个**锁**，往往是在请求锁的时候，因为锁已经被别的线程持有，而**被动**(一般是由调度器将其设置为BLOCKED)的进入 `BLOCKED` 状态。
+1. 线程通过调用`wait()`方法进入 `WAITING` 状态是一种主动行为，此时会释放持有的锁，一般是等待另一个线程的信号，用来完成线程的同步；而 `BLOCKED` 状态是被动的，线程希望继续执行，但是锁被别的线程获取，必须等待别的线程释放锁。
 2. 站在调度器的角度上，假如一个线程释放了锁，调度器调度是需要考虑 BLOCKED 队列中的线程让它们争用锁，但是不需要考虑 WAITING 队列中的线程。
 <center><img src="pics/wait-blocked.png" width=40% heght=40%></center>
 

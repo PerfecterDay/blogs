@@ -29,3 +29,11 @@ WantedBy=multi-user.target
 
 
 查看日志： `journalctl -xe`
+
+
+
+| 类型 | 文件/目录 | crontab 命令能否看到 | 说明 |
+| :--- | :--- | :--- | :--- |
+| 用户 crontab | /var/spool/cron/<username> | 可以用 crontab -l 查看 | 由 crontab -e 编辑的任务 |
+| 系统 crontab | /etc/crontab | 不在用户 crontab 里，但可以直接查看文件 | 系统级计划任务，root 用户可编辑 |
+| cron.daily / weekly / monthly | /etc/cron.daily/ 等 | 不在 crontab -l 输出中 | 通过系统 crontab 或 anacron 调用 run-parts 执行的脚本 |

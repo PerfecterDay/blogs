@@ -161,6 +161,7 @@ public class CustomHealthIndicator implements HealthIndicator {
 ```
 
 ## 原理
+当配置了 management.port 与 server.port 不一致时， actuator 会另外启动一个独立的 WebServer 来处理 actuator 相关的请求，不会影响主业务流量端口。
 ```
 ManagementContextAutoConfiguration
        ↓
@@ -176,3 +177,27 @@ DispatcherServletAutoConfiguration
        ↓
 DispatcherServlet
 ```
+
+## 为什么建议生产环境分开端口
+1. 安全隔离
+Actuator 有很多敏感端点：
++ /actuator/env → 全量配置，可能有密码
++ /actuator/beans → 所有 bean
++ /actuator/heapdump → JVM 堆转储（非常敏感）
++ /actuator/threaddump
+
+management 端口可以单独建防火墙规则、只允许内网、只允许 k8s 探针访问，业务端口对外开放，管理端口不对外，安全性提升非常大。
+
+2. 服务自愈体系依赖 Actuator 独立可用 （K8s/Consul/Nacos）
+异常情况下，业务端口会不响应，但 Actuator 端口仍能正常响应 → 让 K8s 正常探测、重启容器，能极大提升服务自愈能力。
+
+3. 业务负载不会影响管理能力
+在高峰期：
++ 业务端口 QPS 上万
++ Actuator 的 metrics/health 等运维请求无法打进来
+
+如果两个端口独立：
++ 业务流量再大，管理端口照样能访问（因为是独立 WebServer）
++ Prometheus 拉 metrics 也不会超时
+
+监控更可靠。

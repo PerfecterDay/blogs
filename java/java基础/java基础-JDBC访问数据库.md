@@ -1,15 +1,6 @@
 # JDBC访问数据库
 {docsify-updated}
 
-- [JDBC访问数据库](#jdbc访问数据库)
-  - [数据库URL](#数据库url)
-  - [JDBC数据库访问的一般步骤](#jdbc数据库访问的一般步骤)
-  - [DataSource](#datasource)
-  - [获取生成的键](#获取生成的键)
-  - [数据库事务支持](#数据库事务支持)
-    - [批量更新](#批量更新)
-
-
 ## 数据库URL
 
 ```
@@ -77,6 +68,7 @@ jdbc:derby://localhost:1527/COREJAVA;create=true
 + 基本实现 -- 生成标准 Connection 对象
 + 连接池实现 -- 生成将自动参与连接池的 Connection 对象。此实现适用于中间层连接池管理器。
 + 分布式事务实现 -- 生成一个 Connection 对象，该对象可用于分布式事务，并且几乎总是参与连接池。此实现适用于中间层事务管理器，并且几乎始终与连接池管理器配合使用。
+
 `DataSource` 对象具有在必要时可以修改的属性。例如，如果将数据源移动到其他服务器，则可以更改服务器的属性。这样做的好处是，由于可以更改数据源的属性，因此无需更改访问该数据源的任何代码。通过 `DataSource` 对象访问的驱动程序不会将自身注册到 `DriverManager` 。相反， `DataSource` 对象是通过查找操作检索的，然后用于创建 `Connection` 对象。在基本实现中，通过 `DataSource` 对象获取的连接与通过 `DriverManager` 工具获取的连接相同。 `DataSource` 的实现必须包含公共no-arg 构造函数。
 
 ## 获取生成的键

@@ -1,7 +1,9 @@
 # Redis高可用
 {docsify-updated}
 
-### Redis 复制
+<center><img src="/pic/redis_ha.jpg" alt=""></center>
+
+## Redis 复制
 
 在分布式系统中为了解决单点问题，通常会把数据复制多个副本部署到其他机器，满足故障恢复和负载均衡等需求。Redis也是如此，它为我们提供了复制功能，实现了相同数据的多个Redis副本。复制功能是高可用Redis的基础，后面章节的哨兵和集群都是在复制的基础上实现高可用的。
 
@@ -17,4 +19,4 @@ slaveof命令不但可以建立复制，还可以在从节点执行 `slaveof no 
 
 
 
-### Redis 哨兵
+## Redis 哨兵

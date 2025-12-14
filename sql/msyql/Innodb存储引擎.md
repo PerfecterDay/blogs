@@ -10,6 +10,8 @@ MySQL 服务器把数据的存储和提取操作都封装到了一个叫 **存�
 
 ## Innodb 体系架构
 
+<center><img src="pics/inno_engine.jpg" width="60%"></center>
+
 #### 后台线程
 1. Master Thread  
 Master Thread 是核心线程，主要负责将缓冲池中的缓存异步刷新到磁盘，保证数据的一致性，包括脏页的刷新、合并插入缓冲、undo 页的回收等。

@@ -59,7 +59,11 @@ Java中，可以通过`java.lang.ThreadLocal`类来实现线程本地存储的�
 
 直观表述为：每个 `Thread` 对象都保存了一个 `ThreadLocal.ThreadLocalMap<ThreadLocal,Object>` 的 `Map` ，当线程执行 `ThreadLocal` 的 `get/set` 方法时，就是使用当前的 `ThreadLocal` 对象作为 `key` 去当前线程的 `ThreadLocalMap` 中读取/保存数据。 
 
-<center><img src="pics/threadlocal.jpg" width="60%"></center>
+<center>
+<img src="pics/threadlocal.jpg" width="45%">
+<img src="pics/thread_local2.jpg" width="45%">
+
+</center>
 
 ```
 public void set(T value) {

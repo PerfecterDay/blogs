@@ -3,6 +3,26 @@
 
 > https://www.ruanyifeng.com/blog/2017/05/server-sent_events.html
 
+
+```
+@GetMapping(path="/events", produces=MediaType.TEXT_EVENT_STREAM_VALUE)
+public SseEmitter handle() {
+	SseEmitter emitter = new SseEmitter();
+	// Save the emitter somewhere..
+	return emitter;
+}
+
+// In some other thread
+emitter.send("Hello once");
+
+// and again later on
+emitter.send("Hello again");
+
+// and done at some point
+emitter.complete();
+```
+
+
 ## 示例
 1. 服务端代码：
 ```

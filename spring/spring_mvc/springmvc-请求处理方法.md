@@ -139,33 +139,22 @@ public void handle(@Valid @RequestBody Account account, BindingResult result) {
 ## 方法返回值
 ```
 @ResponseBody
-
 HttpEntity<T>, ResponseEntity<T>
-
 HttpHeaders
-
 ErrorResponse
-
 ProblemDetail
-
 String
 View
-
 java.util.Map, org.springframework.ui.Model
 ModelAndView
 void
-
 DeferredResult<V>
 Callable<V>
-
 ListenableFuture<V>, java.util.concurrent.CompletionStage<V>, java.util.concurrent.CompletableFuture<V>
-
 ResponseBodyEmitter, SseEmitter
-
 StreamingResponseBody
 ```
 如果返回值不是以上任何情况，它将被视为模型属性。除非它是由 `BeanUtils#isSimpleProperty` 决定的简单类型，在这种情况下，它会被直接返回而不会解析。
-
 
 ### 响应相关的注解
 

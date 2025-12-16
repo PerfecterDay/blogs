@@ -1,7 +1,7 @@
 # Servlet 中的异步请求
 {docsify-updated}
 
-> https://www.hackerearth.com/practice/notes/asynchronous-servlets-in-java/
+> https://www.hackerearth.com/practice/notes/asynchronous-servlets-in-java/  
 > https://www.cnblogs.com/okong/p/springboot-twenty.html
 
 Java 应用程序中同时运行过多的线程可能会消耗大量资源。基于网络的 Java 应用程序也不例外。传入的请求由专门的 HTTP 工作线程处理，这些工作线程将处理这些传入的请求，直到最终生成响应并发送回客户端。

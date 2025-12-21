@@ -1,6 +1,11 @@
 # envoy 上游集群配置
 {docsify-updated}
 
+> https://www.envoyproxy.io/docs/envoy/latest/intro/arch_overview/upstream/service_discovery#arch-overview-service-discovery-types-static
+
+
+## 服务发现
+
 
 ## 配置TLS
 可以分别配置 `DownstreamTlsContext` 和 `UpstreamTlsContext`。

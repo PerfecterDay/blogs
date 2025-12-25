@@ -1,6 +1,6 @@
 # G1 垃圾收集器
 {docsify-updated}
-
+> https://docs.oracle.com/en/java/javase/23/gctuning/garbage-first-g1-garbage-collector1.html#GUID-ED3AB6D3-FD9B-4447-9EDF-983ED2F7A573
 
 ## 堆内存布局
 <center><img src="pics/g1-heap-layout.png" width="50%"></center>
@@ -11,6 +11,8 @@
 应用程序的内存分配总是在年轻代（Eden区域）进行，但是大的巨型对象会直接在老年代区域分配内存（H块）。
 
 ## 垃圾收集周期
+<center><img src="pics/garbage-collection-cycle.png" alt=""></center>
+
 从高层次来看，G1 垃圾回收器在两个阶段之间交替运行。
 + 仅年轻代阶段（Young-Only phase）：在该阶段，垃圾回收会逐渐填满当前可用的内存，并将对象逐步晋升到老年代。
 + 空间回收阶段（Space-Reclamation phase）：在这一阶段，G1 在处理年轻代的同时，逐步回收老年代的空间。

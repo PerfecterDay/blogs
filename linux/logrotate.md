@@ -113,14 +113,39 @@ Dec 11 03:26:07 LXUATGMAA2.GTJA.COM.UAT setroubleshoot[1964098]: SELinux is prev
 Dec 11 03:26:07 LXUATGMAA2.GTJA.COM.UAT setroubleshoot[1964098]: SELinux is preventing logrotate from read access on the directory redis.
 ```
 
+解决方案:
+1. 新建一个 te 文件，内容如下：
 ```
-[root@LXUATGMAA2 redis]# getenforce
-Enforcing
 
-[root@LXUATGMAA2 redis]# ls -Zd /var/log/redis
-system_u:object_r:redis_log_t:s0 /var/log/redis
+module logrotate-redis 1.0;
 
-[root@LXUATGMAA2 redis]# sudo chcon -R -t var_log_t /var/log/redis
-[root@LXUATGMAA2 redis]# ls -Zd /var/log/redis
-system_u:object_r:var_log_t:s0 /var/log/redis
+require {
+	type redis_var_lib_t;
+	type logrotate_t;
+        class dir { getattr search add_name create open remove_name rmdir setattr write };
+        class file { entrypoint execute getattr open read map setattr write create link unlink append };
+}
+
+#============= logrotate_t ==============
+
+#!!!! This avc is allowed in the current policy
+# 允许logrotate_t访问redis_var_lib_t目录
+allow logrotate_t redis_var_lib_t:dir { getattr search add_name create open remove_name rmdir setattr write };;
+# 允许logrotate_t访问redis_var_lib_t文件（核心轮转权限）
+allow logrotate_t redis_var_lib_t:file { entrypoint execute getattr open read map setattr write create link unlink append };
+```
+2. 然后编译
+```
+# 1. 编译模块
+checkmodule -M -m -o logrotate-redis.mod logrotate-redis.te
+# 2. 打包策略包
+semodule_package -o logrotate-redis.pp -m logrotate-redis.mod
+# 3. 加载（覆盖旧版本）
+semodule -i logrotate-redis.pp
+# 4. 验证加载状态
+semodule -l | grep logrotate-redis
+# 5.
+semanage fcontext -a -t var_log_t "/var/lib/redis(/.*)?"
+# 6. 
+restorecon -Rv /var/lib/redis
 ```

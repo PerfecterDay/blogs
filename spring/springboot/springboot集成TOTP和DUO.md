@@ -49,9 +49,6 @@ boolean isCodeValid = gAuth.authorize(secretKey, password);
 ```
 
 
-
-
-
 ## DUO集成
 DUO验证成功后跳转的URL：http://localhost:50000/duo-callback?state=f98e6b1d9c20bd6f844786dce9155206112b&duo_code=ep4q7ZSuH3DuwdUGoZLGv5qb4VYKhYKp
 

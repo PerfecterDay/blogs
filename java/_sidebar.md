@@ -13,7 +13,6 @@
     * [Parallel GC](/java/jvm/gc/gc调优-parallel-gc.md)
     * [G1 GC](/java/jvm/gc/gc调优-G1详解.md)
     * [G1 GC调优](/java/jvm/gc/gc调优-G1调优.md)
-    * [经典垃圾收集器](/java/jvm/gc/gc调优-经典的垃圾收集器.md)
     * [GC日志](/java/jvm/gc/gc调优-gc日志.md)
   * [java 命令选项详解](https://docs.oracle.com/en/java/javase/23/docs/specs/man/java.html)
   * [常用 Jvm 工具](/java/jvm/jvm-常用jvm工具.md)

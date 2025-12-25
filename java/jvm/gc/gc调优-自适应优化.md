@@ -10,11 +10,22 @@
 
 ## 垃圾收集器、堆和运行时编译器默认选择
 这些是重要的垃圾收集器、堆大小和运行时编译器默认选项：
-+ 在server-class计算机上使用**Garbage-First (G1) 收集器**，否则使用 **Serial收集器**。（如果虚拟机检测到两个以上处理器，且堆大小大于或等于 1792 MB，虚拟机就会将机器视为server-class。）
++ 在 `server-class` 计算机上使用**Garbage-First (G1) 收集器**，否则使用 **Serial收集器**。（如果虚拟机检测到两个以上处理器，且堆大小大于或等于 1792 MB，虚拟机就会将机器视为 `server-class` 。）
 + GC 线程的最大数量受堆大小和可用 CPU 资源的限制 
 + 初始堆大小为物理内存的 1/64
 + 最大堆大小为物理内存的 1/4 
 + 分层编译器（JIT），同时使用 C1 和 C2
+
+以下是一个JDK 11 JVM进程部署在阿里云K8S后，使用 jinfo 输出的示例，所有单位都是字节。机器配置为：内存-22.446Gi，deployment 中配置为2C 2G。
+```
+-XX:CICompilerCount=2 -XX:ConcGCThreads=1 -XX:G1ConcRefinementThreads=2 -XX:G1EagerReclaimRemSetThreshold=32 -XX:G1HeapRegionSize=4194304 
+-XX:GCDrainStackTargetSize=64 -XX:InitialHeapSize=364904448 -XX:MarkStackSize=4194304 -XX:MaxHeapSize=5809111040 -XX:MaxNewSize=3485466624 
+-XX:MinHeapDeltaBytes=4194304 -XX:MinHeapSize=8388608 -XX:NonNMethodCodeHeapSize=5826188 -XX:NonProfiledCodeHeapSize=122916026 
+-XX:ProfiledCodeHeapSize=122916026 -XX:ReservedCodeCacheSize=251658240 -XX:+SegmentedCodeCache -XX:SoftMaxHeapSize=5809111040 
+-XX:+UseCompressedClassPointers -XX:+UseCompressedOops -XX:+UseFastUnorderedTimeStamps -XX:+UseG1GC 
+```
+
+
 
 ## Behavior-Based Tuning
 Java HotSpot VM 垃圾收集器可配置为优先满足两个目标中的一个：

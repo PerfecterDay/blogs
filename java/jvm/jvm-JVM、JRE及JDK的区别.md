@@ -9,6 +9,22 @@ JVM 的组件包括：
 + 运行时数据区
 + 执行引擎
 
+```
+JVM
+├── ClassLoader
+├── Runtime Data Areas
+│   ├── Heap
+│   ├── Stack
+│   ├── Metaspace
+│   └── Native Method Stack
+├── Execution Engine
+│   ├── Interpreter - 解释器
+│   ├── JIT Compiler (C1 / C2) - JIT运行时编译器
+│   └── GC
+├── Thread & Safepoint
+└── JNI / Native Interface
+```
+
 类加载器和运行时数据区在后文中会介绍，这里介绍下执行引擎。
 
 
@@ -144,7 +160,7 @@ JDK 带来了 `javaws` 。我们可以将其与 Java Web Start 结合使用。
 
 ### 故障排除工具
 这些是我们可以用于故障排除任务的实验工具：
-+ `info` - 生成指定 Java 进程的配置信息
++ `jinfo` - 生成指定 Java 进程的配置信息
 + `jmap` - 打印指定进程的共享对象内存映射或堆内存详细信息
 + `jsadebugd` - 附加到 Java 进程并充当调试服务器
 + `jstack` - 打印指定 Java 进程的 Java 线程的 Java 堆栈跟踪

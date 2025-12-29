@@ -21,3 +21,5 @@
     * [String](/rust/集合/string.md)
     * [Hash Map](/rust/集合/hashmap.md)
   * [错误处理](#)
+  * [Rust 写操作系统](#)
+    * [Rust编写能在裸机跑的程序](/rust/rust_os/)

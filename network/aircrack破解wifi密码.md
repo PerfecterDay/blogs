@@ -1,6 +1,7 @@
 # aircrack 破解Wi-Fi密码
 {docsify-updated}
 
+> https://gainanov.pro/eng-blog/sysad/wifi-cracking/
 > 本文只做技术探讨，切勿用于非法用途；转自：https://github.com/conwnet/wpa-dictionary/blob/master/README.md
 > https://medium.com/infosecmatrix/a-beginners-guide-to-wi-fi-attacks-33760f42020e
 

@@ -11,4 +11,5 @@
 * [Mysql高可用](/sql/msyql/mysql高可用-主从复制.md)
 * [Mysql执行计划](/sql/msyql/mysql执行计划.md)
 * [Mysql常用函数](/sql/msyql/mysql常用函数.md)
+* [Mysql窗口函数](/sql/msyql/mysql窗口函数.md)
 * [Mysql存储过程](/sql/msyql/存储过程.md)

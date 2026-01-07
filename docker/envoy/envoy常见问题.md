@@ -48,7 +48,7 @@ regex '^/user/(488/sms|h5/getJwt|captcha|version/getAIDrawTemplate|version/isMai
 + x-forwarded-for 失效
     Envoy will only append to XFF if the use_remote_address HTTP connection manager option is set to true and the skip_xff_append is set false. This means that if use_remote_address is false (which is the default) or skip_xff_append is true, the connection manager operates in a transparent mode where it does not modify XFF.
 
-+ x-envoy-external-address
++ x-envoy-external-address: 追踪原始客户端IP
 	It is a common case where a service wants to perform analytics based on the origin client’s IP address. Per the lengthy discussion on XFF, this can get quite complicated, so Envoy simplifies this by setting x-envoy-external-address to the trusted client address if the request is from an external client. x-envoy-external-address is not set or overwritten for internal requests. This header can be safely forwarded between internal services for analytics purposes without having to deal with the complexities of XFF.
 
 + 容器运行权限

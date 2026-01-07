@@ -36,3 +36,19 @@ Dynamic Agent Session 是如何设置的？我看测试环境用的是这种方�
 ## 重置 pin
 5. 生物认证解锁需要调用 UAS API 嘛？ 
 6. 重置 pin 是用的哪（几）个 API ？ `password/reset` ?
+
+
+
+那客户端是不是 调用 activationTokenEx 之后，就能使用 pin 认证了，即使 est/token/activateByOTP  没有成功 ？因为之前说 pin 认证是纯SDK 操作的
+
+是可以，但是服务器令牌的状态不是Activated的话，服务器验证不了OTP(生成的OTP验证码)
+
+
+/token/activateByOTP 这步是可选的，在create-assign-and-encrypt时，这个参数改成status: Activation，那么服务器令牌就是激活状态
+
+
+## 问题
+如何使客户端的iSprint 失效 ？ 如果 pin 认证不在后端验证
+
+ @yik(i-Sprint)   @Tony  如果pin 验证直接在 前段时间SDK完成，不用跟后端交互。那是不是没有办法在后端控制一台设备禁止 pin 登录了啊 ？
+

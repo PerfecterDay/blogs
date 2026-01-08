@@ -1,26 +1,21 @@
 # Helm 命令行
 {docsify-updated}
 
-- [Helm 命令行](#helm-命令行)
-	- [Helm 仓库](#helm-仓库)
-	- [chart](#chart)
-	- [安装](#安装)
-
 > https://helm.sh/zh/docs/helm/
 
 ## Helm 仓库
-helm repo add - 添加chart仓库
-helm repo index - 基于包含打包chart的目录，生成索引文件
-helm repo list - 列举chart仓库
-helm repo remove - 删除一个或多个仓库
-helm repo update - 从chart仓库中更新本地可用chart的信息
++ `helm repo add` - 添加chart仓库
++ `helm repo index` - 基于包含打包chart的目录，生成索引文件
++ `helm repo list` - 列举chart仓库
++ `helm repo remove` - 删除一个或多个仓库
++ `helm repo update` - 从chart仓库中更新本地可用chart的信息
 
 ## chart
-helm pull - 从仓库下载并（可选）在本地目录解压
++ `helm pull` - 从仓库下载并（可选）在本地目录解压
 
 ## 安装
-helm install - 安装
-helm uninstall - 卸载
++ `helm install` - 安装
++ `helm uninstall` - 卸载
 
 
 1. 从 Artifact Hub 添加一个chart 仓库 ：`helm repo add bitnami https://charts.bitnami.com/bitnami`

@@ -29,28 +29,53 @@ for (int i = 0; i < 10; i++) {
 
 #### producer 的主要参数
 1. `acks`  
-   这个参数制定了kafka服务端在给 producer 发送响应前， lead broker 端必须要确保已经写入该消息的副本的数量。当前有3个值：0、1和 all。
+   这个参数制定了kafka服务端在给 `producer` 发送响应前， lead broker 端必须要确保已经写入该消息的副本的数量。当前有3个值：0、1和 all。
    + `acks=0`：表示 producer 完全不理睬 leader broker 端的处理结果。吞吐量最高，但是消息可能会写入失败。
-   + `acks=all` 或者 -1: leader broker 不仅会将消息写入本地日志，同时还会等待 ISR 中的所有其他副本都成功写入它们各自的本地日志后才返回相应结果给 producer 端。这样可以保证当 ISR 中至少有一个副本是存活状态时，消息是不会丢失的。但是吞吐量也是最低的。
+   + `acks=all` 或者 `-1`: leader broker 不仅会将消息写入本地日志，同时还会等待 ISR 中的所有其他副本都成功写入它们各自的本地日志后才返回相应结果给 `producer` 端。这样可以保证当 ISR 中至少有一个副本是存活状态时，消息是不会丢失的。但是吞吐量也是最低的。
    + `acks=1`：是0和all的折中方案，也是默认值。leader broker 收到消息后将消息写入本地日志，然后就发送相应结果给 producer ，无需等待 ISR 中其它副本写入该消息。
     <center><img src="pics/kafka-acks.png" alt="" width="60%"></center>
-
 2. `buffer.memory`
-   该参数指定了 producer 端用于缓存消息的缓冲区的大小，单位是字节，默认值是 32MB。如前所述， producer 主线程会把要发送的消息放入缓冲区，然后由IO线程发送这些消息。
+   该参数指定了 `producer` 端用于缓存消息的缓冲区的大小，单位是字节，默认值是 32MB。如前所述， `producer` 主线程会把要发送的消息放入缓冲区，然后由IO线程发送这些消息。
 3. `compression.type`
-   设置 producer 端是否压缩消息，默认不压缩。主要的压缩算法有： GZIP、Snappy、LZ4、Zstandard。
+   设置 `producer` 端是否压缩消息，默认不压缩。主要的压缩算法有： GZIP、Snappy、LZ4、Zstandard。
 4. `retries`
    当消息发送失败时，该参数能指定重试的次数。值得注意的是重试可能造成消息重复发送和消息的乱序。
 5. `batch.size`
-   前面提到过， producer 会把发往同一分区的多条消息封装进一个 batch 中。当 batch 满了的时候， producer 会发送 batch 中的所有消息。不过， producer 并不总是等待 batch 满了才发送消息。 batch.size 默认 16KB。
-6. `linger.ms`
-   该参数控制的是消息发送的延时，默认值是0，表示消息需要被立即发送，无需关心batch 是否已被填满。
-7. `request.timeout.ms`
-   设置的是超时时间，如果发送后，在该参数指定的时间内，producer 没有收到 broker 的响应，那么 producer 就认为该请求超时了。
-8. `parttioner.class`
+   前面提到过， `producer` 会把发往同一分区的多条消息封装进一个 batch 中。当 batch 满了的时候， `producer` 会发送 batch 中的所有消息。不过， `producer` 并不总是等待 batch 满了才发送消息。 `batch.size` 默认 16KB。
+7. `max.block.ms`
+   Producer 在调用 `send()` 或相关方法时，最多允许被**阻塞多久**
+   ```
+   send() 卡住，通常是因为本地缓冲区（buffer.memory）满，或者获取元数据超时 → 超过 max.block.ms → 直接抛异常
+   ```
+8. `linger.ms`
+   该参数控制的是消息发送的延时，默认值是0，表示消息需要被立即发送，无需关心 batch 是否已被填满。
+9.  `request.timeout.ms`
+   设置的是单次请求等 broker 响应的超时时间，如果发送后，在该参数指定的时间内， `producer` 没有收到 broker 的响应，那么 `producer` 就认为该请求超时了。
+10. `delivery.timeout.ms`
+   从 `send()` 返回开始计时，到结果出来为止的最大等待时间。它控制的是“总投递时间”，不是单次请求。
+11. `parttioner.class`
    设置自定义的 parttioner 分区机制。
-9. `enable.idempotence`
+12. `enable.idempotence`
    幂等性设置，启用以后，相同的消息（错误重试的消息）只会被集群存储一次。
+13. `max.in.flight.requests.per.connection`：每个 TCP 连接上，最多允许 5 个未确认请求同时发送。若开启幂等性，最大只能是 5。
+14. `max.request.size`
+    一次网络请求能发多大的数据包，防止 Producer 把超大请求砸给 broker。它限制的不是“单条消息”，而是“单个请求”.
+    ```
+    多条消息 → 组成 batch
+    多个 batch → 组成一个 ProduceRequest
+    ProduceRequest 大小 ≤ max.request.size
+    ```
+
+```
+send() （max.block.ms）
+  ↓
+进入 batch 等待 linger.ms
+  ↓
+多次重试 (request.timeout.ms * retries)
+  ↓
+只要总时间 > delivery.timeout.ms
+      → 直接失败
+```
 
 ####  ProducerRecord
 `ProducerRecord` 代表了一条要发送的消息，由5个字段构成，它们分别如下:

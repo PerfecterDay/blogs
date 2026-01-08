@@ -52,3 +52,27 @@ Dynamic Agent Session 是如何设置的？我看测试环境用的是这种方�
 
  @yik(i-Sprint)   @Tony  如果pin 验证直接在 前段时间SDK完成，不用跟后端交互。那是不是没有办法在后端控制一台设备禁止 pin 登录了啊 ？
 
+
+
+## 接口逻辑
+SDK preTokenActivation ----> /cap/bind/apply 参数就是 key/token
+                        ----> 用户中心校验 token ？
+                        ---> UAS create
+                        ---> UAS assign-and-encrypt
+
+                        ---> 发送 activationCode, 以及 result 给 SDK
+
+
+SDK enablePin/activateToken 成功（要求输入ping 和 activationCode）
+                        ----> /cap/bind/success token or 交易账号？
+                        ---> 用户中心校验 token ？
+                        ---> 调用OMS同步 CAP 方式到 clientAuth
+                        ---> 保存用户校验方式入库
+
+
+
+登录 ----> ping 完成后
+
+
+
+## mock curl

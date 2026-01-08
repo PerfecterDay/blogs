@@ -7,7 +7,6 @@ Spring Framework 为调用 REST 端点提供了以下选项：
 + `RestTemplate` — 采用模板方法 API 的同步客户端（现已弃用，推荐使用 `RestClient` ）
 + `HTTP Service Clients` — 基于生成代理的注解接口
 
-
 ## RestClient
 `RestClient` 是一个同步 HTTP 客户端，提供 fluent API 用于执行请求。它作为 HTTP 库的抽象层，负责将 HTTP 请求和响应内容转换为更高层次的 Java 对象，并反之亦然。
 
@@ -122,3 +121,162 @@ parts.add("xmlPart", new HttpEntity<>(myBean, headers));
 ```
 
 ## WebClient
+> https://docs.spring.io/spring-framework/reference/web/webflux-webclient.html
+
+`WebClient` 是一个用于执行 HTTP 请求的非阻塞响应式客户端。它在 5.0 版本中引入，为 `RestTemplate` 提供了替代方案，支持同步、异步和流式处理场景。  
+`WebClient` 支持以下功能：
++ Non-blocking I/O
++ Reactive Streams back pressure
++ High concurrency with fewer hardware resources
++ Functional-style, fluent API that takes advantage of Java 8 lambdas
++ Synchronous and asynchronous interactions
++ Streaming up to or streaming down from a server
+
+### 创建
+与 `RestClient` 类似， `WebClient` 需要一个 HTTP 客户端库来执行请求。支持以下类型的客户端库：
++ Reactor netty 客户端
++ JDK HttpClient
++ Jetty Reactive Client
++ Apache HttpComponents
++ Others can be plugged in via `ClientHttpConnector`.
+
+The simplest way to create WebClient is through one of the static factory methods:
++ `WebClient.create()`
++ `WebClient.create(String baseUrl)`
+
+You can also use WebClient.builder() with further options:
++ `uriBuilderFactory` : Customized UriBuilderFactory to use as a base URL.
++ `defaultUriVariables` : default values to use when expanding URI templates.
++ `defaultHeader` : Headers for every request.
++ `defaultCookie` : Cookies for every request.
++ `defaultApiVersion` : API version for every request.
++ `defaultRequest` : Consumer to customize every request.
++ `filter` : Client filter for every request.
++ `exchangeStrategies` : HTTP message reader/writer customizations.
++ `clientConnector` : HTTP client library settings.
++ `apiVersionInserter` : to insert API version values in the request
++ `observationRegistry` : the registry to use for enabling Observability support.
++ `observationConvention` : an optional, custom convention to extract metadata for recorded observations.
+
+
+#### Reactor Netty
+```
+HttpClient httpClient = HttpClient.create()
+		.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000)
+		.responseTimeout(Duration.ofSeconds(2))
+		.doOnConnected(conn -> conn
+				.addHandlerLast(new ReadTimeoutHandler(10))
+				.addHandlerLast(new WriteTimeoutHandler(10)))
+		.secure(sslSpec -> ...);
+
+WebClient webClient = WebClient.builder()
+		.clientConnector(new ReactorClientHttpConnector(httpClient))
+		.build();
+```
+
+#### JDK HttpClient
+```
+HttpClient httpClient = HttpClient.newBuilder()
+	.followRedirects(Redirect.NORMAL)
+	.connectTimeout(Duration.ofSeconds(20))
+	.build();
+
+ClientHttpConnector connector =
+		new JdkClientHttpConnector(httpClient, new DefaultDataBufferFactory());
+
+WebClient webClient = WebClient.builder().clientConnector(connector).build();
+```
+
+#### Jetty
+```
+HttpClient httpClient = new HttpClient();
+httpClient.setCookieStore(...);
+
+WebClient webClient = WebClient.builder()
+		.clientConnector(new JettyClientHttpConnector(httpClient))
+		.build();
+```
+
+#### HttpComponents
+```
+HttpAsyncClientBuilder clientBuilder = HttpAsyncClients.custom();
+clientBuilder.setDefaultRequestConfig(...);
+CloseableHttpAsyncClient client = clientBuilder.build();
+
+ClientHttpConnector connector = new HttpComponentsClientHttpConnector(client);
+
+WebClient webClient = WebClient.builder().clientConnector(connector).build();
+```
+
+## HTTP Service Client-OpenFeign 的替代
+> https://docs.spring.io/spring-framework/reference/integration/rest-clients.html#rest-http-service-client
+
+您可以将HTTP服务定义为包含 `@HttpExchange` 方法的Java接口，并使用 `HttpServiceProxyFactory` 基于该接口创建客户端代理，通过 `RestClient` `、WebClient` 或 `RestTemplate` 实现HTTP远程访问。在服务器端， `@Controller` 类可实现相同接口，通过 `@HttpExchange` 控制器方法处理请求。
+
+```
+@HttpExchange(url = "/repos/{owner}/{repo}", accept = "application/vnd.github.v3+json")
+public interface RepositoryService {
+
+	@GetExchange
+	Repository getRepository(@PathVariable String owner, @PathVariable String repo);
+
+	@PatchExchange(contentType = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+	void updateRepository(@PathVariable String owner, @PathVariable String repo,
+			@RequestParam String name, @RequestParam String description, @RequestParam String homepage);
+
+}
+```
+
+客户端调用：
+```
+// Using RestClient...
+RestClient restClient = RestClient.create("...");
+RestClientAdapter adapter = RestClientAdapter.create(restClient);
+
+// or WebClient...
+WebClient webClient = WebClient.create("...");
+WebClientAdapter adapter = WebClientAdapter.create(webClient);
+
+// or RestTemplate...
+RestTemplate restTemplate = new RestTemplate();
+RestTemplateAdapter adapter = RestTemplateAdapter.create(restTemplate);
+
+HttpServiceProxyFactory factory = HttpServiceProxyFactory.builderFor(adapter).build();
+
+RepositoryService service = factory.createClient(RepositoryService.class);
+
+service.getRepository(...)
+service.updateRepository(...)
+```
+
+服务端实现：
+```
+@RestController
+public class RepoController implements RepositoryService{
+    
+	@Override
+	public Repository getRepository(@PathVariable String owner, @PathVariable String repo){
+		...
+	}
+
+    @Override
+    void updateRepository(@PathVariable String owner, @PathVariable String repo,
+			@RequestParam String name, @RequestParam String description, @RequestParam String homepage){
+	}
+}
+```
+从 Spring 6 开始：
++ `@HttpExchange` ---> `@RequestMapping`
++ `@GetExchange` ----> `@GetMapping`
++ `@PostExchange` -----> `@PostMapping`
++ `@PatchExchange` 
+等注解能被 `HttpServiceProxyFactory` (客户端) 和 `RequestMappingHandlerMapping` (服务端) 同时支持了。同一套注解，既能“发请求”，也能“接请求”。
+
+但是请注意：
+**以上做法只适合在内部系统之间调用的场景下适用，不适合于对外 API 的公共接口**。如果对外接口也使用这种方式，会有以下弊端：
++ Controller 层容易被“客户端语义”污染
++ Header / HTTP 细节可能分歧
++ 版本演进困难
+
+HTTP service client 是通过HTTP实现远程访问的强大且富有表现力的选择。它允许团队自主掌握 REST API 的工作原理、哪些部分与客户端应用相关、需要创建哪些输入输出类型、需要哪些端点方法签名、需要哪些Javadoc文档等知识。由此生成的Java API既提供指导又可直接使用。
+

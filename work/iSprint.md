@@ -55,24 +55,37 @@ Dynamic Agent Session 是如何设置的？我看测试环境用的是这种方�
 
 
 ## 接口逻辑
+### 绑定
 SDK preTokenActivation ----> /cap/bind/apply 参数就是 key/token
                         ----> 用户中心校验 token ？
                         ---> UAS create
                         ---> UAS assign-and-encrypt
 
-                        ---> 发送 activationCode, 以及 result 给 SDK
+                        ---> 发送 activationCode(SMS), 以及 result 给 SDK
 
 
 SDK enablePin/activateToken 成功（要求输入ping 和 activationCode）
                         ----> /cap/bind/success token or 交易账号？
                         ---> 用户中心校验 token ？
                         ---> 调用OMS同步 CAP 方式到 clientAuth
+                        ---> 通知用户中心将之前的信任设备全部删除。
                         ---> 保存用户校验方式入库
 
+### 登录
+登录 ----> 输入账号密码 ---> 返回iSprint 方式 ----> app 要求用户输入 ping 完成 ----> 去NRTS拿 tradeToken？ （后端如何信任？如何保证安全性问题？）
+
+### 重置 pin 是手機本地處理, 不用連到 UAS
+生物认证解锁 可調用 SDK 的 loginFingerprint (Android) / loginTouchIDOrFaceID (iOS), 需要先啟用生物認證
+重置 pin 流程: 如果已啟動生物認證, 可以在生物認證登錄後再調用 enablePIN
+參考: 用戶按 app 的 [重置 pin] > 要求輸入新 PIN > 要求生物認證登錄 > disablePIN > enablePIN
+(如果沒有啟動生物認證, 不能重置 pin。只能註銷現有令牌, 重新激活新令牌)
 
 
-登录 ----> ping 完成后
+### 设备列表
+新版本 app ： 如果使用了 iSprint，是否展示老的信任设备嘛 ？？没使用iSprint 呢？
+老版本 app ： 如果使用了 iSprint ---> 强制升级。
+             没使用维持原样 ？还是能看到iSprint 的设备 ？
 
-
+老版本登录后，如果启用过 iSprint 也只能看到 iSprint 的设备。
 
 ## mock curl

@@ -164,3 +164,6 @@ JDK 带来了 `javaws` 。我们可以将其与 Java Web Start 结合使用。
 + `jmap` - 打印指定进程的共享对象内存映射或堆内存详细信息
 + `jsadebugd` - 附加到 Java 进程并充当调试服务器
 + `jstack` - 打印指定 Java 进程的 Java 线程的 Java 堆栈跟踪
+
+## 常用JDK
+<center><img src="pics/jdk.png" width="70%"></center>

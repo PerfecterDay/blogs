@@ -65,4 +65,5 @@
 * [Spring JMS集成](/spring/spring-JMS集成.md)
 * [Spring Security](/spring/spring_security/_sidebar.md)
 * [Spring Rest client](/spring/spring-restclient.md)
+* [Spring Modulith](/spring/spring-Modulith.md)
 * [精彩博客](https://www.logicbig.com/tutorials/spring-framework/spring-core.html)

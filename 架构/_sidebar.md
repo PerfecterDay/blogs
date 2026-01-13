@@ -25,6 +25,7 @@
   * [事件风暴](/架构/ddd/领域事件.md)
   * [聚合](/架构/ddd/聚合.md)
   * [学习资料](/架构/ddd/学习资料.md)
+  * [COLA](/架构/ddd/cola架构规范.md)
 * [编程范式](./编程范式.md)
 * [SOLID原则](./SOLID原则.md)
 * [12factor App](./12factor.md)

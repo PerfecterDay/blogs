@@ -49,8 +49,9 @@ Dynamic Agent Session 是如何设置的？我看测试环境用的是这种方�
 
 ## 问题
 如何使客户端的iSprint 失效 ？ 如果 pin 认证不在后端验证
+@yik(i-Sprint)   @Tony  如果pin 验证直接在 前段时间SDK完成，不用跟后端交互。那是不是没有办法在后端控制一台设备禁止 pin 登录了啊 ？
 
- @yik(i-Sprint)   @Tony  如果pin 验证直接在 前段时间SDK完成，不用跟后端交互。那是不是没有办法在后端控制一台设备禁止 pin 登录了啊 ？
+如果pin认证是纯前端的，登录时如何让后端信任pin 已经认证成功并颁发交易 token ?
 
 
 

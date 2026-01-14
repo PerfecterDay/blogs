@@ -1,6 +1,7 @@
 * [Home](/)
 * [..](../_sidebar.md)
 * [Springboot](#)
+  * [Springboot 文档](https://docs.spring.io/spring-boot/4.0-SNAPSHOT/index.html)
   * [Springboot 及相关项目的官方文档](https://spring.io/projects/spring-boot)
   * [Springboot 启动原理-SpringApplication实例化](/spring/springboot/springboot启动原理-SpringApplication.md)
   * [Springboot 启动过程及扩展点](/spring/springboot/springboot启动原理分析.md)
@@ -23,3 +24,4 @@
   * [Springboot 优雅停机](/spring/springboot/优雅停机.md)
   * [Springboot集成consul](/spring-cloud/springboot集成consul.md)
   * [Springboot集成TOTP和DUO](/spring/springboot/springboot集成TOTP和DUO.md)
+  * [Springboot 集成flyway](/spring/springboot/springboot-flyway集成.md)

@@ -47,6 +47,30 @@ spring:
         └── V1__create_user_table.sql
 ```
 
+注意，启动项目之前必须先创建好数据库。
+
+## 文件协议
+1. 版本迁移（ Versioned Migration ）
+```
+V<主版本>_<子版本>__<动词>_<对象>.sql
+```
+flyway 只会执行一次，一旦确定了一个版本文件，执行后就不要
+
+2. 可重复迁移 ( Repeatable Migration )
+```
+R__<描述>.sql
+```
+没有版本号，只要内容有变动，就会重新执行，执行顺序是在所有 V 之后。  
+主要是用来创建view、procedure、function以及执行数据初始化操作。
+
+3. 目录规范
+```
+db/migration
+├── V1_0__init_schema.sql
+├── V1_1__create_user_table.sql
+├── V1_2__add_user_index.sql
+├── R__create_view_user_summary.sql
+```
 
 
 ## 问题

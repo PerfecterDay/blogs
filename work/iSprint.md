@@ -89,4 +89,5 @@ SDK enablePin/activateToken 成功（要求输入ping 和 activationCode）
 
 老版本登录后，如果启用过 iSprint 也只能看到 iSprint 的设备。
 
-## mock curl
+## oms API
+https://pingcode.gtht.com.cn/wiki/spaces/ADC/pages/ElK-ApNY

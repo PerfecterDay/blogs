@@ -30,9 +30,35 @@
 </dependencies>
 ```
 
+迁移到 springboot 4.0：
+> https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-4.0-Migration-Guide
+
+添加以下依赖，缺一不可：
+```
+<dependency>
+    <groupId>io.micrometer</groupId>
+    <artifactId>micrometer-tracing-bridge-brave</artifactId>
+</dependency>
+
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-micrometer-tracing-brave</artifactId>
+</dependency>
+
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-micrometer-tracing</artifactId>
+</dependency>
+
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-actuator</artifactId>
+</dependency>
+```
+
 logback配置：
 ```
-%d{HH:mm:ss.SSS} [%thread] %-5level %X{traceId:-} %X{spanId:-} %logger{36} - %msg%n
+%d{HH:mm:ss.SSS} [%thread] %-5level %X{traceId:-} [%X{traceId:-},%X{spanId:-}] - %msg%n
 ```
 
 ### 跨线程传递 traceId/spanId :

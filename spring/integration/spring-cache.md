@@ -1,17 +1,7 @@
 #  Spring Cache的集成
 {docsify-updated}
 
-- [Spring Cache的集成](#spring-cache的集成)
-    - [缓存基础知识](#缓存基础知识)
-    - [自己实现缓存的简单实现](#自己实现缓存的简单实现)
-    - [Spring Cache 的注解](#spring-cache-的注解)
-    - [JSR-107 Cache](#jsr-107-cache)
-    - [Caffeine](#caffeine)
-    - [Springboot 集成 redis 缓存](#springboot-集成-redis-缓存)
-    - [caffine+redis 双层缓存](#caffineredis-双层缓存)
-
-
-### 缓存基础知识
+## 缓存基础知识
 1. 缓存命中率
 	即从缓存中 读取数据的次数与总读取 次数的 比率。一般来说，命中率越高越好。 
 	1. 命中率 = 从缓存中读取的次数/总读取次数(从缓存中读取的次数+从慢速设备上读取的次数)
@@ -25,7 +15,7 @@
 	+ `TMTL(TimeToLive)`:存活期，即从缓存中创建时间点开始直至到期的一个时间段(不管在这个时间段内有没有访问都将过期)。
 	+ `TTI(TimeToldle)`:空闲期，即一个数据多久没被访问就从缓存中移除的时间。
 
-### 自己实现缓存的简单实现
+## 自己实现缓存的简单实现
 ```
 public class CacheManager<T> {
     private Map<String, T> cache = new ConcurrentHashMap<String, T>();
@@ -91,7 +81,7 @@ public class UserService {
 
 需要注意的是`Spring Cache`并不针对多进程的应用环境进行专门的处理，也就是说，当应用程序处于分布式或者集群环境下时，需要针对具体的缓存进行相应的配置。
 
-### Spring Cache 的注解
+## Spring Cache 的注解
 1. @Cacheable  
    @Cacheable是最主要的注解，它指定了被注解方法的返回值是可被缓存的。其工作原理是**Spring首先在缓存中查找数据，如果没有则执行方法并缓存结果，然后返回数据**。缓存名是必须提供的，可以使用引号、value或者 cacheNames 属性来定义名称。
    ```
@@ -124,7 +114,7 @@ public class UserService {
 	+ allEntries： 是布尔类型的，用来表示是否需要清除缓存中的所有元素。默认值为false,表示不需要。当指定allEntries为true时，SpringCache将忽路指定的key，清除缓存中的所有内容
 	+ beforeInvocation：定义了在调用方法之前还是在调用方法之后完成移除操作。与@Cacheable 注解不同的是，在默认情况下，清除操作默认是在对应方法**执行成功后触发**的，即方法如果因为拋出异常而未能成功返回时，则不会触发清除操作。使用beforelnvocation属性可以改变触发清除操作的时间。当指定该属性值为true时，Spring会在调用该方法之前清除缓存中的指定元素。
 
-### JSR-107 Cache
+## JSR-107 Cache
 
 JavaCaching定义了4个核心接又，分别是CachingProvider、CacheManager、Cache和Entry。下面对这4个核心接又进行简单介绍。
 + CachingProvider： 定义了创建、配置、获取、管理和控制多个CacheManager。个应用可以在运行期访问多个CachingProvider。
@@ -134,7 +124,7 @@ JavaCaching定义了4个核心接又，分别是CachingProvider、CacheManager�
 
 <center><img src="/pics/jcahce.jpg"></center>
 
-### Caffeine
+## Caffeine
 ```
 <dependencies>
     <dependency>
@@ -162,7 +152,7 @@ public CacheManager cacheManager(Caffeine caffeine) {
 
 
 
-### Springboot 集成 redis 缓存
+## Springboot 集成 redis 缓存
 1. 添加依赖
 ```
 <dependency>
@@ -211,7 +201,7 @@ public RedisCacheManagerBuilderCustomizer redisCacheManagerBuilderCustomizer() {
 ```
 
 
-### caffine+redis 双层缓存
+## caffine+redis 双层缓存
 使用 `CompositeCacheManager` 能组合多个缓存管理器：
 ```
 @Configuration

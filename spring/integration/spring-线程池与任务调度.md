@@ -59,6 +59,11 @@ spring:
         await-termination-period: 30s
 ```
 
+#### 使用Spring Async
+使用自定义线程池有两种方式，
+   1. 局部注入：定义一个线程池的bean 后，在 `@Async` 注解后指定要使用的线程池的名字
+   2. 全局注入：在注入线程池bean的配置类上实现`AsyncConfigurer`	接口，这样注入的线程池就是默认的线程池了（见上面的代码）
+
 如果启用了 `@EnableAsync` 注解，Spring 就会开启异步任务处理，就可以在一些方法上使用 `@Async` 注解来告诉 Spring 使用异步任务来执行某些方法。
 ```
 @Async
@@ -71,7 +76,21 @@ void doSomething(String s) {
 	// this will be run asynchronously by "otherExecutor"
 }
 ```
-### @Async 的异常处理
+
+注意：在需要异步执行的方法上加上 `@Async` 注解，注意不能在定义这个异步方法类的内部其他方法中调用这个方法，否则会失效。（AOP增强失效的原因）
+```
+@Async
+@Cacheable(value = "smsCode")
+public void saveSms(String mobile, String code) {
+    log.info(Thread.currentThread().getName());
+    SmsEntity sms = new SmsEntity(mobile,code,"login");
+    save(sms);
+}
+```
+原因：
+As I said, the two annotations do not work together on the same method. If you think about it, it is obvious. Marking with @Async is also @Cacheable means to delegate the whole cache management to different asynchronous threads. If the computation of the value of the CompletableFuture will take a long time to complete, the value in the cache will be placed after that time by Spring Proxy.
+
+#### @Async 的异常处理
 当 `@Async` 方法的返回类型为 `Future` 时，方法执行过程中抛出的异常易于管理，因为该异常会在调用 `Future` 结果的 `get` 方法时被抛出。然而，当返回类型为 `void` 时，异常将无法被捕获且无法传递。此时可提供 `AsyncUncaughtExceptionHandler` 来处理此类异常。以下示例展示了具体实现方式：
 ```
 public class MyAsyncUncaughtExceptionHandler implements AsyncUncaughtExceptionHandler {

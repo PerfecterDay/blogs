@@ -8,6 +8,7 @@
 * [Java](/java/_sidebar.md)
 * [Linux](/linux/_sidebar.md)
 * [Spring](/spring/_sidebar.md)
+* [Springboot](/springboot/_sidebar.md)
 * [Spring Cloud](/spring-cloud/_sidebar.md)
 * [SQL](/sql/_sidebar.md)
 * [容器与K8S](/docker/_sidebar.md)

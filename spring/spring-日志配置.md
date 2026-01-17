@@ -1,15 +1,6 @@
 #  springboot 日志配置
  {docsify-updated}
 
-- [springboot 日志配置](#springboot-日志配置)
-  - [logger](#logger)
-  - [Appender](#appender)
-  - [Layout](#layout)
-  - [Logback 配置](#logback-配置)
-  - [多环境日志配置](#多环境日志配置)
-  - [MDC(Mapped Diagnostic Context) 及 @Async 的跨线程配置](#mdcmapped-diagnostic-context-及-async-的跨线程配置)
-  - [命令行启用debug 级别](#命令行启用debug-级别)
-
 添加依赖（如果项目引入了springboot-web，则默认已经导入）：
 ```
     <dependency>
@@ -20,7 +11,7 @@
     </dependency>
 ```
 
-### logger
+## logger
 一个 Logger 被当作为一个实体，它们的命名是**大小写敏感的**，并且遵循以下规则：
 > 命名层次结构
 >
@@ -39,7 +30,7 @@ Logger 能够被分成不同的等级。不同的等级（TRACE, DEBUG, INFO, WA
 
 这条规则是 logbakc 的核心。各级别的排序为：**TRACE** < **DEBUG** < **INFO** < **WARN** < **ERROR**。
 
-### Appender
+## Appender
 对于给定的 logger，每一个允许输出的日志都会被转发到该 logger 的所有 appender 中去。换句话说，appender 从 logger 的等级结构中去继承叠加性。例如：如果 root logger 添加了一个 console appender，所有允许输出的日志至少会在控制台打印出来。如果再给一个叫做 ***L*** 的 logger 添加了一个 file appender，那么 ***L*** 以及 ***L*** 的子级 logger 都可以在文件和控制台打印日志。可以通过设置 additivity = false 来改写默认的设置，这样 appender 将不再具有叠加性。
 
 appender 的叠加性规则如下：
@@ -52,11 +43,11 @@ appender 的叠加性规则如下：
 >
 > logger 默认设置 additivity = true。
 
-### Layout
+## Layout
 
 通常，用户既想自定义日志的输出地，也想自定义日志的输出格式。通过给 appender 添加一个 *layout* 可以做到。layout 的作用是将日志格式化，而 appender 的作用是将格式化后的日志输出到指定的目的地。**PatternLayout** 能够根据用户指定的格式来格式化日志，类似于 C 语言的 printf 函数。
 
-### Logback 配置
+## Logback 配置
 以下是 logback 的初始化步骤：
 
 1. logback 会在类路径下寻找名为 logback-test.xml 的文件。
@@ -118,7 +109,7 @@ logback 的配置文件非常的灵活，不需要指定 DTD 或者 xml 文件�
 
 	ch.qos.logback.core.ConsoleAppender: 就跟名字显示的一样，是将日志事件附加到控制台，跟进一步说就是通过 `System.out` 或者 `System.err` 来进行输出。默认通过前者
 
-### 多环境日志配置
+## 多环境日志配置
 在不同的profile 或者配置文件中配置不同的日志配置文件：
 ```
 logging.config=src/main/resources/logback-prod.xml
@@ -126,7 +117,7 @@ logging.config=src/main/resources/logback-dev.xml
 logging.config=src/main/resources/logback-test.xml
 ```
 
-### MDC(Mapped Diagnostic Context) 及 @Async 的跨线程配置
+## MDC(Mapped Diagnostic Context) 及 @Async 的跨线程配置
 MDC用于标记每个请求。它是通过将关于请求的上下文信息放入MDC来完成的，MDC数据结构上类似与Map 数据结构，可以put/get 存取数据。Logback 的 MDC 是与线程绑定的，本质上是 ThreadLocal 的对象。所以跨线程时MDC的数据无法同步。需要手动同步，在 @Async 的配置方案如下：
 ```
 @Configuration
@@ -177,7 +168,7 @@ public class MdcTaskDecorator implements TaskDecorator {
 
 如果是自己维护的线程池，可以再创建线程池时传入自定义的 ThreadFactory threadFactory 参数，在自定义 ThreadFactory 中创建线程时，传递 MDC 对象。
 
-### 命令行启用debug 级别
+## 命令行启用debug 级别
 ```
 java -jar myproject-0.0.1-SNAPSHOT.jar --debug
 ```

@@ -39,11 +39,11 @@
 
 
 ## @RequiredArgsConstructor
-这个注解用在 **类** 上，使用类中所有带有 `@NonNull` 注解的或者带有 final 修饰的成员变量生成对应的构造方法。
+这个注解用在 **类** 上，使用类中所有带有 `@NonNull` 注解的或者带有 `final` 修饰的成员变量生成对应的构造方法。
 
 
 ## @Value
-这个注解用在 **类** 上，是@Data的不可变形式，相当于为属性添加final声明，只提供 `getter` 方法，而不提供 `setter` 方法。会生成含所有参数的构造方法，`get` 方法，此外还提供了`equals、hashCode、toString` 方法。
+这个注解用在 **类** 上，是@Data的不可变形式，相当于为属性添加 `final` 声明，只提供 `getter` 方法，而不提供 `setter` 方法。会生成含所有参数的构造方法，`get` 方法，此外还提供了`equals、hashCode、toString` 方法。
 
 
 ## @SneakyThrows

@@ -214,20 +214,34 @@ WebClient webClient = WebClient.builder().clientConnector(connector).build();
 您可以将HTTP服务定义为包含 `@HttpExchange` 方法的Java接口，并使用 `HttpServiceProxyFactory` 基于该接口创建客户端代理，通过 `RestClient` `、WebClient` 或 `RestTemplate` 实现HTTP远程访问。在服务器端， `@Controller` 类可实现相同接口，通过 `@HttpExchange` 控制器方法处理请求。
 
 ```
-@HttpExchange(url = "/repos/{owner}/{repo}", accept = "application/vnd.github.v3+json")
-public interface RepositoryService {
+@HttpExchange(url = "${isprint.url}")
+public interface ISprintService {
+    @PostExchange(url = "/update/user/create")
+    UserCreateResponseVO registerUser(@RequestBody UserCreateRequestDTO userCreateRequestDTO);
 
-	@GetExchange
-	Repository getRepository(@PathVariable String owner, @PathVariable String repo);
-
-	@PatchExchange(contentType = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-	void updateRepository(@PathVariable String owner, @PathVariable String repo,
-			@RequestParam String name, @RequestParam String description, @RequestParam String homepage);
-
+    @PostExchange(url = "/query/user/findById")
+    ActivationResultVO queryUser(@RequestBody UserQueryDTO userQueryDTO);
 }
 ```
 
 客户端调用：
+```
+@Configuration
+public class SprintServiceConfiguration {
+    @Bean
+    public ISprintService iSprintService(@Value("${isprint.url}")String baseUrl) {
+        RestClient restClient = RestClient.builder().baseUrl(baseUrl).build();
+        HttpServiceProxyFactory factory =
+                HttpServiceProxyFactory
+                        .builderFor(RestClientAdapter.create(restClient))
+                        .build();
+
+        return factory.createClient(ISprintService.class);
+    }
+}
+```
+
+类似的，也可以使用 `WebClient` 或者 `RestTemplate`:
 ```
 // Using RestClient...
 RestClient restClient = RestClient.create("...");

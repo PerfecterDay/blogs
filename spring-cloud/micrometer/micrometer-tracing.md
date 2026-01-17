@@ -64,23 +64,23 @@ logback配置：
 ### 跨线程传递 traceId/spanId :
 ```
 @Bean
-    public TaskDecorator taskDecorator() {
-        return runnable -> ContextSnapshotFactory
-                .builder()
-                // you can limit what thread locals to propagate
-                // (e.g. .captureKeyPredicate(ObservationThreadLocalAccessor.KEY::equals))
-                .build()
-                .captureAll()
-                .wrap(runnable);
-    }
+public TaskDecorator taskDecorator() {
+    return runnable -> ContextSnapshotFactory
+            .builder()
+            // you can limit what thread locals to propagate
+            // (e.g. .captureKeyPredicate(ObservationThreadLocalAccessor.KEY::equals))
+            .build()
+            .captureAll()
+            .wrap(runnable);
+}
 
-    @Bean
-    public ThreadPoolTaskExecutor executor(TaskDecorator taskDecorator) {
-        return new ThreadPoolTaskExecutorBuilder()
-                // add your own configs (e.g. maxPoolSize, threadNamePrefix)
-                .taskDecorator(taskDecorator)
-                .build();
-    }
+@Bean
+public ThreadPoolTaskExecutor executor(TaskDecorator taskDecorator) {
+    return new ThreadPoolTaskExecutorBuilder()
+            // add your own configs (e.g. maxPoolSize, threadNamePrefix)
+            .taskDecorator(taskDecorator)
+            .build();
+}
 ```
 
 ###

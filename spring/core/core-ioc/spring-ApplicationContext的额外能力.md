@@ -4,7 +4,6 @@
 > https://docs.spring.io/spring-framework/reference/core/beans/context-introduction.html
 
 
-
 ## Application Startup Tracking
 `ApplicationContext` 管理Spring应用的生命周期，并围绕组件提供丰富的编程模型。因此，复杂的应用程序可能具有同样复杂的组件图和启动阶段。  
 通过特定指标追踪应用程序启动步骤，不仅有助于了解启动阶段的时间消耗情况，还能作为全面理解上下文生命周期的有效途径。
@@ -31,6 +30,13 @@ public static void main(String[] args) {
                 System.out.println(e.getDuration());
             });
 }
+```
+
+在 Springboot 中可以通过配置启动:
+```
+spring:
+  application:
+    startup: buffer
 ```
 
 要开始收集自定义的 `StartupStep` ，组件可以直接从 `ApplicationCOntext` 中获取 `ApplicationStartup` 实例: 

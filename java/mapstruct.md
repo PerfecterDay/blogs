@@ -5,45 +5,170 @@
 > https://www.baeldung.com/mapstruct  
 > https://www.baeldung.com/java-mapstruct-mapping-collections
 
+
+MapStruct 的核心理念是生成尽可能接近手动编写的代码。具体而言，不同对象值的拷贝传递是通过简单的 `getter/setter` 调用从源对象复制到目标对象，而非借助反射或其他类似机制实现。
+
 ## 依赖与插件
 ```
-<dependency>
-    <groupId>org.mapstruct</groupId>
-    <artifactId>mapstruct</artifactId>
-    <version>1.5.5.Final</version> 
-</dependency>
-
-<plugin>
-    <groupId>org.apache.maven.plugins</groupId>
-    <artifactId>maven-compiler-plugin</artifactId>
-    <version>3.11.0</version>
-    <configuration>
-        <annotationProcessorPaths>
-            <path>
-                <groupId>org.mapstruct</groupId>
-                <artifactId>mapstruct-processor</artifactId>
-                <version>1.5.5.Final</version>
-            </path>
-        </annotationProcessorPaths>
-    </configuration>
-</plugin>
+<properties>
+    <org.mapstruct.version>1.6.3</org.mapstruct.version>
+</properties>
+...
+<dependencies>
+    <dependency>
+        <groupId>org.mapstruct</groupId>
+        <artifactId>mapstruct</artifactId>
+        <version>${org.mapstruct.version}</version>
+    </dependency>
+</dependencies>
+...
+<build>
+    <plugins>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>3.8.1</version>
+            <configuration>
+                <annotationProcessorPaths>
+                    <path>
+                        <groupId>org.mapstruct</groupId>
+                        <artifactId>mapstruct-processor</artifactId>
+                        <version>${org.mapstruct.version}</version>
+                    </path>
+                </annotationProcessorPaths>
+            </configuration>
+        </plugin>
+    </plugins>
+</build>
 ```
 
-## 不同名字映射
-不同名字之间的map：
+## IDEA 插件
+[MapStruct Support](https://plugins.jetbrains.com/plugin/10036-mapstruct-support)
+
+## 定义一个 Mapper
+
+### 基础映射
+要创建映射器，只需定义一个包含所需映射方法的Java接口，并为其添加 `org.mapstruct.Mapper` 注解，MapStruct 代码生成器在构建时会扫描 `@Mapper` 注解并为接口创建实现类：
 ```
 @Mapper
-public interface EmployeeMapper {
-    
-    @Mapping(target="employeeId", source="entity.id")
-    @Mapping(target="employeeName", source="entity.name")
-    EmployeeDTO employeeToEmployeeDTO(Employee entity);
+public interface CarMapper {
+    @Mapping(target = "manufacturer", source = "make")
+    @Mapping(target = "seatCount", source = "numberOfSeats")
+    CarDto carToCarDto(Car car);
 
-    @Mapping(target="id", source="dto.employeeId")
-    @Mapping(target="name", source="dto.employeeName")
-    Employee employeeDTOtoEmployee(EmployeeDTO dto);
+    @Mapping(target = "fullName", source = "name")
+    PersonDto personToPersonDto(Person person);
+}
+
+//生成的代码
+public class CarMapperImpl implements CarMapper {
+
+    @Override
+    public CarDto carToCarDto(Car car) {
+        if ( car == null ) {
+            return null;
+        }
+
+        CarDto carDto = new CarDto();
+
+        if ( car.getFeatures() != null ) {
+            carDto.setFeatures( new ArrayList<String>( car.getFeatures() ) );
+        }
+        carDto.setManufacturer( car.getMake() );
+        carDto.setSeatCount( car.getNumberOfSeats() );
+        carDto.setDriver( personToPersonDto( car.getDriver() ) );
+        carDto.setPrice( String.valueOf( car.getPrice() ) );
+        if ( car.getCategory() != null ) {
+            carDto.setCategory( car.getCategory().toString() );
+        }
+        carDto.setEngine( engineToEngineDto( car.getEngine() ) );
+
+        return carDto;
+    }
+
+    @Override
+    public PersonDto personToPersonDto(Person person) {
+        //...
+    }
+
+    private EngineDto engineToEngineDto(Engine engine) {
+        if ( engine == null ) {
+            return null;
+        }
+
+        EngineDto engineDto = new EngineDto();
+
+        engineDto.setHorsePower(engine.getHorsePower());
+        engineDto.setFuel(engine.getFuel());
+
+        return engineDto;
+    }
 }
 ```
+在生成的方法实现中，源类型（例如 Car）的所有可读属性都将被复制到目标类型（例如 CarDto）的对应属性中：
++ 当属性与其目标实体对应项名称相同时，将隐式映射该属性。
++ 当属性在目标实体中具有不同名称时，可通过 `@Mapping` 注解指定名称的对应关系。
+
+如示例所示，生成的代码会考虑通过 `@Mapping` 注解指定的任何名称映射。若源实体与目标实体中映射属性的**类型不同**，MapStruct将执行**自动转换**（例如对price属性，参见隐式类型转换），或可选地调用/创建另一个映射方法（例如对`driver/engine` 属性，参见对象引用映射）。MapStruct 仅在满足以下条件时创建新映射方法：源属性与目标属性均为 Bean 属性，且它们本身是Bean或简单属性（即非集合或映射类型属性）。
+
+具有相同元素类型的集合类型属性将通过创建目标集合类型的全新实例来实现复制，该实例包含源属性的所有元素。对于具有不同元素类型的集合类型属性，每个元素将单独映射并添加到目标集合中，**调用集合元素的映射器来转换添加**。
+
+MapStruct 会考虑源类型和目标类型中的所有公共属性，**包括在超类型上声明的公共属性**。
+
+### 增加自定义转换逻辑
+```
+@Mapper
+public interface CarMapper {
+
+    @Mapping(...)
+    ...
+    CarDto carToCarDto(Car car);
+
+    default PersonDto personToPersonDto(Person person) {
+        //hand-written mapping logic
+    }
+}
+```
+这样在将 `carToCarDto` 中会自动调用 `personToPersonDto` 方法将 `Car.Person` 转换为 `PersonDto` 对象并设置到 `CarDto 对应属性中`.
+
+映射器也可以采用抽象类的形式定义，而非接口，并在映射器类中直接实现自定义方法。此时 MapStruct 将生成该抽象类的扩展类，并实现所有抽象方法。相较于声明默认方法，此方法的优势在于可在映射器类中声明额外字段。
+```
+@Mapper
+public abstract class CarMapper {
+    @Mapping(...)
+    ...
+    public abstract CarDto carToCarDto(Car car);
+
+    public PersonDto personToPersonDto(Person person) {
+        //hand-written mapping logic
+    }
+}
+```
+
+### 固定值
+在某些时候，目标对象中有一个属性是源目标中没有的，我们想在每次转换时赋值一个固定的值，可以使用 `constant` ，这样做：
+```
+public interface UserMapper {
+    @Mapping(target = "status", constant = "ACTIVE")
+    UserDTO toDto(UserEntity entity);
+}
+```
+
+也可以使用 `@AfterMapping` :
+```
+@Mapper(componentModel = "spring")
+public interface ProductMapper {
+
+    ProductDTO toDto(ProductEntity entity);
+
+    @AfterMapping
+    default void fillStatus(@MappingTarget ProductDTO dto) {
+        dto.setStatus("DEFAULT");
+    }
+}
+```
+
+
 
 ## 类型转换
 当类型需要转换时，比如时间转字符串：
@@ -70,23 +195,6 @@ public interface PublishVersionRequst2AppVersionEntityMapper {
 
     @Mapping(target = "memo",expression = "java(cn.hutool.core.util.StrUtil.toString(request.getMemo()))")
     AppVersionEntity map(PublishVersionRequest request);
-}
-```
-
-## 增加自定义转换逻辑
-```
-@Mapper
-public abstract class OrderSyncRequestMapper {
-    @BeforeMapping
-    protected void getVouncherNo(FundOrder fundOrder, @MappingTarget OrderSyncRequest orderSyncRequest) {
-        if (StringUtils.equalsIgnoreCase("s", fundOrder.getOrderType())) {
-            orderSyncRequest.setVoucherNo(fundOrder.getHoldFundVoucherNo());
-        } else {
-            orderSyncRequest.setVoucherNo(fundOrder.getInstrumentVoucherNo());
-        }
-    }
-    @Mapping(target = "instrument", source = "fund")
-    public abstract OrderSyncRequest fromFundOrder(FundOrder fundOrder);
 }
 ```
 
@@ -231,3 +339,33 @@ public interface CustomerScrResultMapper {
 
 }
 ```
+
+
+## 使用 Mapper
+1. 没有使用 DI 依赖注入，使用 `org.mapstruct.factory.Mappers` 的 `getMapper` 方法：
+```
+CarMapper mapper = Mappers.getMapper( CarMapper.class );
+```
+按惯例，映射器接口应定义名为 `INSTANCE` 的成员，该成员持有映射器类型的单个实例：
+```
+@Mapper
+public interface CarMapper {
+
+    CarMapper INSTANCE = Mappers.getMapper( CarMapper.class );
+
+    CarDto carToCarDto(Car car);
+}
+```
+
+2. 当使用了依赖注入框架时
+```
+@Mapper(componentModel = MappingConstants.ComponentModel.CDI)
+public interface CarMapper {
+
+    CarDto carToCarDto(Car car);
+}
+
+@Inject
+private CarMapper mapper;
+```
+

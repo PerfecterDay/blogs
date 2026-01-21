@@ -4,6 +4,11 @@
 > https://baomidou.com
 
 
+```
+@MapperScan("com.gtht.gjyw.repo.mapper") // 指定扫描 mapper 的包
+
+```
+
 ## 多数据源配置
 1. 添加依赖
    ```

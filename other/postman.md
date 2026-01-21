@@ -51,3 +51,6 @@ if (jsonData.code !== 0) {
 3. 当有多个 example 时，需要添加请求头 `x-mock-response-name: success-example` 指定返回的 example 
 
 postman 最左侧有个 Mock Servers 菜单栏，单击菜单栏能看到已经创建的 Mock Servers 服务器。
+
+注意，如果请求模糊， postman mock server 返回的 example 不一定符合预期。 mock server 具体的匹配算法请参考以下链接：
+> https://learning.postman.com/docs/design-apis/mock-apis/matching-algorithm/

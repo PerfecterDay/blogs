@@ -238,8 +238,8 @@ public abstract class TradeNews2MessageMapper {
     List<HistoryVersionResponse> toHistoryVersionResponseListHk(List<AppVersionEntity> versions);
 ```
 
-
-## 插件冲突
+## 问题
+### 插件冲突
 与 Lombok 配合出现：
 No property named "sms" exists in source parameter/No property named "sms" exists in result parameter
 需要先用Lombok处理后才能用mapstruct，加入下列配置：
@@ -273,7 +273,8 @@ No property named "sms" exists in source parameter/No property named "sms" exist
         </pluginManagement>
     </build>
 ```
-
+### IDEA
+使用IDEA build 和 maven compile ，生成的代码不一样。maven compile 生成的代码正确
 
 ## 复杂转换-多个输入组成一个对象
 I have Car:

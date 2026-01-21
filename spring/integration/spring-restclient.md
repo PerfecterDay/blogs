@@ -1,6 +1,8 @@
 # Spring-REST Clients
 {docsify-updated}
 
+> https://docs.spring.io/spring-framework/reference/integration/rest-clients.html
+
 Spring Framework 为调用 REST 端点提供了以下选项：
 + `RestClient` — 同步调用的 fluent API
 + `WebClient` — 非阻塞响应式 fluent API
@@ -49,6 +51,8 @@ RestClient customClient = RestClient.builder()
 若 RestClient 构建时未指定请求工厂，则优先使用类路径中存在的 Apache 或 Jetty `HttpClient` 。若未找到，且加载了 java.net.http 模块，则使用 Java 的 `HttpClient` 。最后才会采用简单默认实现。
 
 如果需要对底层http client 库进行一些配置，如连接超时时间、连接池大小、read-write timeout 等底层设置时，可以构造一个配置好的 client 对象，并初始化到上述对饮的 `ClientRequestFactory` 实现中，如：
+
+##### JDK HttpClient
 ```
 HttpClient httpClient = HttpClient.newBuilder()
                 .connectTimeout(Duration.ofSeconds(5))   // 建连超时
@@ -76,6 +80,28 @@ System.out.println("Contents: " + result.getBody());
 ```
 
 当你不关心返回值body时，可以使用 `toBodilessEntity()` 方法。
+
+##### Apache HTTP Components
+```
+PoolingHttpClientConnectionManager cm =
+        PoolingHttpClientConnectionManagerBuilder.create()
+                .setMaxConnTotal(200)
+                .setMaxConnPerRoute(50)
+                .build();
+
+CloseableHttpClient client = HttpClients.custom()
+        .setConnectionManager(cm)
+        .setDefaultRequestConfig(RequestConfig.custom()
+                .setConnectTimeout(3, TimeUnit.SECONDS)
+                .setResponseTimeout(5, TimeUnit.SECONDS)
+                .build())
+        .build();
+
+RestClient restClient = RestClient.builder()
+        .requestFactory(new HttpComponentsClientHttpRequestFactory(client))
+        .build();
+```
+
 
 #### 异常处理
 ```

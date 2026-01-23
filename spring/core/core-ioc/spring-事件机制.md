@@ -2,14 +2,6 @@
 {docsify-updated}
 
 > https://docs.spring.io/spring-framework/reference/core/beans/context-introduction.html
-- [spring 事件机制](#spring-事件机制)
-	- [Java 观察者模式（事件机制）](#java-观察者模式事件机制)
-	- [spring 事件体系](#spring-事件体系)
-	- [Spring事件体系的具体实现](#spring事件体系的具体实现)
-	- [Spring自带的发布事件](#spring自带的发布事件)
-	- [Springboot的内置事件](#springboot的内置事件)
-	- [手动实现自己的业务事件发布与监听](#手动实现自己的业务事件发布与监听)
-
 
 Spring 的 ApplicationContext 能够发布事件并且允许注册相应的事件监听器，因此，它拥有一套完善的事件发布和监听机制。在 Java 中， `java.util.EventObject` 类和 `java.util.EventListener` 接口描述了事件和监听器。在事件体系中，除了事件和监听器外，还有另外三个重要概念。
 

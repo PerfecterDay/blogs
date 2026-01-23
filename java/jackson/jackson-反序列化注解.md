@@ -4,15 +4,7 @@
 
 > https://www.baeldung.com/jackson-annotations
 
-- [Jackson反序列化注解](#jackson反序列化注解)
-      - [使用 `@JsonCreator` 注解来调整反序列化中使用的构造器/工厂。](#使用-jsoncreator-注解来调整反序列化中使用的构造器工厂)
-      - [`@JacksonInject`](#jacksoninject)
-      - [平铺设置 Map 属性:`@JsonAnySetter`](#平铺设置-map-属性jsonanysetter)
-      - [使用指定方法设置属性：`@JsonSetter`](#使用指定方法设置属性jsonsetter)
-      - [`@JsonDeserialize`](#jsondeserialize)
-      - [为反序列化过程中的属性定义了一个或多个别名：`@JsonAlias`](#为反序列化过程中的属性定义了一个或多个别名jsonalias)
-
-#### 使用 `@JsonCreator` 注解来调整反序列化中使用的构造器/工厂。
+## 使用 `@JsonCreator` 注解来调整反序列化中使用的构造器/工厂。
 ```
 {
     "id":1,
@@ -33,7 +25,7 @@ public class BeanWithCreator {
 }
 ```
 
-#### `@JacksonInject`
+## `@JacksonInject`
 ```
 public class BeanWithInject {
     @JacksonInject
@@ -59,7 +51,7 @@ public void whenDeserializingUsingJsonInject_thenCorrect()
 }
 ```
 
-#### 平铺设置 Map 属性:`@JsonAnySetter`
+## 平铺设置 Map 属性:`@JsonAnySetter`
 ```
 public class ExtendableBean {
     public String name;
@@ -78,7 +70,7 @@ public class ExtendableBean {
 }
 ```
 
-#### 使用指定方法设置属性：`@JsonSetter`
+## 使用指定方法设置属性：`@JsonSetter`
 ```
 public class MyBean {
     public int id;
@@ -91,7 +83,7 @@ public class MyBean {
 }
 ```
 
-#### `@JsonDeserialize`
+## `@JsonDeserialize`
 ```
 public class EventWithSerializer {
     public String name;
@@ -129,7 +121,7 @@ public class CustomDateDeserializer
 }
 ```
 
-#### 为反序列化过程中的属性定义了一个或多个别名：`@JsonAlias`
+## 为反序列化过程中的属性定义了一个或多个别名：`@JsonAlias`
 ```
 public class AliasBean {
     @JsonAlias({ "fName", "f_name" })
@@ -140,3 +132,15 @@ public class AliasBean {
 "{\"fName\": \"John\", \"lastName\": \"Green\"}";
 ```
 
+
+
+## 反序列化范型
+```
+List<User> users =
+        jsonMapper.readValue(json,
+                new TypeReference<List<User>>() {});
+
+ApiResponse<User> response =
+        jsonMapper.readValue(json,
+                new TypeReference<ApiResponse<User>>() {});
+```

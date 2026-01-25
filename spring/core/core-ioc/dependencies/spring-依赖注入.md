@@ -1,5 +1,5 @@
 # 依赖注入
-{docsiy-updated}
+{docsify-updated}
 
 依赖注入（DI）是一种过程，其中对象通过
 + 构造函数参数
@@ -97,11 +97,21 @@ public class ExampleBean {
 ```
 public class SimpleMovieLister {
 	private MovieFinder movieFinder;
+	private int integerProperty;
 
 	public void setMovieFinder(MovieFinder movieFinder) {
 		this.movieFinder = movieFinder;
 	}
 }
+
+
+<bean id="exampleBean" class="examples.ExampleBean">
+	<!-- setter injection using the neater ref attribute -->
+	<property name="movieFinder" ref="movieFinder"/>
+	<property name="integerProperty" value="1"/>
+</bean>
+
+<bean id="movieFinder" class="examples.MovieFinder"/>
 ```
 
 ## 基于构造函数的注入还是基于Setter 的注入

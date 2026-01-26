@@ -1,6 +1,8 @@
 # Bean scopes
 {docsify-updated}
 
+> https://docs.spring.io/spring-framework/reference/core/beans/factory-scopes.html
+
 创建一个 `BeanDefinition` 时，你实际上是在创建一个如何创建 Bean 的配方。将 `BeanDefinition` 视为配方这一概念至关重要，因为这意味着如同Java类一样，我们能创建一个类的多个实例对象，同样， Spring 也可以通过 `BeanDefinition` 配方生成多个对象实例 Bean。
 
 您不仅能够控制从特定Bean定义创建的对象中需要注入的各种依赖项和配置值，还能控制从特定Bean定义创建的对象的作用域。这种方法既强大又灵活，因为您可以通过配置选择创建对象的作用域，而无需在Java类级别硬编码对象的作用域。Bean可以被定义为部署在多种作用域之一中。Spring框架支持六种作用域，其中四种仅在使用Web感类型的 `ApplicationContext` 时可用。
@@ -18,24 +20,44 @@
 
 仅管理单例 bean 的一个共享实例，所有请求 ID 与该 bean 定义匹配的 bean 请求，都会由 Spring 容器返回该特定 bean 实例。换言之，当你定义一个 `singleton scope` 的Bean时，Spring IoC容器会为该Bean定义创建且仅创建一个对象实例。这个单一实例会被存储在单例Bean的缓存中，此后所有对该命名Bean的请求和引用都会返回缓存中的对象。
 
-若在单个Spring容器中为特定类定义一个Bean，则该容器仅会创建该Bean定义所对应类的唯一实例。单例范围是Spring的默认作用域。
-
+若在单个Spring容器中为特定类定义一个Bean，则该容器仅会创建该Bean定义所对应类的唯一实例。单例范围是Spring的默认作用域。Spring 默认会预先创建好所有的单例 Bean.
 
 ## Prototype
 <center><img src="pics/prototype.png" alt=""></center>
 
-当 `prototype` 的 bean被注入到另一个bean中，或通过容器的 `getBean()` 方法调用请求时，都会触发实例创建。通常应遵循以下原则：**所有有状态bean应采用 `prototype scope` ，无状态bean则应采用 `singleton scope` 。**
+注意，Spring 默认只会预先创建单例 bean， `prototype` 类型的 bean 不会被预先创建， 只有当 `prototype` 的 bean被注入到另一个单例bean中，或通过容器的 `getBean()` 方法调用请求bean时，才会触发实例创建。通常应遵循以下原则：**所有有状态bean应采用 `prototype scope` ，无状态bean则应采用 `singleton scope` 。**
 
-与其他作用域不同，Spring 不会管理原型 Bean 的完整生命周期。容器会实例化、配置并组装原型对象，然后将其传递给应用程序后，就不会对该原型实例进行后续记录。因此，尽管初始化生命周期回调方法会调用所有对象（无论作用域如何），但在 `prototype` 情况下，**配置的销毁生命周期回调不会被调用。客户端代码必须自行清理 `prototype scope` 对象，并释放原型 bean 占用的高成本资源**。若需让 Spring 容器释放 `prototype scope`  bean 占用的资源，可尝试使用自定义 `bean post-processor` ，该处理器会持有待清理 bean 的引用。
+与其他作用域不同，Spring 不会管理原型 Bean 的完整生命周期。容器会实例化、配置并组装原型对象，然后将其传递给应用程序后，此后就不会对该原型实例进行后续管理。因此，尽管初始化生命周期回调方法（`@PostConstruct`）都会被Spring调用（无论作用域如何），但在 `prototype` 情况下，**配置的销毁生命周期回调（`@PreDestroy`）不会被调用。客户端代码必须自行清理 `prototype scope` 对象，并释放原型 bean 占用的高成本资源**。若需让 Spring 容器释放 `prototype scope`  bean 占用的资源，可尝试使用自定义 `bean post-processor` ，该处理器会持有待清理 bean 的引用。
+
+```
+<bean id="accountService" class="com.something.DefaultAccountService" scope="prototype"/>
+
+@Scope(value = BeanDefinition.SCOPE_PROTOTYPE)
+@Component
+public class DefaultAccountService {
+	// ...
+}
+
+
+@Configuration
+class AccountConfiguration {
+
+    // 声明原型bean
+    @Scope(BeanDefinition.SCOPE_PROTOTYPE)
+    @Bean
+    public DefaultAccountService accountService(){
+        ...
+    }
+}
+
+```
 
 从某些方面来看，Spring容器对原型作用域Bean的作用相当于Java new运算符的替代方案。此后所有生命周期管理都必须由客户端自行处理。
 
-
 ### signleton 依赖 prototype 
-当使用依赖原型 bean 的单例作用域 bean 时，请注意依赖关系在实例化时解决。因此，若将原型作用域 bean 依赖注入到单例作用域 bean 中，系统会先实例化新的原型 bean，再将其注入单例 bean。该原型实例将成为唯一提供给单例作用域 bean 的实例。
+当一个 `singleton` 类型的 bean 依赖一个 `prototype` 类型的 bean 时，请注意这个 `prototype` 类型的bean 只会在 `singletone` bean 实例化的时候完成构造注入。系统会先实例化新的 `prototype` bean，再将其注入 `singleton` bean。此后，该原型实例将成为唯一提供给 `singletone` bean 的实例。
 
-然而，假设你希望单例作用域的bean在运行时反复获取原型作用域bean的新实例。你无法将原型作用域bean依赖注入到单例bean中，因为这种注入仅发生一次——当Spring容器实例化单例bean并解析注入其依赖项时。若需在运行时多次获取原型bean的新实例，请参阅方法注入。
-
+然而，假设你希望 `singletone` bean在运行时反复获取 `prototype` bean的新实例。不能通过将 `prototype` bean依赖注入到 `singletone` bean中的方式实现，因为这种注入仅发生一次，就是当Spring容器实例化 `singletone` bean并解析注入其依赖项时。若需在运行时多次获取 `prototype` bean的新实例，请参阅方法注入。
 
 ## Request, Session, Application, and WebSocket Scopes
 `request` , `session` , `application` 和 `websocket` scopes 仅在使用支持 Web 的Spring `ApplicationContext` 实现（如 `XmlWebApplicationContext` ）时可用。若在常规Spring IoC容器（如 `ClassPathXmlApplicationContext`）中使用这些作用域，将抛出 `IllegalStateException` 异常，提示存在未知bean作用域。
@@ -115,3 +137,54 @@ Spring容器通过在整个Web应用程序中仅使用一次appPreferences Bean�
 + 其二，它实际暴露为 `ServletContext` 属性，因此可见。
 
 ### WebSocket Scope
+> https://docs.spring.io/spring-framework/reference/web/websocket/stomp/scope.html
+
+
+### 如何注入 request/session 类型的 bean
+Spring IoC容器不仅管理对象（Bean）的实例化，还负责协作对象（或依赖项）的连接。若需将（例如）HTTP请求作用域的bean注入到作用域更长的另一个bean中，可选择注入AOP代理替代原有作用域bean。具体而言，需注入一个代理对象：该对象既暴露与被注入对象相同的公共接口，又能从相关作用域（如HTTP请求）中获取真实目标对象，并将方法调用委托给真实对象执行。
+
+为何在常见场景中， request 、 session 作用域和自定义作用域级别的Bean定义需要使用 `<aop:scoped-proxy/>` 元素？请考虑以下单例Bean定义:
+```
+<bean id="userPreferences" class="com.something.UserPreferences" scope="session"/>
+
+<bean id="userManager" class="com.something.UserManager">
+	<property name="userPreferences" ref="userPreferences"/>
+</bean>
+```
+在上例中，单例 bean（ `userManager` ）被注入了对 HTTP 会话作用域 bean（ `userPreferences` ）的引用。关键点在于 `userManager` bean是单例模式：每个容器仅实例化一次，其依赖项（此处仅有 `userPreferences` bean）也仅在实例化的时候被注入一次。这意味着 `userManager` bean始终操作着完全相同的 `userPreferences` 对象（即最初注入时关联的那个对象）。但是，实际上我们需要的是和 `session` 关联的对象。
+
+当将短生命周期作用域的 Bean 注入到长生命周期作用域的 Bean 中时（例如将 HTTP 会话作用域的协作 Bean 作为依赖注入到单例 Bean 中），这种行为并非我们所期望的。相反，你需要一个唯一的 `userManager` 对象，并且在 HTTP 会话的生命周期内，需要一个专属于该会话的 `userPreferences` 对象。因此容器会创建一个暴露与 `UserPreferences` 类完全相同公共接口的对象（理想情况下应为 `UserPreferences` 实例），该对象可从作用域机制（HTTP请求、会话等）中获取真实的 `UserPreferences` 对象。容器将此代理对象注入 `userManager` bean，而该bean并不知晓此 `UserPreferences` 引用实为代理。在此示例中，当 `UserManager` 实例调用依赖注入的 `UserPreferences` 对象的方法时，实际上是在调用代理对象的方法。代理随后从（本例中）HTTP会话中获取真实的 `UserPreferences` 对象，并将方法调用委托给该真实对象执行。
+
+正确的配置应该如下：
+```
+<bean id="userPreferences" class="com.something.UserPreferences" scope="session">
+	<aop:scoped-proxy/>
+</bean>
+
+<bean id="userManager" class="com.something.UserManager">
+	<property name="userPreferences" ref="userPreferences"/>
+</bean>
+```
+
+#### 选择动态代理的类型
+默认情况下，当Spring容器为标记有 `<aop:scoped-proxy/>` 元素的bean创建代理时，会生成基于 `CGLIB` 的类代理。
+
+也可以通过将 `<aop:scoped-proxy/>` 元素的 `proxy-target-class` 属性值设为 `false` ，配置Spring容器为这类作用域bean创建基于标准JDK接口的代理。使用基于JDK接口的代理意味着应用程序类路径中无需额外库即可实现此类代理功能。但这也意味着：作用域 Bean 的类必须至少实现一个接口，且所有注入该 Bean 的协作对象都必须通过其接口之一来引用该 Bean。以下示例展示了基于接口的代理实现：
+```
+<!-- DefaultUserPreferences implements the UserPreferences interface -->
+<bean id="userPreferences" class="com.stuff.DefaultUserPreferences" scope="session">
+	<aop:scoped-proxy proxy-target-class="false"/>
+</bean>
+
+<bean id="userManager" class="com.stuff.UserManager">
+	<property name="userPreferences" ref="userPreferences"/>
+</bean>
+```
+
+#### ObjectFactory 和 Provider
+此外，`scoped-proxy` 并非在生命周期安全模式下访问较短作用域中Bean的唯一途径。还可将注入点（即构造函数、setter方法参数或自动装配字段）声明为 `ObjectFactory<MyTargetBean>` 类型，这样每次需要时都能通过调用 `getObject()` 按需获取当前实例——无需持有实例或单独存储。
+
+JSR-330的此变体称为 `Provider` ，需配合 `Provider<MyTargetBean>` 声明使用，每次检索操作都需调用对应的 `get()` 
+
+
+### 自定义 Scopes

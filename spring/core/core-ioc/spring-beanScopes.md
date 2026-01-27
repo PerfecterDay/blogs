@@ -166,6 +166,31 @@ Spring IoC容器不仅管理对象（Bean）的实例化，还负责协作对象
 </bean>
 ```
 
+当使用java 编程配置时，可以使用 `@Scope` 等注解达到相同的效果:
+```
+// an HTTP Session-scoped bean exposed as a proxy
+@Bean
+@SessionScope
+public UserPreferences userPreferences() {
+	return new UserPreferences();
+}
+
+@Bean
+public Service userService() {
+	UserService service = new SimpleUserService();
+	// a reference to the proxied userPreferences bean
+	service.setUserPreferences(userPreferences());
+	return service;
+}
+
+@Bean
+@Scope(proxyMode=ScopedProxyMode.TARGET_CLASS)
+public TestBean testBean(){
+    reurn new TestBean();
+}
+```
+在Java中使用 `@Scope` 注解配置Bean时，其提供的支持与 `proxyMode` 属性等效。默认值为 `ScopedProxyMode.DEFAULT` ，通常表示除非在组件扫描指令级别配置了其他默认值，否则不应创建作用域代理。可以指定 `ScopedProxyMode.TARGET_CLASS` 、 `ScopedProxyMode.INTERFACES` 或 `ScopedProxyMode.NO` 。
+
 #### 选择动态代理的类型
 默认情况下，当Spring容器为标记有 `<aop:scoped-proxy/>` 元素的bean创建代理时，会生成基于 `CGLIB` 的类代理。
 

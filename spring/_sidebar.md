@@ -13,6 +13,7 @@
       * [Spring Autowiring](/spring/core/core-ioc/dependencies/spring-autowiring.md)
       * [Spring method injection](https://docs.spring.io/spring-framework/reference/core/beans/dependencies/factory-method-injection.html)
     * [Spring Bean scopes](/spring/core/core-ioc/spring-beanScopes.md)
+    * [Spring 自定义 Bean 特性](/spring/core/core-ioc/spring-自定义bean特性.md)
     * [Spring的启动](/spring/spring_mvc/spring的启动.md)
     * [Spring IOC-bean的定义](/spring/core/core-ioc/spring-ioc-bean的定义.md)
     * [Spring IOC-核心原理](/spring/core/core-ioc/spring-ioc-核心原理.md)

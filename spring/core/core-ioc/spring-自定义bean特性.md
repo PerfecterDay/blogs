@@ -1,6 +1,8 @@
 # 自定义 Bean 特性
 {docsify-updated}
 
+> https://docs.spring.io/spring-framework/reference/core/beans/factory-nature.html
+
 Spring框架提供了多种接口，可用于自定义Bean的特性。本节将这些接口按以下方式分组：
 + Lifecycle Callbacks
 + `ApplicationContextAware` and `BeanNameAware`
@@ -57,7 +59,7 @@ public class AppConfig {
 ```
 当直接使用Java 编程配置时，可以随心所欲地操作对象，而无需始终依赖容器的生命周期管理。
 
-请注意，@PostConstruct 注解方法及常规初始化方法均在容器的单例创建锁内执行。只有当 @PostConstruct 方法返回后，bean 实例才被视为完全初始化完毕并准备好发布给其他组件。此类独立初始化方法仅用于验证配置状态，并可能根据给定配置准备某些数据结构，但不得进行任何涉及外部 bean 访问的操作。否则将存在初始化死锁风险。
+请注意， `@PostConstruct` 注解方法及常规初始化方法均在容器的单例创建锁内执行。只有当 `@PostConstruct` 方法返回后，bean 实例才被视为完全初始化完毕并准备好发布给其他组件。此类独立初始化方法仅用于验证配置状态，并可能根据给定配置准备某些数据结构，但不得进行任何涉及外部 bean 访问的操作。否则将存在初始化死锁风险。
 
 ### Destruction 回调
 实现 `org.springframework.beans.factory.DisposableBean` 接口可使 bean 在包含它的容器被销毁时获得回调。 `DisposableBean` 接口定义了一个方法：
@@ -100,5 +102,167 @@ public class AppConfig {
 }
 ```
 
-默认情况下，使用Java配置定义且具有 `public close` 或 `shutdown` 方法的Bean会自动关联一个销毁回调。若定义了 `public close` 或 `shutdown` 方法，但不希望容器关闭时调用该方法，可在Bean定义中添加 `@Bean(destroyMethod = "")` 注解以禁用默认（推断）模式。
+默认情况下，使用Java配置且具有 `public close` 或 `shutdown` 方法的Bean会自动关联一个销毁回调。若定义了 `public close` 或 `shutdown` 方法，但不希望容器关闭时调用该方法，可在Bean定义中添加 `@Bean(destroyMethod = "")` 注解以禁用默认（推断）模式。
 
+### 默认的 Initialization 和 Destroy 方法
+当编写初始化与销毁回调方法时，若不使用Spring特有的 `InitializingBean` 和 `DisposableBean` 回调接口，通常会采用 `init()` 、`initialize()` 、 `dispose()` 等命名规范。理想情况下，此类生命周期回调方法的命名应在项目范围内标准化，确保所有开发人员使用统一的方法名称以保持一致性。
+
+然后可以配置 Spring 容器，使其在每个 Bean 上“查找” 规范命名的初始化与销毁回调方法名称。这意味着作为应用程序开发者，只需编写应用程序类并使用名为 `init()` 的初始化回调，而无需在每个 Bean 定义中配置 `init-method="init"` 属性。Spring IoC容器会在创建Bean时调用该方法（并遵循前文所述的标准生命周期回调契约）。此特性同时**强制要求初始化与销毁回调方法采用统一的命名规范。**
+
+```
+<beans default-init-method="init" default-destroy-method="dispose">
+
+	<bean id="blogService" class="com.something.DefaultBlogService">
+		<property name="blogDao" ref="blogDao" />
+	</bean>
+
+</beans>
+```
+上述配置下，如果 Bean 中定义了 `init()` 方法，就会在初始化后被调用。 bean 销毁时， `dispose` 方法会被调用。
+
+Spring容器保证在为Bean提供所有依赖后，立即调用已配置的初始化回调。因此，初始化回调是在原始Bean引用上调用的，这意味着AOP拦截器等尚未应用于该Bean。目标Bean会先被完整创建，随后才应用带有拦截器链的AOP代理。若目标 bean 与代理分别定义，代码甚至可绕过代理直接操作原始目标 bean。因此若将拦截器应用于  `init` 方法将导致不一致：此举会将目标 bean 的生命周期与其代理或拦截器耦合，当代码直接操作原始目标 bean 时将产生异常语义。
+
+### 回调方法组合使用时的场景
+Spring 2.5 之后，我们可以使用以下方式配置 bean 的生命周期：
+1. The `InitializingBean` and `DisposableBean` callback interfaces
+2. Custom init() and destroy() methods, 就是使用 `initMethod` 或者 `destroyMethod`
+3. The `@PostConstruct` and `@PreDestroy` annotations
+
+如果同时使用了上述多种方式来配置同一个 bean 的生命周期回调，那么：
+1. 多个方式配置的回调方法不同，那么会按照指定的顺序被调用（后文会介绍）
+2. 如果配置的是一个回调方法，那么回调方法只会被调用一次
+
+初始化时，回调方法的调用顺序如下：
+1. `@PostConstruct` 注解的方法最先被执行
+2. `InitializingBean` 接口的 `afterPropertiesSet()` 被调用
+3. 自定义的 `init()` 方法
+
+销毁时的顺序如下：
+1. `@PreDestroy` 注解方法先调用
+2. `DisposableBean` 接口的 `destroy()` 方法被调用
+3. 自定义的 `destroy()` 方法被调用
+
+### Startup and Shutdown Callbacks
+[Spring Lifecycle与SmartLifecycle](/spring/core/core-ioc/spring-lifecycle.md)
+
+
+### Non-Web Applications 的优雅关闭
+Spring基于Web的应用上下文实现已内置代码，可在相关Web应用程序关闭时优雅地关闭Spring IoC容器。这里，我们讨论一下非 Web 应用的优雅关闭。
+
+若在非Web应用环境（例如富客户端桌面环境）中使用Spring的IoC容器，需要向JVM注册一个关闭钩子。此操作可确保容器优雅关闭，并调用单例Bean的相关销毁方法以释放所有资源。但是我们需正确配置并实现这些销毁回调。
+
+要注册关机钩子，请调用 `ConfigurableApplicationContext` 接口上声明的 `registerShutdownHook()` 方法，如下例所示：
+```
+public static void main(String[] args) {
+    ConfigurableApplicationContext context = new AnnotationConfigApplicationContext(Start.class);
+    context.registerShutdownHook();
+//        context.close();
+}
+```
+
+如果注释掉 `context.registerShutdownHook();` 且没有显式调用 `context.close();` 方法，那么销毁的回调方法不会被调用。实验效果如下：
+注册了 `shutdownHook` 时，会打印所有的销毁回调：
+```
+postConstruct
+afterPropertiesSet
+init
+preDestroy
+DisposableBean destroy
+myDestroy
+```
+
+注释掉时，只会打印初始化回调：
+```
+postConstruct
+afterPropertiesSet
+init
+```
+
+以下是一个关于生命周期与 `LifeCycle` 的完整实例：
+```
+public class A implements Lifecycle, InitializingBean, DisposableBean {
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        System.out.println("afterPropertiesSet");
+    }
+
+    @PostConstruct
+    public void postConstruct(){
+        System.out.println("postConstruct");
+    }
+
+    public void destroy(){
+        System.out.println("DisposableBean destroy");
+    }
+
+    public void myDestroy(){
+        System.out.println("myDestroy");
+    }
+
+    @PreDestroy
+    public void preDestroy(){
+        System.out.println("preDestroy");
+    }
+
+    public void init(){
+        System.out.println("init");
+    }
+
+    @Override
+    public void start() {
+        System.out.println("lifecycle start");
+        isRunning= true;
+    }
+
+    @Override
+    public void stop() {
+        System.out.println("lifecycle stop");
+        isRunning= false;
+    }
+
+    boolean isRunning = false;
+    @Override
+    public boolean isRunning() {
+        return isRunning;
+    }
+}
+
+
+@SpringBootApplication
+public class Start {
+
+    @Bean(initMethod = "init",destroyMethod = "myDestroy")
+    public A a(){
+        return new A();
+    }
+
+    public static void main(String[] args) {
+        ConfigurableApplicationContext context = new AnnotationConfigApplicationContext(Start.class);
+        context.registerShutdownHook();
+        context.start();
+        context.stop();
+    }
+}
+```
+
+输出：
+```
+postConstruct
+afterPropertiesSet
+init
+lifecycle start
+lifecycle stop
+preDestroy
+DisposableBean destroy
+myDestroy
+```
+
+### 线程安全与可见性
+> https://docs.spring.io/spring-framework/reference/core/beans/factory-nature.html#beans-factory-thread-safety
+
+## ApplicationContextAware and BeanNameAware
+> https://docs.spring.io/spring-framework/reference/core/beans/factory-nature.html#beans-factory-aware
+
+## Other Aware Interfaces
+> https://docs.spring.io/spring-framework/reference/core/beans/factory-nature.html#aware-list

@@ -46,14 +46,18 @@ public interface SmartLifecycle extends Lifecycle, Phased {
 从调用帧可以看出，`AbstractApplicationContext` 的 `finishRefresh()` 方法中会调用 `DefaultLifecycleProcessor` 的 `onRefresh()` 方法。
 
 ```
-public void onRefresh() {
-	startBeans(true);
-	this.running = true;
-}
+public class DefaultLifecycleProcessor implements LifecycleProcessor, BeanFactoryAware {
+	...
+	public void onRefresh() {
+		startBeans(true);
+		this.running = true;
+	}
 
-public void start() {
-	startBeans(false);
-	this.running = true;
+	public void start() {
+		startBeans(false);
+		this.running = true;
+	}
+	...
 }
 ```
 

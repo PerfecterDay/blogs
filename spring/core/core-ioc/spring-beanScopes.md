@@ -239,7 +239,7 @@ String getConversationId()
 ```
 该标识符在每个作用域中各不相同。对于会话作用域的实现，该标识符可以是会话标识符。
 
-### 
+### 注册自定义的 Scope
 在编写并测试一个或多个自定义作用域实现后，我们需要让Spring容器识别这些新作用域。以下方法是向Spring容器注册新作用域的核心方法：
 ```
 void registerScope(String scopeName, Scope scope);

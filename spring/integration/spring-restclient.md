@@ -104,15 +104,34 @@ RestClient restClient = RestClient.builder()
 
 
 #### 异常处理
+默认情况下，当 `RestClient` 获取到状态码为 `4xx` 或 `5xx` 的响应时，会抛出 `RestClientException` 的子类异常，比如 `HttpClientErrorException` 。
+
+如果不想抛出异常，可以在每次请求时处理错误码：
 ```
 String result = restClient.get() 
 	.uri("https://example.com/this-url-does-not-exist") 
 	.retrieve()
 	.onStatus(HttpStatusCode::is4xxClientError, (request, response) -> { 
-		throw new MyCustomRuntimeException(response.getStatusCode(), response.getHeaders()); 
+		// throw new MyCustomRuntimeException(response.getStatusCode(), response.getHeaders()); 
+		// return null; // will not throw exception
 	})
 	.body(String.class);
 ```
+
+或者在创建时设置默认的处理方法：
+```
+RestClient restClient = RestClient.builder()
+	.baseUrl(baseUrl)
+	.defaultStatusHandler(
+			HttpStatusCode::is4xxClientError,
+			(request, response) -> {
+				String body = new String(response.getBody().readAllBytes());
+				log.info("body is {}", body);
+			}
+	)
+	.build();
+```
+
 
 #### Exchange 方法
 对于更高级的场景， `RestClient` 通过 `exchange()` 方法提供对底层 HTTP 请求和响应的访问，该方法可替代 `retrieve()` 使用。使用 `exchange()` 时不能使用 `onStatus()` 的错误处理方法 ，因为 `exchange` 函数本身已提供对完整响应的访问权限，允许您执行任何必要的错误处理。
@@ -240,29 +259,41 @@ WebClient webClient = WebClient.builder().clientConnector(connector).build();
 您可以将HTTP服务定义为包含 `@HttpExchange` 方法的Java接口，并使用 `HttpServiceProxyFactory` 基于该接口创建客户端代理，通过 `RestClient` `、WebClient` 或 `RestTemplate` 实现HTTP远程访问。在服务器端， `@Controller` 类可实现相同接口，通过 `@HttpExchange` 控制器方法处理请求。
 
 ```
-@HttpExchange(url = "${isprint.url}")
-public interface ISprintService {
+@HttpExchange
+public interface ISprintClient {
     @PostExchange(url = "/update/user/create")
-    UserCreateResponseVO registerUser(@RequestBody UserCreateRequestDTO userCreateRequestDTO);
+    ResponseEntity<String> registerUser(@RequestBody UserCreateRequestDTO userCreateRequestDTO);
 
     @PostExchange(url = "/query/user/findById")
-    ActivationResultVO queryUser(@RequestBody UserQueryDTO userQueryDTO);
+    ResponseEntity<String> queryUser(@RequestBody UserQueryDTO userQueryDTO);
+
+    @PostExchange(url = "/OATH/create-assign-and-encrypt")
+    ResponseEntity<String> bindApply(@RequestBody BindRequestDTO bindRequestDTO);
 }
 ```
 
-客户端调用：
+生成客户端代理配置：
 ```
 @Configuration
 public class SprintServiceConfiguration {
     @Bean
-    public ISprintService iSprintService(@Value("${isprint.url}")String baseUrl) {
-        RestClient restClient = RestClient.builder().baseUrl(baseUrl).build();
+    public ISprintClient iSprintService(@Value("${isprint.url}") String baseUrl) {
+        RestClient restClient = RestClient.builder()
+                .baseUrl(baseUrl)
+                .defaultStatusHandler(
+                        HttpStatusCode::is4xxClientError,
+                        (request, response) -> {
+                            String body = new String(response.getBody().readAllBytes());
+                            log.info("body is {}", body);
+                        }
+                )
+                .build();
         HttpServiceProxyFactory factory =
                 HttpServiceProxyFactory
                         .builderFor(RestClientAdapter.create(restClient))
                         .build();
 
-        return factory.createClient(ISprintService.class);
+        return factory.createClient(ISprintClient.class);
     }
 }
 ```
@@ -319,4 +350,29 @@ public class RepoController implements RepositoryService{
 + 版本演进困难
 
 HTTP service client 是通过HTTP实现远程访问的强大且富有表现力的选择。它允许团队自主掌握 REST API 的工作原理、哪些部分与客户端应用相关、需要创建哪些输入输出类型、需要哪些端点方法签名、需要哪些Javadoc文档等知识。由此生成的Java API既提供指导又可直接使用。
+
+
+### 4xx/5xx 错误处理
+```
+@HttpExchange
+public interface ISprintClient {
+    @PostExchange(url = "/update/user/create")
+    ResponseEntity<String> registerUser(@RequestBody UserCreateRequestDTO userCreateRequestDTO);
+}
+```
+当返回 `4xx/5xx` 错误码时，不会解析响应体并返回到 `ResponseEntity<String>`。这种情况下，使用 `try...catch` 捕获异常，然后从异常中获取相应内容：
+```
+ try {
+	sprintClient.registerUser(userCreateRequestDTO);
+	return true;
+} catch (HttpClientErrorException e) {
+	log.error("创建iSprint用户失败: {}", e);
+	String responseBody = e.getResponseBodyAsString();
+	Optional<FaultResponseVO> faultResponseVO = Optional.ofNullable(jsonMapper.readValue(responseBody, FaultResponseVO.class));
+	return faultResponseVO.map(FaultResponseVO::getFault)
+			.map(FaultVO::getCode)
+			.filter(code -> code == 7006)
+			.isPresent();
+}
+```
 

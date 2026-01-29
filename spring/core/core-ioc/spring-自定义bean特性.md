@@ -142,7 +142,7 @@ Spring 2.5 之后，我们可以使用以下方式配置 bean 的生命周期：
 2. `DisposableBean` 接口的 `destroy()` 方法被调用
 3. 自定义的 `destroy()` 方法被调用
 
-### Startup and Shutdown Callbacks
+### Startup and Shutdown Callbacks - LifeCycle
 [Spring Lifecycle与SmartLifecycle](/spring/core/core-ioc/spring-lifecycle.md)
 
 

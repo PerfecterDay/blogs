@@ -1,6 +1,7 @@
 # .gitignore 忽略文件
 {docsify-updated}
 
+.gitignore 只对“尚未被 Git 跟踪的文件”生效，对已经纳入版本控制的文件完全无效。
 
 `.gitignore` 每一行一条规则：
 1. 忽略某个文件 : `a.txt`

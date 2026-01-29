@@ -167,3 +167,46 @@ JDK 带来了 `javaws` 。我们可以将其与 Java Web Start 结合使用。
 
 ## 常用JDK
 <center><img src="pics/jdk.png" width="70%"></center>
+
+
+## java 版本的关系
+当我们使用：`javap -verbose -classpath cap-api-1.0.0.jar com.gtht.gjyw.ErrorCode | grep major` 可以查看一个 class 文件的版本信息，比如：
+```
+javap -verbose ErrorCode.class | grep version
+minor version: 0
+major version: 55
+```
+
+class 文件里的 major version 指的是： **该 class 文件遵循的 Java Class File Format 版本**，也就是 JVM 能否加载它的最低要求。
+它不是 JDK 版本号
+它不是 Java 语言版本号
+它直接约束 JVM（HotSpot 等）的兼容性
+
+```
+Java 语言规范
+      ↓
+javac 编译器
+      ↓
+class 文件格式（major/minor）
+      ↓
+JVM（class loader 校验）
+```
+major version 属于 class 文件格式规范（JVMS）。
+
+为什么大家会把它和 JDK 混在一起？ 因为 JDK 版本 与 class major version 是“一一对应发布”的：
+| Major Version | JDK Version |
+|---------------|--------------|
+| 52            | Java 8       |
+| 53            | Java 9       |
+| 54            | Java 10      |
+| 55            | Java 11      |
+| 56            | Java 12      |
+| 57            | Java 13      |
+| 58            | Java 14      |
+| 59            | Java 15      |
+| 60            | Java 16      |
+| 61            | Java 17      |
+| 62            | Java 18      |
+| 63            | Java 19      |
+| 64            | Java 20      |
+| 65            | Java 21      |

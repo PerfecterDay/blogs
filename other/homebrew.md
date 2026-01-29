@@ -46,7 +46,9 @@ source ~/.bash_profile
 3. `brew list`: 显示所有安装的 formula
 4. `brew search (text|/text/)`： 查找 formula
 5. `brew cleanup`: 清理缓存
-6. `brew pin jenkins` : 不升级指定的软件
+6. `brew pin jenkins` : 锁定指定的软件版本
+7. `brew list --pinned` : 查看不升级的软件列表
+8. `brew unpin jenkins` : 解锁软件版本
 
 ## Macos 自带的服务管理 launchctl
 > 摘译自 [robots.thoughtbot.com](http://robots.thoughtbot.com/starting-and-stopping-background-services-with-homebrew)

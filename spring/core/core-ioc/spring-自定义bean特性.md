@@ -137,6 +137,21 @@ Spring 2.5 之后，我们可以使用以下方式配置 bean 的生命周期：
 2. `InitializingBean` 接口的 `afterPropertiesSet()` 被调用
 3. 自定义的 `init()` 方法
 
+为什么是这个顺序呢 ？主要看 `AbstractAutowireCapableBeanFactory` 的 `initializeBean` 方法:
+```
+protected Object initializeBean(String beanName, Object bean, @Nullable RootBeanDefinition mbd) {
+    ....
+    invokeAwareMethods(beanName, bean); // 首先调用 aware 相关的方法
+    ...
+    wrappedBean = applyBeanPostProcessorsBeforeInitialization(wrappedBean, beanName); // CommonAnnotationBeanPostProcessor 会处理 @PostCOnstruct 注解
+    ...
+    invokeInitMethods(beanName, wrappedBean, mbd); // 先调用 `InitializingBean.afterPropertiesSet()` 方法，再调用自定义方法 
+    ...
+    return wrappedBean;
+}
+```
+由上可知： `BeanPostProcessor` 是在 `InitializingBean.afterPropertiesSet()` 方法之前执行。
+
 销毁时的顺序如下：
 1. `@PreDestroy` 注解方法先调用
 2. `DisposableBean` 接口的 `destroy()` 方法被调用

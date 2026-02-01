@@ -1,7 +1,9 @@
 # 依赖注入
 {docsify-updated}
 
-依赖注入（DI）是一种过程，其中对象通过
+> https://docs.spring.io/spring-framework/reference/core/beans/dependencies/factory-collaborators.html
+
+依赖注入（DI）是一种过程，其中对象通过:
 + 构造函数参数
 + 工厂方法参数
 + 设置的属性
@@ -140,6 +142,3 @@ Spring容器在创建过程中会验证每个Bean的配置。然而，Bean属性
 一种可能的解决方案是修改某些类的源代码，使其通过 `Setter` 而非构造函数进行注入。或者，避免使用构造函数注入，仅采用 `Setter` 注入。换言之，尽管不推荐这样做，但你可以通过设置器注入来配置循环依赖关系。
 
 当bean A与bean B之间存在循环依赖时，其中一个bean必须在自身完全初始化之前就被注入到另一个bean中（这正是典型的先有鸡还是先有蛋的困境）。
-
-
-

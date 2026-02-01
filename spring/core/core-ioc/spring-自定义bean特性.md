@@ -276,8 +276,17 @@ myDestroy
 ### 线程安全与可见性
 > https://docs.spring.io/spring-framework/reference/core/beans/factory-nature.html#beans-factory-thread-safety
 
-## ApplicationContextAware and BeanNameAware
-> https://docs.spring.io/spring-framework/reference/core/beans/factory-nature.html#beans-factory-aware
+## Aware 接口
++ `ApplicationContextAware` : 获取 `ApplicationContext` 。
++ `ApplicationEventPublisherAware` : 发布事件
++ `BeanClassLoaderAware` : 用于加载 bean 类的类加载器。
++ `BeanFactoryAware` : 获取 BeanFactory
++ `BeanNameAware` : 获取 BeanName 
++ `LoadTimeWeaverAware` : Defined weaver for processing class definition at load time.
++ `MessageSourceAware` : Configured strategy for resolving messages (with support for parameterization and internationalization).
++ `NotificationPublisherAware` : Spring JMX 通知发布器。
++ `ResourceLoaderAware` : 为低级访问资源配置加载器。
++ `ServletConfigAware` : 容器运行时的当前 `ServletConfig` 。仅在网络感知的 Spring ApplicationContext 中有效。
++ `ServletContextAware` : 容器运行的当前 `ServletContext` 。仅在网络感知的 Spring ApplicationContext 中有效。
 
-## Other Aware Interfaces
-> https://docs.spring.io/spring-framework/reference/core/beans/factory-nature.html#aware-list
+使用这些接口会将您的代码与 Spring API 联系在一起，并且不遵循反转控制风格。因此建议只在需要以编程方式访问容器的基础架构 Bean 时使用这些接口。更好的方式是使用自动注入将需要的对象注入到 bean 中。

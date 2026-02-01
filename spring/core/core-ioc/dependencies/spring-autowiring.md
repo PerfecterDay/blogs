@@ -44,7 +44,6 @@ Autowiring 的局限性和缺点：
 
 以上设置只会告诉 Spring 不要将当前 Bean 自动注入到其它 Bean 中， 但是该 Bean 本身的依赖 Bean 是可以被 Spring Autowiring 的。
 
-
 从6.2版本起， `@Bean` 支持两种自动注入候选标志： `autowireCandidate` 和 `defaultCandidate` 。
 + 使用修饰符时，标记为 `defaultCandidate=false` 的Bean仅在使用了 `@qualifier` 注解饮用时才会使用。  
 + 相反， `autowireCandidate=false` 的行为完全符合上述 `autowire-candidate` 属性的说明：此类Bean将完全无法通过类型注入。

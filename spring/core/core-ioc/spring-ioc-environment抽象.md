@@ -1,15 +1,16 @@
-#  Spring Ioc Environment抽象
- {docsify-updated}
+# Spring Ioc Environment抽象
+{docsify-updated}
+
 > https://docs.spring.io/spring-framework/reference/core/beans/environment.html
 
 `Environment` 接口是集成在容器中的一个抽象概念，它对应用环境的两个关键方面进行建模：`profiles` 和 `properties`。
 
-Profile 是一组已命名的、符合逻辑的 Bean 定义，只有在给定的Profile处于active状态时才会在容器中注册。无论 bean 是用 XML 还是注解定义的，都可以分配给某个Profile。 `Environment` 对象保存了哪些 Profile 处于 active 状态，以及哪些 Profile 默认应处于活动状态。
+`Profile` 是一组已命名的、符合逻辑的 Bean 定义，只有在给定的 `Profile` 处于 active 状态时才会在容器中注册。无论 bean 是用 XML `还是注解定义的，都可以分配给某个Profile` 。 `Environment` 对象保存了哪些 `Profile` 处于 active 状态，以及哪些 `Profile` 默认应处于活动状态。
 
-Properties 在几乎所有应用程序中都扮演着重要角色，其来源可能多种多样：属性文件、JVM 系统属性、系统环境变量、JNDI、Servlet 上下文参数、临时属性对象、Map对象等。 `Environment` 对象在属性方面的作用是为用户提供一个方便的服务接口，用于配置属性源并从中解析属性。
+`Properties` 在几乎所有应用程序中都扮演着重要角色，其来源可能多种多样：属性文件、JVM 系统属性、系统环境变量、JNDI、Servlet 上下文参数、 `Properties` 对象、 `Map` 对象等。 `Environment` 对象在属性方面的作用是为用户提供一个方便的服务接口，用于配置属性源并从中解析属性。
 
 ## Profile
-Profile 在核心容器中提供了一种机制，允许在不同的环境中注册不同的 Bean。比如：我们想在开发环境使用内存数据库，但是在生产/QA环境使用 JNDI 数据库。
+`Profile` 在核心容器中提供了一种机制，允许在不同的 `Profile` 中注册不同的 Bean。比如：我们想在开发环境使用内存数据库，但是在生产/QA环境使用 JNDI 数据库。
 ```
 @Configuration
 public class AppConfig {
@@ -44,14 +45,32 @@ public @interface Profile {
 
 }
 ```
-profile字符串可包含一个简单的profile名称（例如，生产）或一个profile表达式。profile表达式允许表达更复杂的profile逻辑。profile表达式支持以下操作符：
-+ !:轮廓的逻辑 NOT
-+ &:profile的逻辑 AND
-+ |:profile的逻辑 OR
+profile字符串可包含一个简单的profile名称（例如， `production` ）或一个profile表达式。profile 表达式允许表达更复杂的 profile 逻辑。profile表达式支持以下操作符：
++ !: 逻辑非 NOT
++ &: 多个 profile 间进行逻辑与 AND
++ |: 多个 profile 间进行逻辑或 OR
 
 ```
 @Profile({"A","B","C | D"})
+@Profile("production & us-east")
 ```
+
+还可以将 `@Profile` 作为元注解来定义自定义注解：
+```
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+@Profile("production")
+public @interface Production {
+}
+```
+
+如果某个 `@Configuration` 类被标记为 `@Profile` ，则该类关联的所有 `@Bean` 方法和 `@Import` 注解都会被跳过，除非指定的 profile 中有一个或多个处于活动状态。如果某个 `@Component` 或 `@Configuration` 类被标记为 `@Profile({"p1", "p2"})` ，则该类不会被注册或处理，除非 profile  'p1' 或 'p2' 已被激活。若 profile 前缀为否定运算符 (`!`)，则仅当该 profile 未激活时才会注册注解元素。例如，对于 `@Profile({"p1", "!p2"})` ，当 profile  'p1' 激活或 'p2' 未激活时将触发注册。
+
+`@Profile` 注解也可在方法级别声明，用于仅包含某个配置类中的特定 Bean（例如用于特定 Bean 的替代变体）。
+
+在 `@Bean` 方法上使用 `@Profile` 时，可能存在特殊情况：当存在同名重载的 `@Bean` 方法（类似于构造函数重载）时，所有重载方法都必须一致声明 `@Profile` 条件。若条件不一致，则仅重载方法中首次声明的条件生效。因此， `@Profile` 无法用于根据特定参数签名在重载方法间进行选择。同一Bean的所有工厂方法在创建时的解析遵循Spring的构造函数解析算法。
+
+若需定义具有不同 profile 的替代Bean，请使用不同的Java方法名，通过 `@Bean` 的 `name` 属性指向同一Bean名称，如前例所示。若所有参数签名完全一致（例如所有变体均采用无参数工厂方法），这本就是唯一能在有效Java类中实现此类配置的方式（因为特定名称和参数签名的方法只能存在一个）。
 
 ### 激活 Profile
 激活 Profile 有多种方法，但最直接的方法是通过 `ApplicationContext` 使用 `Environment` 的 API 以编程方式进行激活。下面的示例展示了如何进行激活：
@@ -62,7 +81,7 @@ ctx.register(SomeConfig.class, StandaloneDataConfig.class, JndiDataConfig.class)
 ctx.refresh();
 ```
 
-此外，还可以通过 `spring.profiles.active` 属性声明 Profile ，该属性可通过系统环境变量、JVM 系统属性、web.xml 中的 servlet 上下文参数或 JNDI 中的条目指定。在集成测试中，可通过使用 spring-test 模块中的 `@ActiveProfiles` 注解来声明活动配置文件。可以同时激活多个 profile 。
+此外，还可以通过 `spring.profiles.active` 属性声明 Profile ，该属性可通过系统环境变量、JVM 系统属性、web.xml 中的 servlet 上下文参数或 JNDI 中的条目指定。在集成测试中，可通过使用 `spring-test` 模块中的 `@ActiveProfiles` 注解来声明活动 profile 。可以同时激活多个 profile 。
 ```
 ctx.getEnvironment().setActiveProfiles("profile1", "profile2");
 -Dspring.profiles.active="profile1,profile2"
@@ -90,20 +109,20 @@ public class DefaultDataConfig {
 ## Properties
 
 ### PropertySource 抽象
-Spring 的环境抽象提供了对可配置的 `PropertySource` 层次结构的搜索操作。
+Spring 的 `Environment` 提供了对可配置的 `PropertySource` 层次结构的搜索操作。
 ```
 ApplicationContext ctx = new GenericApplicationContext();
 Environment env = ctx.getEnvironment();
 boolean containsMyProperty = env.containsProperty("my-property");
 System.out.println("Does my environment contain the 'my-property' property? " + containsMyProperty);
 ```
-在前面的代码段中，向 Spring 询问当前 `Environment` 是否定义了 my-property 属性的高级方法。为了回答这个问题，环境对象会对一组 `PropertySource` `对象进行搜索。PropertySource` 是对任何键值对来源的简单抽象。
+在前面的代码段中，向 Spring 询问当前 `Environment` 是否定义了 `my-property` 属性的高级方法。为了回答这个问题，环境对象会对一组 `PropertySource` 对象进行搜索。 `PropertySource` 是对任何 `key-value` 来源的简单抽象。
 
 Spring 的 `StandardEnvironment` 配置了两个 `PropertySource` 对象，一个代表 JVM 系统属性集（`System.getProperties()`），另一个代表系统环境变量集（`System.getenv()`）。
 
-用于web环境的 `StandardServletEnvironment` 中还增加了其他默认属性源，包括 servlet 配置、servlet 上下文参数，以及 JNDI 可用时的 JndiPropertySource。
+用于web环境的 `StandardServletEnvironment` 中还增加了其他默认属性源，包括 servlet 配置、servlet 上下文参数，以及 JNDI 可用时的 `JndiPropertySource` 。
 
-`Environment` 搜索是分层进行的。默认情况下，系统属性优先于环境变量。因此，如果在调用 `env.getProperty("my-property")` 时，my-property 属性恰好在两个地方都被设置了，那么系统属性值将 "胜出" 并返回。请注意，属性值不会被合并，而是会被优先级高的条目完全覆盖。
+`Environment` 搜索是分层进行的。默认情况下，系统属性优先于环境变量。因此，如果在调用 `env.getProperty("my-property")` 时， `my-property` 属性恰好在两个地方都被设置了，那么系统属性值将 "胜出" 并返回。请注意，属性值不会被合并，而是会被优先级高的条目完全覆盖。
 
 对于 `StandardServletEnvironment` ，优先级递减的顺序如下：
 1. ServletConfig 参数

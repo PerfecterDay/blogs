@@ -3,17 +3,7 @@
 
 > https://docs.spring.io/spring-framework/reference/core/aop.html
 
-- [spring AOP](#spring-aop)
-  - [实现机制](#实现机制)
-  - [Spring AOP 的织入](#spring-aop-的织入)
-    - [Spring AOP 的自动织入](#spring-aop-的自动织入)
-  - [@AspectJ 支持](#aspectj-支持)
-    - [使能 @AspectJ 支持](#使能-aspectj-支持)
-    - [定义aspect(切面)](#定义aspect切面)
-    - [声明 pointcut](#声明-pointcut)
-    - [声明 advice](#声明-advice)
-      - [Before advice](#before-advice)
-      - [around advice](#around-advice)
+面向切面编程（AOP）通过提供另一种思考程序结构的方式，对面向对象编程（OOP）进行了补充。在OOP中，模块化的关键单元是类，而在AOP中，模块化的单元则是切面。切面使跨多个类型和对象的关注点（如事务管理）得以模块化。（此类关注点在AOP文献中常被称为"横切关注点"。）
 
 
 ## 实现机制

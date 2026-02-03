@@ -28,7 +28,7 @@ RestClient defaultClient = RestClient.create();
 
 RestClient customClient = RestClient.builder()
 	.requestFactory(new HttpComponentsClientHttpRequestFactory()) //设置底层使用的 http 库
-	.messageConverters(converters -> converters.add(new MyCustomMessageConverter()))
+	.messageConverters(converters -> converters.add(new MyCustomMessageConverter())) //配置自定义转换器
 	.baseUrl("https://example.com")
 	.defaultUriVariables(Map.of("variable", "foo"))
 	.defaultHeader("My-Header", "Foo")

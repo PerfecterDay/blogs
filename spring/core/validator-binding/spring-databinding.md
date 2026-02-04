@@ -118,19 +118,19 @@ Spring使用PropertyEditor的概念来实现**对象**和**字符串**之间的�
 +  在Spring的MVC框架中，解析HTTP请求参数是通过使用各种 `PropertyEditor` 实现来完成的，你可以在 `CommandController` 的所有子类中手动绑`PropertyEditor`。
 
 Spring有许多内置的 `PropertyEditor` 实现来简化生活。它们都位于 `org.springframework.beans.propertyeditors` 包中。大多数（但不是全部，如下表所示）默认由 `BeanWrapperImpl` 注册。可以注册你自己的变量来覆盖默认的编辑器。下表描述了Spring提供的各种 `PropertyEditor` 实现：
-+ ByteArrayPropertyEditor
-+ ClassEditor
-+ CustomBooleanEditor
-+ CustomCollectionEditor
-+ CustomDateEditor
-+ CustomNumberEditor
-+ FileEditor
-+ InputStreamEditor
-+ LocaleEditor
-+ PatternEditor
-+ PropertiesEditor
-+ StringTrimmerEditor
-+ URLEditor
++ `ByteArrayPropertyEditor`
++ `ClassEditor`
++ `CustomBooleanEditor`
++ `CustomCollectionEditor`
++ `CustomDateEditor`
++ `CustomNumberEditor`
++ `FileEditor`
++ `InputStreamEditor`
++ `LocaleEditor`
++ `PatternEditor`
++ `PropertiesEditor`
++ `StringTrimmerEditor`
++ `URLEditor`
 
 `BeanWrapperImpl`继承自 `PropertyEditorRegistrySupport` ，在 `PropertyEditorRegistrySupport` 的 `createDefaultEditors()` 方法中注册了若干的默认 `PropertyEditor` 。
 

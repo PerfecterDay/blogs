@@ -165,6 +165,40 @@ parts.add("xmlPart", new HttpEntity<>(myBean, headers));
 // send using RestClient.post or RestTemplate.postForEntity
 ```
 
+### Interceptor
+下边这个示例展示了如何在请求发送前，对请求进行操作，以及如何操作响应对象：
+```
+@Bean
+IUserCenterClient userCenterClient(@Value("${uc.url}") String baseUrl) {
+	RestClient restClient = RestClient.builder()
+			.baseUrl(baseUrl)
+			.requestInterceptor((request, body, execution) -> {
+				request.getHeaders().add("short-token", getCurrentRequestToken());
+				ClientHttpResponse response = execution.execute(request, body);
+				response.getHeaders().add("foo","bar");
+				return response;
+			})
+			.build();
+
+	HttpServiceProxyFactory proxyFactory = HttpServiceProxyFactory
+			.builderFor(RestClientAdapter.create(restClient))
+			.build();
+
+	return proxyFactory.createClient(IUserCenterClient.class);
+
+}
+
+
+private String getCurrentRequestToken() {
+	ServletRequestAttributes attrs =
+			(ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+	if (attrs != null) {
+		return attrs.getRequest().getHeader("short-token");
+	}
+	return null;
+}
+```
+
 ## WebClient
 > https://docs.spring.io/spring-framework/reference/web/webflux-webclient.html
 

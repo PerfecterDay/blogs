@@ -174,3 +174,48 @@ public class AppConfig {
 
 
 ConfigurationClassPostProcessor
+
+### 各种配置及其优先级
+```
+┌──────────────────────────────────────────────┐
+│ Command Line Arguments                       │
+│                                              │
+│ java -jar app.jar                            │
+│   --server.port=8081                         │
+│   --spring.profiles.active=uat               │
+└──────────────▲───────────────────────────────┘
+               │  最高优先级
+               │
+┌──────────────┴───────────────────────────────┐
+│ JVM System Properties                         │
+│                                              │
+│ java -Dserver.port=8082                      │
+│      -Dspring.profiles.active=uat            │
+│                                              │
+│ System.getProperty("server.port")            │
+└──────────────▲───────────────────────────────┘
+               │
+┌──────────────┴───────────────────────────────┐
+│ OS Environment Variables                     │
+│                                              │
+│ export SERVER_PORT=8083                      │
+│ export SPRING_PROFILES_ACTIVE=uat            │
+│                                              │
+│ System.getenv("SERVER_PORT")                 │
+└──────────────▲───────────────────────────────┘
+               │
+┌──────────────┴───────────────────────────────┐
+│ application.yml / application.properties     │
+│                                              │
+│ application-uat.yml                          │
+│   server.port: 8084                          │
+└──────────────▲───────────────────────────────┘
+               │
+┌──────────────┴───────────────────────────────┐
+│ @PropertySource / 默认值                     │
+│                                              │
+│ @Value("${server.port:8080}")                │
+└──────────────▲───────────────────────────────┘
+               │  最低优先级
+               ▼
+```

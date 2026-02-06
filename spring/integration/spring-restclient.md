@@ -410,3 +410,5 @@ public interface ISprintClient {
 }
 ```
 
+### 注解
+1. `AppResponse unTrust(@RequestParam(name = "acct") String acct);` ：使用 `@RequestParam` 注解时必须使用 `name=xxx` 属性显式指明参数名，如果不想显式指定 `AppResponse unTrust(@RequestParam String acct);` 则需要 `javac -parameters` 

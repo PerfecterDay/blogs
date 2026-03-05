@@ -17,7 +17,7 @@
     * [Spring 容器扩展点](/spring/core/core-ioc/spring-容器扩展点.md)
     * [注解配置](/spring/core/core-ioc/annotation/spring-注解配置.md)
       * [@Autowired](/spring/core/core-ioc/annotation/spring-@Autowired注解.md)
-      * [更精细化的配置](/spring/core/core-ioc/annotation/sspring-更多精细化配置注解.md)
+      * [更精细化的配置](/spring/core/core-ioc/annotation/spring-更多精细化配置注解.md)
       * [@Resource](/spring/core/core-ioc/annotation/spring-@Resource注解.md)
       * [@Value](/spring/core/core-ioc/annotation/spring-@Value注解.md)
     * [Classpath Scanning and Managed Components](/spring/core/core-ioc/spring-路径扫描.md)

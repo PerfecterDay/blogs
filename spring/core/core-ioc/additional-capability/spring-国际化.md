@@ -5,20 +5,20 @@
 
 ## MessageSource
 `ApplicationContext` 接口扩展了一个名为 `MessageSource` 的接口，该接口提供了国际化（"i18n"）功能。Spring 还提供了 `HierarchicalMessageSource` 接口，该接口可以分层解析消息。这些接口共同构成了 Spring 实现消息解析的基础。这些接口定义的方法包括：
-+ `String getMessage(String code, Object[] args, String default, Locale loc)`: 用于从 `MessageSource` 获取消息的基本方法。如果在指定的本地没有找到消息，则使用默认消息 default 。通过标准库提供的 `MessageFormat` 功能，传入的任何参数 args 都会成为替换值。
++ `String getMessage(String code, Object[] args, String default, Locale loc)`: 用于从 `MessageSource` 获取消息的基本方法。如果在指定的本地没有找到消息，则使用默认消息 `default` 。通过标准库提供的 `MessageFormat` 功能，传入的任何参数 `args` 都会成为替换值。
 + `String getMessage(String code, Object[] args, Locale loc)`: 与前一种方法基本相同，但有一点不同：不能指定默认信息。如果找不到信息，就会抛出 `NoSuchMessageException` 异常。
 + `String getMessage(MessageSourceResolvable resolvable, Locale locale)`: 前面方法中使用的所有属性也都封装在一个名为 `MessageSourceResolvable` 的类中，你可以使用该方法。
 
 加载 `ApplicationContext` 时，它会自动搜索上下文中定义的 `MessageSource` Bean。该 Bean 的名称必须是 `messageSource` 。如果找到了这样一个 Bean，对前面方法的所有调用都会委托给该 bean。如果没有找到消息源， `ApplicationContext` 会尝试从父容器查找包含同名的 Bean 。如果找到了，它就会使用该 bean 作为消息源。如果 `ApplicationContext` 无法找到任何消息源，则会实例化一个空的 `DelegatingMessageSource` ，以便能够接受对上述方法的调用。
 
-Spring 提供了三种 MessageSource 实现：
-+ `ResourceBundleMessageSource`： 基础的从文件加载的 MessageSource
-+ `ReloadableResourceBundleMessageSource` : 可以热重载的 MessageSource
-+ `StaticMessageSource`
+Spring 提供了三种 `MessageSource` 实现：
++ `ResourceBundleMessageSource`： 基础的从文件加载的 `MessageSource`
++ `ReloadableResourceBundleMessageSource` : 可以热重载的 `MessageSource`
++ `StaticMessageSource` 
 
 它们都实现了 `HierarchicalMessageSource` ，以便进行嵌套消息传递。 `StaticMessageSource` 很少使用，但它提供了向消息源添加消息的编程方法 。
 
-由于 Spring 的 `MessageSource` 基于 Java 的 `ResourceBundle` ，因此它不会合并具有相同基名的捆绑包，而只会使用找到的第一个捆绑包。具有相同基名的后续消息捆绑包将被忽略。
+由于 Spring 的 `MessageSource` 基于 Java 的 `ResourceBundle` ，因此**它不会合并具有相同基名的捆绑包，而只会使用找到的第一个捆绑包。具有相同基名的后续消息捆绑包将被忽略。**
 
 
 ### `MessageSource` 的一般使用步骤
@@ -103,6 +103,39 @@ private void initLocaleResolver(ApplicationContext context) {
 ```
 
 <center><img src="pics/default-strategies.png" alt=""></center>
+
+### 自定义 LocaleResolver
+```
+public class CustomLocaleResolver extends AcceptHeaderLocaleResolver {
+
+    @Override
+    public Locale resolveLocale(HttpServletRequest request) {
+        // 1. lang header
+        String acceptLanguage = request.getHeader("lang");
+        Locale locale = new Locale("zh" , "CN");
+        try {
+            if (!StrUtil.isBlank(acceptLanguage)) {
+                String[] s = acceptLanguage.split("-");
+                locale = new Locale(s[0], s[1]);
+                return locale;
+            }
+        } catch (Exception e) {
+            return locale;
+        }
+
+        // 2. Accept-Language Header
+        return super.resolveLocale(request);
+    }
+}
+
+
+@Bean
+public LocaleResolver localeResolver() {
+    return new CustomLocaleResolver();
+}
+```
+
+**注意使用 `@Bean` 显示注册 bean ，通过标注 `@Component` 方式扫描注册时，因为注册顺序的问题可能会导致不生效。**
 
 ## 与校验的结合使用
 ```

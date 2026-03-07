@@ -63,4 +63,5 @@ Sa-token 登录成功后，会在 Redis 生成三个 key：
 + 短 token: "gtja-international-app-token:short-token:S-b0f3e72d-d8c0-41bf-8c24-298ff06927f1"，自定义保存的内容，保存 loginId
 
 ## 注解处理
-`SaInterceptor`
++ `SaInterceptor` - 推荐
++ `SaAnnotationInterceptor` - Deprecated

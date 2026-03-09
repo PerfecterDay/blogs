@@ -57,6 +57,7 @@
       * [@AspectJ 支持](#)
         * [@AscpectJ 的启用与定义](/spring/core/aop/aop-programming/@AspectJ/@AspectJ的启用与定义.md)
         * [切点的声明](/spring/core/aop/aop-programming/@AspectJ/切点声明.md)
+        * [增强的声明](/spring/core/aop/aop-programming/@AspectJ/增强声明.md)
     * [Spring AOP简介](/spring/core/aop/spring-AOP知识.md)
     * [Spring AOP核心实现原理](/spring/core/aop/cglib与bytebudy.md)
 * [Spring 数据访问](#)

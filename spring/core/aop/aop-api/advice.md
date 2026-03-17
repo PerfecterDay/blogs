@@ -1,8 +1,8 @@
-# Advice API
+# Advice 和 Advisor API
 {docsify-updated}
 
-> https://docs.spring.io/spring-framework/reference/core/aop-api/advice.html
-
+> https://docs.spring.io/spring-framework/reference/core/aop-api/advice.html   
+> https://docs.spring.io/spring-framework/reference/core/aop-api/advisor.html
 
 ## Advice 的生命周期
 每个增强都是一个 Spring Bean。一个增强实例可以在所有被增强对象之间共享，也可以是每个被增强对象对应一个增强对象实例。这分别对应于 `per-class` 和 `per-instance` 类型的增强。
@@ -157,3 +157,12 @@ public interface IntroductionInfo {
 `Introduction Advice` 不包含 `MethodMatcher` ，因此也没有相关的 `Pointcut` 。此时仅支持类过滤。  
 `getInterfaces()` 方法返回该建议者引入的接口。   
 `validateInterfaces()` 方法在内部用于检查配置的 `IntroductionInterceptor` 是否能够实现这些引入的接口。
+
+## The Advisor API in Spring
+Spring 中的 `Advisor` 代表了一个切面，该切面中只包含一个 `Advice` 对象以及其关联的切点表达式。
+
+除了 `introductions` 之外，任意的 `advisor` 可以和任意的 `advice` 一起使用。 
+
+`org.springframework.aop.support.DefaultPointcutAdvisor` 是最常用的 `advisor` . 它可以和 `MethodInterceptor` , `Before Advice` 或者 `Throws Advice` 配合使用。
+
+在 Spring 中，可以在同一个 AOP 代理中混合使用不同类型的 `Advisor` 和 `advice` 。例如，可以在一个代理配置中同时使用 `Around advice` 、 `Throws Advice` 和 `Before Advice` 。Spring 会自动创建所需的拦截器链。

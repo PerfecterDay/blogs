@@ -66,6 +66,7 @@
     * [Spring AOP APIs](#)
       * [Pointcut](/spring/core/aop/aop-api/pointcut.md)
       * [Advice](/spring/core/aop/aop-api/advice.md)
+      * [使用 ProxyFactoryBean 创建 AOP 代理](/spring/core/aop/aop-api/ProxyFactoryBean.md)
     * [Spring AOP简介](/spring/core/aop/spring-AOP知识.md)
     * [Spring AOP核心实现原理](/spring/core/aop/cglib与bytebudy.md)
 * [Spring 数据访问](#)

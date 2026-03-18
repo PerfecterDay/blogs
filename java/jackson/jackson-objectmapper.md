@@ -4,12 +4,13 @@
 > https://www.baeldung.com/jackson
 
 - [Jackson-ObjectMapper](#jackson-objectmapper)
-	- [引入依赖](#引入依赖)
-	- [ObjectMapper](#objectmapper)
-		- [Jackson 与 Java 集合](#jackson-与-java-集合)
-		- [configure 方法](#configure-方法)
-		- [自定义序列化器和反序列化器](#自定义序列化器和反序列化器)
-		- [处理时间（ java.util.Date ）](#处理时间-javautildate-)
+		- [引入依赖](#引入依赖)
+		- [ObjectMapper](#objectmapper)
+			- [Jackson 与 Java 集合](#jackson-与-java-集合)
+			- [configure 方法](#configure-方法)
+			- [自定义序列化器和反序列化器](#自定义序列化器和反序列化器)
+			- [处理时间（ java.util.Date ）](#处理时间-javautildate-)
+	- [问题](#问题)
 
 Jackson是常用的JSON处理工具。
 
@@ -166,3 +167,6 @@ String carAsString = objectMapper.writeValueAsString(request);
 // output: {"car":{"color":"yellow","type":"renault"},"datePurchased":"2016-07-03 11:43 AM CEST"}
 ```
 https://stackoverflow.com/questions/21384820/is-there-a-jackson-datatype-module-for-jdk8-java-time
+
+## 问题
+字符串反序列化时自动转换为科学技术法的问题

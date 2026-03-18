@@ -79,7 +79,7 @@ public class Main {
 ```
 
 
-这里的关键在于， `Main` 类中 `main(..)` 方法内的客户端代码持有代理对象的引用。这意味着对该对象引用的方法调用实际上是对代理的调用。因此，代理能够将调用委托给所有与该方法调用相关的拦截器（增强）。然而，一旦调用最终到达目标对象（本例中为 `SimplePojo` 引用），该对象对自身的任何方法调用（如 `this.bar()` 或 `this.foo()` ）都将针对 `this` 引用而非代理进行执行。这具有重要意义：**它意味着自我调用不会触发方法调用关联的增强运行**。换言之，通过显式或隐式 `this` 引用进行的自我调用将绕过增强。
+这里的关键在于， `Main` 类中 `main(..)` 方法内的客户端代码持有代理对象的引用。这意味着对该对象引用的方法调用实际上是对代理的调用。因此，代理能够将调用委托给所有与该方法调用相关的 `interceptor` （增强）。然而，一旦调用最终到达目标对象（本例中为 `SimplePojo` 引用），该对象对自身的任何方法调用（如 `this.bar()` 或 `this.foo()` ）都将针对 `this` 引用而非代理进行执行。这具有重要意义：**它意味着自我调用不会触发方法调用关联的增强运行**。换言之，通过显式或隐式 `this` 引用进行的自我调用将绕过增强。
 
 为解决此问题，可选择以下方案：
 1. 禁止自我调用
@@ -89,7 +89,7 @@ public class Main {
 另一种方法是利用 [`self`注入](https://docs.spring.io/spring-framework/reference/core/beans/annotation-config/autowired.html#beans-autowired-annotation-self-injection)，通过 `self` 引用而非 `this` 来调用代理上的方法。
 
 3. 使用 `AopContext.currentProxy()`
-最后一种方法强烈不建议采用，我们甚至犹豫是否要提及它，更推荐前面的方案。但作为最后手段，你可以选择将类内部的逻辑与Spring AOP绑定，如下例所示：
+最后一种方法强烈不 `advice` 采用，我们甚至犹豫是否要提及它，更推荐前面的方案。但作为最后手段，你可以选择将类内部的逻辑与Spring AOP绑定，如下例所示：
 ```
 public class SimplePojo implements Pojo {
 	public void foo() {

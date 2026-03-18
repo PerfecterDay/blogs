@@ -38,12 +38,12 @@ public class DebugInterceptor implements MethodInterceptor {
 }
 ```
 
-请注意对 `MethodInvocation` 的 `proceed()` 方法的调用。这将沿拦截器链向下执行，直至到达连接点。大多数拦截器都会调用此方法并返回其返回值。然而， `MethodInterceptor` （如同任何 around 增强一样）可以选择返回不同的值或抛出异常，而不是调用 `proceed` 方法。不过，除非有充分理由，否则不应这样做。
+请注意对 `MethodInvocation` 的 `proceed()` 方法的调用。这将沿 `interceptor` 链向下执行，直至到达连接点。大多数 `interceptor` 都会调用此方法并返回其返回值。然而， `MethodInterceptor` （如同任何 around 增强一样）可以选择返回不同的值或抛出异常，而不是调用 `proceed` 方法。不过，除非有充分理由，否则不应这样做。
 
-`MethodInterceptor` 的实现提供了与其他符合 AOP Alliance 标准的 AOP 实现之间的互操作性。本节剩余部分讨论的其他增强类型虽然实现了常见的 AOP 概念，但采用的是 Spring 特有的实现方式。虽然使用最具体的增强类型有其优势，但如果你可能需要在其他 AOP 框架中运行该切面，建议在增强类型选择上坚持使用 `MethodInterceptor` 。请注意，目前不同框架之间的切点尚不具备互操作性，且 AOP Alliance 目前尚未定义切点接口。
+`MethodInterceptor` 的实现提供了与其他符合 AOP Alliance 标准的 AOP 实现之间的互操作性。本节剩余部分讨论的其他增强类型虽然实现了常见的 AOP 概念，但采用的是 Spring 特有的实现方式。虽然使用最具体的增强类型有其优势，但如果你可能需要在其他 AOP 框架中运行该切面， `advice` 在增强类型选择上坚持使用 `MethodInterceptor` 。请注意，目前不同框架之间的切点尚不具备互操作性，且 AOP Alliance 目前尚未定义切点接口。
 
 ### Before Advice
-`before advice` 的主要优势在于无需调用 `proceed()` 方法，因此不会出现因疏忽而未能沿拦截器链继续执行的情况。
+`before advice` 的主要优势在于无需调用 `proceed()` 方法，因此不会出现因疏忽而未能沿 `interceptor` 链继续执行的情况。
 
 ```
 public interface MethodBeforeAdvice extends BeforeAdvice {
@@ -51,7 +51,7 @@ public interface MethodBeforeAdvice extends BeforeAdvice {
 }
 ```
 
-请注意，返回类型为 `void` 。 `before advice` 可以在连接点执行之前插入自定义行为，但无法更改返回值。如果 `before advice` 抛出异常，则会停止拦截器链的后续执行。该异常会沿拦截器链向上传播。如果该异常是未检查异常，或者属于被调用方法的签名范围，则会直接传递给客户端。否则，AOP 代理会将其包装为未检查异常。
+请注意，返回类型为 `void` 。 `before advice` 可以在连接点执行之前插入自定义行为，但无法更改返回值。如果 `before advice` 抛出异常，则会停止 `interceptor` 链的后续执行。该异常会沿 `interceptor` 链向上传播。如果该异常是未检查异常，或者属于被调用方法的签名范围，则会直接传递给客户端。否则，AOP 代理会将其包装为未检查异常。
 
 以下例子展示了 `before advice` 的用法：
 ```
@@ -129,7 +129,7 @@ public class CountingAfterReturningAdvice implements AfterReturningAdvice {
 	}
 }
 ```
-此增强不会改变执行路径。如果抛出异常，该异常将沿拦截器链向上抛出，而非作为返回值返回。
+此增强不会改变执行路径。如果抛出异常，该异常将沿 `interceptor` 链向上抛出，而非作为返回值返回。
 
 ### Introduction Advice
 `Introduction` 需要一个 `IntroductionAdvisor` 和一个 `IntroductionInterceptor` ，它们需实现以下接口：
@@ -138,9 +138,9 @@ public interface IntroductionInterceptor extends MethodInterceptor {
 	boolean implementsInterface(Class intf);
 }
 ```
-从 AOP Alliance `MethodInterceptor` 接口继承的 `invoke()` 方法必须实现引入功能。也就是说，如果被调用方法位于已引入的接口上，则引入拦截器负责处理该方法调用——它不能调用 `proceed()` 。
+从 AOP Alliance `MethodInterceptor` 接口继承的 `invoke()` 方法必须实现引入功能。也就是说，如果被调用方法位于已引入的接口上，则引入 `interceptor` 负责处理该方法调用——它不能调用 `proceed()` 。
 
-`Introduction Advice` 不能与任何切点一起使用，因为它仅在类级别生效，而非方法级别。只能将引入建议与 `IntroductionAdvisor` 配合使用，该类具有以下方法：
+`Introduction Advice` 不能与任何切点一起使用，因为它仅在类级别生效，而非方法级别。只能将引入 `advice` 与 `IntroductionAdvisor` 配合使用，该类具有以下方法：
 ```
 public interface IntroductionAdvisor extends Advisor, IntroductionInfo {
 	ClassFilter getClassFilter();
@@ -155,7 +155,7 @@ public interface IntroductionInfo {
 ```
 
 `Introduction Advice` 不包含 `MethodMatcher` ，因此也没有相关的 `Pointcut` 。此时仅支持类过滤。  
-`getInterfaces()` 方法返回该建议者引入的接口。   
+`getInterfaces()` 方法返回该 `advice` 者引入的接口。   
 `validateInterfaces()` 方法在内部用于检查配置的 `IntroductionInterceptor` 是否能够实现这些引入的接口。
 
 ## The Advisor API in Spring
@@ -165,4 +165,4 @@ Spring 中的 `Advisor` 代表了一个切面，该切面中只包含一个 `Adv
 
 `org.springframework.aop.support.DefaultPointcutAdvisor` 是最常用的 `advisor` . 它可以和 `MethodInterceptor` , `Before Advice` 或者 `Throws Advice` 配合使用。
 
-在 Spring 中，可以在同一个 AOP 代理中混合使用不同类型的 `Advisor` 和 `advice` 。例如，可以在一个代理配置中同时使用 `Around advice` 、 `Throws Advice` 和 `Before Advice` 。Spring 会自动创建所需的拦截器链。
+在 Spring 中，可以在同一个 AOP 代理中混合使用不同类型的 `Advisor` 和 `advice` 。例如，可以在一个代理配置中同时使用 `Around advice` 、 `Throws Advice` 和 `Before Advice` 。Spring 会自动创建所需的 `interceptor` 链。

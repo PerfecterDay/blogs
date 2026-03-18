@@ -141,8 +141,8 @@ new CglibAopProxy(config)
 
 Enhancer enhancer = new Enhancer();
 enhancer.setSuperclass(targetClass);        // 继承目标类
-enhancer.setCallbackTypes(callbacks);       // 设置拦截器
-enhancer.setCallbackFilter(callbackFilter); // 拦截器选择策略
+enhancer.setCallbackTypes(callbacks);       // 设置 `interceptor` 
+enhancer.setCallbackFilter(callbackFilter); //  `interceptor` 选择策略
 return enhancer.create();                   // 动态生成代理
 
 方法调用拦截：MethodInterceptor

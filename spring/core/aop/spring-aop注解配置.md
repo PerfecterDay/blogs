@@ -219,7 +219,7 @@ public class AroundExample {
 	+ `getThis()`：获取代理对象。
 	+ `getTarget()`：获取目标对象。
 	+ `getSignature()`：获取真正执行方法的描述。
-	+ `toString()`：打印被建议方法的有用描述。
+	+ `toString()`：打印被 `advice` 方法的有用描述。
 
 2. 使用 `args`
    ```
@@ -238,7 +238,7 @@ public class AroundExample {
    ```
    pointcut 表达式中的 `args(account,...)` 部分有两个作用。
    + 首先，它将匹配范围限制在方法至少需要一个参数，且传递给该参数的参数是 Account 实例的情况下。
-   + 其次，它通过 account 参数向建议提供实际的 Account 对象。
+   + 其次，它通过 account 参数向 `advice` 提供实际的 Account 对象。
 
 ## 定义 Introductions
 Introductions 可以给为一个指定对象动态指定实现一个接口，并且为其提供一个默认的接口实现。 可以使用 `@DeclareParents` 注解进行介绍。该注解用于声明匹配类型有一个新的父类（因此得名）。

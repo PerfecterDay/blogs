@@ -166,3 +166,8 @@ Spring 中的 `Advisor` 代表了一个切面，该切面中只包含一个 `Adv
 `org.springframework.aop.support.DefaultPointcutAdvisor` 是最常用的 `advisor` . 它可以和 `MethodInterceptor` , `Before Advice` 或者 `Throws Advice` 配合使用。
 
 在 Spring 中，可以在同一个 AOP 代理中混合使用不同类型的 `Advisor` 和 `advice` 。例如，可以在一个代理配置中同时使用 `Around advice` 、 `Throws Advice` 和 `Before Advice` 。Spring 会自动创建所需的 `interceptor` 链。
+
+## 自定义 Advice 类型
+Spring AOP 设计上具有可扩展性。虽然目前内部采用的是拦截实现策略，但除了 `interception around advice`, `before`, `throws advice`, and `after returning advice` 之外，它还能够支持任意类型的 `Advice` 。
+
+`org.springframework.aop.framework.adapter` 包是一个 SPI 包，它允许在不修改核心框架的情况下添加对新自定义建议类型的支持。自定义建议类型的唯一限制是，它必须实现 `org.aopalliance.aop.Advice` 标记接口。

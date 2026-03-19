@@ -91,3 +91,47 @@ Caused by: org.flywaydb.core.api.FlywayException: Unsupported Database: MySQL 9.
     <artifactId>flyway-mysql</artifactId>
 </dependency>
 ```
+
+## 修复数据库
+添加 flyway 插件:
+```
+<plugin>
+    <groupId>org.flywaydb</groupId>
+    <artifactId>flyway-maven-plugin</artifactId>
+    <dependencies>
+        <!-- MySQL 支持 -->
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-mysql</artifactId>
+            <version>${flyway.version}</version>
+        </dependency>
+
+        <!-- MySQL 驱动 -->
+        <dependency>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+            <version>${mysql.version}</version>
+        </dependency>
+    </dependencies>
+</plugin>
+```
+
+```
+mvnd flyway:repair \
+  -Dflyway.url=jdbc:mysql://localhost:3306/cap \
+  -Dflyway.user=root \
+  -Dflyway.password=root
+```
+
+repair 的本质就是：修复 flyway_schema_history 表
+1. 删除失败的 migration 记录
+2. 重新计算 checksum（最关键）
+3. 修复 metadata（描述信息）
+
+
+❌ 不会执行 SQL
+❌ 不会修改表结构
+❌ 不会回滚数据
+❌ 不会重新跑 migration
+
+repair = 修改 Flyway 的“记账本”，不是修改数据库

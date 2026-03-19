@@ -70,6 +70,7 @@
       * [使用 ProxyFactory 创建 AOP 代理](/spring/core/aop/aop-api/ProxyFactory.md)
       * [操作 Advised 对象](/spring/core/aop/aop-api/Advised.md)
       * [使用自动代理机制](/spring/core/aop/aop-api/Auto-proxy.md)
+      * [TargetSource](/spring/core/aop/aop-api/TargetSource.md)
     * [Spring AOP简介](/spring/core/aop/spring-AOP知识.md)
     * [Spring AOP核心实现原理](/spring/core/aop/cglib与bytebudy.md)
 * [Spring 数据访问](#)

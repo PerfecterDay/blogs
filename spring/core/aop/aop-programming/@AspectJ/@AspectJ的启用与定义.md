@@ -1,6 +1,9 @@
 # @AspectJ 启用与声明
 {docsify-updated}
 
+> https://docs.spring.io/spring-framework/reference/core/aop/ataspectj/aspectj-support.html   
+> https://docs.spring.io/spring-framework/reference/core/aop/ataspectj/at-aspectj.html
+
 `@AspectJ` 指将切面声明为带有注解的常规 Java 类的编程风格。该风格由 `AspectJ` 项目在 `AspectJ 5` 版本中引入。Spring 解析的注解与 `AspectJ 5` 完全一致，其点切解析与匹配功能依赖 `AspectJ` 提供的库实现。但其 AOP 运行时仍纯粹基于 Spring AOP，不依赖 AspectJ 编译器或织入器。
 
 ## 启用 @AspectJ 

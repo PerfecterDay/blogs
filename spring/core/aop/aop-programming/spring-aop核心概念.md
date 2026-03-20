@@ -7,7 +7,7 @@
 
 
 ## 核心概念
-1. 切面- `Aspect`：对横跨多个类的关注点进行模块化处理。事务管理是企业Java应用中横切关注点的典型示例。在Spring AOP中，切面可通过常规类（基于模式的方法）或带有@Aspect注解的常规类（@ `AspectJ` 风格）实现。
+1. 切面- `Aspect`：对横跨多个类的关注点进行模块化处理。事务管理是企业Java应用中横切关注点的典型示例。在Spring AOP中，切面可通过常规类（基于模式的方法）或带有@Aspect注解的常规类（ `@AspectJ` 风格）实现。
 2. 连接点-`Join point`：程序执行过程中的某个点，例如方法执行或异常处理。在Spring AOP中，连接点只能是方法执行点。
 3. 增强-`Advice`：在特定连接点上由某个切面执行的操作。 `Advice` 类型包括"around", "before", and "after" 类型。包括Spring在内的许多AOP框架都将 `Advice` 建模为 `interceptor` ，并在连接点周围维护一个 `interceptor` 链。
 4. 切点-`Pointcut`: 用于匹配连接点的**谓词表达式**。 `Advice` 与 `Pointcut` 表达式相关联，并在 `Pointcut` 匹配到的任何连接点（例如执行特定名称的方法）处运行。 `Pointcut` 表达式匹配到的连接点概念是AOP的核心，Spring默认使用 ` `AspectJ`  Pointcut` 表达式语言。

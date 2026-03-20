@@ -1,5 +1,6 @@
 # Introductions
 {docsify-updated}
+> https://docs.spring.io/spring-framework/reference/core/aop/ataspectj/introductions.html
 
 `Introductions` （在AspectJ中称为类型间声明）使切面能够声明被切入对象实现了某个接口，并代表这些对象提供该接口的实现。
 

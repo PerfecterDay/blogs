@@ -80,51 +80,6 @@ execution(modifiers-pattern?
 + `param-pattern` - 限定方法参数，(\*) 模式匹配只接受一个任意类型参数的方法。(\*,String)匹配接收两个参数的方法。第一个参数可以是任何类型，而第二个参数必须是字符串
 + `throws-pattern` - 引发此异常的方法。
 
-#### 常见的切点表达式
-1. 匹配方法签名
-	```
-	// 匹配指定包中的所有的方法
-	execution(* com.xys.service.*(..))
-
-	// 匹配当前包中的指定类的所有方法
-	execution(* UserService.*(..))
-
-	// 匹配指定包中的所有 public 方法
-	execution(public * com.xys.service.*(..))
-
-	// 匹配指定包中的所有 public 方法, 并且返回值是 int 类型的方法
-	execution(public int com.xys.service.*(..))
-
-	// 匹配指定包中的所有 public 方法, 并且第一个参数是 String, 返回值是 int 类型的方法
-	execution(public int com.xys.service.*(String name, ..))
-	```
-2. 匹配类型签名
-	```
-	// 匹配指定包中的所有的方法, 但不包括子包
-	within(com.xys.service.*)
-
-	// 匹配指定包中的所有的方法, 包括子包
-	within(com.xys.service..*)
-
-	// 匹配当前包中的指定类中的方法
-	within(UserService)
-
-	// 匹配一个接口的所有实现类中的实现的方法
-	within(UserDao+)
-	```
-3. 匹配 Bean 名字
-  ```
-	// 匹配以指定名字结尾的 Bean 中的所有方法
-	bean(*Service)
-  ```
-4. 切点表达式组合
-	```
-	// 匹配以 Service 或 ServiceImpl 结尾的 bean
-	bean(*Service || *ServiceImpl)
-
-	// 匹配名字以 Service 结尾, 并且在包 com.xys.service 中的 bean
-	bean(*Service) && within(com.xys.service.*)
-	```
 
 ## 定义 Advice 增强
 Advice 与切点表达式相关联，可以有 before/after/around 类型。切点表达式既可以是内联切点，也可以是对已命名切点的引用。

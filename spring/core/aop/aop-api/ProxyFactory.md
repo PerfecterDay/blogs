@@ -20,4 +20,36 @@ MyBusinessInterface tb = (MyBusinessInterface) factory.getProxy();
 
 `ProxyFactory` （继承自 `AdvisedSupport` ）还提供了一些便捷方法，允许添加其他类型的 `advice` ，例如 `before advice` 和 `throws advice` 。 `AdvisedSupport` 是 `ProxyFactory` 和 `ProxyFactoryBean` 的共同父类。
 
-在大多数应用程序中，将 AOP 代理的创建与 IoC 框架集成是最佳实践。建议将配置从 Java 代码中分离出来，并使用 AOP 进行管理，这通常也是应该采取的做法。
+在大多数应用程序中，将 AOP 代理的创建与 IoC 框架集成是最佳实践。 `Advice` 将配置从 Java 代码中分离出来，并使用 AOP 进行管理，这通常也是应该采取的做法。
+
+
+
+```
+            三种入口
+   --------------------------------
+   |              |              |
+@Aspect      AspectJProxyFactory   ProxyFactoryBean
+   |              |              |
+   |              |              |
+   -------> Advisor <------------
+               ↓
+         ProxyFactory
+               ↓
+      DefaultAopProxyFactory
+               ↓
+     -----------------------
+     |                     |
+JDK Dynamic Proxy     CGLIB Proxy
+     |                     |
+     --------> Proxy Object
+                     ↓
+            MethodInterceptor 链
+                     ↓
+                 目标方法
+```
+3个核心类:
+```
+AnnotationAwareAspectJAutoProxyCreator  ⭐⭐⭐⭐⭐
+ProxyFactory                            ⭐⭐⭐⭐
+DefaultAopProxyFactory                  ⭐⭐⭐⭐
+```

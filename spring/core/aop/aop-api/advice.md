@@ -19,6 +19,9 @@ Interception Around Advice 是 Spring 中最基础的增强类型。
 
 Spring 符合 AOP Alliance 针对使用方法拦截的 `around advice` 所定义的接口。因此，实现 `around advice` 的类应实现 `org.aopalliance.intercept` 包中的以下 `MethodInterceptor` 接口：
 ```
+public interface Advice {}
+public interface Interceptor extends Advice {}
+
 public interface MethodInterceptor extends Interceptor {
 	Object invoke(MethodInvocation invocation) throws Throwable;
 }
@@ -46,6 +49,8 @@ public class DebugInterceptor implements MethodInterceptor {
 `before advice` 的主要优势在于无需调用 `proceed()` 方法，因此不会出现因疏忽而未能沿 `interceptor` 链继续执行的情况。
 
 ```
+public interface BeforeAdvice extends Advice {}
+
 public interface MethodBeforeAdvice extends BeforeAdvice {
 	void before(Method m, Object[] args, Object target) throws Throwable;
 }
@@ -71,6 +76,8 @@ public class CountingBeforeAdvice implements MethodBeforeAdvice {
 ### Throws Advice
 如果连接点抛出了异常，则在连接点返回后调用 `Throws Advice` 。Spring 提供了类型化的`Throws Advice`。请注意，这意味着 `org.springframework.aop.ThrowsAdvice` 接口不包含任何方法。它是一个标记接口，用于标识给定对象实现了一个或多个类型化的`Throws Advice`方法。这些方法应采用以下形式：
 ```
+public interface ThrowsAdvice extends AfterAdvice {}
+
 afterThrowing([Method, args, target], subclassOfThrowable)
 ```
 仅需最后一个参数。方法签名可能包含一个或四个参数，这取决于增强方法是否关注该方法及其参数。接下来的两个代码片段展示了 `Throws Advice` 的示例类。
@@ -158,16 +165,25 @@ public interface IntroductionInfo {
 `getInterfaces()` 方法返回该 `advice` 者引入的接口。   
 `validateInterfaces()` 方法在内部用于检查配置的 `IntroductionInterceptor` 是否能够实现这些引入的接口。
 
+### 自定义 Advice 类型
+Spring AOP 设计上具有可扩展性。虽然目前内部采用的是拦截实现策略，但除了 `interception around advice`, `before`, `throws advice`, and `after returning advice` 之外，它还能够支持任意类型的 `Advice` 。
+
+`org.springframework.aop.framework.adapter` 包是一个 SPI 包，它允许在不修改核心框架的情况下添加对新自定义 `Advice` 类型的支持。自定义 `Advice` 类型的唯一限制是，它必须实现 `org.aopalliance.aop.Advice` 标记接口。
+
 ## The Advisor API in Spring
 Spring 中的 `Advisor` 代表了一个切面，该切面中只包含一个 `Advice` 对象以及其关联的切点表达式。
+```
+public interface Advisor {
+	Advice EMPTY_ADVICE = new Advice() {};
+	Advice getAdvice();
+	default boolean isPerInstance() {
+		return true;
+	}
+}
+```
 
 除了 `introductions` 之外，任意的 `advisor` 可以和任意的 `advice` 一起使用。 
 
 `org.springframework.aop.support.DefaultPointcutAdvisor` 是最常用的 `advisor` . 它可以和 `MethodInterceptor` , `Before Advice` 或者 `Throws Advice` 配合使用。
 
 在 Spring 中，可以在同一个 AOP 代理中混合使用不同类型的 `Advisor` 和 `advice` 。例如，可以在一个代理配置中同时使用 `Around advice` 、 `Throws Advice` 和 `Before Advice` 。Spring 会自动创建所需的 `interceptor` 链。
-
-## 自定义 Advice 类型
-Spring AOP 设计上具有可扩展性。虽然目前内部采用的是拦截实现策略，但除了 `interception around advice`, `before`, `throws advice`, and `after returning advice` 之外，它还能够支持任意类型的 `Advice` 。
-
-`org.springframework.aop.framework.adapter` 包是一个 SPI 包，它允许在不修改核心框架的情况下添加对新自定义建议类型的支持。自定义建议类型的唯一限制是，它必须实现 `org.aopalliance.aop.Advice` 标记接口。

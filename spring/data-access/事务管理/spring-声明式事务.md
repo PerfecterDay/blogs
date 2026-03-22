@@ -74,7 +74,7 @@ public @interface Transactional {
 `@Transactional` 注解是一种元数据，用于指定接口、类或方法的具有事务语义。默认的 `@Transactional` 设置如下：
 + 传播设置为 `PROPAGATION_REQUIRED` 
 + 隔离级别为 `ISOLATION_DEFAULT` 
-+ readOnly 为 false
++ `readOnly` 为 `false`
 + 事务超时默认为底层事务系统的默认超时，如果不支持超时，则默认为无。
 + 任何 `RuntimeException` 或 `Error` 都会触发回滚，而任何 `checked Exception` 则不会触发回滚。
 

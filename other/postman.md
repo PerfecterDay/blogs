@@ -40,6 +40,8 @@ if (jsonData.code !== 0) {
 ```
 
 ## Mock Server
+> https://learning.postman.com/latest-v-12/docs/design-apis/mock-apis/overview
+
 1. 建真实接口请求，在 Collection 里建一个 Request。
 2. 给这个 Request 加多个 Example，右键request -> add example
 3. 创建 Mock Server， collection 右键（或者点击...） -> more -> mock
